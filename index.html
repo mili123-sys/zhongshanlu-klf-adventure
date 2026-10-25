@@ -832,12 +832,20 @@
   var elSkip = document.getElementById('plSkip');
   var TOTAL = 0, i;
   for(i = 0; i < MANIFEST.length; i++) TOTAL += MANIFEST[i][1];
-  var doneBytes = 0, doneFiles = 0, failed = [], finished = false, cacheObj = null, slowTimer = null, lastPaintAt = 0;
-  var deadline = Date.now() + 120000; // 全局时限：再慢的网 2 分钟也收尾，绝不把玩家永久堵在下载页
+  var doneBytes = 0, doneFiles = 0, failed = [], untried = [], finished = false, cacheObj = null, slowTimer = null, lastPaintAt = 0;
+  /* 本轮时限改由 run() 每次进入时重新起算（2026-10-26 托管版真机报障根因修复）：
+     旧版只在脚本加载时设一次 120 秒——6499 个小文件在手机到托管站的弱链路上 2 分钟根本跑不完，
+     时限一到剩余文件被批量记失败、字节还被补满，出现「100% / 68.4 MB 却只有 572/6499」；
+     点「重试下载」时这个时限早已过期，worker 一进来就直接收尾，重试永远零下载、下不全。
+     单轮放宽到 10 分钟：配合 25 秒慢速兜底的「先进入游戏」，玩家不会被堵死；
+     时限只负责给真卡死的网络一个收尾点，超时未轮到的文件单列 untried、不记失败、不计字节。 */
+  var RUN_LIMIT_MS = 600000;
+  var deadline = 0; // 由 run() 每次进入时重置为 Date.now() + RUN_LIMIT_MS
   function fmtMB(n){ return (n / 1048576).toFixed(1) + ' MB'; }
   function paint(curFile){
     window.__klfPreloadBeat = Date.now(); // 进度心跳：供启动看门狗区分「慢但在推进」与「真卡死」，慢下载不再被误判黑屏
     var pct = TOTAL > 0 ? Math.min(100, Math.floor(doneBytes / TOTAL * 100)) : 100;
+    if((failed.length || untried.length) && pct > 99) pct = 99; // 还有失败/未下载的文件时绝不显示 100%：字节与文件数都只计真到手的，进度必须诚实
     if(elFill) elFill.style.width = pct + '%';
     if(elPct) elPct.textContent = pct + '%';
     if(elBytes) elBytes.textContent = fmtMB(doneBytes) + ' / ' + fmtMB(TOTAL) + ' · ' + doneFiles + '/' + MANIFEST.length + ' 个文件';
@@ -848,8 +856,11 @@
     if(slowTimer){ clearTimeout(slowTimer); slowTimer = null; }
     window.__klfPreloadActive = false;
     paint('');
-    if(failed.length){
-      if(elStatus) elStatus.textContent = '有 ' + failed.length + ' 个文件没下成功（多半是网络中断）。可以直接进入游戏，缺的会在用到时自动补下；也可以点「重试下载」。';
+    if(failed.length || untried.length){
+      var missParts = [];
+      if(failed.length) missParts.push(failed.length + ' 个下载失败');
+      if(untried.length) missParts.push(untried.length + ' 个还没轮到下载');
+      if(elStatus) elStatus.textContent = '本轮没下完：' + missParts.join('、') + '（多半是网络中断或太慢）。点「重试下载」只补这些缺的，已下好的不会重下；也可以直接进入游戏，缺的会在用到时自动补下。';
       if(elFile) elFile.textContent = '';
       if(elRetry) elRetry.style.display = 'inline-block';
       if(elEnter){ elEnter.style.display = 'inline-block'; elEnter.textContent = '先进入游戏'; }
@@ -869,12 +880,13 @@
   function settleWithin(p, ms){
     return Promise.race([Promise.resolve(p), new Promise(function(res){ setTimeout(function(){ res(null); }, ms); })]);
   }
-  function dlOne(item){
+  function dlAttempt(item){ // 单次尝试：成功 resolve(true)，失败 resolve(false) 并回滚本试已计字节
     var url = klfAliasOf(item[0]), size = item[1]; // 去重别名：重复条目共用保留件一份字节（大小相同，计数照常用清单值）
     var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
     var timer = ctrl ? setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, 20000) : null;
     var counted = 0;
-    function topUp(){ if(counted < size){ doneBytes += (size - counted); counted = size; } } // 收尾/失败都计满该文件份额，进度条只进不退
+    function topUp(){ if(counted < size){ doneBytes += (size - counted); counted = size; } } // 只在下载成功收尾时把该文件份额计满
+    function rollBack(){ if(counted > 0){ doneBytes -= counted; if(doneBytes < 0) doneBytes = 0; counted = 0; } } // 失败时回滚本试已计的流式字节：字节只计真正到手并存好的，半截不算数（旧版失败也计满，是进度虚报 100% 的一半根源）
     return fetch(url, ctrl ? { signal: ctrl.signal } : undefined).then(function(res){
       if(!res.ok) throw new Error('HTTP ' + res.status);
       var reader = res.body && res.body.getReader ? res.body.getReader() : null;
@@ -930,13 +942,29 @@
       });
     }).catch(function(){
       if(timer) clearTimeout(timer);
-      topUp();
+      rollBack();
       if(cacheObj) cacheObj.delete(url).catch(function(){}); // 半截/损坏条目不许留：断点续传只认校验完整的条目，残缺的留着反而会被误判成已下载
       return false;
     });
   }
+  /* 单文件自动重试（2026-10-26）：一次网络抖动/20 秒中止不再直接判死——同一文件最多试 3 次，
+     两次之间短暂退避（0.8 秒、2 秒），退避期间刷新心跳，免得看门狗把正在重试误判成卡死。
+     3 次都失败才记入 failed，等玩家点「重试下载」时（缓存校验会跳过已下好的）再补。 */
+  function dlOne(item){
+    var tries = 0;
+    function attempt(){
+      tries++;
+      window.__klfPreloadBeat = Date.now();
+      return dlAttempt(item).then(function(ok){
+        if(ok || tries >= 3) return ok;
+        return new Promise(function(res){ setTimeout(res, tries === 1 ? 800 : 2000); }).then(attempt);
+      });
+    }
+    return attempt();
+  }
   function run(){
-    failed = []; doneBytes = 0; doneFiles = 0; finished = false;
+    failed = []; untried = []; doneBytes = 0; doneFiles = 0; finished = false;
+    deadline = Date.now() + RUN_LIMIT_MS; // 每轮（含每次点「重试下载」）重新起算本轮时限——这是旧版重试必失败的根因所在
     window.__klfPreloadActive = true;
     if(elStatus) elStatus.textContent = '正在下载游戏资源，请稍候…';
     if(elRetry) elRetry.style.display = 'none';
@@ -997,17 +1025,19 @@
         if(doneFiles > 0 && elStatus) elStatus.textContent = '本地已有 ' + doneFiles + ' 个文件，只补下载缺少/更新的 ' + todo.length + ' 个…';
         var idx = 0;
         function worker(){
-          if(idx >= todo.length || Date.now() > deadline){
-            if(idx < todo.length){ // 超时收尾：没轮到的记为失败，玩家可进游戏后按需加载
-              for(var m = idx; m < todo.length; m++){ failed.push(todo[m][0]); doneBytes += todo[m][1]; }
-              idx = todo.length;
-            }
+          if(idx >= todo.length) return Promise.resolve();
+          if(Date.now() > deadline){
+            /* 本轮时限到：没轮到的文件单列 untried——它们根本没被尝试过，不许记成失败、
+               更不许把它们的字节补进进度（旧版正是这样凑出「100% 却只有 572/6499」的假进度）。
+               玩家点「重试下载」时缓存校验会跳过已下好的，只补这些没下完的。 */
+            for(var m = idx; m < todo.length; m++) untried.push(todo[m][0]);
+            idx = todo.length;
             return Promise.resolve();
           }
           var item = todo[idx++];
           return dlOne(item).then(function(ok){
-            doneFiles++;
-            if(!ok) failed.push(item[0]);
+            if(ok) doneFiles++; // 文件数只计真成功（含缓存命中）：旧版不论成败都 +1，数字和字节一样虚
+            else failed.push(item[0]);
             paint(null);
             /* 分片推进（2026-10-24）：每下完一个文件让出主线程一拍——进度条重绘、看门狗、
                系统内存回收都得有机会跑；旧法多路 worker 一条链无间断猛拉到底，
