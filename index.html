@@ -2245,7 +2245,7 @@ var DMG_SRC = null; // 当前伤害来源的玩家 id（联机时房主模拟远
    至本次技能结束（解晕点＝固定烟雾散去且隐身结束，两者都满足才解），精英与普通怪同口径、不走 applyStunResist 的精英 ×0.6 折算；
    Boss 不锁晕——只在烟雾跳伤节拍（0.4 秒）按现有眩晕抗性代码 applyStunResist(1.0) 逐跳短晕（Boss 实得 ×0.35＝0.35 秒），出烟即停；
    ④隐身回血：隐身存续期间（含计时暂停帧）每秒恢复 JG_INVIS_HEAL＝5% 生命上限，封顶不溢出，隐身结束即停。
-   班仔：解放光束击退 420、释放点圣光爆击退 330（位移量，2026-10-28 用户令大幅提高到「非常远」：旧 140/110 ×3；只对被击中后没死的怪物生效——两处调用点先以零击退结算伤害、存活者才手动补位移，折算与 damageEnemy 内既有口径一致：Boss ×0.25（实际 105/82.5）、精英不打折、相位幽灵免疫、吃 kbP 击退强化乘区）；班仔其余攻击（普攻横扫/突刺、普攻剑气与回旋轮、疾风剑气）一律无击退（同日用户令）；
+   班仔：解放光束击退 420、释放点圣光爆击退 330（位移量，2026-10-28 用户令大幅提高到「非常远」：旧 140/110 ×3；只对被击中后没死的怪物生效——两处调用点先以零击退结算伤害、存活者才手动补位移，折算与 damageEnemy 内既有口径一致：Boss ×0.25（实际 105/82.5）、精英不打折、相位幽灵免疫、吃 kbP 击退强化乘区）；普攻击退口径（同日晚用户令修正，取代同日早先「普攻一律无击退」）：咖哩棒 Lv4 升级卡「附带击退」只作用于近战挥击命中（横扫 9／突刺 20、沿挥击方向、Lv1–3 无），普攻剑气（分支 D swordqi）与疾风剑气（windslash slashp·noKb）、回旋轮命中一律无击退；
    无敌门槛（2026-10-28 11:34 用户令，取代旧「蓄力全程无敌／2.17 秒无敌窗」）：长按蓄力持续超过 BZ_INV_HOLD_T＝3 秒后无敌才生效——
    未满 3 秒蓄力期间不无敌；越过 3 秒后，剩余蓄力期间与松手后的光束期间（0.85 秒）无敌，释放结束即失效；未满 3 秒就松手释放则全程（含光束段）不无敌。
    陈哈哈：感电持续到该怪被打死为止（2026-10-27 20:05 用户澄清：触发互击后不消耗、不消失、无计时）、互击触发距离 180（中心距）、
@@ -2409,7 +2409,8 @@ var DRONE = { a: null }; // 虚空环境低鸣原随 BGM 一同循环——BGM �
 function droneStart(){} // BGM 已移除：虚空低鸣不再启动（保留空函数供既有调用点落空）
 function droneStop(){ try{ if(DRONE.a) DRONE.a.pause(); }catch(e){} }
 function jgInvisOn(){ return !!(typeof P !== 'undefined' && P && P.charIdx === 3 && P.invisT > 0); } // 鸡哥隐身中判定（2026-10-28 用户令）：怪物不索敌、不攻击的唯一口径
-function aimPos(){ if(jgInvisOn()) return { x: P.invisX, y: P.invisY }; if(typeof panelGuardOn === 'function' && panelGuardOn()) return { x: P.guardX != null ? P.guardX : P.x, y: P.guardY != null ? P.guardY : P.y }; return P; } // 怪物技能瞄准点：鸡哥隐身时只瞄最后已知位置（释放点），与敌人主循环 tgt 同口径；面板护盾打开期间（菜单/已学技能/属性/可学习四面板）同口径只瞄开面板瞬间的位置、不追真身（伤害另有 hurtPlayer 面板门禁兜底）；都不在时即玩家真实位置、行为不变
+function learnStealthOn(){ return !!(typeof P !== 'undefined' && P && P.learnStealthT > 0); } // 离开学习页后 3 秒隐身判定（2026-10-28 用户令，全英雄通用、与鸡哥技能隐身独立并行）：隐身期间怪物不索敌、不攻击，本人可正常移动/攻击
+function aimPos(){ if(jgInvisOn()) return { x: P.invisX, y: P.invisY }; if(learnStealthOn()) return { x: P.lsX, y: P.lsY }; if(typeof panelGuardOn === 'function' && panelGuardOn()) return { x: P.guardX != null ? P.guardX : P.x, y: P.guardY != null ? P.guardY : P.y }; return P; } // 怪物技能瞄准点：鸡哥隐身时只瞄最后已知位置（释放点），与敌人主循环 tgt 同口径；面板护盾打开期间（菜单/已学技能/属性/可学习四面板）同口径只瞄开面板瞬间的位置、不追真身（伤害另有 hurtPlayer 面板门禁兜底）；都不在时即玩家真实位置、行为不变
 function bossSignature(e){ // Boss 招牌大招（半血暴怒阶段解锁）：连环预警圈爆发＋按本体召唤增援（朱德的招牌「咖哩洪流幻影」已按用户令删除：其轮换 idx2 格跳过、此函数不再有朱德分支，见 Boss 轮换处）
   var v = e.visual, col = v === 'firedemon' ? '#ff7a3e' : v === 'hydra' ? '#7ac74f' : v === 'crystalking' ? '#7ad7f0' : v === 'dragon' ? '#b48aff' : '#ffd23e';
   var n = v === 'hydra' ? 3 : 4;
@@ -2816,7 +2817,7 @@ function newPlayer(ci){
     face:1, faceAng:0, faceLockT:0, walkPhase:0, invuln:0,
     specCd:0, dodgeCd:0, dodgeT:0, dodgeDx:1, dodgeDy:0, tornadoT:0, tornadoTick:0, starT:0, starTick:0, starMul:1, starSMul:1, paperT:0, orbitAngle:0, oakAngle:0, oakFxT:0, shield:0, shieldT:0,
     smokeT:0, smokeTick:0, smokeX:0, smokeY:0, swingSide:1,
-    invisT:0, invisX:0, invisY:0, invisTrailT:0, invisDmgTick:0, invisHealAcc:0, invisHealTxtT:0, invisHealShown:0,
+    invisT:0, invisX:0, invisY:0, invisTrailT:0, invisDmgTick:0, invisHealAcc:0, invisHealTxtT:0, invisHealShown:0, learnStealthT:0, lsX:0, lsY:0, // learnStealthT＝离开学习页后的隐身剩余秒数（2026-10-28 用户令：关页起 3 秒、归零即恢复可见与受击）；lsX/lsY＝关页瞬间位置（隐身期间怪物索敌/瞄准只扑此点，与鸡哥 invisX/invisY 同机制）；整局重置随 P 重建清零
     rageT:0, stimT:0, urineT:0, chestDmgT:0, shieldUp:false, shieldCd:3, holyFlashT:0, poseUntil:0,
     bonusDmg:0, bonusSpd:0, xpMul:1, bonusCdMul:1, bonusMagMul:1, specCdMul:1, regenBonus:0,
     shopCrit:0, shopLeech:0, shopCdMul:1,
@@ -3135,7 +3136,7 @@ function sigTick(e, dt, tgt, d2){
       e.flyH = 50 * (1 - dp) + 3 * dp;
       if(e.diveT <= 0){
         e.diveState = 'climb'; e.diveT = 0.55; e.noContact = false;
-        if(Math.sqrt(dist2(e.x, e.y, P.x, P.y)) < 48 && !jgInvisOn() && !(typeof panelGuardOn === 'function' && panelGuardOn())){ // 毒针命中：即时伤害＋3 秒毒（玩家毒结算在主循环 P.venomT）；鸡哥隐身期间毒针不命中、不挂毒（2026-10-28 隐身不被攻击令——直伤虽经 hurtPlayer 门禁，但挂毒是独立赋值、须在此一并跳过）；面板护盾期间同口径：不命中、不挂毒（防关面板后残毒继续掉血）
+        if(Math.sqrt(dist2(e.x, e.y, P.x, P.y)) < 48 && !jgInvisOn() && !learnStealthOn() && !(typeof panelGuardOn === 'function' && panelGuardOn())){ // 毒针命中：即时伤害＋3 秒毒（玩家毒结算在主循环 P.venomT）；鸡哥隐身期间毒针不命中、不挂毒（2026-10-28 隐身不被攻击令——直伤虽经 hurtPlayer 门禁，但挂毒是独立赋值、须在此一并跳过）；面板护盾期间同口径：不命中、不挂毒（防关面板后残毒继续掉血）；离开学习页后 3 秒隐身期间同口径追加：不命中、不挂毒（防隐身结束残毒掉血）
           hurtPlayer(Math.round(e.dmg * 1.1));
           P.venomT = 3; P.venomDps = Math.max(P.venomDps || 0, Math.round(e.dmg * 0.4));
           texts.push({ x: P.x, y: P.y - 40, v: 0, txt: '中毒！', t: 0, color: '#9ae84a' });
@@ -4163,6 +4164,7 @@ function hurtPlayer(dmg){
   if(!drainHit && P.invuln > 0) return;
   if(state !== 'playing') return;
   if(panelGuardOn()) return; // 面板护盾（2026-10-28 定版）：学习页/已学技能/属性/设置任一面板打开期间本机无敌（含持续伤害——开面板不该被毒死），关完即恢复
+  if(P.learnStealthT > 0 && !drainHit) return; // 离开学习页后 3 秒隐身不被攻击（2026-10-28 用户令，与鸡哥隐身同口径）：隐身期间怪物的一切攻击整段不命中、护盾不被消耗；这不是无敌——P.invuln 未动、持续伤害（drainHit）照常结算、3 秒归零即恢复受击，绝不永久隐身
   if(P.charIdx === 3 && P.invisT > 0 && !drainHit) return; // 鸡哥隐身不被攻击（2026-10-28 用户令，覆盖旧例外）：隐身期间怪物的一切攻击整段不命中——接触/敌方弹道/预警圈爆发/扇形弹幕/裂缝与凝视射线/虚空风暴区/物种专属命中（幽灵爪/锁链横扫/龙息/毒针直伤）全部经此门禁跳过，护盾不被消耗；旧「Boss/精英预警圈与扇形弹幕按真实位置结算」例外作废，瞄准侧同步改走最后已知位置（aimPos／敌人主循环 tgt）；持续伤害（drainHit 口径，与闻西龙卷风/班仔解放无敌窗同规）照常结算；invisT 归零即恢复受击
   if(P.charIdx === 1 && P.tornadoT > 0 && !drainHit) return; // 闻西按键技「龙卷风吹毁停车场」无敌窗（2026-10-26 用户新规）：龙卷风存续期间（tornadoT>0：持续 8 秒）接触/弹道伤害全免；tornadoT 归零即失效、不延续到冷却期；持续伤害（drainHit 口径，与闪避无敌同规）照常结算；只限闻西一人
   if(P.charIdx === 0 && P.excInvT > 0 && !drainHit) return; // 班仔按键技「Ex咖哩棒解放」无敌窗（2026-10-28 11:34 用户令改门槛，取代蓄力全程无敌）：单次长按蓄力持续超过 3 秒（BZ_INV_HOLD_T）后无敌才生效——excChargeTick 仅在 excHoldT>3 时滚动维持 excInvT、bzAimEnd 仅在越过门槛时把无敌补到光束段 0.85 秒（updatePlayer 递减），未满 3 秒蓄力与释放全程不无敌；光束结束即失效、不延续到冷却期；持续伤害（drainHit 口径，与闻西龙卷风/闪避无敌同规）照常结算；只限班仔一人
@@ -4596,7 +4598,7 @@ function updateWeapons(dt){
           var cdC = (w.evo ? 0.64 : 0.70) * cd * (w.branch === 'B' ? 0.6 : 1); // 班仔普攻攻速调小（2026-10-28 用户令）：间隔拉长——未进化 0.58→0.70 秒、进化 0.53→0.64 秒（约慢 20%），分支 B ×0.6 乘区不变（未进化 B 约 0.42／进化 B 约 0.38）；伤害/范围/冷却乘区 cd 不动。以下为旧注： // 洪流下调：间隔 0.55→0.62；光系身份：全系最快出手频率，单段伤害相应回收（注释修复 2026-10-26：原 * cd 与分支 B 乘区被 // 注释吞掉，冷却从未吃 pCdMul，现恢复）；班仔普攻提速（2026-10-27 用户令）：未进化 0.68→0.58 秒、进化 0.62→0.53 秒（约快 15%），伤害/范围/分支 B ×0.6 不动
           P.timers[key] = cdC;
           P.swingSide *= -1;
-          w.combo = (w.combo || 0) + 1; var thrustC = !w.evo && w.combo % 3 === 0; // 连段感：每第三击为突刺——旧版突刺走窄弧深刺判定（旧圆形扇区残留、间歇触发的元凶，已于 2026-10-28 旧范围残留修复统一为宽扁半椭圆，与横扫同一 hitS 公式）；现 thrustC 只保留伤害 ×1.12＋小幅前冲两个非形状口径（旧「强击退」已于 2026-10-28 随普攻无击退令归零）
+          w.combo = (w.combo || 0) + 1; var thrustC = !w.evo && w.combo % 3 === 0; // 连段感：每第三击为突刺——旧版突刺走窄弧深刺判定（旧圆形扇区残留、间歇触发的元凶，已于 2026-10-28 旧范围残留修复统一为宽扁半椭圆，与横扫同一 hitS 公式）；现 thrustC 的非形状口径为伤害 ×1.12＋小幅前冲（击退口径见命中段：2026-10-28 晚用户令——Lv4 起突刺 20／横扫 9、仅近战挥击命中）
           poseAtk('slash', cdC); tryStandProc('player');
           var angC = Math.atan2(nearC[0].y - P.y, nearC[0].x - P.x);
           faceAim(angC); // 朝向令：挥砍瞬间转身对准目标（nearC 已按朝向锥过滤，背后有怪不挥空砍）
@@ -4626,7 +4628,8 @@ function updateWeapons(dt){
               if(du >= -ec.r && (du * du) / (eD * eD) + (dv * dv) / (eW * eW) <= 1) hitS = true;
             }
             if(hitS){ // 宽扁半椭圆命中（突刺同式，仅伤害 ×1.12 见下行）
-              damageEnemy(ec, thrustC ? dmgC * 1.12 : dmgC, 0, 0); window.__dbg.swingHit++; // 无击退（2026-10-28 用户令：班仔攻击中只有 Ex 咖哩棒有击退——普攻横扫旧击退 9、突刺旧击退 20 一并归零；突刺的小幅前冲是本体位移、不是敌人击退，未动）
+              var kbC = (lv >= 4) ? (thrustC ? 20 : 9) : 0; // 普攻升级击退（2026-10-28 晚用户令，取代同日早先「普攻全无击退」口径）：咖哩棒 Lv4 升级卡「附带击退」只作用于近战挥击命中——沿挥击方向横扫 9／突刺 20（早先归零前的既有值复原），Lv1–3 无击退、进化时 lv＝5 恒含；折算走 damageEnemy 既有口径（Boss ×0.25、精英全量、相位闪烁幽灵免疫、kbMul 乘区恒 1）；分支 A 溅射与连发额外命中是次级结算、不带击退（下方两处仍传 0）；班仔发射的剑气一律不带击退——分支 D 普攻剑气走 swordqi 专属分支传 0、疾风剑气 slashp 带 noKb 在投射物命中段传 0（均未动）；Ex 按键技击退（光束 420／圣光爆 330）独立口径、未动；突刺的小幅前冲是本体位移、不是敌人击退，未动
+              damageEnemy(ec, thrustC ? dmgC * 1.12 : dmgC, Math.cos(angC) * kbC, Math.sin(angC) * kbC); window.__dbg.swingHit++;
               if(Math.random() < 0.55) spawnVfx('slash', ec.x, ec.y, ec.r * 2.1, 0.26, angC + (P.swingSide > 0 ? 0.5 : Math.PI - 0.5)); // 命中：武器斩击素材（Drive weapon-slash）
               for(var cb2 = 0; cb2 < wBonus('currybat'); cb2++) damageEnemy(ec, dmgC * 0.6, 0, 0);
               // 咖哩酱飞溅
@@ -7459,14 +7462,48 @@ function tryOpenLevelUp(){
    ③怪物技能瞄准点 aimPos 与毒蜂毒针挂毒原先只认鸡哥隐身——现同认面板护盾（瞄准只扑冻结位置、毒针不命中不挂毒）；
    ④可见性：面板无敌不走 P.invuln 通道、本就不闪没本体，本轮再给本机绘制的受击无敌闪烁加面板豁免、远端快照加 gd
    标记使 drawRemote 在护盾期间不压透明度——开面板者在本机与队友屏上都正常渲染可见，绝不因无敌而隐身/消失。 */
+/* 【2026-10-28 晚·学习页远离＋关页隐身（用户令，叠加在面板护盾之上、只针对「可学习」学习页 learn 一页）】
+   ①学习期间怪物远离：learn 打开期间，LEARN_FLEE_R（380px）内的怪物在敌人主循环里主动沿远离学习者的
+     方向以自身全速（spd ×1.0）拉开距离——不靠近、不围堵；半径外照旧扑冻结位置，但一进 380 即被推回、
+     实际贴不到学习者身边。旧口径：怪物只扑开面板瞬间的冻结位置、会围在冻结位置身边（无远离行为）。
+     联机同口径、按玩家独立：客机开 learn 经 reportLearn 上报房主（本轮接线，此前该上报函数从未被调用），
+     房主敌人主循环经 __NET.learnFleeSrc 把 learnOpen 成员一并列为远离源；NPC 从不开学习页、恒不触发。
+   ②离开学习页后隐身 3 秒：learn 由开→关（局内、本人存活）即置 P.learnStealthT＝LEARN_STEALTH_DUR（3 秒），
+     lsX/lsY 记关页瞬间位置；隐身期间怪物索敌（敌人主循环 tgt）与技能瞄准（aimPos）只扑 lsX/lsY、
+     hurtPlayer 对非持续伤害整段不命中、毒针不命中不挂毒（与鸡哥隐身同口径），本人半透明渲染＋头顶倒计时；
+     本人可正常移动与攻击（护盾已摘、移动/开火门禁只认 panelGuardOn、隐身不置任何门禁）；
+     3 秒归零即恢复正常可见与受击——不是无敌（P.invuln 一字未动）、不永久隐身；重新打开学习页即取消残留隐身
+     （面板打开期间「不隐身、正常渲染可见」旧口径不变）。联机：客机关页经 reportLearnStealth 上报房主，
+     房主对该成员同置 3 秒计时（hostTick 权威递减），aggroTarget 不转火、接触/弹道伤害整段跳过，
+     快照 ls 标记使全队屏上该成员同为半透明；房主本人隐身则走其本机 P 计时、快照同带 ls。 */
+var LEARN_FLEE_R = 380; // 学习期间怪物远离半径（px）：半径内全速远离、半径外进界即推回
+var LEARN_STEALTH_DUR = 3; // 离开学习页后隐身秒数：关页起算、到点自动恢复可见与受击
 var PANEL_GUARD = {};
 function panelGuardOn(){ if(typeof PANEL_GUARD === 'undefined') return false; for(var k in PANEL_GUARD) if(PANEL_GUARD[k]) return true; return false; }
 function panelGuardSet(id, on){
   var was = panelGuardOn();
+  var wasLearn = !!PANEL_GUARD.learn;
   if(on) PANEL_GUARD[id] = true; else delete PANEL_GUARD[id];
   var now = panelGuardOn();
   if(now && !was && typeof P !== 'undefined' && P){ P.guardX = P.x; P.guardY = P.y; } // 索敌冻结位置：怪物只扑开面板瞬间的位置（与鸡哥隐身同机制）
   if(now !== was && window.__NET && __NET.reportPanel) __NET.reportPanel(now); // 联机：只在本机护盾整体开关变化时上报房主（按玩家独立）
+  if(id === 'learn'){
+    if(window.__NET && __NET.reportLearn) __NET.reportLearn(on); // 学习页专属上报（本轮接线）：房主据此置该成员 learnOpen——学习期间远离源/不索敌/不结算伤害全认此标记，按玩家独立
+    if(typeof P !== 'undefined' && P){
+      if(on){ // 学习页打开期间不隐身（旧口径不动）：重开学习页先取消上一段残留隐身，并同步上报房主取消
+        if(P.learnStealthT > 0){ P.learnStealthT = 0; if(window.__NET && __NET.reportLearnStealth) __NET.reportLearnStealth(false); }
+      } else if(wasLearn && state === 'playing' && P.hp > 0 && !(typeof N !== 'undefined' && N && N.local && (N.local.downed || N.local.dead))){ // 离开学习页（真关页、局内、本人存活未倒地）→ 隐身 3 秒起算；回主画面/离局的清护盾路径 state 已离开 playing 或整局重建 P，不在此起算
+        P.learnStealthT = LEARN_STEALTH_DUR; P.lsX = P.x; P.lsY = P.y;
+        texts.push({ x: P.x, y: P.y - 46, v: 0, txt: '隐身 3 秒', t: 0, color: '#bfe3ff' });
+        if(window.__NET && __NET.reportLearnStealth) __NET.reportLearnStealth(true); // 上报房主：房主对该成员同置 3 秒隐身计时（不索敌/不结算伤害、快照半透明）
+      }
+    }
+  }
+}
+function tickLearnStealth(dt){ // 学习后隐身计时递减：单人/房主在本机 update 计时段调用、客机在 clientTick 调用（按角色只跑其一、不重复递减）；归零即恢复——同步上报房主取消（房主侧 peer 计时亦自递减、双保险同刻归零）
+  if(typeof P === 'undefined' || !P || !(P.learnStealthT > 0)) return;
+  P.learnStealthT -= dt;
+  if(P.learnStealthT <= 0){ P.learnStealthT = 0; if(window.__NET && __NET.reportLearnStealth) __NET.reportLearnStealth(false); }
 }
 function learnBtnSync(){
   var b = document.getElementById('btnLearn'); if(!b) return;
@@ -7733,7 +7770,7 @@ function applyChoice(c){
   checkAwakening(function(){
     if(pendingLevels > 0){ openLevelUp(); return; } // 待学未学完：学习页内直接续开下一级（玩家已在学习中，不经按钮、更不自动弹——入口仍只有按钮）
     state = 'playing'; vacuumT = Math.max(vacuumT, 1.1); // 选完卡回到战场：全场宝石飞吸入袋，升级的爽快收尾看得见（state 本就保持 playing，此行仅兜底觉醒演出后的回位）
-    panelGuardSet('learn', false); // 学习结束：摘护盾并上报房主——恢复可受击、可被索敌（不残留无敌）
+    panelGuardSet('learn', false); // 学习结束：摘护盾并上报房主——恢复可受击、可被索敌（不残留无敌）；同时 panelGuardSet 内部按 2026-10-28 晚用户令启动「离开学习页后隐身 3 秒」（隐身期怪物不索敌不攻击、本人可移动可攻击、到期恢复，详见 panelGuardSet 注）
     learnBtnSync();
   });
 }
@@ -8274,6 +8311,7 @@ function update(dt){
   }
   if(P.stimT > 0) P.stimT -= dt; // 兴奋剂（地图道具）计时
   if(P.urineT > 0) P.urineT -= dt; // 前晚的尿液计时：与兴奋剂同段递减——只在 playing 的 updatePlayer 推进，商店/升级/暂停期间冻结
+  tickLearnStealth(dt); // 离开学习页后隐身计时：同段递减（单人/房主走此段；客机不跑此段、改在 clientTick 递减，二者只跑其一）
   if(comboT > 0){ // 连杀计时：耗尽断连，HUD 隐藏并重置里程碑门槛
     comboT -= dt;
     var cf2 = document.getElementById('comboFill'); if(cf2) cf2.style.width = Math.max(0, comboT / 3.2 * 100) + '%';
@@ -8707,6 +8745,7 @@ function update(dt){
     var tgt = P;
     if(P.invisT > 0) tgt = { x: P.invisX, y: P.invisY }; // 隐身：怪物只知道最后已知位置（仇恨脱离，扑空后在原地打转）
     if(panelGuardOn()) tgt = { x: P.guardX != null ? P.guardX : P.x, y: P.guardY != null ? P.guardY : P.y }; // 面板护盾：怪物只扑开面板瞬间的位置、不追真身（与隐身同机制）；伤害另有 hurtPlayer 整段门禁兜底
+    if(P.learnStealthT > 0) tgt = { x: P.lsX, y: P.lsY }; // 离开学习页后 3 秒隐身：怪物不索敌——只扑关页瞬间的位置（lsX/lsY），本人可自由移动/攻击、怪群扑空后在原地打转；伤害另有 hurtPlayer 隐身门禁兜底（与鸡哥隐身同口径）
     for(var ts2 = 0; ts2 < stands.length; ts2++){
       var st3 = stands[ts2];
       if(st3.friendly && !st3.dead && dist2(e.x, e.y, st3.x, st3.y) < dist2(e.x, e.y, tgt.x, tgt.y)) tgt = st3;
@@ -8792,6 +8831,22 @@ function update(dt){
         else { mvx2 = ldx / ld2; mvy2 = ldy / ld2; if(!e.boss) spd *= JG_LURE_MUL; }
       }
     }
+    /* 学习页远离（2026-10-28 用户令，本轮新增）：任一学习者（本机 learn 面板打开中／联机房主侧 learnOpen 成员）LEARN_FLEE_R＝380 内的怪，
+       本帧移动改向为沿远离最近学习者方向、以自身全速（spd ×1.0、不加速不减速）拉开距离——优先于烟雾吸引（lured）与下方远程风筝改向（fleeing 门禁），
+       故学习者身边不靠近、不围堵；半径外照旧走原索敌（本机学习时扑冻结位置），一进 380 即被推回、贴不到身边。
+       例外与吸引同口径：Boss 冲锋锁定/劳农蓄力/朱德跳砸状态不改向（专属状态机优先）；物种技能接管位移的帧（sigHold）本段改向不生效、状态结束恢复。
+       NPC 从不开学习页（learnOpen 恒假、本机 PANEL_GUARD 只属真人玩家），恒不成为远离源、不受影响。 */
+    var fleeing = false;
+    if(!(e.boss && (e.charging > 0 || e.lnBusy || e.zdHold))){
+      var fsX = 0, fsY = 0, fsD = LEARN_FLEE_R, fsOn = false;
+      if(typeof PANEL_GUARD !== 'undefined' && PANEL_GUARD.learn){ var fdL = Math.sqrt(dist2(e.x, e.y, P.x, P.y)); if(fdL < fsD){ fsD = fdL; fsX = P.x; fsY = P.y; fsOn = true; } } // 本机（含房主本人）学习页打开中：本人即远离源（开页期间本人不移动、P 坐标即冻结位置）
+      if(window.__NET && __NET.learnFleeSrc){ var fsP = __NET.learnFleeSrc(e.x, e.y, fsD); if(fsP){ fsD = fsP.d; fsX = fsP.x; fsY = fsP.y; fsOn = true; } } // 联机房主侧：learnOpen 的远端成员同为远离源（按玩家独立，其他队友照常被索敌）
+      if(fsOn){
+        fleeing = true;
+        if(fsD < 1){ mvx2 = 1; mvy2 = 0; } // 与学习者几乎重合：任取一方向推出，避免除零
+        else { mvx2 = (e.x - fsX) / fsD; mvy2 = (e.y - fsY) / fsD; }
+      }
+    }
     if(!sigHold){
     if(e.type === 'beetle' && !e.boss){ // 小螃蟹身份：横向疾走——行进方向左右横摆（螃蟹走法）， zigzag 逼近、速度补偿横摆损耗
       e.crabT = (e.crabT || 0) - dt;
@@ -8802,8 +8857,8 @@ function update(dt){
     if(e.ranged && (tgt === P || tgtPeer)){ // 远程怪风筝行为：远了靠近、近了后撤、射程内环绕并开火，禁止站桩挨打（联机转火时 tgtPeer＝存活队友，瞄准随 tgt 转移；弹道命中队友与否由 hostTick 结算、倒地队友不吃弹道）
       var rg2 = e.ranged;
       var fogRg = curWeather === '浓雾' ? 0.7 : 1; // 浓雾索敌：雾中看不清——远程怪风筝距离与开火射程同步缩短三成（与画面视野收束呼应）
-      if(d2 < rg2.range * fogRg * 0.55){ if(!lured){ mvx2 = -dx2 / d2; mvy2 = -dy2 / d2; } } // 被固定烟雾吸引中（lured）：不后撤/不环绕，一路冲向烟雾中心（开火判定不变）
-      else if(d2 < rg2.range * fogRg * 0.85){ if(!lured){ mvx2 = (-dy2 / d2) * 0.55; mvy2 = (dx2 / d2) * 0.55; } }
+      if(d2 < rg2.range * fogRg * 0.55){ if(!lured && !fleeing){ mvx2 = -dx2 / d2; mvy2 = -dy2 / d2; } } // 被固定烟雾吸引中（lured）：不后撤/不环绕，一路冲向烟雾中心（开火判定不变）；正远离学习者中（fleeing）：不后撤/不环绕，远离方向优先（开火判定不变、目标本就不是学习者时照常开火）
+      else if(d2 < rg2.range * fogRg * 0.85){ if(!lured && !fleeing){ mvx2 = (-dy2 / d2) * 0.55; mvy2 = (dx2 / d2) * 0.55; } }
       e.shootT = (e.shootT || rand(1.2, 2.0)) - dt;
       if(e.shootT <= 0 && rg2.kind !== 'gaze' && d2 < rg2.range * fogRg && state === 'playing'){ // 凝视射线（gaze）不在此开火：由 sigTick 走瞄准线→锁定→光束流程
         e.shootT = rg2.cd * rand(0.9, 1.15);
@@ -11053,7 +11108,7 @@ function drawPlayerActor(ox, oy){
   if(stageTitle){
     ctx.save();
     ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-    var titleY = hbY - 6 - (P.invisT > 0 ? 15 : 0); // 隐身倒计时同在血条上方时上移避让，不重叠
+    var titleY = hbY - 6 - ((P.invisT > 0 || P.learnStealthT > 0) ? 15 : 0); // 隐身倒计时（鸡哥技能／学习后隐身）同在血条上方时上移避让，不重叠
     ctx.lineWidth = 3.5; ctx.strokeStyle = 'rgba(0,0,0,.72)'; ctx.lineJoin = 'round';
     ctx.strokeText(stageTitle, footX, titleY);
     ctx.fillStyle = P.stage >= 2 ? '#ffb02e' : (P.stage === 1 ? '#ffd76a' : '#f2f2f2');
@@ -11068,6 +11123,7 @@ function drawPlayerActor(ox, oy){
   if(poseKind === 'hurt') lean -= 0.1;
   ctx.save();
   if(P.invisT > 0) ctx.globalAlpha = 0; // 隐身（2026-10-27 重做定版）：本体完全不可见（旧半透明 0.42 作废）——只剩地面影/倒影锚点、身周拖尾烟雾与头顶倒计时可辨位置；隐身结束 alpha 随 invisT 归零自然恢复
+  else if(P.learnStealthT > 0) ctx.globalAlpha = 0.35; // 离开学习页后隐身（2026-10-28 用户令）：半透明渲染——怪物侧不索敌不攻击（门禁见敌人主循环 tgt／hurtPlayer），本人仍看得见自己走位与攻击；面板打开期间不走此行（开页取消隐身、正常不透明可见，旧口径未动）；3 秒归零自动恢复不透明
   ctx.translate(footX + lx, footY + ly + runBob);
   if(P.dodgeT > 0 && !bzSeqOn && !fsqOn){ // 闪避前滚翻（局内通用表现）：精灵绕本体中心沿翻滚方向整圈前滚；班仔/六人已由专属序列帧接管（dodge 45 帧），不旋转本体
     var dgProg2 = clamp(1 - P.dodgeT / DODGE_DUR, 0, 1);
@@ -11127,6 +11183,7 @@ function drawPlayerActor(ox, oy){
     }
   }
   if(P.invisT > 0){ ctx.fillStyle = '#dff2ff'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('隐身 ' + Math.ceil(P.invisT) + ' 秒', footX, footY - sprH - 26); } // 隐身 UI 倒计时（头顶血条上方）
+  else if(P.learnStealthT > 0){ ctx.fillStyle = '#bfe3ff'; ctx.font = 'bold 12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('隐身 ' + Math.ceil(P.learnStealthT) + ' 秒', footX, footY - sprH - 26); } // 学习后隐身 UI 倒计时（同位同式：关页起 3 秒、归零消失即恢复可见受击）
 }
 /* 替身影子（2026-10-26 milo 定版＋15:24 补充）：召唤出的替身不跟本体长相、
    也不借本体帧轮廓，一律画成通用纯黑人形影子：全身纯黑填充，只留人形轮廓，
@@ -14959,12 +15016,19 @@ var SCALE = {
      怪伤只缓升（人数多＝分摊与救援更多）：1/1.1/1.2/1.3/1.4/1.5；Boss 伤 1/1.05/1.1/1.15/1.2/1.25。
      刷怪速率 1/1.3/1.55/1.8/2.05/2.3、同场上限 1/1.35/1.7/2/2.35/2.7、精英率补正 1/1.15/1.3/1.45/1.6/1.75。
      不随人数变：怪物移速、经验/牛筋掉落数值（经验全队共享同一池、牛筋谁杀谁得）、Boss 出场时间、玩家数值。 */
+  /* 联机怪物数值下调（2026-10-28 晚用户令「联机模式怪物数值调低一些」）：只动本表 2–6 人档的四个怪物数值乘区——
+     血量类（hp／bossHp）一律 ×0.85（hp 1.9→1.62／2.8→2.38／3.7→3.15／4.6→3.91／5.5→4.68；
+     bossHp 1.95→1.66／2.9→2.47／3.85→3.27／4.8→4.08／5.75→4.89）；伤害类（dmg／bossDmg）超额部分减半
+     （新值＝1＋(旧值－1)/2、两位小数：dmg 1.1→1.05／1.2→1.1／1.3→1.15／1.4→1.2／1.5→1.25；
+     bossDmg 1.05→1.03／1.1→1.05／1.15→1.08／1.2→1.1／1.25→1.13）。
+     不动：1 人档（恒等值）、刷怪速率 spawn、同场上限 cap、精英率补正 elite（属出怪节奏/构成、非怪物数值）、
+     开局锁定口径（applyScaling 按 rosterCount 开局取档、掉线不回降）、玩家数值、单人模式（单人不设 __NET_MUL、本表不生效）。 */
   1:{hp:1,   dmg:1,   bossHp:1,   bossDmg:1,   spawn:1,   cap:1,   elite:1},
-  2:{hp:1.9, dmg:1.1, bossHp:1.95,bossDmg:1.05,spawn:1.3, cap:1.35,elite:1.15},
-  3:{hp:2.8, dmg:1.2, bossHp:2.9, bossDmg:1.1, spawn:1.55,cap:1.7, elite:1.3},
-  4:{hp:3.7, dmg:1.3, bossHp:3.85,bossDmg:1.15,spawn:1.8, cap:2,   elite:1.45},
-  5:{hp:4.6, dmg:1.4, bossHp:4.8, bossDmg:1.2, spawn:2.05,cap:2.35,elite:1.6},
-  6:{hp:5.5, dmg:1.5, bossHp:5.75,bossDmg:1.25,spawn:2.3, cap:2.7, elite:1.75}
+  2:{hp:1.62,dmg:1.05,bossHp:1.66,bossDmg:1.03,spawn:1.3, cap:1.35,elite:1.15},
+  3:{hp:2.38,dmg:1.1, bossHp:2.47,bossDmg:1.05,spawn:1.55,cap:1.7, elite:1.3},
+  4:{hp:3.15,dmg:1.15,bossHp:3.27,bossDmg:1.08,spawn:1.8, cap:2,   elite:1.45},
+  5:{hp:3.91,dmg:1.2, bossHp:4.08,bossDmg:1.1, spawn:2.05,cap:2.35,elite:1.6},
+  6:{hp:4.68,dmg:1.25,bossHp:4.89,bossDmg:1.13,spawn:2.3, cap:2.7, elite:1.75}
 };
 var N = {
   active:false, role:null, inGame:false, lobbyOn:false,
@@ -15248,7 +15312,8 @@ function hostOnMsg(slot,m){
   else if(m.t==='dodge'){ var p3=N.peers[slot.peerId]; if(p3) p3.wantDodge=true; }
   else if(m.t==='choice'){ var p4=N.peers[slot.peerId]; if(p4) p4.buildCount=(p4.buildCount||0)+1; }
   else if(m.t==='spend'){ var p6=N.peers[slot.peerId]; if(p6){ var amt6=Math.max(0,Math.floor(+m.amt||0)); p6.beef=Math.max(0,p6.beef-amt6); } } /* 客户端购买报账：只扣购买者本人的钱包，绝不动房主/其他队友 */
-  else if(m.t==='learn'){ var p9=N.peers[slot.peerId]; if(p9){ p9.learnOpen=!!m.on; p9.panelGuard=!!m.on; } } /* 客户端学习页开关：学习期间该成员无敌、不被索敌（hostTick 伤害结算与 aggroTarget 均跳过），关页上报即恢复 */
+  else if(m.t==='learn'){ var p9=N.peers[slot.peerId]; if(p9){ p9.learnOpen=!!m.on; p9.panelGuard=!!m.on; } } /* 客户端学习页开关：学习期间该成员无敌、不被索敌（hostTick 伤害结算与 aggroTarget 均跳过），且是敌人主循环的远离源（learnFleeSrc），关页上报即恢复 */
+  else if(m.t==='lstealth'){ var p9s=N.peers[slot.peerId]; if(p9s) p9s.learnStealthT = m.on ? LEARN_STEALTH_DUR : 0; } /* 客户端离开学习页后隐身 3 秒（2026-10-28 用户令）：房主同置 3 秒计时并在 hostTick 权威递减——期间 aggroTarget 不转火、接触/弹道伤害整段跳过、快照带 ls 半透明标记；关页方到期会再发 off、房主计时归零亦自动恢复，双保险 */
   else if(m.t==='panel'){ var p9c=N.peers[slot.peerId]; if(p9c) p9c.panelGuard=!!m.on; } /* 面板护盾（学习页/已学技能/属性/设置）：同 learnOpen 口径、按玩家独立，队友不受影响；倒地链与快照同步不读此字段、不受影响 */
   else if(m.t==='shopbuy'){ var p7=N.peers[slot.peerId]; if(p7){ /* 客户端商人购买效果：只落购买者本人 */
     if(m.kind==='attr' && m.id==='hp'){ p7.maxHp+=6; p7.hp=Math.min(p7.maxHp,p7.hp+6); }
@@ -15577,10 +15642,19 @@ function aggroTarget(ex, ey){
     return bp;
   }
   var best=null, bd=Infinity;
-  for(var id in N.peers){ var p=N.peers[id]; if(p.dead || p.downed || p.learnOpen || p.panelGuard) continue; var d=(p.x-ex)*(p.x-ex)+(p.y-ey)*(p.y-ey); if(d<bd){ bd=d; best=p; } } // learnOpen/panelGuard（面板打开中）成员不被索敌
+  for(var id in N.peers){ var p=N.peers[id]; if(p.dead || p.downed || p.learnOpen || p.panelGuard || (p.learnStealthT > 0)) continue; var d=(p.x-ex)*(p.x-ex)+(p.y-ey)*(p.y-ey); if(d<bd){ bd=d; best=p; } } // learnOpen/panelGuard（面板打开中）与 learnStealthT（刚离开学习页隐身 3 秒中）成员不被索敌
   return best;
 }
 function anyPeerNotDead(){ for(var id in N.peers){ var p=N.peers[id]; if(!p.dead) return true; } return false; }
+/* 学习页远离源钩子（2026-10-28 用户令）：敌人主循环逐怪查询——房主局内、bestD（当前最近远离源距离，初值 LEARN_FLEE_R）内
+   最近的 learnOpen 成员（学习页打开中、未倒地未阵亡）即为该怪的远离源，返回其坐标与距离；无则 null。
+   本机玩家（含房主本人）的远离源由敌人主循环直接读 PANEL_GUARD.learn、不经此钩子；NPC 的 learnOpen 恒假、永不入选。 */
+function learnFleeSrc(ex, ey, bestD){
+  if(!N.inGame || N.role!=='host') return null;
+  var bp=null, bd=bestD;
+  for(var id in N.peers){ var p=N.peers[id]; if(!p.learnOpen || p.dead || p.downed) continue; var d=Math.hypot(p.x-ex, p.y-ey); if(d<bd){ bd=d; bp={ x:p.x, y:p.y, d:d }; } }
+  return bp;
+}
 function downLocal(){
   if(window.P) P.chestDmgT=0; // 宝箱力量药剂：本机倒地（死亡）后加成清除
   N.local.downed=true; N.local.dead=false; N.local.downs++;
@@ -15656,6 +15730,7 @@ function hostTick(dt){
     var p=N.peers[id], c=CHARACTERS[p.hero];
     p.atkPoseT=Math.max(0,p.atkPoseT-dt); p.specPoseT=Math.max(0,p.specPoseT-dt);
     p.hurtT=Math.max(0,p.hurtT-dt); p.specCd=Math.max(0,p.specCd-dt);
+    p.learnStealthT=Math.max(0,(p.learnStealthT||0)-dt); // 离开学习页后隐身计时（房主权威递减）：与该成员本机计时同为 3 秒、任一归零即恢复索敌/受击；NPC 恒为 0、不受影响
     p.dodgeCd=Math.max(0,p.dodgeCd-dt); p.invuln=Math.max(0,p.invuln-dt); p.chestDmgT=Math.max(0,(p.chestDmgT||0)-dt); // 宝箱力量药剂计时（房主权威，仅 hostTick=playing 态推进）
     var inp=p.input;
     if(p.isNpc && !p.downed && !p.dead) p.hp=Math.min(p.maxHp, p.hp + p.maxHp*0.002*dt); /* NPC 专属被动回血（用户定版）：每秒恢复生命上限 0.2%、不超上限；战斗中生效、倒地/死亡不生效、与其他回血（拾取/救援/宝箱）独立叠加；仅 isNpc 分支——真人玩家（含房主与远端成员）不走此行、绝不顺带获得 */
@@ -15753,7 +15828,7 @@ function hostTick(dt){
     p.wantSpec=false;
     /* 受伤：敌人接触 + 敌方弹道 */
     p.hurtCd-=dt;
-    if(p.invuln<=0 && p.dodgeT<=0 && p.hurtCd<=0 && !p.learnOpen && !p.panelGuard){ // learnOpen/panelGuard＝该成员正打开面板（第 15 项＋面板护盾定版）：接触伤害整段跳过
+    if(p.invuln<=0 && p.dodgeT<=0 && p.hurtCd<=0 && !p.learnOpen && !p.panelGuard && !(p.learnStealthT > 0)){ // learnOpen/panelGuard＝该成员正打开面板（第 15 项＋面板护盾定版）：接触伤害整段跳过；learnStealthT＝刚离开学习页隐身 3 秒中：同口径整段跳过（怪物不攻击隐身者）
       var hd=0;
       for(var ek=0;ek<enemies.length;ek++){ var e3=enemies[ek];
         if(Math.abs(e3.x-p.x)<e3.r+p.r+2 && Math.abs(e3.y-p.y)<e3.r+p.r+2){ hd=Math.max(hd,e3.dmg||8); break; }
@@ -15763,7 +15838,7 @@ function hostTick(dt){
     for(var pi=eProjectiles.length-1;pi>=0;pi--){ var pr=eProjectiles[pi];
       if(Math.hypot(pr.x-p.x,pr.y-p.y)<p.r+pr.r+2){
         eProjectiles.splice(pi,1);
-        if(p.invuln<=0 && p.dodgeT<=0 && !p.learnOpen && !p.panelGuard){ if(p.isNpc && Math.random()<0.80){ effects.push({k:'text',x:p.x,y:p.y-44,txt:'闪避！',t:0,dur:0.6,color:'#8ad7ff'}); } /* NPC 伤害闪避 80%（弹道同口径，闪避时弹道照常消耗、不掉血） */ else { var pd2=p.isNpc?Math.max(1,Math.round((pr.dmg||8)*0.8)):(pr.dmg||8); /* NPC 承伤减免 20%（弹道同口径） */ p.hp-=pd2; p.hurtT=0.3; effects.push({k:'text',x:p.x,y:p.y-44,txt:'-'+Math.round(pd2),t:0,dur:0.6,color:'#ff9a8a'}); } } // learnOpen/panelGuard 成员不吃弹道伤害（面板打开期间无敌）
+        if(p.invuln<=0 && p.dodgeT<=0 && !p.learnOpen && !p.panelGuard && !(p.learnStealthT > 0)){ if(p.isNpc && Math.random()<0.80){ effects.push({k:'text',x:p.x,y:p.y-44,txt:'闪避！',t:0,dur:0.6,color:'#8ad7ff'}); } /* NPC 伤害闪避 80%（弹道同口径，闪避时弹道照常消耗、不掉血） */ else { var pd2=p.isNpc?Math.max(1,Math.round((pr.dmg||8)*0.8)):(pr.dmg||8); /* NPC 承伤减免 20%（弹道同口径） */ p.hp-=pd2; p.hurtT=0.3; effects.push({k:'text',x:p.x,y:p.y-44,txt:'-'+Math.round(pd2),t:0,dur:0.6,color:'#ff9a8a'}); } } // learnOpen/panelGuard 成员不吃弹道伤害（面板打开期间无敌）
       }
     }
     /* 拾取：经验入队池（gainXp 走房主共享池）、回血/狂怒/道具个人生效 */
@@ -15819,14 +15894,14 @@ function mazeWallsStr(){ /* 新屋布局随快照下发（仅墙体串，层数/
   var s=''; for(var i=0;i<MAZE.walls.length;i++) s+=MAZE.walls[i]?'1':'0';
   MAZE._wstr=s; MAZE._wf=MAZE.floor; MAZE._wgw=MAZE.gw; MAZE._wgh=MAZE.gh; return s;
 }
-function playerSnap(id,name,hero,x,y,hp,mx,downed,dead,fa,mv,atkT,specT,bleed,prog,bf,gd){
+function playerSnap(id,name,hero,x,y,hp,mx,downed,dead,fa,mv,atkT,specT,bleed,prog,bf,gd,ls){
   return {id:id,name:name,hero:hero,x:Math.round(x),y:Math.round(y),hp:Math.max(0,Math.round(hp)),mx:Math.round(mx),
-    dn:downed?1:0,dd:dead?1:0,fa:+fa.toFixed(2),mv:mv?1:0,atkT:atkT,specT:specT,bl:Math.ceil(bleed||0),pg:+(prog||0).toFixed(2),bf:bf|0,gd:gd?1:0}; /* bf：该玩家本人的牛筋钱包（各传各的，不再有全队共用数）；gd：面板护盾中（纯渲染标记——队友屏上据此豁免受击无敌的半透明压淡，保证开面板者正常可见；不参与任何结算） */
+    dn:downed?1:0,dd:dead?1:0,fa:+fa.toFixed(2),mv:mv?1:0,atkT:atkT,specT:specT,bl:Math.ceil(bleed||0),pg:+(prog||0).toFixed(2),bf:bf|0,gd:gd?1:0,ls:ls?1:0}; /* bf：该玩家本人的牛筋钱包（各传各的，不再有全队共用数）；gd：面板护盾中（纯渲染标记——队友屏上据此豁免受击无敌的半透明压淡，保证开面板者正常可见；不参与任何结算）；ls：离开学习页后隐身中（纯渲染标记——队友屏上据此半透明渲染；怪物不索敌/不结算伤害由房主侧 learnStealthT 门禁负责、不读此字段） */
 }
 function buildSnap(){
-  var ps=[playerSnap(N.myId,myName(),N.myHero,P.x,P.y,P.hp,P.maxHp,N.local.downed,N.local.dead,P.faceAng||Math.PI/2,P.moving,P.lastAtkT||-1,-1,N.local.bleed,N.local.prog,SHOP.beef,(typeof panelGuardOn==='function'&&panelGuardOn())?1:0)];
+  var ps=[playerSnap(N.myId,myName(),N.myHero,P.x,P.y,P.hp,P.maxHp,N.local.downed,N.local.dead,P.faceAng||Math.PI/2,P.moving,P.lastAtkT||-1,-1,N.local.bleed,N.local.prog,SHOP.beef,(typeof panelGuardOn==='function'&&panelGuardOn())?1:0,(P.learnStealthT>0)?1:0)];
   for(var id in N.peers){ var p=N.peers[id];
-    ps.push(playerSnap(p.id,p.name,p.hero,p.x,p.y,p.hp,p.maxHp,p.downed,p.dead,p.faceAng,p.moving,p.lastAtkT,p.lastSpecT,p.bleed,p.prog,p.beef,(p.panelGuard||p.learnOpen)?1:0)); }
+    ps.push(playerSnap(p.id,p.name,p.hero,p.x,p.y,p.hp,p.maxHp,p.downed,p.dead,p.faceAng,p.moving,p.lastAtkT,p.lastSpecT,p.bleed,p.prog,p.beef,(p.panelGuard||p.learnOpen)?1:0,(p.learnStealthT>0)?1:0)); }
   var es=[];
   for(var i=0;i<enemies.length && es.length<420;i++){ var e=enemies[i];
     if(e._nid==null) e._nid=++N.eidSeq;
@@ -15859,6 +15934,7 @@ var clientEnemyMap={};
 function clientTick(dt){
   if(!N.inGame || N.role!=='client') return false;
   if(window.P && P.chestDmgT > 0) P.chestDmgT -= dt; // 宝箱力量药剂本机计时：clientTick 只在 playing 态被调——商店/升级/暂停打开时与主机同口径冻结（房主侧 peer 计时为权威伤害口径）
+  if(typeof tickLearnStealth === 'function') tickLearnStealth(dt); // 离开学习页后隐身本机计时（客机不跑主机 update 的计时段、改在此递减并在归零时上报房主；房主侧 peer 计时为权威索敌/伤害口径、与本机计时同为 3 秒）
   var sp=N.snap;
   /* 输入上行（20Hz）：移动/朝向（救援已改无按键靠近口径、不再上行救援长按状态 rv——房主按成员坐标 56px 内直接判定施救，见 hostTick 倒地段） */
   N.inT-=dt;
@@ -16022,12 +16098,12 @@ function remoteActors(){
   if(!N.inGame) return out;
   if(N.role==='host'){
     for(var id in N.peers){ var p=N.peers[id];
-      out.push({k:7,y:p.y+p.r,r:{id:p.id,name:p.name,hero:p.hero,x:p.x,y:p.y,hp:p.hp,mx:p.maxHp,dn:p.downed,dd:p.dead,fa:p.faceAng,mv:p.moving,wp:p.walkPhase,atk:p.atkPoseT,spec:p.specPoseT,inv:p.invuln,bl:p.bleed,pg:p.prog,gd:(p.panelGuard||p.learnOpen)?1:0}});
+      out.push({k:7,y:p.y+p.r,r:{id:p.id,name:p.name,hero:p.hero,x:p.x,y:p.y,hp:p.hp,mx:p.maxHp,dn:p.downed,dd:p.dead,fa:p.faceAng,mv:p.moving,wp:p.walkPhase,atk:p.atkPoseT,spec:p.specPoseT,inv:p.invuln,bl:p.bleed,pg:p.prog,gd:(p.panelGuard||p.learnOpen)?1:0,ls:(p.learnStealthT>0)?1:0}});
     }
   } else if(N.role==='client' && N.snapPlayers){
     for(var i=0;i<N.snapPlayers.length;i++){ var pl=N.snapPlayers[i];
       if(pl.id===N.myId) continue;
-      out.push({k:7,y:pl.y+17,r:{id:pl.id,name:pl.name,hero:pl.hero,x:pl.x,y:pl.y,hp:pl.hp,mx:pl.mx,dn:!!pl.dn,dd:!!pl.dd,fa:pl.fa,mv:!!pl.mv,wp:(pl.mv?gameTime*9:0),atk:0,spec:0,inv:0,bl:pl.bl,pg:pl.pg,gd:pl.gd||0}});
+      out.push({k:7,y:pl.y+17,r:{id:pl.id,name:pl.name,hero:pl.hero,x:pl.x,y:pl.y,hp:pl.hp,mx:pl.mx,dn:!!pl.dn,dd:!!pl.dd,fa:pl.fa,mv:!!pl.mv,wp:(pl.mv?gameTime*9:0),atk:0,spec:0,inv:0,bl:pl.bl,pg:pl.pg,gd:pl.gd||0,ls:pl.ls||0}});
     }
   }
   return out;
@@ -16049,6 +16125,7 @@ function drawRemote(r,ox,oy){
   if(r.dn) frame=8;
   ctx.save();
   if(r.inv>0 && !r.gd && Math.floor(gameTime*10)%2===0) ctx.globalAlpha=0.45; // 面板护盾期间豁免（gd）：开面板的队友不因无敌被压成半透明——正常渲染可见（2026-10-28 可见性令）
+  if(r.ls) ctx.globalAlpha=0.35; // 离开学习页后隐身中（ls）：队友屏上同为半透明——与本机 drawPlayer 的 0.35 同口径；开面板期间 gd 者不带 ls（开页即取消隐身）、两者不冲突
   ctx.translate(fx,fy);
   drawCharInto(ctx,r.hero,0,0,-40,86,{dir:dir,frame:frame,raw:1});
   ctx.restore();
@@ -16161,6 +16238,7 @@ window.__NET={
   localDowned:function(){ return N.inGame && (N.local.downed || N.local.dead); },
   inGameNow:function(){ return !!N.inGame; }, /* 联机局内标志（主逻辑 FRAME_ADAPT 降质门禁用）：联机进行中为 true、大厅/单人恒 false */
   aggroTarget:aggroTarget, /* 敌人主循环索敌钩子：房主本机倒地/阵亡时返回最近存活队友为新目标，否则 null（见 aggroTarget 注） */
+  learnFleeSrc:learnFleeSrc, /* 敌人主循环远离源钩子：返回该怪 LEARN_FLEE_R 内最近的 learnOpen 成员为远离源，否则 null（见 learnFleeSrc 注） */
   frame:netFrame,
   clientTick:clientTick,
   remoteActors:remoteActors,
@@ -16169,7 +16247,8 @@ window.__NET={
   sendDodge:function(){ send(N.cdc,{t:'dodge'}); },
   creditKill:creditKill, /* killEnemy 入账钩子（房主按击杀者记个人钱包；非联机对局内回落原逻辑） */
   reportSpend:function(amt){ if(N.active && N.inGame && N.role==='client') send(N.cdc,{t:'spend',amt:amt|0}); }, /* 客户端购买报账：房主只扣购买者本人钱包 */
-  reportLearn:function(on){ if(N.active && N.inGame && N.role==='client') send(N.cdc,{t:'learn',on:on?1:0}); },
+  reportLearn:function(on){ if(N.active && N.inGame && N.role==='client') send(N.cdc,{t:'learn',on:on?1:0}); }, /* 学习页开关上报：panelGuardSet 在 learn 置位/摘除时逐次调用（2026-10-28 本轮接线，此前从未被调用、房主只能靠 panel 整体标记）——房主据此置 learnOpen（远离源＋不索敌＋不结算伤害），与 reportPanel 并行不替代 */
+  reportLearnStealth:function(on){ if(N.active && N.inGame && N.role==='client') send(N.cdc,{t:'lstealth',on:on?1:0}); }, /* 离开学习页后隐身 3 秒上报（2026-10-28 用户令）：关页起算时发 on、到期/重开学习页取消时发 off——房主对该成员同置/清 learnStealthT 计时（不索敌、不结算接触/弹道伤害、快照 ls 半透明），按玩家独立 */
   reportPanel:function(on){ if(N.active && N.inGame && N.role==='client') send(N.cdc,{t:'panel',on:on?1:0}); }, /* 面板护盾上报（2026-10-28 定版）：学习页/已学技能/属性/设置任一面板打开即上报，房主对该成员跳过伤害结算与转火、按玩家独立，全部关掉才上报关闭 */ /* 客户端学习页开关上报（第 15 项细化）：房主据此对该成员跳过伤害结算与转火——学习期间无敌、不被索敌，关页即恢复 */
   reportShopBuy:function(info){ if(N.active && N.inGame && N.role==='client') send(N.cdc,{t:'shopbuy',kind:info.kind,id:info.id||'',key:info.key||''}); }, /* 客户端商人购买效果报账：只落购买者本人 */
   reportChestReward:function(kind){ if(N.active && N.inGame && N.role==='client') send(N.cdc,{t:'chestreward',kind:kind}); }, /* 客户端开主地图宝箱即时奖励报账：牛筋/回复/力量药剂只落开启人本人（房主权威侧记账） */
