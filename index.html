@@ -113,6 +113,7 @@
       #cdHud{position:absolute; right:12px; top:calc(130px + env(safe-area-inset-top)); display:flex; flex-direction:column; gap:6px; align-items:flex-end;}
       .cd-chip{font-size:12px; font-weight:700; background:rgba(10,12,8,.65); border:1px solid var(--line); border-radius:8px; padding:4px 9px; color:var(--ink-dim);}
       .cd-chip.ready{color:var(--mana); border-color:var(--mana);}
+      .cd-chip.active{color:#ffd76a; border-color:#ffd76a;} /* 持续性按键技生效中（2026-10-28 用户令追加）：冷却条改显剩余持续时间、金色态与就绪绿/冷却灰区分 */
       /* ---- 连杀计数（爽感强化）：右侧大数字，击杀时弹跳，计时条耗尽断连 ---- */
       #comboHud{position:absolute; right:12px; top:calc(176px + env(safe-area-inset-top)); text-align:right; opacity:0; transition:opacity .18s; pointer-events:none;}
       #comboHud.on{opacity:1;}
@@ -689,7 +690,7 @@
     <div class="overlay" id="pauseScreen">
       <h2 class="panel-title">暂 停</h2>
       <p class="panel-sub" id="pauseStats">战斗暂停中</p>
-      <p class="panel-sub" style="margin-top:-8px;">版本 <span class="gameVerVal">1.2</span></p>
+      <p class="panel-sub" style="margin-top:-8px;">版本 <span class="gameVerVal">1.3</span></p>
       <div id="pauseSkills" style="width:min(560px,92vw); max-height:38vh; overflow-y:auto; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 16px; margin-bottom:18px; font-size:13.5px; line-height:1.8; text-align:left;"></div>
       <div class="pause-col">
         <button class="btn" id="btnResume">继续战斗</button>
@@ -730,7 +731,7 @@
       <h1 class="game-title">中山路KLF大冒险</h1>
       <div class="game-sub">ZHONGSHAN ROAD KLF ADVENTURE</div>
       <p class="game-author">作者：陈哈哈</p>
-      <p class="game-version">版本 <span class="gameVerVal">1.2</span></p>
+      <p class="game-version">版本 <span class="gameVerVal">1.3</span></p>
       <p class="game-desc">中山路的夜很普通——天突然暗了一块，像被扯开一个口子，七个人还没来得及跑，就被吸了进去。</p>
       <div class="pause-col">
         <button class="btn" id="btnTitleStart">开 始</button>
@@ -2110,7 +2111,7 @@ var BRANCHES = {
   ak47:{ C:{ name:'追踪弹', desc:'子弹获得追踪能力：出膛后自动拐弯咬住最近的敌人，转向不减速、弹速不减；弹射是 AK 的升级专属强化（升级时解锁）：每颗子弹最多弹射 3 次' } } // AK 弹射（2026-10-27 用户定版，取代 2026-10-23 写死恒定规则）：Lv1 初始无弹射；升级抽卡时出一张专属强化卡（type:'akmod'，见 buildChoices），选到后解锁、已得不再出现——每颗子弹弹射封顶 3 次（逐跳 ×0.72），不叠加、不随等级/进化增长（见 ak47 发射处 ricoB）；AK 普攻分裂已于同日新令整体去除（splitB 恒 0）；Lv3 分支只保留 C「追踪弹」；穿透为进化「黄金AK」专属（见 evoDesc）
 };
 /* 主技能终极进化所需的对应道具 */
-var GAME_VERSION = '1.2'; // 游戏版本号（单一来源）：标题页与暂停菜单都从此常量渲染；2026-10-28 用户令由 1.0 改为 1.1、同日再改为 1.2
+var GAME_VERSION = '1.3'; // 游戏版本号（单一来源）：标题页与暂停菜单都从此常量渲染；2026-10-28 用户令由 1.0 改为 1.1、同日再改为 1.2、再改为 1.3
 var SIG_ITEM = { weiye:'luckbell', undeadwar:'fang', thundercloud:'voltcore', icelance:'icevein', emberring:'emberboots', voltspirit:'voltcore', skystrike:'magcore', vacuumblade:'windheart', corona:'luckbell', oldtreant:'thorn', vinegrip:'regen', rockgolem:'stoneskin', quake:'earthheart', waterelemental:'tidalheart', tidalwave:'tidalcore', currybat:'grail', boomerang:'boots', cigshot:'rune', octoshot:'rune', stamp:'magnet', chainvolt:'xpcrystal',
   firebolt:'fang', leafblade:'boots', lightning:'rune', frostnova:'shield', stardart:'shadow', flameaura:'thorn',
   moonwheel:'critlens', fireball:'glove', frostcone:'shield', poisonspray:'fang', earthspike:'thornheart', orbitblade:'windheart', totem:'magcore', gravitytrap:'hourglass',
@@ -2822,7 +2823,7 @@ function newPlayer(ci){
     bonusDmg:0, bonusSpd:0, xpMul:1, bonusCdMul:1, bonusMagMul:1, specCdMul:1, regenBonus:0,
     shopCrit:0, shopLeech:0, shopCdMul:1,
     awkGiven:false, chestP:{}, reviveCd:0, drainAcc:0, distPx:0, windStacks:0,
-    moving:0, atkPoseT:0, specPoseT:0, hurtT:0, atkStyle:'slash', atkAnimT:9, atkAnimDur:0.32, atkAlt:0, atkAltMap:{}, hasStandSkill:false, standAtkT:0, dollPartner:false, dollFormT:0, dollGrowT:0, shockAcc:0, // dollPartner＝持有隐藏被动（拾取后常驻）；dollFormT＝变身剩余秒数（改版：攻击 1% 触发 15 秒，非常驻）
+    moving:0, atkPoseT:0, specPoseT:0, lastAtkT:-1, lastSpecT:-1, hurtT:0, atkStyle:'slash', atkAnimT:9, atkAnimDur:0.32, atkAlt:0, atkAltMap:{}, hasStandSkill:false, standAtkT:0, dollPartner:false, dollFormT:0, dollGrowT:0, shockAcc:0, // dollPartner＝持有隐藏被动（拾取后常驻）；dollFormT＝变身剩余秒数（改版：攻击 1% 触发 15 秒，非常驻）
     excT:0, excMul:1, excSMul:1, excSR:1, excInvT:0, excAimAng:null, excHold:false, excHoldT:0
   };
   p.weapons[c.weapon] = { lv:1, evo:false };
@@ -2966,6 +2967,7 @@ function eliteSlimeSplit(e){ // 精英黏液怪分裂：甩出两只普通黏液
     var c = spawnEnemy('slime', false), sa = rand(0, Math.PI * 2);
     c.x = e.x + Math.cos(sa) * rand(28, 46); c.y = e.y + Math.sin(sa) * rand(28, 46);
     var cn = nudgeLand(c.x, c.y); c.x = cn.x; c.y = cn.y;
+    barrierExpelEnemy(c); /* 结界内不刷新（2026-10-28 用户令追加）：分裂子体的落点由本函数改写、绕过了 spawnEnemy 内建推出——若母体死在结界边界附近，子体不得落在圈内，在此同口径推出 */
   }
   NO_ELITE_ROLL = false;
   texts.push({ x: e.x, y: e.y - e.r - 18, v: 0, txt: '精英黏液怪分裂！', t: 0, color: '#a8e063' });
@@ -2976,6 +2978,7 @@ function ghostBlinkTeleport(e, tgt){ // 幽灵闪现落点：玩家附近随机�
   var a = rand(0, Math.PI * 2), dd = rand(54, 76);
   var np = nudgeLand(tgt.x + Math.cos(a) * dd, tgt.y + Math.sin(a) * dd);
   e.x = np.x; e.y = np.y;
+  barrierExpelEnemy(e); /* 结界内不刷新/不得进入（2026-10-28 用户令追加）：幽灵闪现是瞬移落点、不经 spawnEnemy——目标（玩家）在结界内时落点不得落在圈内，在此同口径推出（寒气预警标记随推出后的真实落点走） */
   marks.push({ kind:'cold', x: e.x, y: e.y, t: 0, dur: 0.45 });
   if(e.elite){
     var a2 = a + rand(1.8, 2.8);
@@ -2992,7 +2995,7 @@ function ghostBlinkStrike(e){ // 幽灵现身补一爪：现身瞬间贴身才�
     e.eyeGlowT = 0.55;
   }
   burst(e.x, e.y, '#cfd4ff', fxN(8));
-  if(Math.sqrt(dist2(e.x, e.y, P.x, P.y)) < 84 + pCollR()){ hurtPlayer(e.dmg); if(e.elite) sfx('thwack1'); } // 小怪攻击音效删除（2026-10-26 用户令）：普通小怪的攻击音效全部静音；与精英共用同一触发的，只禁普通个体那条路径、精英保留发声（本文件同类处理下同）；Boss 走专属函数、不经此路
+  if(Math.sqrt(dist2(e.x, e.y, P.x, P.y)) < 84 + pCollR()){ if(!(bossBarriers.length && barrierBlocksIn(e.x, e.y, P.x, P.y))) hurtPlayer(e.dmg); if(e.elite) sfx('thwack1'); } // 小怪攻击音效删除（2026-10-26 用户令）：普通小怪的攻击音效全部静音；与精英共用同一触发的，只禁普通个体那条路径、精英保留发声（本文件同类处理下同）；Boss 走专属函数、不经此路；结界外打入不结算（2026-10-28 用户令追加）：幽灵在界外现身、玩家在界内时这一爪不造成伤害（音效保留）
   else if(e.elite) sfx('whoosh');
 }
 function sigTick(e, dt, tgt, d2){
@@ -3000,7 +3003,7 @@ function sigTick(e, dt, tgt, d2){
   if(e.eyeGlowT > 0) e.eyeGlowT -= dt;
   if(e.claw2 > 0){ // 小螃蟹第二钳：首钳命中后 0.42 秒补夹（越过受击无敌帧，仍贴身才吃得到）
     e.claw2 -= dt;
-    if(e.claw2 <= 0 && tgt === P && d2 < e.r + pCollR() + 16){ hurtPlayer(Math.round(e.dmg * 0.55)); if(e.elite) beep(920, 0.05, 'square', 0.03); }
+    if(e.claw2 <= 0 && tgt === P && d2 < e.r + pCollR() + 16){ if(!(bossBarriers.length && barrierBlocksIn(e.x, e.y, P.x, P.y))) hurtPlayer(Math.round(e.dmg * 0.55)); if(e.elite) beep(920, 0.05, 'square', 0.03); } // 结界外打入不结算（2026-10-28 用户令追加）：第二钳同接触伤害口径，界外夹界内不造成伤害
   }
   if(state !== 'playing') return false;
   var ty = e.type;
@@ -3043,7 +3046,7 @@ function sigTick(e, dt, tgt, d2){
       if(e.chainT <= 0){
         e.chainState = 'sweep'; e.chainT = 0.24;
         if(e.elite){ sfx('whoosh'); sfx('metal1'); } // 甩链声（普通锁链史莱姆静音、精英保留）
-        if(Math.sqrt(dist2(e.x, e.y, P.x, P.y)) < 122 + pCollR() && Math.abs(angDiff(Math.atan2(P.y - e.y, P.x - e.x), e.chainAng)) < 1.2)
+        if(Math.sqrt(dist2(e.x, e.y, P.x, P.y)) < 122 + pCollR() && Math.abs(angDiff(Math.atan2(P.y - e.y, P.x - e.x), e.chainAng)) < 1.2 && !(bossBarriers.length && barrierBlocksIn(e.x, e.y, P.x, P.y))) // 结界外打入不结算（2026-10-28 用户令追加）：锁链横扫同口径
           hurtPlayer(Math.round(e.dmg * 1.1));
         for(var cp = 0; cp < 10 && particles.length < 800; cp++){ var ca3 = e.chainAng + rand(-1.1, 1.1); particles.push({ x: e.x + Math.cos(ca3) * 60, y: e.y + Math.sin(ca3) * 60, vx: Math.cos(ca3) * 160, vy: Math.sin(ca3) * 160, t: 0, life: 0.22, color: '#c8ccd4', r: 2 }); }
       }
@@ -3072,7 +3075,7 @@ function sigTick(e, dt, tgt, d2){
       e.breathT -= dt; e.breathHitT -= dt;
       for(var bp = 0; bp < 3 && particles.length < 820; bp++){ var ba2 = e.breathAng + rand(-0.45, 0.45), bs2 = rand(180, 320); particles.push({ x: e.x + Math.cos(ba2) * 14, y: e.y - 4 + Math.sin(ba2) * 14, vx: Math.cos(ba2) * bs2, vy: Math.sin(ba2) * bs2, t: 0, life: 0.34, color: Math.random() < 0.6 ? '#ff7a3e' : '#ffb02e', r: rand(2.6, 4.6) }); } // 火焰粒子速度 240–430 → 180–320：视觉焰长随命中范围 205→155 同步缩短（约 82–146px → 61–109px）
       var pdx = P.x - e.x, pdy = P.y - e.y, pd = Math.sqrt(pdx * pdx + pdy * pdy) || 1;
-      if(pd < 155 && Math.abs(angDiff(Math.atan2(pdy, pdx), e.breathAng)) < 0.52 && e.breathHitT <= 0){ hurtPlayer(Math.round(e.dmg * 1.2)); e.breathHitT = 0.55; } // 吐息命中距离 205 → 155（2026-10-26 用户令：喷火怪攻击范围缩小，与攻速减半/伤害减半叠加；预警锥绘制半径同步 155、见绘制段）；2026-10-27 用户令：喷火每跳伤害系数 0.8×e.dmg → 1.2×e.dmg（+50%，只改喷火段，不改接触伤害/精英振翅扑击/spawnEnemy 的 cobra ×0.5）；2026-10-27 21:04 口径纠正：用户所指「攻速减少」＝造成伤害的速度变慢，即跳伤节拍拉长——每跳间隔 0.38 秒 → 0.55 秒（伤害系数仍 1.2×e.dmg 不变，喷火时长 0.75 秒不变，故一口喷火内最多结算 2 跳）
+      if(pd < 155 && Math.abs(angDiff(Math.atan2(pdy, pdx), e.breathAng)) < 0.52 && e.breathHitT <= 0){ if(!(bossBarriers.length && barrierBlocksIn(e.x, e.y, P.x, P.y))) hurtPlayer(Math.round(e.dmg * 1.2)); e.breathHitT = 0.55; } // 结界外打入不结算（2026-10-28 用户令追加）：界外喷火怪的吐息打不进界内（跳伤节拍照常置位）；吐息命中距离 205 → 155（2026-10-26 用户令：喷火怪攻击范围缩小，与攻速减半/伤害减半叠加；预警锥绘制半径同步 155、见绘制段）；2026-10-27 用户令：喷火每跳伤害系数 0.8×e.dmg → 1.2×e.dmg（+50%，只改喷火段，不改接触伤害/精英振翅扑击/spawnEnemy 的 cobra ×0.5）；2026-10-27 21:04 口径纠正：用户所指「攻速减少」＝造成伤害的速度变慢，即跳伤节拍拉长——每跳间隔 0.38 秒 → 0.55 秒（伤害系数仍 1.2×e.dmg 不变，喷火时长 0.75 秒不变，故一口喷火内最多结算 2 跳）
       if(e.breathT <= 0){
         if(e.breathLeft > 0){ e.breathLeft--; e.breathState = 'wind'; e.breathT = 0.34; } // 精英三段连喷：短蓄势接下一口
         else { e.breathState = null; e.breathCd = rand(8.0, 11.0); } // 喷火间隔沿革：3.2–4.4 → 6.4–8.8 → 8.0–11.0 秒；2026-10-27 一度误按「间隔变长」口径改到 10.5–14.0 秒，同日 21:04 用户澄清「攻速减少」指造成伤害的速度（跳伤节拍），故间隔改回 8.0–11.0 秒（普通与精英共用），节拍改动见上方 breathHitT 0.38→0.55；伤害/蓄势 0.6 秒/喷火 0.75 秒/精英三段连喷一律不动，其他怪不动
@@ -3201,6 +3204,18 @@ function bossInAnyBarrier(b){ for(var bi = 0; bi < bossBarriers.length; bi++) if
    只管刷新瞬间：已在场的商人/传送门不因之后结界形成而移走或清除（各自 tick 不改其坐标）。 */
 function pointInAnyBarrier(x, y, m){ for(var bi = 0; bi < bossBarriers.length; bi++){ var B = bossBarriers[bi]; var rr = B.r + (m || 0); var dx = x - B.x, dy = y - B.y; if(dx * dx + dy * dy < rr * rr) return true; } return false; }
 function pushPointOutOfBarriers(pt, m){ for(var bi = 0; bi < bossBarriers.length; bi++){ var B = bossBarriers[bi]; var d = Math.hypot(pt.x - B.x, pt.y - B.y); if(d < B.r + (m || 0)){ var a = d > 1 ? Math.atan2(pt.y - B.y, pt.x - B.x) : rand(0, Math.PI * 2); pt.x = B.x + Math.cos(a) * (B.r + (m || 0) + 30); pt.y = B.y + Math.sin(a) * (B.r + (m || 0) + 30); } } return pt; }
+/* 结界内不刷新精英怪和小怪（2026-10-28 用户令追加）：结界形成期间圈内停刷的单一出口——凡「先经 spawnEnemy 生成、再被调用方改写落点」的非 Boss 怪（精英黏液怪死亡分裂的子体、幽灵闪现落点等），落点落在任一结界内（计自身半径）即沿径向推到圈外 +30，与 spawnEnemy 内建落点推出同口径。
+   全刷怪路覆盖核查（同轮）：普通刷新/精英掷骰/怪潮波次——spawnEnemy 内建推出＋波次改写落点后逐道推出，已在位；远程精英召唤仆从——经 spawnEnemy 生成、落点不改写，内建推出已覆盖；新屋/街尾刷怪——彼图结界已被 barrierTick 清除、无结界可犯；
+   Boss 机制召唤物（劳农眷属/黏液君王与哥布林王召唤/朱德分裂/招牌大招召唤）——SPAWN_BAR_OK/barOK 既有豁免不变（那是 Boss 技能本身、非刷怪路，本令不改）；Boss 本体为结界来源、不在此限。
+   「圈内已有非 Boss 怪驱逐、界外怪不得进入」由 barrierCreate 展开瞬间逐出＋barrierTick 每帧怪物封闭在位（本函数是其在生成/瞬移落点侧的同口径补口）；结界触发/进出/消散口径一字未动。 */
+function barrierExpelEnemy(e){ if(!e || e.boss || e.barOK) return; for(var bi = 0; bi < bossBarriers.length; bi++){ var B = bossBarriers[bi]; var d = Math.hypot(e.x - B.x, e.y - B.y); if(d < B.r + e.r){ var a = d > 1 ? Math.atan2(e.y - B.y, e.x - B.x) : rand(0, Math.PI * 2); e.x = B.x + Math.cos(a) * (B.r + e.r + 30); e.y = B.y + Math.sin(a) * (B.r + e.r + 30); } } }
+/* 结界外攻击不能打入结界内（2026-10-28 用户令追加）：结界形成后，从结界外发起的攻击不得对结界内目标造成伤害——
+   barrierContaining(x,y)：点落在哪道结界内（无则 null）；barrierBlocksIn(sx,sy,tx,ty)：目标点在某道结界内、攻击源点在该道结界外 → 拦截（整段不结算）；
+   barrierCrossIn(x0,y0,x1,y1)：弹道本帧由某道结界外跨入其内 → 返回该道结界，调用方在边界处销毁弹体（沿用本文件既有「弹道被拦截即当场销毁＋爆点反馈」口径，与橡木盾挡弹/弹道命中即消耗同规）。
+   只拦「外→内」一个方向：界内→界内、界内→界外、界外→界外一律不拦——结界内向外的攻击口径不改；结界触发/进出/消散口径与伤害/冷却/范围数值均未动。 */
+function barrierContaining(x, y){ for(var bi = 0; bi < bossBarriers.length; bi++){ var B = bossBarriers[bi]; var dx = x - B.x, dy = y - B.y; if(dx * dx + dy * dy < B.r * B.r) return B; } return null; }
+function barrierBlocksIn(sx, sy, tx, ty){ var B = barrierContaining(tx, ty); if(!B) return false; var dx = sx - B.x, dy = sy - B.y; return dx * dx + dy * dy >= B.r * B.r; }
+function barrierCrossIn(x0, y0, x1, y1){ var B = barrierContaining(x1, y1); if(!B) return null; var dx = x0 - B.x, dy = y0 - B.y; return (dx * dx + dy * dy >= B.r * B.r) ? B : null; }
 function barrierJoinableBy(b){ // 界外 Boss b 落在哪道结界的加入距离内：在则返回最近的那道，否则 null（加入扫描与新开判定共用同一界限，保证近的不新开、远的不被卡）
   var best = null, bestD = 1e18;
   for(var bi = 0; bi < bossBarriers.length; bi++){ var B = bossBarriers[bi];
@@ -3288,6 +3303,7 @@ function barrierTick(){
   BAR_VIEW = bossBarriers.length ? bossBarriers : null;
 }
 function bossAliveNow(){ if(currentBoss && !currentBoss.dead) return true; for(var bai = 0; bai < enemies.length; bai++) if(enemies[bai].boss && !enemies[bai].dead) return true; return false; }
+/* Boss 计时暂停（2026-10-28 用户令）：场上仍有任一 Boss 存活（bossAliveNow 每帧现查——含主线 Boss、隐藏 Boss 朱德、朱德克隆分身（isClone 经 spawnEnemy(isBoss) 生成、带 boss 旗标）、无尽随机池 Boss、虚空竞技场劳农）→ 局内主时钟 gameTime 冻结；全部 Boss 死光才恢复。只停计时、不停战斗：Boss/小怪/玩家/技能/投射物照常按 dt 行动。冻结范围（逐项定版）：①HUD 显示计时（读 gameTime，随之停住，另加「Boss 战·计时暂停」小字标识）；②局内时间推进 gameTime 本体；③随 gameTime 挂钩者一并冻结——生态区轮换（currentBiomeIdx 按 gameTime/180）、下一个主线 Boss 排程（BOSS_TIMES 判定读 gameTime）、刷怪成长曲线（间隔/批量公式与 timeScale/dmgGrowth/spdGrowth/eliteRate 均读 gameTime，Boss 战期间新刷小怪按冻结时刻数值生成）、朱德 420 秒时间门（读 gameTime，Boss 战期间不推进）、新屋/街尾传送门刷新概率曲线（读 gameTime，且刷新状态机另经 houseTick/streetTick 的 Boss 门禁整段冻结，见该处）；④天气重掷计时 weatherT（weatherTick 内 Boss 门禁：不递减、不重掷，雨声维持当前状态）；⑤无尽 Boss 150 秒计时 endlessBossTimer（update 内 Boss 门禁：不累计，Boss 死光后从冻结点续计、不清零不补刷）。不停者（战斗实时计时，与既有口径一致）：普通刷怪本身（仍按既有 Boss 在场节流 ×2.5/上限 BOSS_ADD_CAP 继续少量刷）、怪潮计时、宝箱刷出间隔与 100 秒存续、商人刷新、技能冷却/增益/毒伤等一切战斗计时——这些历来不读 gameTime、本轮不改。边界：多 Boss 同场只认「仍有存活 Boss」这一条——一只死、其余活则继续冻结，不恢复不跳秒（gameTime 只增不减、冻结即原地不动，绝不倒退）；Boss 战中玩家全倒/团灭 → state 离开 playing、主循环停调 update，计时停在冻结点（结算/最佳成绩按该值），重开一局 resetGame 归零，不存在永久暂停；Boss 无脱战消失机制（分身无时限、本体死分身随清），凡 Boss 离场必经死亡结算，下一帧 bossAliveNow 即为假、计时自动恢复；进新屋/街尾/竞技场期间主时钟本就冻结（既有口径），Boss 被暂存（stash）时 currentBoss 仍指向未死 Boss、出图恢复后继续冻结至其死亡，与本令同向不冲突。联机：房主权威——房主 update 冻结 gameTime，快照 gt 字段下发冻结值，客机显示与各时间口径随房主同步冻结（客机不本地推进 gameTime/houseTick/streetTick，见主循环 __NET_CLIENT_MODE 门禁）。 */
 function nonBossAlive(){ var n = 0; for(var nbi = 0; nbi < enemies.length; nbi++) if(!enemies[nbi].boss && !enemies[nbi].dead) n++; return n; }
 function spawnEnemy(typeKey, isBoss, bossDef){
   var pos = spawnPos();
@@ -3882,6 +3898,11 @@ function moLeechReady(src){ if(!P) return true; if(!P.moLeechCd) P.moLeechCd = {
 function moLeechTrip(src){ if(P && P.moLeechCd) P.moLeechCd[src] = 5; }
 function damageEnemy(e, dmg, kx, ky){
   if(e.dead) return;
+  if(bossBarriers.length && P){ // 结界外攻击不能打入（2026-10-28 用户令追加）：目标在某道结界内、攻击源在该道结界外 → 整段不结算（无伤害/无击退/无状态/无击杀）。覆盖玩家普攻/按键技/召唤物/区域/落点等一切经本入口的伤害；攻击源位置：本机玩家取 P，联机房主模拟远端成员/NPC 出手期间 DMG_SRC 指向出手成员、取该成员位置（成员对象无坐标时回落 P）；无独立源记者（区域/落点/图腾/替身等）归属本机玩家，与既有击杀归因口径一致。界内→界外不拦（口径不改）
+    var bsx = P.x, bsy = P.y;
+    if(DMG_SRC && typeof N !== 'undefined' && N && N.peers && N.peers[DMG_SRC] && N.peers[DMG_SRC].x !== undefined){ bsx = N.peers[DMG_SRC].x; bsy = N.peers[DMG_SRC].y; }
+    if(barrierBlocksIn(bsx, bsy, e.x, e.y)) return;
+  }
   if(e.vulnT > 0) dmg *= 1.1; // 易伤（黄主任牛马审判挂上）：持续期间受到的一切伤害 +10%，来源不限（普攻/技能/持续伤害同算）；计时递减在 updateEnemies，10 秒到自动消失
   sfx('hit');
   if(e.shredT > 0) dmg *= 1.12; // 腐蚀破防中
@@ -4286,6 +4307,7 @@ function poseAtk(style, cdSec){
   P.atkAnimT = 0;
   P.atkAnimDur = Math.max(0.22, Math.min(0.5, (cdSec || 0.42) * 0.78));
   P.atkPoseT = Math.max(P.atkPoseT, P.atkAnimDur);
+  P.lastAtkT = gameTime; /* 【联机真人队友攻击可见修复（2026-10-28）】本机每次真实出手的统一漏斗在此盖时间戳：旧版 P.lastAtkT 从未被赋值、恒为初值 -1，房主 buildSnap 下发的房主本人 atkT 永远是 -1——所有客机都收不到房主出手信号，房主在队友屏上永远只有走路/待机帧（真人版「攻击不可见」的房主侧根因；远端 peer 的 lastAtkT 由 hostTick 结算时盖戳、不经此路）。只盖戳、不动任何伤害/冷却/姿势时长 */
   if(!coneFree()) P.faceLockT = Math.max(P.faceLockT || 0, 0.3); // 朝向令：每次出手刷新朝向锁——开火期间朝向锁死，停火 0.3 秒后才回归移动方向
 }
 /* AK 枪口尖端（世界坐标）：2026-10-25 握持核验轮重标——旧换算基于已退役的 paintChar 矢量精灵坐标，
@@ -4367,7 +4389,7 @@ var EP_SPR = {};
   im.onload = function(){ rec.ready = true; };
   im.src = d[1]; EP_SPR[d[0]] = rec;
 });
-var TORNADO_R = 148; // 闻西龙卷风实际伤害半径：伤害判定（updateSkills）与地面范围提示环（drawTornadoRange）共用此值，改一处两处同步，杜绝「看着在圈里却没伤害/圈外挨打」
+var TORNADO_R = 185; // 闻西龙卷风实际伤害半径：伤害判定（updateSkills）与地面范围提示环（drawTornadoRange）共用此值，改一处两处同步，杜绝「看着在圈里却没伤害/圈外挨打」；2026-10-28 闻西专轮按令改大：148 → 185（+37、+25%），每跳伤害 42／0.35 秒一跳／持续 8 秒／冷却 26 秒／启动瞬间一次性吸附口径全数未动
 /* 闻西按键技「龙卷风吹毁停车场」范围提示环：技能持续期间在脚下地面画一圈风系绿环＋淡填充，半径 = TORNADO_R 与伤害判定严格同源——
    怪的中心进了环就是正在挨绞，环外安全，一眼可判。开启瞬间先亮起并扩满（flash），末段随漏斗一起收束（fade 与 drawTornadoFx 同公式）。 */
 function drawTornadoRange(cx, cy){
@@ -5700,6 +5722,7 @@ function rainAudSync(on){
 function weatherTick(dt){
   if((typeof MAZE !== 'undefined' && MAZE.active) || (typeof STREET !== 'undefined' && STREET.active)){ rainAudSync(false); return; } // 副本内天气冻结：新屋室内／新街尾之影街区均不推进主地图天气（出图后照常推进）
   if(voidArena){ curWeather = '虚空乱流'; rainAudSync(false); return; }
+  if(bossAliveNow()){ rainAudSync(isRain()); return; } // Boss 计时暂停（2026-10-28 用户令）：Boss 在场期间天气时钟冻结——weatherT 不递减、不重掷新天气、雷声/涟漪计时同冻；当前天气本身（加成/画面）维持不变，雨声按当前天气维持播放/静音；Boss 死光后从冻结点续走
   weatherT -= dt;
   if(weatherT <= 0){
     weatherT = rand(55, 95);
@@ -6060,6 +6083,7 @@ function houseTick(dt){
   if(MAZE.active){ mazeTick(dt); return; }
   if(typeof STREET !== 'undefined' && STREET.active) return; // 新街尾之影内：主地图（含新屋入口计时）一并冻结，与进新屋时冻结街尾入口互为镜像
   if(voidArena) return;
+  if(bossAliveNow()) return; // Boss 出现暂停刷新传送门（2026-10-28 用户追加令，与 Boss 计时暂停同轮同口径）：Boss 在场期间新屋入口刷新状态机整段冻结——已刷出的入口存续计时 portal.t 不递减（不会在 Boss 战中过期消失）、冷却 nextT 不递减、概率滚动不掷骰（且概率曲线读 gameTime 已随主时钟冻结、斜率不涨）；站圈进入进度 standT 同冻（不进不退）；Boss 死光后全部从冻结点原样续走——不重置、不补掷、不加速。判定与计时暂停共用 bossAliveNow：多 Boss 同场仍有存活即继续冻结
   if(MAZE.portal){
     MAZE.portal.t -= dt;
     if(MAZE.portal.t <= 0){ MAZE.portal = null; MAZE.nextT = rand(60, 110); return; } // 入口消失后先冷却一段时间，冷却结束才重新进入概率滚动（始终不频繁）
@@ -6225,6 +6249,7 @@ function streetTick(dt){
     return;
   }
   if((typeof MAZE !== 'undefined' && MAZE.active) || voidArena) return; // 新屋内／虚空竞技场：街尾入口计时一并冻结
+  if(bossAliveNow()) return; // Boss 出现暂停刷新传送门（2026-10-28 用户追加令，与新屋同口径、与 Boss 计时暂停共用 bossAliveNow 判定）：Boss 在场期间新街尾之影入口刷新状态机整段冻结——已刷出入口存续计时 portal.t 不递减、冷却 nextT 不递减、420 秒硬门后的概率滚动不掷骰（曲线读 gameTime 已冻结、斜率不涨）、站圈进度 standT 同冻；Boss 死光后从冻结点续走，不重置、不补掷、不加速
   if(STREET.portal){
     STREET.portal.t -= dt;
     if(STREET.portal.t <= 0){ STREET.portal = null; STREET.nextT = rand(60, 110); return; } // 入口过期后先冷却（与新屋同口径）
@@ -6661,6 +6686,7 @@ function releaseExcalibur(){
   DMG_CRIT = 0.10; DMG_EL = null; // 与 doSpecial 同口径：按键技基础暴击 10%、不吃天气元素加成（在真正的释放帧重设，防蓄力期间被其他攻击覆盖）
   var mul = P.excMul, sMul = P.excSMul, sR = P.excSR;
   P.specPoseT = 0.55; tryStandProc('player');
+  P.lastSpecT = gameTime; /* 【联机真人队友攻击可见修复（2026-10-28）】班仔按键技的真正释放帧在此盖戳（doSpecial 按下只起势、不盖戳，见彼处注）：客机据快照 specT 变化点亮房主班仔的释放姿势＋金环＋技能名，与光束同帧到达观感一致；只盖戳、伤害/冷却未动 */
   var ang0 = (P.excAimAng != null) ? P.excAimAng : P.faceAng; // 释放方向（2026-10-28 00:58 定版：不锁怪）：玩家选定的方向（excAimAng）原样释放；未选向（点按/键盘）用本体当前朝向——释放帧绝不自动转回最近怪物方向
   P.excAimAng = null; // 选向只供这一次释放，释放后即清、不残留到下一次
   var beamLen = 940 * sR, beamWid = 150 * sR;
@@ -6737,7 +6763,7 @@ window.__doDodge = doDodge; window.__DODGE = { cd: DODGE_CD, dur: DODGE_DUR, dis
 /* ---------------- 主动技能 ---------------- */
 /* 闻西龙卷风·启动瞬间一次性全图吸附（2026-10-26 用户澄清定版，取代旧「持续期间逐帧吸附」）：
    只在释放那一刻执行一次——把当前主地图全图的普通怪瞬间吸到闻西身边，落在停靠环（距玩家 64＋怪半径 px，
-   在 TORNADO_R=148 绞伤圈内、又不叠进玩家身体）上，落点经 nudgeLand 校正。
+   在 TORNADO_R=185 绞伤圈内（2026-10-28 专轮由 148 改大至 185、停靠环 64＋怪半径口径未动、仍在圈内）、又不叠进玩家身体）上，落点经 nudgeLand 校正。
    例外不变：①精英不吸；②Boss 不吸；③其他地图不吸——新屋（MAZE.active）/虚空竞技场（voidArena）期间整段不生效（只有绞伤）；
    ④跳砸/俯冲/相位等 noContact 状态中的怪不吸（不打断其招牌动作）。持续 8 秒内不再吸附：新刷出或走进来的怪不被吸、已吸来的怪走开也不再被拉回。 */
 function tornadoPullOnce(){
@@ -6764,6 +6790,29 @@ function applyShock(e, dmgVal){
   e.shockOn = true; e.shockDmg = dmgVal; if(!(e.shockZapCd > 0)) e.shockZapCd = 0;
   if(isNew && (e.boss || e.elite)) texts.push({ x: e.x, y: e.y - e.r - 18, v: 0, txt: '感电！靠近同感电者会互击', t: 0, color: '#a8dcff' });
 }
+/* 闻西/八思/鸡哥按键技：持续期间不进冷却（2026-10-28 用户令）——三人按键技在技能持续生效期间不计冷却时间，冷却只从技能持续结束那一刻起算。
+   实现口径：doSpecial 释放瞬间仍按原式一次性设满 specCd（冷却总时长与全部减冷却乘区一字未动），但 updatePlayer 的 specCd 递减在本判定为真时整段冻结——
+   持续窗内 specCd 恒保持满值（HUD/技能钮显示满格冷却、不走字），持续结束的下一帧起才开始递减，实际就绪时刻＝释放＋持续时长＋满冷却（旧口径为释放＋满冷却、持续与冷却重叠计时）。
+   逐人持续口径：闻西＝龙卷风 tornadoT>0（持续 8 秒）；八思＝星光连发 starT>0（持续 6 秒）；鸡哥＝隐身 invisT>0 或固定烟雾 smokeT>0 任一存续（隐身基础 5 秒、站在固定烟雾区内计时暂停可延长；固定烟雾未觉醒 6 秒/二觉 8.5 秒；技能结束定义与既有 smokeStun 解晕点同口径——两者都结束才算本次技能结束）。
+   其余四人（班仔/莫哈哈/黄主任/陈哈哈）无持续窗或不在本令名单：本判定恒假、冷却口径一字未动。伤害/持续时长/冷却总时长/其他效果均未动。 */
+function specCdHeldByDuration(){
+  if(!P) return false;
+  if(P.charIdx === 1) return P.tornadoT > 0;
+  if(P.charIdx === 4) return P.starT > 0;
+  if(P.charIdx === 3) return P.invisT > 0 || P.smokeT > 0;
+  return false;
+}
+/* 持续性按键技剩余持续时间（2026-10-28 用户令追加）：与 specCdHeldByDuration 同一持续口径——闻西＝龙卷风剩余、八思＝星光连发剩余、
+   鸡哥＝隐身与固定烟雾两者中较长者（技能结束定义＝两者都结束才算结束，与冷却冻结口径一致；站在固定烟雾内隐身暂停时该值随烟雾剩余走、如实倒数）；
+   其余四人（瞬发按键技）恒 0、不显示。显示落点：本机＝右列技能冷却条 cdSpecial（生效期间改显「技能名 · 持续 X.Xs」、金色 active 态，结束即回冷却/就绪口径）；
+   NPC＝名牌下方金字倒数（房主侧读 npcSpecDurLeft、客机侧读快照 sd 字段，见 buildSnap/drawRemote）。伤害/持续时长/冷却口径一字未动。 */
+function localSpecDurLeft(){
+  if(!P) return 0;
+  if(P.charIdx === 1) return Math.max(0, P.tornadoT || 0);
+  if(P.charIdx === 4) return Math.max(0, P.starT || 0);
+  if(P.charIdx === 3) return Math.max(0, Math.max(P.invisT || 0, P.smokeT || 0));
+  return 0;
+}
 function doSpecial(){
   DMG_CRIT = 0.10; DMG_EL = null; // 必杀技为慢速重击：基础暴击 10%；必杀技不吃天气元素加成
   if(window.__NET_CLIENT_MODE){ if(state === 'playing' && window.__NET && __NET.sendSpec) __NET.sendSpec(); return; } // 联机客户端：按键技由房主结算
@@ -6777,6 +6826,7 @@ function doSpecial(){
   P.specCd = Math.max(0, c.specCd * (1 - Math.min(0.25, pSum('specCdV'))) * P.specCdMul * Math.pow(0.94, P.passives.hourglass || 0) * Math.pow(0.92, P.passives.pocketwatch || 0) * (P.stage === 2 ? 0.85 : 1) * (P.urineT > 0 ? 0.4 : 1)); // 减冷却上限 100% 形式化（2026-10-28 用户令）：按键技冷却乘数截断下限 0、既有 −25% 共鸣封顶等更严口径保留、全因子恒 >0 永不归零（无无限连发）；专属共鸣（specCdV −4%/级、总减幅封顶 −25%）与陈哈哈觉醒 specCdMul ×0.7 为既有执行乘区、不动；减冷却三项恢复生效（2026-10-28 用户令）：时之沙漏 ×0.94^级数（卡面「全部技能冷却 −6%（含特殊技能）」）、冷却怀表 ×0.92^级数（卡面「特殊技能 −8%」；只进本公式、不进攻击冷却 pCdMul）、二觉 ×0.85（stage===2 时）——此前三项连同尿液乘区被行中 // 注释一并吞掉、从未执行；前晚的尿液（2026-10-28）：按键技冷却不走 pCdMul、在此独立乘区 ×0.4（按键技冷却 26–28 秒 → 约 10.4–11.2 秒口径）
   if(P.charIdx === 0){ /* 班仔蓄力释放：释放姿势/替身触发/重震移到 releaseExcalibur 的释放帧；按下只起势 */ }
   else { P.specPoseT = 0.55; tryStandProc('player'); }
+  if(P.charIdx !== 0) P.lastSpecT = gameTime; /* 【联机真人队友攻击可见修复（2026-10-28）】非班仔按键技在提交帧盖戳：旧版房主 buildSnap 的房主本人 specT 写死 -1、P.lastSpecT 字段根本不存在——房主放按键技在所有客机屏上零信号（无姿势、无金环、无技能名），与普攻 lastAtkT 同为房主侧根因。班仔不在此盖戳：其按下只起势、真正释放帧在 releaseExcalibur 盖戳（见彼处），避免客机在蓄力期就误播释放表现。只盖戳、伤害/冷却一字未动 */
   sfx('special');
   buzz('special', 26); // 按键技释放：一记中震起手（核爆的落地重震在引爆点另行触发）
   if(P.stage >= 1 && P.charIdx !== 0){ slowMo = 0.45; slowMoT = 0.22; } // 觉醒后大招带慢动作份量感（班仔除外：按下慢动作会拉长蓄力真实时长、错位喊声同步点）
@@ -8157,7 +8207,7 @@ function update(dt){
     if(fi0 < 0 || bg3 < 0 || fi0 === bg3) break;
     gems[bg3].v += gems[fi0].v; gems.splice(fi0, 1);
   }
-  if(!(typeof MAZE !== 'undefined' && MAZE.active) && !(typeof STREET !== 'undefined' && STREET.active)) gameTime += dt; // 副本期间主线计时冻结（新屋迷宫／新街尾之影同口径）
+  if(!(typeof MAZE !== 'undefined' && MAZE.active) && !(typeof STREET !== 'undefined' && STREET.active) && !bossAliveNow()) gameTime += dt; // 副本期间主线计时冻结（新屋迷宫／新街尾之影同口径）；Boss 计时暂停（2026-10-28 用户令）：场上仍有 Boss 存活时主时钟同样冻结、全部 Boss 死光才恢复（判定与范围见 bossAliveNow 下方定版注释）——本行在下方 Boss 刷出判定之前：Boss 刷出当帧 gameTime 已达排程点、次帧起冻结；Boss 死亡结算在同帧后续段完成、次帧起恢复（恢复点与冻结点至多差一帧、不跳秒不倒退）
   var bi = currentBiomeIdx();
   if(bi !== lastBiome){
     lastBiome = bi;
@@ -8175,7 +8225,7 @@ function update(dt){
     } else spawnBoss(); // 时间门未开（150/300 秒点）或本局无朱德：主线 Boss 照常刷出，朱德顺延至 420 秒后的 Boss 点
   }
   if(endless && !(typeof MAZE !== 'undefined' && MAZE.active) && !(typeof STREET !== 'undefined' && STREET.active)){
-    endlessBossTimer += dt;
+    if(!bossAliveNow()) endlessBossTimer += dt; // Boss 计时暂停（2026-10-28 用户令）：无尽下一只 Boss 的 150 秒计时在 Boss 在场期间不累计——冻结点保留、Boss 死光后从原值续计（不清零、不补刷），与 gameTime 冻结同口径
     if(endlessBossTimer >= 150){
       endlessBossTimer = 0;
       if(zhudeDue()){ spawnZhude(); bossIdx++; } // 朱德在无尽里仍只走隐藏乱入规则（未进随机池）；新增 420 秒时间门：门未开时本计时点照常走随机池，朱德顺延到 420 秒后的计时点
@@ -8294,7 +8344,7 @@ function update(dt){
   if(P.specPoseT > 0) P.specPoseT -= dt;
   if(P.hurtT > 0) P.hurtT -= dt;
   if(P.atkAnimT < 9) P.atkAnimT = Math.min(9, P.atkAnimT + dt);
-  if(P.specCd > 0) P.specCd -= dt;
+  if(P.specCd > 0 && !specCdHeldByDuration()) P.specCd -= dt; // 闻西/八思/鸡哥按键技持续期间不进冷却（2026-10-28 用户令）：持续窗内冻结递减、冷却自持续结束起算（逐人持续口径见 specCdHeldByDuration 注）；其余四人判定恒假、照旧递减
   if(P.dodgeCd > 0) P.dodgeCd -= dt;
   if(P.invuln > 0) P.invuln -= dt;
   if(P.excInvT > 0) P.excInvT -= dt; // 班仔解放无敌窗计时（2026-10-28 11:34 门槛口径）：长按越过 3 秒后由 excChargeTick 滚动维持、松手时补到光束段 0.9 秒，递减到点即失效
@@ -8359,6 +8409,7 @@ function update(dt){
     pr.t += dt;
     DMG_CRIT = (pr.crit != null ? pr.crit : 0.05); DMG_EL = pr.el || null; // 投射物按来源技能的暴击率/元素结算（含其爆炸/分裂/弹射）
     if(pr.t < 0) continue; // 延迟出膛（水珠连珠的依次感、叠浪的接连感）：未到点不移动、不碰撞（绘制层同样跳过 t<0）
+    var prPx = pr.x, prPy = pr.y; // 结界拦截用：本帧移动前的位置（跨界判定 barrierCrossIn 以此为起点，见移动后两处拦截）
     if(pr.kind === 'nade'){ // 手雷/分裂蛋：抛物线飞行（位置由起落点插值＋弧高），落地结算
       if(pr.t >= pr.dur){
         if(pr.hops > 0){ pr.hops--; pr.sx = pr.tx; pr.sy = pr.ty; var nha = rand(0, Math.PI * 2), nhd = rand(50, 110); pr.tx += Math.cos(nha) * nhd; pr.ty += Math.sin(nha) * nhd; pr.t = 0; pr.dur = 0.42; }
@@ -8367,6 +8418,7 @@ function update(dt){
       var npg = clamp(pr.t / pr.dur, 0, 1);
       pr.x = pr.sx + (pr.tx - pr.sx) * npg; pr.y = pr.sy + (pr.ty - pr.sy) * npg;
       pr.h = Math.sin(npg * Math.PI) * (pr.big ? 130 : 95);
+      if(bossBarriers.length && barrierCrossIn(prPx, prPy, pr.x, pr.y)){ pr.tx = pr.x; pr.ty = pr.y; explodeNade(pr); projectiles.splice(pi, 1); } // 结界外投掷的手雷飞入结界（2026-10-28 用户令追加）：在边界处提前引爆——爆心落在界外一侧的落点口径，界内目标由 damageEnemy 结界门禁挡下不吃伤害，子雷自爆心散开后各自再受同一跨界拦截；界内投向界内/界外投向界外不触发
       continue;
     }
     if(pr.kind === 'serpent'){ // 电蛇（定版）：贴地游走——蛇头朝最近敌人转向、蛇身叠加正弦蜿蜒，轨迹点列即蛇身；不是一颗会发光的球
@@ -8483,6 +8535,7 @@ function update(dt){
       else if(pr.kind === 'feather' && Math.random() < 0.3) particles.push({ x: pr.x, y: pr.y, vx: rand(-14, 14), vy: rand(6, 26), t: 0, life: 0.4, color: 'rgba(223,246,232,.7)', r: 1.8 }); // 羽毛碎屑飘落
       else if(pr.kind === 'wavefront'){ var wpx2 = -pr.vy, wpy2 = pr.vx, wl2 = Math.sqrt(wpx2 * wpx2 + wpy2 * wpy2) || 1, wof = rand(-1, 1) * (pr.wid || 90); particles.push({ x: pr.x + wpx2 / wl2 * wof - pr.vx * 0.03, y: pr.y + wpy2 / wl2 * wof - pr.vy * 0.03, vx: rand(-24, 24), vy: rand(-52, -14), t: 0, life: rand(0.25, 0.45), color: Math.random() < 0.55 ? '#eaf7ff' : '#aee6ff', r: rand(2, 4) }); } // 浪墙泡沫：沿整条浪线翻卷
     }
+    if(bossBarriers.length && !(pr.kind === 'boom' && pr.bState === 'return') && barrierCrossIn(prPx, prPy, pr.x, pr.y)){ burst(pr.x, pr.y, '#ff8a7a', fxN(5)); effects.push({ type:'ring', x: pr.x, y: pr.y, t: 0, dur: 0.25, color: '255,110,90' }); projectiles.splice(pi, 1); continue; } // 结界外弹道打入结界（2026-10-28 用户令追加）：玩家投射物本帧由界外跨入界内 → 在边界处销毁（爆点＋红环反馈），不进下方命中结算；回旋镖返航段（boom return）除外——那是飞回界内玩家手中的回收路径、非攻击打入；界内射向界内/界外、界内向外一律不触发
     var hit = false;
     for(var ei = 0; ei < enemies.length; ei++){
       var en = enemies[ei]; if(en.dead) continue;
@@ -8651,7 +8704,9 @@ function update(dt){
       var hna = hca + clamp(hod, -1.5 * dt, 1.5 * dt), hsp = Math.sqrt(ep.vx * ep.vx + ep.vy * ep.vy) || 300;
       ep.vx = Math.cos(hna) * hsp; ep.vy = Math.sin(hna) * hsp;
     }
+    var epPx = ep.x, epPy = ep.y;
     ep.x += ep.vx * dt; ep.y += ep.vy * dt;
+    if(bossBarriers.length && barrierCrossIn(epPx, epPy, ep.x, ep.y)){ burst(ep.x, ep.y, '#ff8a7a', fxN(4)); eProjectiles.splice(epi, 1); continue; } // 结界外怪物弹道打入结界（2026-10-28 用户令追加）：界外怪的直线弹道本帧跨入界内 → 在边界处销毁，不进下方命中玩家/召唤物结算；Boss 在界内向界内/界外发射（起点在界内）不触发，界内向外口径不改；抛物线 lob 弹已在上方 continue 走落点预警圈结算、不经此段（与橡木盾挡弹的 lob 豁免同口径）
     if(particles.length < 700 && Math.random() < 0.4)
       particles.push({ x: ep.x, y: ep.y, vx: 0, vy: 0, t: 0, life: 0.18, color: ep.color, r: 1.8 });
     var prr2 = pCollR() + ep.r + 2;
@@ -8883,15 +8938,16 @@ function update(dt){
       }
     }
     var prr = e.r + (tgt === P ? pCollR() : tgt.r);
+    var barBlockContact = !!(bossBarriers.length && tgt && tgt.x !== undefined && barrierBlocksIn(e.x, e.y, tgt.x, tgt.y)); // 结界外怪物接触攻击不能打入（2026-10-28 用户令追加）：攻击者（怪）在界外、被攻击者（玩家/替身）在界内 → 本次接触伤害整段不结算（atkCd 照常置位、不逐帧重触发）；界内怪打界内/界外者不拦
     if(d2 < prr && e.atkCd <= 0 && !e.noContact){ // noContact：跳砸/俯冲/闪现隐身期间不结算接触伤害（伤害走各自的落点/现身结算）
       if(e.type === 'beetle' && !e.boss){ // 小螃蟹双钳连夹：两段快夹（每段 0.55 倍，第二钳由 sigTick 在 0.42 秒后补上——须越过玩家受击无敌帧 0.35 秒，两钳才都落得实）
         e.atkCd = e.elite ? 1.0 : 0.62; e.claw2 = 0.42; // 近战攻速加强（2026-10-26 用户令）：仅普通小螃蟹整轮间隔 1.0→0.62 秒（60→约 97 轮/分、含第二钳 120→约 194 钳/分）；精英个体保持 1.0 不变，第二钳延迟 0.42 不变（仍须越过受击无敌帧才落得实）
-        if(tgt === P) hurtPlayer(Math.round(e.dmg * 0.55)); else if(!tgtPeer) hurtStandOrPlayer(tgt, Math.round(e.dmg * 0.55)); // tgtPeer（联机存活队友）：接触伤害由 hostTick 统一结算，本段不直扣
+        if(tgt === P){ if(!barBlockContact) hurtPlayer(Math.round(e.dmg * 0.55)); } else if(!tgtPeer && !barBlockContact) hurtStandOrPlayer(tgt, Math.round(e.dmg * 0.55)); // tgtPeer（联机存活队友）：接触伤害由 hostTick 统一结算，本段不直扣；barBlockContact：结界外打入不结算（见上方判定注）
         if(e.elite) beep(920, 0.05, 'square', 0.035); // 小螃蟹首钳声：普通个体静音、精英保留
       } else {
         e.atkCd = e.streetElite ? 0.45 : ((e.boss || e.elite || e.ranged) ? 0.65 : 0.40); // 街尾精英接触间隔缩短（2026-10-28 用户令）：仅 streetElite 0.65→0.45 秒（约 92→133 次/分/只，仍长于玩家受击无敌帧 0.35、每击落得实）；其余沿旧口径——近战攻速加强（2026-10-26 用户令「近战怪物攻击速度太慢」）：仅普通近战怪贴身接触攻击间隔 0.65→0.40 秒（约 92→150 次/分/只，+63%）——0.40 仍长于玩家受击无敌帧 0.35 秒，每一击都落得实、不被无敌帧吞掉；远程怪（e.ranged）贴身接触、精英、Boss 一律保持 0.65 不变，远程开火冷却（RANGED_TYPES.cd）未动；玩家移速（196–234）远高于小怪（34–122），走位拉开距离仍可完全避开接触攻击
-        if(tgt === P) hurtPlayer(e.dmg);
-        else if(!tgtPeer) hurtStandOrPlayer(tgt, e.dmg); // tgtPeer（联机存活队友）：接触伤害由 hostTick 统一结算，本段不直扣
+        if(tgt === P){ if(!barBlockContact) hurtPlayer(e.dmg); }
+        else if(!tgtPeer && !barBlockContact) hurtStandOrPlayer(tgt, e.dmg); // tgtPeer（联机存活队友）：接触伤害由 hostTick 统一结算，本段不直扣；barBlockContact：结界外打入不结算（见上方判定注）
       }
     }
   }
@@ -11055,6 +11111,20 @@ function drawPlayerActor(ox, oy){
   var bzSeqOn = false, fsqOn = false, s6On = false;
   if(P.charIdx === 0){ var bzPk = bzSeqPick(pMoving, pDir); if(bzPk){ pFrame = bzPk.f; poseKind = bzPk.k; bzSeqOn = true; } } // 班仔：重定向动画序列接管选帧（cast/throw/shoot 姿势返回 null 时保留上面的旧选帧）
   else { var qkPk = sixqAtkPick(); if(qkPk){ pFrame = qkPk.f; poseKind = qkPk.k; s6On = true; } else { var qpPk = sixqPick(pMoving, pDir); if(qpPk){ pFrame = qpPk.f; poseKind = qpPk.k; fsqOn = true; } } } // 六人Q版：攻击序列优先、全套接管其余状态（受击/按键技姿势让行规则与成人版一致，借帧走 Q 攻击/待机帧，见 sixqSprite）
+  /* 闻西下向行走重影修复（2026-10-28 专轮，真机录屏 Lv1 00:37 实报：下向行走时身体重叠、双腿分叉成两个位置）：逐帧查三层——
+     ①帧素材层：walk_down/throw_down 单帧逐帧核过，无半透明残影（半透明像素计数 0）、帧内无双腿，素材本身干净；
+     ②模型/锚点层：throw_down 画布的地平线 G=517 由飞出的绿星镖最低点定（镖下飞到画布 y≈506），不是脚底——本体脚底在
+     画布 y≈358–411（中位 373、离 G 约 143px），整个身体被画布锚点抬高，腰线相对脚底的位置与 walk_down 对不齐
+     （其余五人攻击帧脚底离 G 为 0–29px；闻西侧向 47px、上向 84px，本轮按令不动）；
+     ③行走与攻击混合绘制层：分层合成按「攻击帧脚底＝G」的假定把腰线固定切在脚底上方 0.42×攻击帧高，落到闻西下向
+     投掷帧时正好切穿其大腿/下伸手臂段——上层投掷帧的腿/臂与下层走路帧的腿在腰线上下同时露出来，即录屏里的
+     双腿分叉＋身体重叠。修法（仅闻西 charIdx 1、仅下向、仅移动中攻击姿势窗）：不做上下合成，本体改整帧画当前
+     走路/奔跑帧（与合成下层同源 compWalkFrame 只读复算），每帧只有一个身体、结构上不可能再叠出第二双腿；
+     投掷的伤害/弹道/冷却在逻辑层、与本体选帧无关，一字未动；站定投掷仍整帧投掷帧，侧/上向与其余六人一字未动。 */
+  if(P.charIdx === 1 && s6On && pMoving && pDir === 'down'){
+    var wxWalkF = compWalkFrame(pDir);
+    if(wxWalkF){ pFrame = wxWalkF; poseKind = ''; s6On = false; fsqOn = true; }
+  }
   // 移动攻击分层合成（2026-10-26 milo 定版「下半身走路上半身攻击」）：移动中且签名攻击序列接管时，不再整帧顶替——绘制端把攻击帧的上身与当前走路帧的下身按腰线合成（见下方绘制段）；站定攻击不合成、照旧整帧攻击站姿。compWalkF 只读复算当前走路帧、不推进任何选帧状态
   var compWalkF = null;
   if(pMoving && (bzSeqOn || s6On) && poseKind.indexOf('atk') === 0) compWalkF = compWalkFrame(pDir);
@@ -13236,7 +13306,7 @@ var el = function(id){ return document.getElementById(id); };
 function updateHud(){
   if(!P) return;
   if(endless) el('timerChip').textContent = '无尽模式'; // 无尽计时改字（2026-10-28 用户令）：开启无尽模式后计时数字消失、只显示「无尽模式」四字（含从普通模式结算选继续无尽、踏回程门回主地图后，endless 置位即按此显示）；普通模式计时显示一字未动
-  else el('timerChip').innerHTML = fmtTime(gameTime) + ' <small>/ 15:00</small>';
+  else el('timerChip').innerHTML = fmtTime(gameTime) + ' <small>/ 15:00</small>' + (bossAliveNow() ? ' <small>Boss 战 · 计时暂停</small>' : ''); // Boss 计时暂停标识（2026-10-28 用户令）：Boss 在场时主时钟冻结、计时数字停住，缀小字明示暂停原因（免被误读为卡死）；Boss 死光恢复推进后小字自动消失；无尽模式整行只显示「无尽模式」四字（既有口径不动），其 gameTime 冻结由房主/单机 update 同规则执行、仅不另加字
   el('killChip').textContent = '击杀 ' + kills;
   var scEl = el('stageChip'), scName = CHARACTERS[P.charIdx].forms[P.stage];
   scEl.textContent = scName;
@@ -13264,8 +13334,10 @@ function updateHud(){
   } else bb.classList.remove('on');
   var c = CHARACTERS[P.charIdx];
   var cs = el('cdSpecial');
-  if(P.specCd > 0){ cs.textContent = c.specName + ' ' + Math.ceil(P.specCd) + 's'; cs.classList.remove('ready'); }
-  else { cs.textContent = c.specName + ' 就绪'; cs.classList.add('ready'); }
+  var sdLeft = localSpecDurLeft(); /* 持续性按键技生效中：冷却条改显剩余持续时间（2026-10-28 用户令追加）——持续期间 specCd 本就冻结不走字（见 specCdHeldByDuration），改显倒数更可读；持续结束当帧即回下方冷却/就绪口径、显示自动消失 */
+  if(sdLeft > 0){ cs.textContent = c.specName + ' · 持续 ' + sdLeft.toFixed(1) + 's'; cs.classList.remove('ready'); cs.classList.add('active'); }
+  else if(P.specCd > 0){ cs.textContent = c.specName + ' ' + Math.ceil(P.specCd) + 's'; cs.classList.remove('ready'); cs.classList.remove('active'); }
+  else { cs.textContent = c.specName + ' 就绪'; cs.classList.add('ready'); cs.classList.remove('active'); }
   var mS = document.querySelector('#btnSpecial .cdmask');
   if(mS){ mS.style.display = P.specCd > 0 ? 'flex' : 'none'; mS.textContent = P.specCd > 0 ? Math.ceil(P.specCd) : ''; }
   var cdD = el('cdDodge'); // 闪避状态条：固定技能、无等级——只显示就绪/冷却/翻滚中，绝不显示等级
@@ -15397,18 +15469,614 @@ function mkNpc(m){
   p.isNpc=true; p.npcAtk=0; p.npcPas=0;
   p.maxHp=Math.round(p.maxHp*1.25); p.hp=p.maxHp;
   p.npcStrafeT=0; p.npcStrafeDir=1; p.npcWanderT=0; p.npcWx=p.x; p.npcWy=p.y;
+  /* 【NPC 按英雄出招＋按玩家池学习（2026-10-28 用户令）】NPC 自有构筑（与真人 P.weapons/P.passives 同构、按人独立）：
+     npcW＝已学攻击技能表（key→{lv,evo,branch,bonus,akRico}，开局只含自己英雄的专属武器 Lv1——不学他人专属与 NPC 同口径，见 npcAutoLearn 池构建）；
+     npcP＝已学被动表（key→等级）；npcFx＝按键技定时事件队列（子母雷三代/印章落点/审判落印，数据对象、由 npcTickNpcFx 在 hostTick 内推进）；
+     npcProjs＝NPC 专属模拟投射物（回旋镖弹射链/追踪星弹/班仔分支回旋轮与剑气——在 hostTick 内按与玩家同名武器相同的弹道规则推进与结算，不借玩家 projectiles 数组：那套数组的出生点/影分身/来源盖章全绑本机 P，硬塞会串味到房主本人）；
+     npcZones＝NPC 持续区域（鸡哥固定烟雾/拖尾烟雾/陈哈哈雷暴云分支）；按键技持续状态 npcTornadoT/npcStarT/npcInvisT/npcSmokeT 与 npcCritBuffT（莫哈哈）各自独立计时，口径与本机 P 的同名字段一一对应。 */
+  var sigK=CHARACTERS[m.hero].weapon;
+  p.npcW={}; p.npcW[sigK]={ lv:1, evo:false };
+  p.npcP={};
+  p.npcFx=[]; p.npcProjs=[]; p.npcZones=[];
+  p.npcTornadoT=0; p.npcTornadoTick=0; p.npcStarT=0; p.npcStarTick=0; p.npcStarMul=1;
+  p.npcInvisT=0; p.npcSmokeT=0; p.npcSmokeX=0; p.npcSmokeY=0; p.npcSmokeTick=0; p.npcTrailTick=0; p.npcInvisHealAcc=0;
+  p.npcCritBuffT=0; p.npcBurstN=0; p.npcBurstT=0; p.npcBurstGap=0.19; p.npcCombo=0;
   return p;
 }
 /* NPC 自动学技能（队伍升级时逐级自动选，不弹真人选卡界面）：
-   加权随机——攻击向 65%／被动向 35%，受与真人同一上限约束（攻击 10、被动 20，满后只走另一类，两类皆满不再学）；
-   攻击向＝构筑层 +1（与远端真人选卡同口径：每层 +6% 伤害，走 buildCount 既有公式）；
-   被动向＝生命上限 +4 并回复 4（代表通用被动收益）。专属：NPC 只用自己英雄的按键技（英雄固有，与真人同），
-   不学其他英雄的专属技能、不走商店、不吃单人升级弹窗。 */
+   【NPC 按玩家真实学习池学习（2026-10-28 用户令，取代旧抽象计数口径）】旧版 npcAutoLearn 只是计数器模拟：攻击向＝buildCount+1、被动向＝生命上限 +4，
+   NPC 从没真正「学到」任何技能——没有技能表、没有等级、分支、进化，已学内容对它自己的普攻/按键技形态零影响（这正是用户实报「NPC 不会学习技能」的
+   学习侧根因；此前一轮只补了计数飘字与 HUD 显示、把观感问题当根因）。现改为与真人 buildChoices/applyChoice 同池同口径：
+   ①同学习池——池构建逐项镜像 buildChoices：已学未满级攻击升级卡权重 12.6、新通用攻击 2.2（仅 GENERIC_WEAPONS，他人专属武器不在该表内、天然不学）、
+     专属武器 Lv3+ 分支卡 4.5（A/B/C/D 按 BRANCHES 实有定义）、满级＋持有配对被动（SIG_ITEM）才出的合成进化卡 5、连发强化卡 2.3（bonus<3 且 lv≥2）、
+     AK 弹射专属卡 4.5（未得才出、已得不再出）；被动：已学 9.5／未学 2.0、配对被动的搭档加权 +1.2、hidden 被动不入池；
+   ②同上限——攻击按不同技能计数 ≤10（宝箱系 summon/chestOnly 不计，与 attackCount 同口径）、被动按不同技能计数 ≤20；NPC 不走槽满替换（既有定版），
+     槽满时新技能/新被动卡不再入池、只剩已学升级/进化/分支/连发卡，与旧「满了跳过」衔接；
+   ③同升级成长——学成直接写入 npcW/npcP（等级/分支/进化/bonus/akRico/被动等级），效果在局内真实生效：专属武器等级/分支/进化直接改变该 NPC 的
+     普攻形态与伤害公式（见 npcBasicAttack，逐英雄镜像 updateWeapons 的专属武器分支）、AK 弹射卡解锁真实弹射链、被动的数值字段（dmgP/critP/critDmgP/
+     spdP/cdP/armorP/regenV/hpV 等）经 npcPSum 进入该 NPC 的伤害/攻速/冷却/暴击/移速/减伤/回复公式（见 npcMul/npcCdMulF/npcSpecCdMulF 与 hostTick 各结算处），
+     生命类被动（crystal/thornheart/hpV）在学成当帧按 applyChoice 同口径加上限并回复；构筑层 buildCount 仍按每次学成 +1（与房主对远端真人成员的记账同口径、
+     继续进入普攻/按键技双通道公式），npcAtk/npcPas 仍按攻击向/被动向学成次数计数供快照 na/np 与队伍 HUD「已学 N」显示（口径与此前一致、数字含义不变）。
+   抽选方式：真人是四选一由玩家挑，NPC 无界面——按同一权重池加权随机抽 1 张直接学成（期望分布与玩家池一致）；池空（全满级/全槽满）时按真人兜底治疗卡口径回复 40。
+   不走商店、不吃单人升级弹窗、不学他人专属、不动玩家本人学习口径。 */
+function npcPSum(p, f){ var s=0; for(var k in p.npcP){ var d=PASSIVES[k]; if(d && d[f]) s+=d[f]*p.npcP[k]; } return s; } // 与 pSum 同口径：对该 NPC 自有被动表按字段求和
+function npcAtkCount(p){ var n=0; for(var k in p.npcW){ var d=WEAPONS[k]; if(d && !d.summon && !d.chestOnly) n++; } return n; } // 与 attackCount 同口径（宝箱系不占攻击上限 10）
+function npcMul(p){ // 与 pDmgMul 对齐的 NPC 伤害乘区（只取对 NPC 有意义的同名字段：开局系数/角色倍率/队伍等级双成长/巨人之力/狂怒核心/被动 dmgP/宝箱力量药剂/构筑层）
+  var openMul = gameTime < 240 ? 0.75 + 0.25 * (gameTime / 240) : 1;
+  var c = CHARACTERS[p.hero];
+  return openMul * c.dmgMul * (1 + 0.025 * Math.max(0, P.level - 1)) * (1 + 0.02 * Math.max(0, P.level - 1)) * (1 + 0.12 * (p.npcP.glove || 0)) * (1 + npcPSum(p, 'dmgP')) * (p.npcP.berserk && p.hp < p.maxHp * 0.5 ? 1 + 0.10 * p.npcP.berserk : 1) * (p.chestDmgT > 0 ? 1.25 : 1) * (1 + 0.06 * (p.buildCount || 0));
+}
+function npcCdMulF(p){ return Math.max(0.5, Math.pow(0.93, p.npcP.rune || 0) * Math.pow(0.94, p.npcP.hourglass || 0) * Math.pow(0.97, p.npcP.windheart || 0) * Math.max(0.7, 1 - npcPSum(p, 'cdP'))); } // 与 updateWeapons 的 cd 派生同口径：pCdMul 的 NPC 版（下限 0.5＝攻速封顶 +100%）
+function npcSpecCdMulF(p){ return (1 - Math.min(0.25, npcPSum(p, 'specCdV'))) * Math.pow(0.94, p.npcP.hourglass || 0) * Math.pow(0.92, p.npcP.pocketwatch || 0); } // 与 doSpecial 的按键技冷却乘区同口径（专属共鸣封顶 −25%/时之沙漏/冷却怀表）
+function npcSpecDurLeft(p){ // NPC 持续性按键技剩余持续时间（与 localSpecDurLeft 同口径、读 NPC 自己的持续字段）：供名牌倒数显示与快照 sd 字段
+  if(!p) return 0;
+  if(p.hero === 1) return Math.max(0, p.npcTornadoT || 0);
+  if(p.hero === 4) return Math.max(0, p.npcStarT || 0);
+  if(p.hero === 3) return Math.max(0, Math.max(p.npcInvisT || 0, p.npcSmokeT || 0));
+  return 0;
+}
+function npcLearnPool(p){
+  var pool = [], key, w, pl;
+  var sigKey = CHARACTERS[p.hero].weapon;
+  for(key in p.npcW){
+    w = p.npcW[key];
+    if(key === sigKey && w.lv >= 3 && !w.branch && BRANCHES[key]){
+      if(BRANCHES[key].A) pool.push({ type:'branch', key:key, branch:'A', weight:4.5 });
+      if(BRANCHES[key].B) pool.push({ type:'branch', key:key, branch:'B', weight:4.5 });
+      if(BRANCHES[key].C) pool.push({ type:'branch', key:key, branch:'C', weight:4.5 });
+      if(BRANCHES[key].D) pool.push({ type:'branch', key:key, branch:'D', weight:4.5 });
+    }
+    else if(w.lv >= WEAPONS[key].max && !w.evo){
+      if((p.npcP[SIG_ITEM[key]] || 0) >= 1) pool.push({ type:'evo', key:key, weight:5 });
+    }
+    else if(w.lv < WEAPONS[key].max) pool.push({ type:'upgrade', key:key, weight:12.6 });
+    if((w.bonus || 0) < 3 && w.lv >= 2) pool.push({ type:'count', key:key, weight:2.3 });
+    if(key === 'ak47' && !w.akRico) pool.push({ type:'akmod', key:'ak47', mod:'rico', weight:4.5 });
+  }
+  if(npcAtkCount(p) < 10){
+    for(var gi = 0; gi < GENERIC_WEAPONS.length; gi++){
+      key = GENERIC_WEAPONS[gi];
+      if(!p.npcW[key] && !WEAPONS[key].summon && !WEAPONS[key].chestOnly) pool.push({ type:'new', key:key, weight:2.2 });
+    }
+  }
+  var pasCount = Object.keys(p.npcP).length;
+  for(key in PASSIVES){
+    pl = p.npcP[key] || 0;
+    if(PASSIVES[key].hidden || pl >= PASSIVES[key].max) continue;
+    if(pl === 0 && pasCount >= 20) continue; // 被动槽满：未学被动不再入池（NPC 不走替换，既有定版）
+    var pwB = pl > 0 ? 9.5 : 2.0;
+    for(var wkB in p.npcW){ if(SIG_ITEM[wkB] === key && !p.npcW[wkB].evo){ pwB += 1.2; break; } }
+    pool.push({ type:'passive', key:key, weight:pwB });
+  }
+  return pool;
+}
 function npcAutoLearn(p){
-  var canAtk=p.npcAtk<10, canPas=p.npcPas<20;
-  if(!canAtk && !canPas) return;
-  if(canAtk && (!canPas || Math.random()<0.65)){ p.npcAtk++; p.buildCount=(p.buildCount||0)+1; }
-  else { p.npcPas++; p.maxHp+=4; p.hp=Math.min(p.maxHp,p.hp+4); }
+  var pool = npcLearnPool(p);
+  if(!pool.length){ p.hp = Math.min(p.maxHp, p.hp + 40); return; } // 池空兜底＝真人治疗卡口径（回复 40），不再计数
+  var total = 0, i;
+  for(i = 0; i < pool.length; i++) total += pool[i].weight;
+  var roll = Math.random() * total, c = pool[pool.length - 1];
+  for(i = 0; i < pool.length; i++){ roll -= pool[i].weight; if(roll <= 0){ c = pool[i]; break; } }
+  p.buildCount = (p.buildCount || 0) + 1;
+  var label = '';
+  if(c.type === 'branch'){ p.npcW[c.key].branch = c.branch; p.npcAtk++; label = WEAPONS[c.key].name + '：' + BRANCHES[c.key][c.branch].name + '！'; }
+  else if(c.type === 'new'){ p.npcW[c.key] = { lv:1, evo:false }; p.npcAtk++; label = '学到新招式「' + WEAPONS[c.key].name + '」！'; }
+  else if(c.type === 'upgrade'){ p.npcW[c.key].lv++; p.npcAtk++; label = WEAPONS[c.key].name + ' 升至 Lv' + p.npcW[c.key].lv + (p.npcW[c.key].lv >= WEAPONS[c.key].max ? '（满级）' : '') + '！'; }
+  else if(c.type === 'evo'){ p.npcW[c.key].evo = true; p.npcAtk++; label = '合成进化：' + WEAPONS[c.key].evoName + '！'; }
+  else if(c.type === 'count'){ p.npcW[c.key].bonus = (p.npcW[c.key].bonus || 0) + 1; p.npcAtk++; label = WEAPONS[c.key].name + ' 攻击次数 +1！'; }
+  else if(c.type === 'akmod'){ p.npcW[c.key].akRico = true; p.npcAtk++; label = 'AK 弹射 解锁！'; }
+  else if(c.type === 'passive'){
+    p.npcP[c.key] = (p.npcP[c.key] || 0) + 1; p.npcPas++;
+    if(c.key === 'crystal'){ p.maxHp += 25; p.hp = Math.min(p.maxHp, p.hp + 25); }
+    if(c.key === 'thornheart'){ p.maxHp += 12; p.hp = Math.min(p.maxHp, p.hp + 12); }
+    var hpvA = PASSIVES[c.key].hpV || 0; if(hpvA){ p.maxHp += hpvA; p.hp = Math.min(p.maxHp, p.hp + hpvA); }
+    label = '学到被动「' + PASSIVES[c.key].name + ' Lv' + p.npcP[c.key] + '」！';
+  }
+  if(label) texts.push({ x:p.x, y:p.y - 52, v:0, txt:p.name + ' ' + label, t:0, color: c.type === 'passive' ? '#8ad7ff' : '#ffd76a', big: c.type === 'evo' });
+}
+/* ---------------- NPC 按英雄复刻普攻/按键技（2026-10-28 用户令） ----------------
+   根因：hostTick 旧版对所有远端成员（含 NPC）走同一条抽象结算——普攻＝固定公式 16×角色倍率的瞬时单体伤害＋命中点斩击，
+   按键技＝半径 200/340 的金色圆环范围爆发，七名 NPC 打起来一模一样：没有班仔的横扫、没有回旋镖、没有 AK 子弹、没有星弹、没有印章、没有电弧。
+   现 NPC 改走下方专属通道（真人远端成员仍走 hostTick 既有抽象路径、一字未动——真人出手的权威表现是其本机全套武器系统，房主侧只记构筑层，既有定版）：
+   普攻逐英雄镜像 updateWeapons 中该英雄专属武器的分支公式（伤害/间隔/数量/弹射/范围/分支/进化全部读该 NPC 自己的 npcW 条目——学到几级就是几级），
+   按键技逐英雄镜像 doSpecial/releaseExcalibur 的机制与数值（班仔光束＋圣光爆、闻西龙卷风 8 秒＋启动吸附、莫哈哈子母雷三代分裂链、鸡哥隐身＋双烟雾、
+   八思星光连发 6 秒＋减速、黄主任全屏核爆＋易伤、陈哈哈落雷＋牢笼＋感电），持续段由 npcTickNpcFx 在 hostTick 内逐帧推进（与本机 updateSkills 同节拍同数值）。
+   全部结算经 npcHit 统一盖 DMG_SRC＝该 NPC（击杀牛筋/计数按人独立，与真人 peer 同口径）、DMG_CRIT＝该武器自带暴击率＋该 NPC 被动暴击加成（封顶口径同 pCritRate 的被动 +25% 内层上限）、DMG_EL＝该武器元素；Boss 结界外打入拦截走 damageEnemy 既有源位置门禁（DMG_SRC 成员位置）、自动同口径生效。
+   表现走实机既有通道（effects 的 swing/ric/links/ring/exbeam/curry/bolt/cage、spawnVfx、novas、particles、texts），与房主屏本机武器表现同源；
+   客机屏仍走快照 atkT/specT 姿态＋通用表现（快照不下发投射物实体——真人队友在客机屏同此口径，非 NPC 独有缺口）。 */
+function npcNearest(p, n, range){ // nearestEnemies 的任意原点版（原函数绑本机 P，NPC 结算不能用）
+  var list = [];
+  for(var i = 0; i < enemies.length; i++){ var e = enemies[i]; if(e.dead) continue; var d = dist2(p.x, p.y, e.x, e.y); if(d < range * range) list.push({ e:e, d:d }); }
+  list.sort(function(a, b){ return a.d - b.d; });
+  var out = [];
+  for(var j = 0; j < Math.min(n, list.length); j++) out.push(list[j].e);
+  return out;
+}
+function npcHit(p, e, dmg, kx, ky, wkey, critBase, elOv){
+  if(!e || e.dead) return;
+  var wk = wkey || CHARACTERS[p.hero].weapon;
+  DMG_CRIT = Math.min(1, (critBase != null ? critBase : ((WEAPONS[wk] && WEAPONS[wk].crit != null) ? WEAPONS[wk].crit : 0.05)) + Math.min(0.25, 0.06 * (p.npcP.critlens || 0) + npcPSum(p, 'critP')) + (p.hero === 2 && p.npcCritBuffT > 0 ? 0.10 : 0));
+  DMG_EL = elOv !== undefined ? elOv : ((WEAPONS[wk] && WEAPONS[wk].el) || null);
+  DMG_SRC = p.id;
+  damageEnemy(e, dmg, kx || 0, ky || 0);
+  DMG_SRC = null;
+}
+function npcSetPose(p, tgt){ p.atkPoseT = 0.25; p.lastAtkT = gameTime; if(tgt){ var kb = Math.atan2(tgt.y - p.y, tgt.x - p.x); p.faceAng = kb; p.input.faceAng = kb; } }
+function npcBasicAttack(p, tgt, c){
+  var key = CHARACTERS[p.hero].weapon, w = p.npcW[key] || { lv:1, evo:false }, lv = w.lv;
+  var mul = npcMul(p) * earlySigMul() * sigDmgMul(), cd = npcCdMulF(p);
+  var burnHit = function(e, dmg){ npcHit(p, e, dmg, 0, 0, key); if(!e.dead){ e.burnT = Math.max(e.burnT || 0, 2.2); e.burnDps = Math.max(e.burnDps || 0, dmg * 0.22); } };
+  if(key === 'currybat'){ /* 班仔：宽扁半椭圆横扫（与本机普攻同一形状公式/同一伤害间隔公式，读 NPC 自己的 lv/branch/evo） */
+    var reachPre = (w.evo ? 380 : 256 + lv * 22) * (w.branch === 'A' ? 1.45 : 1);
+    if(Math.hypot(tgt.x - p.x, tgt.y - p.y) - tgt.r > reachPre * 0.55 + 8){ p.atkCd = 0.15; return; } // 目标身体边缘还没进横扫半宽：不空挥（与本机「边缘触及才触发」同口径），短复查
+    p.atkCd = (w.evo ? 0.64 : 0.70) * cd * (w.branch === 'B' ? 0.6 : 1);
+    npcSetPose(p, tgt);
+    var reachC = (w.evo ? 380 : 256 + lv * 22) * (w.branch === 'A' ? 1.45 : 1), swD = reachC * 0.46, swW = reachC * 0.55;
+    var angC = Math.atan2(tgt.y - p.y, tgt.x - p.x);
+    p.swingSide = -(p.swingSide || 1);
+    p.npcCombo = (p.npcCombo || 0) + 1; var thrustC = !w.evo && p.npcCombo % 3 === 0;
+    effects.push({ type:'swing', x:p.x, y:p.y, ang:angC, r:reachC, flatD:swD, flatW:swW, t:0, dur:0.22 });
+    if(w.evo){ spawnVfx('divine', p.x, p.y - 8, 165, 0.6); spawnVfx('explosion', p.x + Math.cos(angC) * 120, p.y + Math.sin(angC) * 120, 135, 0.5); effects.push({ type:'ring', x:p.x, y:p.y, t:0, dur:0.4, color:'255,176,46' }); }
+    var dmgC = (w.evo ? 30 : 13 + lv * 4.6) * mul * (w.branch === 'B' ? 0.85 : 1);
+    var cand = npcNearest(p, 999, swW + 90);
+    for(var ci2 = 0; ci2 < cand.length; ci2++){
+      var ec = cand[ci2], ddx = ec.x - p.x, ddy = ec.y - p.y, eD = swD + ec.r, eW = swW + ec.r, hitS = false;
+      for(var sw3 = -1; sw3 <= 1 && !hitS; sw3++){ var caS = Math.cos(angC + sw3 * 0.18), saS = Math.sin(angC + sw3 * 0.18); var du = ddx * caS + ddy * saS, dv = -ddx * saS + ddy * caS; if(du >= -ec.r && (du * du) / (eD * eD) + (dv * dv) / (eW * eW) <= 1) hitS = true; }
+      if(hitS){
+        var kbC = (lv >= 4) ? (thrustC ? 20 : 9) : 0;
+        npcHit(p, ec, thrustC ? dmgC * 1.12 : dmgC, Math.cos(angC) * kbC, Math.sin(angC) * kbC, key);
+        if(Math.random() < 0.55) spawnVfx('slash', ec.x, ec.y, Math.max(30, ec.r * 2.1), 0.26, angC);
+        for(var cb2 = 0; cb2 < (w.bonus || 0); cb2++) npcHit(p, ec, dmgC * 0.6, 0, 0, key);
+        if(w.branch === 'A' && Math.random() < 0.5){ var sp2 = npcNearest(ec, 999, 62); for(var sj = 0; sj < sp2.length; sj++) if(sp2[sj] !== ec) npcHit(p, sp2[sj], dmgC * 0.45, 0, 0, key); }
+      }
+    }
+    if(w.branch === 'C') p.npcProjs.push({ kind:'wheel', x:p.x, y:p.y, ang:angC, speed:460, dmg:dmgC * 0.85, r:13, t:0, life:1.7, state:'out', hitCd:{}, color:'#ffb02e' });
+    if(w.branch === 'D') p.npcProjs.push({ kind:'swordqi', x:p.x, y:p.y, ang:angC, speed:560, dmg:dmgC * 0.75, r:20, t:0, life:0.55, hitCd:{}, color:'#ffd76a' });
+    sfx('swing', 0.5); if(w.evo) sfx('holy', 0.5);
+    return;
+  }
+  if(key === 'boomerang'){ /* 闻西：回旋镖连环弹射（咬住首目标→怪群间逐跳弹射→飞回手中，与本机定版同机制同公式） */
+    p.atkCd = (w.evo ? 1.0 : 1.3) * cd;
+    npcSetPose(p, tgt);
+    var cntB = (w.evo ? 2 : 1 + (lv >= 3 ? 1 : 0)) + (w.branch === 'B' ? 2 : 0) + (w.bonus || 0);
+    var bncB = (w.evo ? 8 : 2 + lv) + (w.branch === 'A' ? 2 : 0);
+    var rngB = w.evo ? 340 : 300, spdB = (w.evo ? 560 : 520 + lv * 12) * (w.branch === 'C' ? 0.82 : 1);
+    var tgB = npcNearest(p, Math.max(cntB, 1), 900);
+    if(w.branch === 'C'){
+      p.npcProjs.push({ kind:'boom', x:p.x, y:p.y, ang:tgB.length ? Math.atan2(tgB[0].y - p.y, tgB[0].x - p.x) : p.faceAng, speed:spdB, dmg:(w.evo ? 32 : 13 + lv * 4.4) * mul * 1.9, r:26, t:0, life:4, bounces:bncB * 2, bounceR:rngB, bDecay:0.88, turnR:3.6, target:tgB[0] || null, visited:{}, state:'seek', color:'#aef29a' });
+    } else for(var b = 0; b < cntB; b++){
+      var tgB2 = tgB.length ? tgB[b % tgB.length] : null;
+      p.npcProjs.push({ kind:'boom', x:p.x, y:p.y, ang:(tgB2 ? Math.atan2(tgB2.y - p.y, tgB2.x - p.x) : p.faceAng) + (b - (cntB - 1) / 2) * 0.28, speed:spdB, dmg:(w.evo ? 32 : 13 + lv * 4.4) * mul * (w.branch === 'A' ? 1.6 : 1), r:(w.evo ? 17 : 11) * (w.branch === 'A' ? 1.55 : 1), t:0, life:4, bounces:bncB, bounceR:rngB, bDecay:w.evo ? 0.88 : 0.82, turnR:4.6, target:tgB2, visited:{}, state:'seek', color:'#8ae86a' });
+    }
+    sfx('throw', 0.5);
+    return;
+  }
+  if(key === 'ak47'){ /* 莫哈哈：真连发（逐颗均匀打出、每发独立索敌；弹射读 NPC 自己的 akRico 解锁状态，逐跳 ×0.72 封顶 3 次——伤害在 npcTickNpcFx 的连发段逐颗结算） */
+    var ivAk = (w.evo ? 0.34 : 0.60 - lv * 0.03) * cd;
+    p.atkCd = ivAk;
+    var shotsAk = (w.evo ? 6 : 3 + Math.floor(lv / 2)) + (w.bonus || 0);
+    p.npcBurstN = shotsAk; p.npcBurstGap = ivAk / shotsAk; p.npcBurstT = 0;
+    npcSetPose(p, tgt);
+    return;
+  }
+  if(key === 'cigshot'){ /* 鸡哥：烟头齐射（逐颗咬不同目标、命中点燃；满级分裂与分支 C 霰弹同本机口径） */
+    p.atkCd = (w.evo ? 0.38 : 0.6) * cd * (w.branch === 'A' ? 0.85 : 1);
+    npcSetPose(p, tgt);
+    var dmgF = (w.evo ? 20 : 6.5 + lv * 2.6) * mul;
+    if(w.branch === 'C'){
+      var pelC = 6 + lv + (w.evo ? 3 : 0), tgC = npcNearest(p, pelC * 2, 250);
+      for(var pc = 0; pc < pelC && tgC.length; pc++){ var ecg = tgC[pc % tgC.length]; effects.push({ type:'ric', pts:[{ x:p.x, y:p.y - 14 }, { x:ecg.x, y:ecg.y }], t:0, dur:0.12, color:'246,242,232' }); burnHit(ecg, dmgF * 0.55); if(lv >= 5){ var ecg2 = tgC[(pc + pelC) % tgC.length]; if(ecg2 && ecg2 !== ecg) burnHit(ecg2, dmgF * 0.55 * 0.55); } }
+    } else {
+      var cntF = 2 + Math.floor(lv / 2) + (w.evo ? 2 : 0) + (w.branch === 'A' ? 3 : 0) + (w.bonus || 0);
+      var tgF = npcNearest(p, cntF * 2, 580);
+      for(var f = 0; f < cntF && tgF.length; f++){ var ef = tgF[f % tgF.length]; effects.push({ type:'ric', pts:[{ x:p.x, y:p.y - 14 }, { x:ef.x, y:ef.y }], t:0, dur:0.12, color:'246,242,232' });
+        if(w.branch === 'B' || w.evo){ npcExplodeAt(p, ef.x, ef.y, 46, dmgF, key, false, true); } else burnHit(ef, dmgF);
+        if(lv >= 5){ var ef2 = tgF[(f + cntF) % tgF.length]; if(ef2 && ef2 !== ef) burnHit(ef2, dmgF * 0.55); } }
+    }
+    sfx('cig', 0.5);
+    return;
+  }
+  if(key === 'octoshot'){ /* 八思：追踪星弹齐射（有限转速拐弯咬目标、命中星爆，与本机定版同机制同公式） */
+    p.atkCd = (w.evo ? 1.05 : 1.3 - lv * 0.04) * cd * (w.branch === 'B' ? 0.62 : 1);
+    npcSetPose(p, tgt);
+    var cntS = (w.evo ? 6 : 2 + Math.ceil(lv / 2)) + (w.bonus || 0);
+    var tgS = npcNearest(p, Math.max(cntS, 1), 900);
+    for(var s = 0; s < cntS; s++){
+      var tgS2 = tgS.length ? tgS[s % tgS.length] : null;
+      p.npcProjs.push({ kind:'star', x:p.x, y:p.y - 30, ang:(tgS2 ? Math.atan2(tgS2.y - p.y, tgS2.x - p.x) : p.faceAng) + (s - (cntS - 1) / 2) * 0.22, speed:505, dmg:(w.evo ? 24 : 10 + lv * 3.8) * mul * (w.branch === 'A' ? 1.55 : 1), r:(w.branch === 'A' ? 10.5 : 7 + lv * 0.55) * (w.evo ? 1.25 : 1), t:0, life:1.6, target:tgS2, turnR:(w.evo ? 3.6 : 2.7 + lv * 0.12) * (w.branch === 'C' ? 1.5 : 1), burstR:(w.branch === 'A' ? 78 : 56 + lv * 3) * (w.evo ? 1.3 : 1) * (w.branch === 'C' ? 1.45 : 1), burstFull: w.branch === 'C', color:'#ffd76a' });
+    }
+    spawnVfx('stars', p.x, p.y - 30, 84, 0.35);
+    sfx('starcast', 0.5);
+    return;
+  }
+  if(key === 'stamp'){ /* 黄主任：空降印章（落点在出手帧锁定、0.1125 秒落下，与本机普攻印同公式；落点结算在 npcTickNpcFx 的事件段） */
+    p.atkCd = (w.evo ? 1.35 : 1.6) * cd * (w.branch === 'B' ? 1.1 : 1);
+    npcSetPose(p, tgt);
+    var cntT = (w.evo ? 2 : 1) + Math.floor(lv / 2) + (w.branch === 'A' ? 2 : 0) + (w.bonus || 0);
+    var tgT = npcNearest(p, cntT, 560);
+    for(var st = 0; st < tgT.length; st++) p.npcFx.push({ t:0.1125, kind:'stamp', x:tgT[st].x, y:tgT[st].y, dmg:(w.evo ? 64 : 25 + lv * 9.5) * mul * (w.branch === 'B' ? 1.7 : 1), r:(w.evo ? 80 : 56) * (w.branch === 'B' ? 1.3 : 1), chain: w.branch === 'C' ? 1 : 0 });
+    sfx('stamp', 0.5);
+    return;
+  }
+  if(key === 'chainvolt'){ /* 陈哈哈：链式闪电（首跳 400、逐跳 ×0.86、跳距 235/虚空乱流 300、Lv3 分叉电，与本机普攻同公式） */
+    var mulV = mul;
+    if(w.branch === 'C'){ /* 雷暴云形态：罩住首目标持续电击 */
+      p.atkCd = (w.evo ? 3.4 : 4.6 - lv * 0.2) * cd;
+      npcSetPose(p, tgt);
+      p.npcZones.push({ type:'volt', x:tgt.x, y:tgt.y, r: w.evo ? 168 : 118 + lv * 8, t:0, dur: w.evo ? 3.6 : 2.4 + lv * 0.12, tick:0, dps:(w.evo ? 44 : 15 + lv * 5.5) * mulV });
+      spawnVfx('ard_volt', tgt.x, tgt.y, 130, 0.4);
+      sfx('cage');
+      return;
+    }
+    p.atkCd = (w.evo ? 0.95 : 1.3 - lv * 0.05) * cd;
+    npcSetPose(p, tgt);
+    var chains = (w.evo ? 12 : 1 + lv) + (w.branch === 'A' ? 4 : 0) + (w.bonus || 0) * 2;
+    var jumpR = (typeof curWeather !== 'undefined' && curWeather === '虚空乱流') ? 300 : 235;
+    var curV = tgt, hitSet = {}, dmgV = (w.evo ? 42 : 18 + lv * 6.5) * mulV, linkPts = [{ x:p.x + (p.face >= 0 ? 13 : -13), y:p.y - 32 }];
+    for(var vc = 0; vc < chains && curV; vc++){
+      hitSet[curV.id] = true; linkPts.push({ x:curV.x, y:curV.y });
+      curV.strikeT = 0.18; curV.jitter = 0.25;
+      npcHit(p, curV, dmgV, 0, 0, key);
+      dmgV *= 0.86;
+      var nextV = null, bestVd = jumpR * jumpR;
+      for(var ve = 0; ve < enemies.length; ve++){ var ev2 = enemies[ve]; if(ev2.dead || hitSet[ev2.id]) continue; var vd = dist2(curV.x, curV.y, ev2.x, ev2.y); if(vd < bestVd){ bestVd = vd; nextV = ev2; } }
+      curV = nextV;
+    }
+    if(lv >= 3 && linkPts.length > 2){
+      var forkFrom = linkPts[2], forkT = null, forkD = jumpR * jumpR;
+      for(var fe = 0; fe < enemies.length; fe++){ var fe2 = enemies[fe]; if(fe2.dead || hitSet[fe2.id]) continue; var fd2 = dist2(forkFrom.x, forkFrom.y, fe2.x, fe2.y); if(fd2 < forkD){ forkD = fd2; forkT = fe2; } }
+      if(forkT){ npcHit(p, forkT, (w.evo ? 40 : 16 + lv * 6) * mulV * 0.5, 0, 0, key); forkT.strikeT = 0.18; effects.push({ type:'links', pts:[forkFrom, { x:forkT.x, y:forkT.y }], t:0, dur:0.3, wdt:0.75 }); }
+    }
+    if(linkPts.length > 1) effects.push({ type:'links', pts:linkPts, t:0, dur:0.38, wdt:1 + lv * 0.3, col:'140,215,255' });
+    spawnVfx('ard_volt', tgt.x, tgt.y, 110, 0.35);
+    sfx('zap', 0.5);
+    return;
+  }
+  /* 兜底（不应到达：七英雄专属武器已全覆盖） */
+  p.atkCd = 0.55;
+  npcHit(p, tgt, 16 * c.dmgMul * mul, (tgt.x - p.x) * 0.1, (tgt.y - p.y) * 0.1, key);
+}
+function npcExplodeAt(p, x, y, R, dmg, wkey, big, noMark){ // 爆炸结算（莫哈哈按键技三代分裂链/鸡哥爆裂烟核共用）：附带效果与 explodeNade 同口径——没炸死的挂暴击标记（仅发压德轰链，noMark 时不挂）、点燃 2.2 秒（伤害 ×0.22/秒）、沿爆心向外击退 14
+  novas.push({ x:x, y:y, r:8, maxR:R, t:0, color:'#ffb02e', big:!!big });
+  spawnVfx('explosion', x, y, R * 1.9, 0.55);
+  burst(x, y, '#ff7a3e', fxN(big ? 16 : 8));
+  var list = npcNearest({ x:x, y:y }, 999, R + 70);
+  for(var i = 0; i < list.length; i++){ var e = list[i]; if(Math.hypot(e.x - x, e.y - y) > R + e.r) continue;
+    var dxn = e.x - x, dyn = e.y - y, dn = Math.sqrt(dxn * dxn + dyn * dyn) || 1;
+    npcHit(p, e, dmg, dxn / dn * 14, dyn / dn * 14, wkey);
+    if(!e.dead){ if(!noMark && !e.critMark){ e.critMark = true; if(e.boss || e.elite) texts.push({ x:e.x, y:e.y - e.r - 18, v:0, txt:'暴击标记！攻击它暴击率 +10%', t:0, color:'#ff8a5a' }); }
+      e.burnT = Math.max(e.burnT || 0, 2.2); e.burnDps = Math.max(e.burnDps || 0, dmg * 0.22); }
+  }
+  if(big) shake = Math.max(shake, 6);
+  sfx('nadeboom');
+}
+function npcTornadoPull(p){ // tornadoPullOnce 的 NPC 原点版（例外口径逐项相同：精英/Boss/其他地图/noContact 不吸）
+  if(typeof MAZE !== 'undefined' && MAZE.active) return;
+  if(typeof voidArena !== 'undefined' && voidArena) return;
+  for(var pv = 0; pv < enemies.length; pv++){
+    var pe = enemies[pv];
+    if(pe.dead || pe.elite || pe.boss || pe.noContact) continue;
+    var pdx = p.x - pe.x, pdy = p.y - pe.y, pd = Math.sqrt(pdx * pdx + pdy * pdy) || 1;
+    var stopR = 64 + pe.r;
+    if(pd <= stopR) continue;
+    var dest = nudgeLand(p.x - pdx / pd * stopR, p.y - pdy / pd * stopR);
+    particles.push({ x:pe.x, y:pe.y - 6, vx:pdx / pd * 320, vy:pdy / pd * 320, t:0, life:0.3, color:'#8ae86a', r:2.5 });
+    pe.x = dest.x; pe.y = dest.y;
+  }
+}
+function npcCastSpecial(p, c){
+  var key = CHARACTERS[p.hero].weapon, w = p.npcW[key] || { lv:1, evo:false };
+  var mul = npcMul(p);
+  p.specCd = c.specCd * npcSpecCdMulF(p); p.specPoseT = 0.5; p.lastSpecT = gameTime;
+  effects.push({ type:'ring', x:p.x, y:p.y, t:0, dur:0.6, color:'255,240,200' });
+  texts.push({ x:p.x, y:p.y - 56, v:0, txt:c.specName, t:0, color:'#ffd76a', big:true });
+  var i, e;
+  if(p.hero === 0){ /* 班仔：Ex咖哩棒解放（NPC 无长按蓄力、按当前朝向即时释放；光束/圣光爆伤害与击退同 releaseExcalibur 定版：光束 195、圣光爆 90、击退 420/330、Boss ×0.25、无敌窗取光束段 0.85 秒） */
+    var ang0 = p.faceAng, beamLen = 940, beamWid = 150, hitIds = {};
+    effects.push({ type:'exbeam', x:p.x, y:p.y - 10, ang:ang0, t:0, dur:0.85, len:beamLen, wid:beamWid });
+    effects.push({ type:'curry', x:p.x, y:p.y, ang:ang0, t:0, dur:0.65 });
+    effects.push({ type:'flash', t:0, dur:0.42, color:'255,190,70' });
+    spawnVfx('divine', p.x, p.y - 6, 150, 0.6);
+    spawnVfx('divine', p.x + Math.cos(ang0) * 300, p.y + Math.sin(ang0) * 300, 200, 0.75);
+    spawnVfx('explosion', p.x + Math.cos(ang0) * 520, p.y + Math.sin(ang0) * 520, 175, 0.65);
+    for(i = 0; i < enemies.length; i++){ e = enemies[i]; if(e.dead) continue;
+      var dx = e.x - p.x, dy = e.y - p.y, along0 = dx * Math.cos(ang0) + dy * Math.sin(ang0), perp0 = Math.abs(-dx * Math.sin(ang0) + dy * Math.cos(ang0));
+      if(along0 > -20 && along0 < beamLen && perp0 < beamWid * (0.5 + 0.45 * Math.max(0, along0) / beamLen) + e.r){
+        hitIds[e.id] = 1; e.curryT = 3;
+        npcHit(p, e, 195 * mul, 0, 0, key);
+        if(!e.dead && !(e.type === 'ghost' && e.ghState)){ var kbBm = 420 * (e.boss ? 0.25 : 1); e.x += Math.cos(ang0) * kbBm; e.y += Math.sin(ang0) * kbBm; }
+      }
+    }
+    for(i = 0; i < enemies.length; i++){ e = enemies[i]; if(e.dead || hitIds[e.id]) continue;
+      var dx2 = e.x - p.x, dy2 = e.y - p.y;
+      if(dx2 * dx2 + dy2 * dy2 < (150 + e.r) * (150 + e.r)){ e.curryT = 3; var ba = Math.atan2(dy2, dx2);
+        npcHit(p, e, 90 * mul, 0, 0, key);
+        if(!e.dead && !(e.type === 'ghost' && e.ghState)){ var kbBl = 330 * (e.boss ? 0.25 : 1); e.x += Math.cos(ba) * kbBl; e.y += Math.sin(ba) * kbBl; }
+      }
+    }
+    p.invuln = Math.max(p.invuln, 0.85);
+    texts.push({ x:p.x, y:p.y - 74, v:0, txt:'Ex咖哩棒解放！！', t:0, color:'#ffb02e', big:true });
+    shake = Math.max(shake, 12);
+    sfx('swordheavy'); sfx('holy'); sfx('fboom');
+  }
+  else if(p.hero === 1){ /* 闻西：龙卷风吹毁停车场（持续 8 秒/0.35 秒一跳 42/TORNADO_R 185/启动一次性吸附——持续段在 npcTickNpcFx；持续期间移速 ×1.3 与无敌窗同本机口径，冷却冻结规则见 hostTick specCd 段） */
+    p.npcTornadoT = 8; p.npcTornadoTick = 0;
+    npcTornadoPull(p);
+    sfx('tornado', 0.5); sfx('boxing', 0.5);
+  }
+  else if(p.hero === 2){ /* 莫哈哈：发压德轰（子母雷三代分裂链 1→6→12，逐代伤害/范围/散开距离/延迟同 doSpecial 定版，进化读 NPC 自己的 ak47 evo；事件链在 npcTickNpcFx 推进） */
+    var densE = npcNearest(p, 1, 780);
+    var txE = densE.length ? densE[0].x : p.x + Math.cos(p.faceAng) * 200;
+    var tyE = densE.length ? densE[0].y : p.y + Math.sin(p.faceAng) * 200;
+    var akEvo = !!w.evo;
+    p.npcFx.push({ t:0.8, kind:'nade', x:txE, y:tyE, dmg:150 * mul, r:132, big:true,
+      splits:6, splitDmg:(akEvo ? 60 : 44) * mul, splitBoomR: akEvo ? 86 : 64, splitDistMin:100, splitDistMax:180,
+      childSplits:2, childSplitDmg:(akEvo ? 36 : 26) * mul, childSplitBoomR: akEvo ? 70 : 52, childSplitDistMin:60, childSplitDistMax:120 });
+    p.npcCritBuffT = 10;
+    texts.push({ x:p.x, y:p.y - 56, v:0, txt:'Fire in the hole!', t:0, color:'#ffd76a', big:true });
+    if(akEvo) texts.push({ x:p.x, y:p.y - 84, v:0, txt:'雷蛋齐飞！', t:0.15, color:'#ffb02e', big:true });
+    sfx('pin'); sfxLater('firehole', 110); sfxLater('whoosh', 190);
+    shake = Math.max(shake, 7);
+  }
+  else if(p.hero === 3){ /* 鸡哥：烟鬼（隐身 5 秒＋固定烟雾 6 秒/半径 235＋拖尾烟雾——持续段在 npcTickNpcFx；隐身期间不被索敌不受击、移速 ×1.3、每秒回 5% 上限，口径同本机 JG 定版） */
+    p.npcSmokeX = p.x; p.npcSmokeY = p.y; p.npcSmokeT = 6; p.npcSmokeTick = 0;
+    p.npcInvisT = JG_INVIS_DUR; p.npcTrailTick = 0;
+    for(i = 0; i < 3; i++) novas.push({ x:p.x, y:p.y, r:8 + i * 6, maxR:120 + i * 55, t:-i * 0.1, color:'#d5d9dd' });
+    for(i = 0; i < 3; i++) spawnVfx('smoke', p.x + rand(-50, 50), p.y - 12 + rand(-16, 16), 120 + i * 22, 1.25);
+    texts.push({ x:p.x, y:p.y - 56, v:0, txt:'烟鬼！', t:0, color:'#e8ebee', big:true });
+    sfx('smoke', 1.4); sfx('myeyes', 1.35);
+  }
+  else if(p.hero === 4){ /* 八思：老天再爱我一次（持续 6 秒、每 0.2 秒一发、每发同时命中最近至多 6 敌、单发 12、命中减速 basiSlowT 5 秒——逐发段在 npcTickNpcFx，倍率释放帧锁定同本机口径） */
+    p.npcStarT = 6; p.npcStarTick = 0; p.npcStarMul = mul;
+    texts.push({ x:p.x, y:p.y - 56, v:0, txt:'老天再爱我一次！', t:0, color:'#a8dcff', big:true });
+    sfx('special'); sfx('holy'); sfx('chuanxi');
+    shake = Math.max(shake, 4);
+  }
+  else if(p.hero === 5){ /* 黄主任：牛马审判（锁定敌群最密处、巨印 1.15 秒落下、全屏核爆 115＋易伤 10 秒——落印事件在 npcTickNpcFx） */
+    var sealT = null, sealScore = -1, vrS = viewRange();
+    for(var sei = 0; sei < enemies.length; sei++){ var se2 = enemies[sei]; if(se2.dead) continue; if(dist2(p.x, p.y, se2.x, se2.y) > vrS * vrS) continue;
+      var sc2 = 0; for(var sej = 0; sej < enemies.length; sej++){ var se3 = enemies[sej]; if(!se3.dead && dist2(se2.x, se2.y, se3.x, se3.y) < 150 * 150) sc2++; }
+      if(sc2 > sealScore){ sealScore = sc2; sealT = se2; } }
+    var sx5 = sealT ? sealT.x : p.x + Math.cos(p.faceAng) * 130, sy5 = sealT ? sealT.y : p.y + Math.sin(p.faceAng) * 130;
+    p.npcFx.push({ t:1.15, kind:'bigseal', x:sx5, y:sy5, dmg:115 * mul, r:vrS * 2 + 160 });
+    texts.push({ x:sx5, y:sy5 - 110, v:0, txt:'牛马审判 · 全屏核爆！', t:0, color:'#ffd23e', big:true });
+    sfx('stamp');
+  }
+  else if(p.hero === 6){ /* 陈哈哈：豪情在天（落雷 8 道优先 Boss/精英、每道落点圈 125＋感电；牢笼圈 320 内未被落雷者 55＋眩晕 1.1＋感电——同 doSpecial 口径，感电走既有 applyShock） */
+    effects.push({ type:'flash', t:0, dur:0.3, color:'170,215,255' });
+    effects.push({ type:'cage', x:p.x, y:p.y, t:0, dur:0.85 });
+    var aliveZ = enemies.filter(function(en){ return !en.dead; });
+    aliveZ.sort(function(a, b){ return (b.boss - a.boss) || (b.elite - a.elite) || (Math.random() - 0.5); });
+    var strikes = Math.min(aliveZ.length, 8), struck = {};
+    for(i = 0; i < strikes; i++){
+      var ze = aliveZ[i]; struck[ze.id] = true;
+      effects.push({ type:'bolt', x:ze.x, y:ze.y, t:-i * 0.05, dur:0.32 });
+      effects.push({ type:'links', pts:[{ x:p.x + (p.face >= 0 ? 13 : -13), y:p.y - 32 }, { x:ze.x, y:ze.y }], t:-i * 0.05, dur:0.45 });
+      var zlist = npcNearest(ze, 999, 102 + 70);
+      for(var zk = 0; zk < zlist.length; zk++){ var ez = zlist[zk]; if(Math.hypot(ez.x - ze.x, ez.y - ze.y) > 102 + ez.r) continue;
+        ez.stun = Math.max(ez.stun || 0, 1.4); ez.jitter = 0.35; ez.strikeT = 0.18;
+        npcHit(p, ez, 125 * mul, 0, 0, key);
+        if(!ez.dead) applyShock(ez, CH_SHOCK_DMG * mul);
+      }
+    }
+    var cageList = npcNearest(p, 999, 320);
+    for(i = 0; i < cageList.length; i++){
+      if(!struck[cageList[i].id]){
+        cageList[i].stun = Math.max(cageList[i].stun || 0, 1.1);
+        npcHit(p, cageList[i], 55 * mul, 0, 0, key);
+        if(!cageList[i].dead) applyShock(cageList[i], CH_SHOCK_DMG * mul);
+        if(i < 8) effects.push({ type:'links', pts:[{ x:p.x + (p.face >= 0 ? 13 : -13), y:p.y - 32 }, { x:cageList[i].x, y:cageList[i].y }], t:0, dur:0.4 });
+      }
+    }
+    texts.push({ x:p.x, y:p.y - 66, v:0, txt:'豪情在天！', t:0, color:'#a8dcff', big:true });
+    shake = Math.max(shake, 8);
+    sfx('cage'); sfx('guixia');
+  }
+}
+function npcTickNpcFx(p, dt){ // NPC 持续段总推进（hostTick 内、存活且未倒地时调用）：按键技持续状态/定时事件/模拟投射物/持续区域/AK 连发——节拍与数值逐项对齐本机 updateSkills/updateWeapons 对应段
+  var key = CHARACTERS[p.hero].weapon, w = p.npcW[key] || { lv:1, evo:false }, mul = npcMul(p);
+  if(p.npcCritBuffT > 0) p.npcCritBuffT -= dt;
+  /* 闻西龙卷风持续：0.35 秒一跳、TORNADO_R 内 42×mul、带小击退（同本机段） */
+  if(p.npcTornadoT > 0){
+    p.npcTornadoT -= dt; p.npcTornadoTick -= dt;
+    for(var tp = 0; tp < 2; tp++){ var ta = rand(0, Math.PI * 2), tr = rand(50, 140); particles.push({ x:p.x + Math.cos(ta) * tr, y:p.y + Math.sin(ta) * tr, vx:-Math.sin(ta) * 190, vy:-70, t:0, life:0.4, color:'#8ae86a', r:3 }); }
+    if(p.npcTornadoTick <= 0){
+      p.npcTornadoTick = 0.35;
+      var inT = npcNearest(p, 999, TORNADO_R + 40);
+      for(var tt = 0; tt < inT.length; tt++){ var et2 = inT[tt]; if(Math.hypot(et2.x - p.x, et2.y - p.y) > TORNADO_R + et2.r) continue;
+        var dxt = et2.x - p.x, dyt = et2.y - p.y, dtl = Math.sqrt(dxt * dxt + dyt * dyt) || 1;
+        npcHit(p, et2, 42 * mul, dxt / dtl * 6, dyt / dtl * 6, key);
+      }
+    }
+  }
+  /* 八思星光连发持续：0.2 秒一发、每发同时命中最近至多 6 敌、单发 12×释放帧锁定倍率、命中挂 basiSlowT 减速 5 秒（同本机段） */
+  if(p.npcStarT > 0){
+    p.npcStarT -= dt; p.npcStarTick -= dt;
+    if(p.npcStarTick <= 0){
+      p.npcStarTick += 0.2; if(p.npcStarTick <= 0) p.npcStarTick = 0.2;
+      var tgStar = npcNearest(p, 6, viewRange());
+      if(tgStar.length){
+        for(var sgi = 0; sgi < tgStar.length; sgi++){ var sge = tgStar[sgi];
+          npcHit(p, sge, 12 * p.npcStarMul, 0, 0, key, 0.15, 'light'); /* 星光连发的暴击/元素与本机同章：基础暴击 15%、光元素（不走普攻星弹的武器盖章） */
+          if(!sge.dead){ var bsNew = !(sge.basiSlowT > 0); sge.basiSlowT = 5; if(bsNew && (sge.boss || sge.elite)) texts.push({ x:sge.x, y:sge.y - sge.r - 18, v:0, txt:'减速！移速 −50%（5 秒）', t:0, color:'#a8dcff' }); }
+          spawnVfx('divine', sge.x, sge.y, 66, 0.4); burst(sge.x, sge.y, '#ffe97a', fxN(6));
+        }
+        sfx('holy');
+      }
+    }
+  }
+  /* 鸡哥隐身＋固定烟雾持续（同本机 JG 段）：站在固定烟雾区内隐身计时暂停；隐身期每秒回 5% 上限；拖尾烟雾 0.4 秒一跳 13×mul（与固定区重叠不重复叠伤）；固定烟雾 0.4 秒一跳 13×mul＋减速 0.45＋Boss 逐跳短晕、普通/精英锁晕 */
+  if(p.npcInvisT > 0){
+    var inFixedSmoke = (p.npcSmokeT > 0) && dist2(p.x, p.y, p.npcSmokeX, p.npcSmokeY) < JG_SMOKE_R * JG_SMOKE_R;
+    if(!inFixedSmoke) p.npcInvisT -= dt;
+    if(p.npcInvisT < 0) p.npcInvisT = 0;
+    if(p.hp > 0 && p.hp < p.maxHp){ p.npcInvisHealAcc = (p.npcInvisHealAcc || 0) + p.maxHp * JG_INVIS_HEAL * dt; var ihg = Math.floor(p.npcInvisHealAcc); if(ihg >= 1){ p.npcInvisHealAcc -= ihg; p.hp = Math.min(p.maxHp, p.hp + ihg); } } else p.npcInvisHealAcc = 0;
+    p.npcTrailTick -= dt;
+    if(p.npcTrailTick <= 0){
+      p.npcTrailTick = 0.4;
+      particles.push({ x:p.x + rand(-14, 14), y:p.y - rand(0, 22), vx:rand(-10, 10), vy:rand(-30, -12), t:0, life:rand(0.6, 1.1), color:'rgba(205,209,213,.5)', r:rand(9, 17) });
+      var trL = npcNearest(p, 999, JG_TRAIL_R + 40);
+      for(var tsm = 0; tsm < trL.length; tsm++){ var etr = trL[tsm]; if(Math.hypot(etr.x - p.x, etr.y - p.y) > JG_TRAIL_R + etr.r) continue;
+        if(p.npcSmokeT > 0 && dist2(p.npcSmokeX, p.npcSmokeY, etr.x, etr.y) < JG_SMOKE_R * JG_SMOKE_R) continue;
+        npcHit(p, etr, 13 * mul, 0, 0, key);
+        if(etr.boss) applyStunResist(etr, 1.0);
+      }
+    }
+  }
+  if(p.npcSmokeT > 0){
+    p.npcSmokeT -= dt; p.npcSmokeTick -= dt;
+    if(Math.random() < 0.5){ var sa2 = rand(0, Math.PI * 2), sr3 = rand(0, 190); particles.push({ x:p.npcSmokeX + Math.cos(sa2) * sr3, y:p.npcSmokeY + Math.sin(sa2) * sr3 - 10, vx:rand(-8, 8), vy:rand(-34, -16), t:0, life:rand(0.7, 1.2), color:'rgba(205,209,213,.55)', r:rand(9, 17) }); }
+    if(p.npcSmokeTick <= 0){
+      p.npcSmokeTick = 0.4;
+      var smL = npcNearest({ x:p.npcSmokeX, y:p.npcSmokeY }, 999, JG_SMOKE_R + 40);
+      for(var sm2 = 0; sm2 < smL.length; sm2++){ var esm = smL[sm2]; if(Math.hypot(esm.x - p.npcSmokeX, esm.y - p.npcSmokeY) > JG_SMOKE_R + esm.r) continue;
+        esm.slow = Math.max(esm.slow || 0, 0.45);
+        npcHit(p, esm, 13 * mul, 0, 0, key);
+        if(!esm.dead){ if(esm.boss) applyStunResist(esm, 1.0); else esm.stun = Math.max(esm.stun || 0, 0.45); }
+      }
+    }
+  }
+  /* 持续区域（雷暴云）：0.25 秒结算一跳 dps×0.25（本机 zones 的逐跳口径在此按等值节拍折算，总量与 dur×dps 一致） */
+  for(var zi = p.npcZones.length - 1; zi >= 0; zi--){ var zn = p.npcZones[zi];
+    zn.t += dt; zn.tick -= dt;
+    if(Math.random() < 0.4) particles.push({ x:zn.x + rand(-zn.r, zn.r) * 0.7, y:zn.y + rand(-zn.r, zn.r) * 0.7, vx:0, vy:-26, t:0, life:0.4, color:'rgba(140,215,255,.6)', r:rand(6, 12) });
+    if(zn.tick <= 0){ zn.tick = 0.25;
+      var zL = npcNearest(zn, 999, zn.r + 40);
+      for(var ze2 = 0; ze2 < zL.length; ze2++){ var ez2 = zL[ze2]; if(Math.hypot(ez2.x - zn.x, ez2.y - zn.y) > zn.r + ez2.r) continue; ez2.strikeT = 0.15; npcHit(p, ez2, zn.dps * 0.25, 0, 0, key); }
+    }
+    if(zn.t >= zn.dur) p.npcZones.splice(zi, 1);
+  }
+  /* 定时事件：印章落点/子母雷三代/牛马审判落印 */
+  for(var fi2 = p.npcFx.length - 1; fi2 >= 0; fi2--){ var fx = p.npcFx[fi2];
+    fx.t -= dt;
+    if(fx.t > 0) continue;
+    p.npcFx.splice(fi2, 1);
+    if(fx.kind === 'stamp'){
+      var sL = npcNearest(fx, 999, fx.r + 70);
+      for(var si3 = 0; si3 < sL.length; si3++){ var es3 = sL[si3]; if(Math.hypot(es3.x - fx.x, es3.y - fx.y) > fx.r + es3.r) continue; npcHit(p, es3, fx.dmg, 0, 0, key); }
+      effects.push({ type:'ring', x:fx.x, y:fx.y, t:0, dur:0.3, color:'255,210,62' });
+      burst(fx.x, fx.y, '#ffd23e', fxN(8));
+      if(fx.chain){ var nxT = null, nxD = 300 * 300; for(var ci3 = 0; ci3 < enemies.length; ci3++){ var eci = enemies[ci3]; if(eci.dead) continue; var dd3 = dist2(fx.x, fx.y, eci.x, eci.y); if(dd3 < nxD && Math.hypot(eci.x - fx.x, eci.y - fx.y) > fx.r + eci.r){ nxD = dd3; nxT = eci; } }
+        if(nxT) p.npcFx.push({ t:0.1125, kind:'stamp', x:nxT.x, y:nxT.y, dmg:fx.dmg * 0.7, r:fx.r * 0.8, chain:0 }); }
+      sfx('stamp', 0.6);
+    }
+    else if(fx.kind === 'nade'){
+      npcExplodeAt(p, fx.x, fx.y, fx.r, fx.dmg, key, fx.big);
+      if(fx.splits > 0){
+        for(var si2 = 0; si2 < fx.splits; si2++){
+          var sa3 = (Math.PI * 2 / fx.splits) * si2 + rand(-0.24, 0.24), sd3 = rand(fx.splitDistMin || 100, fx.splitDistMax || 180);
+          p.npcFx.push({ t:si2 * 0.07 + 0.5, kind:'nade', x:fx.x + Math.cos(sa3) * sd3, y:fx.y + Math.sin(sa3) * sd3, dmg:fx.splitDmg, r:fx.splitBoomR || 64, big:false,
+            splits:fx.childSplits || 0, splitDmg:fx.childSplitDmg || 0, splitBoomR:fx.childSplitBoomR || 52, splitDistMin:fx.childSplitDistMin || 60, splitDistMax:fx.childSplitDistMax || 120,
+            childSplits:0, childSplitDmg:0, childSplitBoomR:52, childSplitDistMin:60, childSplitDistMax:120 });
+        }
+      }
+    }
+    else if(fx.kind === 'bigseal'){
+      effects.push({ type:'flash', t:0, dur:0.35, color:'255,140,110' });
+      effects.push({ type:'ring', x:fx.x, y:fx.y, t:0, dur:0.7, color:'255,210,62' });
+      shake = Math.max(shake, 10);
+      var bL = npcNearest(fx, 999, fx.r);
+      for(var bi = 0; bi < bL.length; bi++){ var eb = bL[bi];
+        npcHit(p, eb, fx.dmg, 0, 0, key);
+        if(!eb.dead){ eb.vulnT = 10; if(eb.boss || eb.elite) texts.push({ x:eb.x, y:eb.y - eb.r - 18, v:0, txt:'易伤！受到伤害 +10%（10 秒）', t:0, color:'#ffb02e' }); }
+      }
+      sfx('fboom');
+    }
+  }
+  /* AK 连发段：逐颗均匀打出、每发独立索敌、命中点燃小额燃烧；学到弹射（akRico）后逐跳 ×0.72 折线弹射至多 3 次（索敌半径 215，同 AK 弹射定版） */
+  if(p.npcBurstN > 0){
+    p.npcBurstT -= dt;
+    var wAk = p.npcW.ak47 || { lv:1, evo:false }, lvAk = wAk.lv;
+    while(p.npcBurstN > 0 && p.npcBurstT <= 0){
+      p.npcBurstT += p.npcBurstGap; p.npcBurstN--;
+      var tgAk = npcNearest(p, 1, 640);
+      if(tgAk.length){
+        var be = tgAk[0], bang = Math.atan2(be.y - p.y, be.x - p.x) + rand(-0.05, 0.05);
+        p.faceAng = bang; p.input.faceAng = bang;
+        spawnVfx('muzzle', p.x + Math.cos(bang) * 24, p.y + Math.sin(bang) * 24 - 10, 20, 0.12, bang);
+        var bdmg = (wAk.evo ? 15 : 7 + lvAk * 2.4) * mul, hitSetAk = {};
+        var curAk = be, jumpAk = 0;
+        effects.push({ type:'ric', pts:[{ x:p.x + Math.cos(bang) * 24, y:p.y + Math.sin(bang) * 24 - 14 }, { x:be.x, y:be.y }], t:0, dur:0.12 });
+        while(curAk){
+          hitSetAk[curAk.id] = true;
+          npcHit(p, curAk, bdmg, 0, 0, 'ak47');
+          if(!curAk.dead){ curAk.burnT = Math.max(curAk.burnT || 0, 2.2); curAk.burnDps = Math.max(curAk.burnDps || 0, 3); }
+          if(!wAk.akRico || jumpAk >= 3) break;
+          var nxAk = null, nxAkD = 215 * 215;
+          for(var ai = 0; ai < enemies.length; ai++){ var ea = enemies[ai]; if(ea.dead || hitSetAk[ea.id]) continue; var da = dist2(curAk.x, curAk.y, ea.x, ea.y); if(da < nxAkD){ nxAkD = da; nxAk = ea; } }
+          if(!nxAk) break;
+          effects.push({ type:'ric', pts:[{ x:curAk.x, y:curAk.y }, { x:nxAk.x, y:nxAk.y }], t:0, dur:0.12 });
+          curAk = nxAk; bdmg *= 0.72; jumpAk++;
+        }
+        if(gameTime - (p.npcGunSfxT || -1) >= 0.05){ p.npcGunSfxT = gameTime; sfx('gun'); }
+      }
+    }
+  }
+  /* 模拟投射物：回旋镖（弹射链＋返航）/追踪星弹（拐弯＋星爆）/班仔回旋轮（穿透切割＋返航）/剑气（直线穿透）——推进与命中规则镜像本机 projectiles 对应弹种 */
+  for(var pi2 = p.npcProjs.length - 1; pi2 >= 0; pi2--){ var pr = p.npcProjs[pi2];
+    pr.t += dt;
+    var dead = pr.t > pr.life;
+    if(pr.kind === 'boom'){
+      if(pr.state === 'seek'){
+        if(!pr.target || pr.target.dead){
+          var nt = null, nd = (pr.bounceR || 300) * (pr.bounceR || 300);
+          for(var qi = 0; qi < enemies.length; qi++){ var qe = enemies[qi]; if(qe.dead || pr.visited[qe.id]) continue; var qd = dist2(pr.x, pr.y, qe.x, qe.y); if(qd < nd){ nd = qd; nt = qe; } }
+          pr.target = nt;
+          if(!nt) pr.state = 'return';
+        }
+        if(pr.target){
+          var wa = Math.atan2(pr.target.y - pr.y, pr.target.x - pr.x), da2 = ((wa - pr.ang) % (Math.PI * 2) + Math.PI * 3) % (Math.PI * 2) - Math.PI, mxTurn = pr.turnR * dt;
+          pr.ang += Math.max(-mxTurn, Math.min(mxTurn, da2));
+          pr.x += Math.cos(pr.ang) * pr.speed * dt; pr.y += Math.sin(pr.ang) * pr.speed * dt;
+          if(Math.hypot(pr.target.x - pr.x, pr.target.y - pr.y) < pr.target.r + pr.r + 4){
+            var hitE = pr.target;
+            pr.visited[hitE.id] = true;
+            npcHit(p, hitE, pr.dmg, Math.cos(pr.ang) * 30, Math.sin(pr.ang) * 30, key);
+            spawnVfx('slash', hitE.x, hitE.y, Math.max(30, hitE.r * 2), 0.22, pr.ang);
+            pr.dmg *= pr.bDecay;
+            if(pr.bounces > 0){ pr.bounces--; pr.target = null; } else pr.state = 'return';
+          }
+        } else { pr.x += Math.cos(pr.ang) * pr.speed * dt; pr.y += Math.sin(pr.ang) * pr.speed * dt; }
+      }
+      if(pr.state === 'return'){
+        var ra = Math.atan2(p.y - pr.y, p.x - pr.x);
+        pr.ang = ra;
+        pr.x += Math.cos(ra) * pr.speed * dt; pr.y += Math.sin(ra) * pr.speed * dt;
+        if(Math.hypot(p.x - pr.x, p.y - pr.y) < 30) dead = true;
+      }
+      particles.push({ x:pr.x, y:pr.y, vx:0, vy:0, t:0, life:0.09, color:pr.color, r:pr.r * 0.5, star:true });
+    }
+    else if(pr.kind === 'star'){
+      if(pr.target && !pr.target.dead){
+        var wa2 = Math.atan2(pr.target.y - pr.y, pr.target.x - pr.x), da3 = ((wa2 - pr.ang) % (Math.PI * 2) + Math.PI * 3) % (Math.PI * 2) - Math.PI, mxT2 = pr.turnR * dt;
+        pr.ang += Math.max(-mxT2, Math.min(mxT2, da3));
+      }
+      pr.x += Math.cos(pr.ang) * pr.speed * dt; pr.y += Math.sin(pr.ang) * pr.speed * dt;
+      particles.push({ x:pr.x, y:pr.y, vx:0, vy:0, t:0, life:0.09, color:'#ffe97a', r:2.4, star:true });
+      var hitS2 = null;
+      for(var hi = 0; hi < enemies.length; hi++){ var he = enemies[hi]; if(he.dead) continue; if(Math.hypot(he.x - pr.x, he.y - pr.y) < he.r + pr.r + 2){ hitS2 = he; break; } }
+      if(hitS2){
+        npcHit(p, hitS2, pr.dmg, Math.cos(pr.ang) * 12, Math.sin(pr.ang) * 12, key);
+        var bL2 = npcNearest(pr, 999, pr.burstR + 60);
+        for(var bi2 = 0; bi2 < bL2.length; bi2++){ var eb2 = bL2[bi2]; if(eb2 === hitS2) continue; if(Math.hypot(eb2.x - pr.x, eb2.y - pr.y) > pr.burstR + eb2.r) continue; npcHit(p, eb2, pr.dmg * (pr.burstFull ? 1 : 0.6), 0, 0, key); }
+        novas.push({ x:pr.x, y:pr.y, r:5, maxR:pr.burstR, t:0, color:'#ffd76a' });
+        effects.push({ type:'ring', x:pr.x, y:pr.y, t:0, dur:0.28, color:'255,215,106' });
+        spawnVfx('stars', pr.x, pr.y, pr.burstR * 1.5, 0.38);
+        sfx('starboom', 0.5);
+        dead = true;
+      }
+    }
+    else if(pr.kind === 'wheel' || pr.kind === 'swordqi'){
+      pr.x += Math.cos(pr.ang) * pr.speed * dt; pr.y += Math.sin(pr.ang) * pr.speed * dt;
+      particles.push({ x:pr.x, y:pr.y, vx:0, vy:0, t:0, life:0.09, color:pr.color, r:pr.kind === 'wheel' ? 6 : 8, star:pr.kind === 'wheel' });
+      for(var wi = 0; wi < enemies.length; wi++){ var we2 = enemies[wi]; if(we2.dead || pr.hitCd[we2.id]) continue;
+        var rr2 = pr.kind === 'wheel' ? (we2.r + pr.r) : (we2.r + 55);
+        if(Math.hypot(we2.x - pr.x, we2.y - pr.y) < rr2){ pr.hitCd[we2.id] = 1; npcHit(p, we2, pr.dmg, 0, 0, key); spawnVfx('slash', we2.x, we2.y, Math.max(30, we2.r * 2), 0.22, pr.ang); } }
+      if(pr.kind === 'wheel' && pr.state === 'out' && pr.t > pr.life / 2){ pr.state = 'return'; }
+      if(pr.kind === 'wheel' && pr.state === 'return'){ pr.ang = Math.atan2(p.y - pr.y, p.x - pr.x); if(Math.hypot(p.x - pr.x, p.y - pr.y) < 30) dead = true; }
+    }
+    if(dead) p.npcProjs.splice(pi2, 1);
+  }
 }
 /* NPC 自由发挥 AI（每帧在 hostTick 远端成员结算前写 input/wantSpec/wantDodge，结算完全复用真人 peer 路径）：
    优先级：救人 ＞ 躲技能 ＞ Boss 集火（2026-10-28 新增，见下方专段）＞ 结界支援 ＞ 开宝箱 ＞ 距离保持 ＞ 战斗 ＞ 游走。救人：最近的倒地未死队友（真人含房主本人、其他 NPC 均可）——直线走过去、
@@ -15468,8 +16136,7 @@ function npcAi(p, dt){
     if(isRescuer){
       var dd=seek(resc.x,resc.y,46);
       inp.faceAng=Math.atan2(resc.y-p.y,resc.x-p.x);
-      if(dd<52){ inp.revive=true; inp.mx=0; inp.my=0; }
-      p.atkCd=Math.max(p.atkCd,0.25); /* 救人期间不开火 */
+      if(dd<52){ inp.revive=true; inp.mx=0; inp.my=0; p.atkCd=Math.max(p.atkCd,0.25); /* 只在真正站定施救中（52px 内）压住普攻——【NPC 不攻击修复（2026-10-28）】旧版把这行钳制放在距离判定之外：只要场上有倒地者、自己被指派为救援者，赴救全程每帧都被顶住 atkCd（hostTick 扣 dt 后仍 >0），整段路上一枪不开，看起来就是「不攻击」；现钳制收进 52px 施救圈内，赴救途中与掩护位同口径可正常开火（索敌走 hostTick 兜底、朝向由结算置向目标） */ }
       return;
     }
     /* 掩护位：先靠到倒地者 150px 内站位，再在警戒圈内按战斗口径拦截最近的怪 */
@@ -15638,11 +16305,11 @@ function aggroTarget(ex, ey){
     /* NPC 前排索敌：房主存活时真人队友口径不变（恒不转火）；NPC 自由发挥站位靠前，
        离怪比房主更近的存活 NPC 成为该怪目标（NPC 因此真实承伤、会倒地，不做假人）。 */
     var bp=null, bdP=(ex-P.x)*(ex-P.x)+(ey-P.y)*(ey-P.y);
-    for(var nid in N.peers){ var np2=N.peers[nid]; if(!np2.isNpc || np2.dead || np2.downed) continue; var nd=(np2.x-ex)*(np2.x-ex)+(np2.y-ey)*(np2.y-ey); if(nd<bdP){ bdP=nd; bp=np2; } }
+    for(var nid in N.peers){ var np2=N.peers[nid]; if(!np2.isNpc || np2.dead || np2.downed) continue; if(np2.hero===3 && np2.npcInvisT>0) continue; /* 鸡哥 NPC 隐身中：怪物脱离仇恨不索敌（与本机隐身同口径，只扑最后已知位置由敌人主循环既有 aimPos/索敌口径处理、此处不把隐身 NPC 选为前排目标） */ var nd=(np2.x-ex)*(np2.x-ex)+(np2.y-ey)*(np2.y-ey); if(nd<bdP){ bdP=nd; bp=np2; } }
     return bp;
   }
   var best=null, bd=Infinity;
-  for(var id in N.peers){ var p=N.peers[id]; if(p.dead || p.downed || p.learnOpen || p.panelGuard || (p.learnStealthT > 0)) continue; var d=(p.x-ex)*(p.x-ex)+(p.y-ey)*(p.y-ey); if(d<bd){ bd=d; best=p; } } // learnOpen/panelGuard（面板打开中）与 learnStealthT（刚离开学习页隐身 3 秒中）成员不被索敌
+  for(var id in N.peers){ var p=N.peers[id]; if(p.dead || p.downed || p.learnOpen || p.panelGuard || (p.learnStealthT > 0)) continue; if(p.isNpc && p.hero===3 && p.npcInvisT>0) continue; /* 鸡哥 NPC 隐身中不被索敌（同前排段口径） */ var d=(p.x-ex)*(p.x-ex)+(p.y-ey)*(p.y-ey); if(d<bd){ bd=d; best=p; } } // learnOpen/panelGuard（面板打开中）与 learnStealthT（刚离开学习页隐身 3 秒中）成员不被索敌
   return best;
 }
 function anyPeerNotDead(){ for(var id in N.peers){ var p=N.peers[id]; if(!p.dead) return true; } return false; }
@@ -15729,11 +16396,12 @@ function hostTick(dt){
   for(var id in N.peers){
     var p=N.peers[id], c=CHARACTERS[p.hero];
     p.atkPoseT=Math.max(0,p.atkPoseT-dt); p.specPoseT=Math.max(0,p.specPoseT-dt);
-    p.hurtT=Math.max(0,p.hurtT-dt); p.specCd=Math.max(0,p.specCd-dt);
+    p.hurtT=Math.max(0,p.hurtT-dt);
+    if(!(p.isNpc && ((p.hero===1 && p.npcTornadoT>0) || (p.hero===4 && p.npcStarT>0) || (p.hero===3 && (p.npcInvisT>0 || p.npcSmokeT>0))))) p.specCd=Math.max(0,p.specCd-dt); /* NPC 按键技持续期间不进冷却（与本机 specCdHeldByDuration 同口径：闻西龙卷风/八思星光连发/鸡哥隐身＋固定烟雾存续期间冻结递减、冷却自持续结束起算；真人成员与 NPC 其余四人照旧递减） */
     p.learnStealthT=Math.max(0,(p.learnStealthT||0)-dt); // 离开学习页后隐身计时（房主权威递减）：与该成员本机计时同为 3 秒、任一归零即恢复索敌/受击；NPC 恒为 0、不受影响
     p.dodgeCd=Math.max(0,p.dodgeCd-dt); p.invuln=Math.max(0,p.invuln-dt); p.chestDmgT=Math.max(0,(p.chestDmgT||0)-dt); // 宝箱力量药剂计时（房主权威，仅 hostTick=playing 态推进）
     var inp=p.input;
-    if(p.isNpc && !p.downed && !p.dead) p.hp=Math.min(p.maxHp, p.hp + p.maxHp*0.002*dt); /* NPC 专属被动回血（用户定版）：每秒恢复生命上限 0.2%、不超上限；战斗中生效、倒地/死亡不生效、与其他回血（拾取/救援/宝箱）独立叠加；仅 isNpc 分支——真人玩家（含房主与远端成员）不走此行、绝不顺带获得 */
+    if(p.isNpc && !p.downed && !p.dead) p.hp=Math.min(p.maxHp, p.hp + p.maxHp*0.002*dt + (0.8*(p.npcP.heart||0) + npcPSum(p,'regenV'))*dt); /* NPC 专属被动回血（用户定版）：每秒恢复生命上限 0.2%、不超上限；战斗中生效、倒地/死亡不生效、与其他回血（拾取/救援/宝箱）独立叠加；仅 isNpc 分支——真人玩家（含房主与远端成员）不走此行、绝不顺带获得。【NPC 按玩家池学习追加（2026-10-28）】再生类被动（再生之心 0.8/级＋regenV 字段被动）按该 NPC 自己学到的等级同口径叠加（与 pRegen 同式） */
     p.faceAng=inp.faceAng;
     p.face=Math.cos(inp.faceAng)<0?-1:1;
     if(p.dead){
@@ -15773,10 +16441,11 @@ function hostTick(dt){
       p.dodgeT-=dt; slideMove(p,p.dodgeDx*(DODGE_DIST/DODGE_DUR)*dt,p.dodgeDy*(DODGE_DIST/DODGE_DUR)*dt); // 速度随新时长自动降速、总距离仍约 168（旧恒速 520×0.32≈166 同口径）
       p.moving=1;
     } else if(ml>0.01){
-      var sp=c.speed*(1+(p.shopSpd||0))*dt/Math.max(1,ml); // 含该成员本人在商人处自购的速度加成（只算他自己的购买）
+      var sp=c.speed*(1+(p.shopSpd||0))*(p.isNpc ? Math.min(2,(1+npcPSum(p,'spdP'))*(1+0.08*(p.npcP.boots||0))*(1+0.04*(p.npcP.windheart||0))*((p.hero===1&&p.npcTornadoT>0)?1.3:1)*((p.hero===3&&p.npcInvisT>0)?1.3:1)) : 1)*dt/Math.max(1,ml); // 含该成员本人在商人处自购的速度加成（只算他自己的购买）；【NPC 按玩家池学习追加（2026-10-28）】NPC 另乘其自有被动移速（spdP 字段＋风行者之靴/王者荣耀的专属乘区，与 pSpeed 同口径、封顶 ×2）与闻西龙卷风/鸡哥隐身期间 ×1.3（与本机同条件）；真人成员不走此乘区（其移速由本人客户端口径决定）
       slideMove(p,mx*sp,my*sp);
       p.moving=1; p.walkPhase+=dt*9;
     } else p.moving=0;
+    if(p.isNpc) npcTickNpcFx(p, dt); /* NPC 持续段推进（按键技持续状态/子母雷事件链/模拟投射物/AK 连发/雷暴云区域）：与下方普攻/按键技同帧结算，口径见 npcTickNpcFx */
     /* 普攻：就近索敌（陈哈哈/黄主任 360°，其余朝向锥 220°） */
     p.atkCd-=dt;
     if(p.atkCd<=0){
@@ -15791,11 +16460,13 @@ function hostTick(dt){
           bd=d2; tgt=e;
         }
       }
-      if(!tgt && p.isNpc){ /* 【NPC 不攻击查修（2026-10-28 用户截图）】NPC 普攻兜底索敌：上方主索敌要求敌人落在朝向 ±110° 锥内，但 NPC 的朝向由移动驱动——游走/走开/返队时朝向跟着移动方向，560px 内的敌人常在锥外，于是明明有怪也不开火（截图中 NPC 在屏外游走、玩家独自打怪的一因）。NPC 专用兜底：锥内无目标时改按 360° 取 560px 内最近敌人开火（结算后 p.faceAng 会被置向目标，与真人 peer 路径的差别仅此索敌兜底；真人成员朝向由本人输入决定、不加兜底）。按键技口径不变：wantSpec 由 npcAi 在战斗（敌 <280px）/掩护/走开状态置位、specCd 按 CHARACTERS 角色表冷却、hostTick 下方以范围爆发结算，npcAutoLearn 的攻击层（buildCount）同时加成普攻与按键技伤害（两处公式均含 1+0.06×buildCount）——普攻与技能双通道都在，本兜底只补索敌方向 */
+      if(!tgt && p.isNpc){ /* 【NPC 不攻击查修（2026-10-28 用户截图）】NPC 普攻兜底索敌：上方主索敌要求敌人落在朝向 ±110° 锥内，但 NPC 的朝向由移动驱动——游走/走开/返队时朝向跟着移动方向，560px 内的敌人常在锥外，于是明明有怪也不开火（截图中 NPC 在屏外游走、玩家独自打怪的一因）。NPC 专用兜底：锥内无目标时改按 360° 取 560px 内最近敌人开火（结算后 p.faceAng 会被置向目标，与真人 peer 路径的差别仅此索敌兜底；真人成员朝向由本人输入决定、不加兜底）。按键技口径：wantSpec 由 npcAi 在战斗（敌 <280px）/掩护/走开状态置位、specCd 按 CHARACTERS 角色表冷却并吃该 NPC 自有减冷却被动（npcSpecCdMulF）、hostTick 下方由 npcCastSpecial 按英雄复刻结算（2026-10-28 起，取代旧范围爆发），npcMul 含构筑层（1+0.06×buildCount）同时加成普攻与按键技双通道——本兜底只补索敌方向 */
         var bdN=560*560;
         for(var eiN=0;eiN<enemies.length;eiN++){ var eN=enemies[eiN]; var dxN=eN.x-p.x, dyN=eN.y-p.y, d2N=dxN*dxN+dyN*dyN; if(d2N<bdN){ bdN=d2N; tgt=eN; } }
       }
       if(tgt){
+       if(p.isNpc){ npcBasicAttack(p, tgt, c); } /* 【NPC 按英雄复刻普攻（2026-10-28）】NPC 不再走下方抽象结算：按其英雄专属武器逐项复刻（班仔横扫/闻西回旋镖弹射链/莫哈哈 AK 连发＋弹射/鸡哥烟头/八思追踪星弹/黄主任落印/陈哈哈链式闪电，公式读该 NPC 自己的 npcW 等级/分支/进化），见 npcBasicAttack；真人远端成员仍走下方既有抽象路径、一字未动 */
+       else {
         p.atkCd=0.55;
         var lvlMul=(1+0.025*Math.max(0,P.level-1))*(1+0.02*Math.max(0,P.level-1)); // 与本机 pDmgMul 同口径：基础每级 +2.5% × 升级伤害加成每级 +2%（队伍共享等级，远端成员同享）
         var dmg=16*c.dmgMul*lvlMul*earlySigMul() * sigDmgMul()*(1+0.06*(p.buildCount||0))*(p.chestDmgT>0?1.25:1); // 宝箱力量药剂：该成员本人伤害 +25%（存续中）
@@ -15805,11 +16476,15 @@ function hostTick(dt){
         damageEnemy(tgt,dmg,Math.cos(kb)*90,Math.sin(kb)*90);
         DMG_SRC=null;
         p.atkPoseT=0.25; p.lastAtkT=gameTime; p.faceAng=kb; inp.faceAng=kb;
-        effects.push({k:'slash',x:tgt.x,y:tgt.y,ang:kb,t:0,dur:0.16,color:'#ffe9a8'});
+        effects.push({type:'ric', pts:[{x:p.x+Math.cos(kb)*24, y:p.y+Math.sin(kb)*24-14},{x:tgt.x, y:tgt.y}], t:0, dur:0.16}); /* 【联机真人队友攻击可见修复（2026-10-28）·房主屏弹道】远端成员（含真人队友）在房主侧走抽象结算、本无投射物实体：旧版只有命中点一团斩击素材，队友站在远处开火时看不出「谁在打、往哪打」。现补一条与 AK 跳弹同通道（type:'ric' 金色直线）的纯视觉轨迹：自出手者身前指向命中目标，0.16 秒即散——只加表现、不生成投射物、不参与任何结算，伤害/冷却/索敌一字未动；NPC 同走此结算段、同步受益（其按英雄出招的专属弹道复刻不在本轮，见交工报告未做项） */
+        spawnVfx('slash', tgt.x, tgt.y, Math.max(30, tgt.r*2.1), 0.26, kb); /* 【NPC 不攻击修复（2026-10-28）·表现根因】旧版此处与下方按键技/受击/炸弹共 7 处推送的是 {k:'slash'/'ring'/'text'} 格式——全仓绘制层只认 effects 的 type 字段与 texts 飘字数组，k 格式从未被任何绘制代码读取：NPC 普攻斩击、按键技金环＋技能名、受击/闪避飘字全是「推了但永远画不出来」，房主屏上只剩敌人掉血数字与本体攻击帧，观感即「NPC 没出手」。现全部改走实机既有通道（spawnVfx 斩击素材／type:'ring' 冲击环／texts 飘字），与本机武器命中表现同源；伤害结算、数值、冷却一字未动，更非玩家武器弹道复刻 */
+       }
       }
     }
     /* 按键技：范围爆发（房主侧简化结算，机制与冷却按角色表） */
     if(p.wantSpec && p.specCd<=0){
+     if(p.isNpc){ npcCastSpecial(p, c); } /* 【NPC 按英雄复刻按键技（2026-10-28）】NPC 不再走下方通用金环范围爆发：按其英雄逐项复刻（班仔 Ex 光束＋圣光爆/闻西龙卷风/莫哈哈发压德轰三代分裂链/鸡哥烟鬼隐身＋双烟雾/八思星光连发/黄主任牛马审判/陈哈哈豪情在天），见 npcCastSpecial 与 npcTickNpcFx；真人远端成员仍走下方既有路径、一字未动 */
+     else {
       p.specCd=c.specCd; p.specPoseT=0.5; p.lastSpecT=gameTime;
       var sr=(p.hero===6)?340:200;
       var sd=90*c.dmgMul*(1+0.025*Math.max(0,P.level-1))*(1+0.06*(p.buildCount||0))*(p.chestDmgT>0?1.25:1); // 宝箱力量药剂：同吃 +25%
@@ -15820,36 +16495,39 @@ function hostTick(dt){
         if(Math.hypot(e2.x-p.x,e2.y-p.y)<sr+e2.r){ damageEnemy(e2,sd,(e2.x-p.x)*0.4,(e2.y-p.y)*0.4); hit++; }
       }
       DMG_SRC=null;
-      effects.push({k:'ring',x:p.x,y:p.y,r:sr,t:0,dur:0.4,max:sr,color:'#ffd76a'});
-      effects.push({k:'text',x:p.x,y:p.y-56,txt:c.specName,t:0,dur:0.9,color:'#ffd76a',big:true});
+      effects.push({type:'ring',x:p.x,y:p.y,t:0,dur:0.4,color:'255,215,106'}); /* 旧 {k:'ring'} 死格式→实机 type:'ring'（同上根因注） */
+      texts.push({x:p.x,y:p.y-56,v:0,txt:c.specName,t:0,color:'#ffd76a',big:true}); /* 旧 {k:'text'} 死格式→实机 texts 飘字（同上根因注） */
       if(hit>0) shake=Math.max(shake,5);
       sfx(180,0.25,'sawtooth',0.05);
+     }
     }
     p.wantSpec=false;
     /* 受伤：敌人接触 + 敌方弹道 */
     p.hurtCd-=dt;
-    if(p.invuln<=0 && p.dodgeT<=0 && p.hurtCd<=0 && !p.learnOpen && !p.panelGuard && !(p.learnStealthT > 0)){ // learnOpen/panelGuard＝该成员正打开面板（第 15 项＋面板护盾定版）：接触伤害整段跳过；learnStealthT＝刚离开学习页隐身 3 秒中：同口径整段跳过（怪物不攻击隐身者）
+    var npcImmune = p.isNpc && ((p.hero===3 && p.npcInvisT>0) || (p.hero===1 && p.npcTornadoT>0)); /* 【NPC 按英雄复刻按键技（2026-10-28）】鸡哥 NPC 隐身期间与闻西 NPC 龙卷风无敌窗期间：与本机同口径整段不受击（隐身期怪物完全不攻击、龙卷风存续即无敌窗，见 JG/龙卷风定版）——只罩这两名 NPC 的持续窗、不是常驻无敌，窗外照旧走闪避 80%/减伤 20% 的不易死口径 */
+    if(p.invuln<=0 && p.dodgeT<=0 && p.hurtCd<=0 && !p.learnOpen && !p.panelGuard && !(p.learnStealthT > 0) && !npcImmune){ // learnOpen/panelGuard＝该成员正打开面板（第 15 项＋面板护盾定版）：接触伤害整段跳过；learnStealthT＝刚离开学习页隐身 3 秒中：同口径整段跳过（怪物不攻击隐身者）
       var hd=0;
       for(var ek=0;ek<enemies.length;ek++){ var e3=enemies[ek];
         if(Math.abs(e3.x-p.x)<e3.r+p.r+2 && Math.abs(e3.y-p.y)<e3.r+p.r+2){ hd=Math.max(hd,e3.dmg||8); break; }
       }
-      if(hd>0){ if(p.isNpc && Math.random()<0.80){ effects.push({k:'text',x:p.x,y:p.y-44,txt:'闪避！',t:0,dur:0.6,color:'#8ad7ff'}); p.hurtCd=0.65; } /* NPC 不易死机制③：伤害闪避 80%（用户定版）——每次接触伤害判定有 80% 概率整次闪避（飘字「闪避！」，该次不掉血）；未闪避才走减伤结算 */ else { if(p.isNpc) hd=Math.max(1,Math.round(hd*0.8)); /* NPC 不易死机制②：承伤减免 20% */ p.hp-=hd; p.hurtT=0.3; p.hurtCd=0.65; effects.push({k:'text',x:p.x,y:p.y-44,txt:'-'+Math.round(hd),t:0,dur:0.6,color:'#ff9a8a'}); } }
+      if(hd>0){ if(p.isNpc && Math.random()<0.80){ texts.push({x:p.x,y:p.y-44,v:0,txt:'闪避！',t:0,color:'#8ad7ff'}); p.hurtCd=0.65; } /* NPC 不易死机制③：伤害闪避 80%（用户定版）——每次接触伤害判定有 80% 概率整次闪避（飘字「闪避！」，该次不掉血）；未闪避才走减伤结算；飘字旧 {k:'text'} 死格式已改 texts（见普攻处根因注） */ else { if(p.isNpc) hd=Math.max(1,Math.round(hd*0.8*(1-Math.min(0.45,npcPSum(p,'armorP'))))); /* NPC 不易死机制②：承伤减免 20%；【NPC 按玩家池学习追加（2026-10-28）】其自有被动减伤（armorP 字段、与玩家同封顶 45%）再乘一区 */ p.hp-=hd; p.hurtT=0.3; p.hurtCd=0.65; texts.push({x:p.x,y:p.y-44,v:0,txt:'-'+Math.round(hd),t:0,color:'#ff9a8a'}); } }
     }
     for(var pi=eProjectiles.length-1;pi>=0;pi--){ var pr=eProjectiles[pi];
       if(Math.hypot(pr.x-p.x,pr.y-p.y)<p.r+pr.r+2){
         eProjectiles.splice(pi,1);
-        if(p.invuln<=0 && p.dodgeT<=0 && !p.learnOpen && !p.panelGuard && !(p.learnStealthT > 0)){ if(p.isNpc && Math.random()<0.80){ effects.push({k:'text',x:p.x,y:p.y-44,txt:'闪避！',t:0,dur:0.6,color:'#8ad7ff'}); } /* NPC 伤害闪避 80%（弹道同口径，闪避时弹道照常消耗、不掉血） */ else { var pd2=p.isNpc?Math.max(1,Math.round((pr.dmg||8)*0.8)):(pr.dmg||8); /* NPC 承伤减免 20%（弹道同口径） */ p.hp-=pd2; p.hurtT=0.3; effects.push({k:'text',x:p.x,y:p.y-44,txt:'-'+Math.round(pd2),t:0,dur:0.6,color:'#ff9a8a'}); } } // learnOpen/panelGuard 成员不吃弹道伤害（面板打开期间无敌）
+        if(p.invuln<=0 && p.dodgeT<=0 && !p.learnOpen && !p.panelGuard && !(p.learnStealthT > 0) && !npcImmune){ if(p.isNpc && Math.random()<0.80){ texts.push({x:p.x,y:p.y-44,v:0,txt:'闪避！',t:0,color:'#8ad7ff'}); } /* NPC 伤害闪避 80%（弹道同口径，闪避时弹道照常消耗、不掉血）；飘字旧 {k:'text'} 死格式已改 texts（见普攻处根因注） */ else { var pd2=p.isNpc?Math.max(1,Math.round((pr.dmg||8)*0.8*(1-Math.min(0.45,npcPSum(p,'armorP'))))):(pr.dmg||8); /* NPC 承伤减免 20%（弹道同口径）＋其自有被动减伤 armorP（同接触段口径） */ p.hp-=pd2; p.hurtT=0.3; texts.push({x:p.x,y:p.y-44,v:0,txt:'-'+Math.round(pd2),t:0,color:'#ff9a8a'}); } } // learnOpen/panelGuard 成员不吃弹道伤害（面板打开期间无敌）
       }
     }
     /* 拾取：经验入队池（gainXp 走房主共享池）、回血/狂怒/道具个人生效 */
     for(var gi=gems.length-1;gi>=0;gi--){ var g=gems[gi];
       if(g.stand||g.doll) continue;
+      if(p.isNpc && (g.heal || g.drop==='heal' || g.drop==='drink') && p.hp >= p.maxHp*0.4) continue; /* 【NPC 拾取血包门槛（2026-10-28 用户令）】NPC 只在自身血量 <40% 时才拾取回血类道具（回血心脏 heal／回血饮料 drink）；≥40% 时整段跳过不拾、留在地上给玩家或更需要的队友——只拦回血类，经验宝石/磁石/炸弹/兴奋剂/护盾等非回血道具仍按既有 74px 拾取口径不变；真人远端成员不走此门槛（p.isNpc 门禁）、拾取归属仍按人独立结算，未动 */
       if(Math.hypot(g.x-p.x,g.y-p.y)<74){
         gems.splice(gi,1);
         if(g.drop==='heal'||g.heal){ p.hp=Math.min(p.maxHp,p.hp+30); }
         else if(g.drop==='rage'||g.rage){ p.atkCd=Math.min(p.atkCd,0.1); p.invuln=Math.max(p.invuln,1); }
         else if(g.drop){ /* 炸弹/磁石/兴奋剂/护盾 */
-          if(g.drop==='bomb'){ DMG_CRIT=0; DMG_EL=0; DMG_SRC=p.id; for(var eb=enemies.length-1;eb>=0;eb--){ if(Math.hypot(enemies[eb].x-p.x,enemies[eb].y-p.y)<220) damageEnemy(enemies[eb],120,0,0); } DMG_SRC=null; effects.push({k:'ring',x:p.x,y:p.y,r:220,t:0,dur:0.35,max:220,color:'#ffb14e'}); }
+          if(g.drop==='bomb'){ DMG_CRIT=0; DMG_EL=0; DMG_SRC=p.id; for(var eb=enemies.length-1;eb>=0;eb--){ if(Math.hypot(enemies[eb].x-p.x,enemies[eb].y-p.y)<220) damageEnemy(enemies[eb],120,0,0); } DMG_SRC=null; effects.push({type:'ring',x:p.x,y:p.y,t:0,dur:0.35,color:'255,177,78'}); } /* 旧 {k:'ring'} 死格式→实机 type:'ring'（见普攻处根因注） */
           else if(g.drop==='magnet'){ magnetVac=true; magnetVacT=0; } // 磁石：全图持续吸附（与单机 applyDropPickup 同口径）
           else if(g.drop==='drink'){ p.hp=Math.min(p.maxHp,p.hp+p.maxHp*0.3); }
           else if(g.drop==='stim'){ p.atkCd=0; }
@@ -15894,14 +16572,15 @@ function mazeWallsStr(){ /* 新屋布局随快照下发（仅墙体串，层数/
   var s=''; for(var i=0;i<MAZE.walls.length;i++) s+=MAZE.walls[i]?'1':'0';
   MAZE._wstr=s; MAZE._wf=MAZE.floor; MAZE._wgw=MAZE.gw; MAZE._wgh=MAZE.gh; return s;
 }
-function playerSnap(id,name,hero,x,y,hp,mx,downed,dead,fa,mv,atkT,specT,bleed,prog,bf,gd,ls){
+function playerSnap(id,name,hero,x,y,hp,mx,downed,dead,fa,mv,atkT,specT,bleed,prog,bf,gd,ls,na,np,nc,sd){
   return {id:id,name:name,hero:hero,x:Math.round(x),y:Math.round(y),hp:Math.max(0,Math.round(hp)),mx:Math.round(mx),
-    dn:downed?1:0,dd:dead?1:0,fa:+fa.toFixed(2),mv:mv?1:0,atkT:atkT,specT:specT,bl:Math.ceil(bleed||0),pg:+(prog||0).toFixed(2),bf:bf|0,gd:gd?1:0,ls:ls?1:0}; /* bf：该玩家本人的牛筋钱包（各传各的，不再有全队共用数）；gd：面板护盾中（纯渲染标记——队友屏上据此豁免受击无敌的半透明压淡，保证开面板者正常可见；不参与任何结算）；ls：离开学习页后隐身中（纯渲染标记——队友屏上据此半透明渲染；怪物不索敌/不结算伤害由房主侧 learnStealthT 门禁负责、不读此字段） */
+    dn:downed?1:0,dd:dead?1:0,fa:+fa.toFixed(2),mv:mv?1:0,atkT:atkT,specT:specT,bl:Math.ceil(bleed||0),pg:+(prog||0).toFixed(2),bf:bf|0,gd:gd?1:0,ls:ls?1:0,na:na|0,np:np|0,nc:nc?1:0,sd:sd|0}; /* bf：该玩家本人的牛筋钱包（各传各的，不再有全队共用数）；gd：面板护盾中（纯渲染标记——队友屏上据此豁免受击无敌的半透明压淡，保证开面板者正常可见；不参与任何结算）；ls：离开学习页后隐身中（纯渲染标记——队友屏上据此半透明渲染；怪物不索敌/不结算伤害由房主侧 learnStealthT 门禁负责、不读此字段）；na/np/nc：NPC 已学计数与标记（2026-10-28 学习可见性修复——na＝已学攻击层 npcAtk、np＝已学被动层 npcPas、nc＝是否 NPC；纯显示字段，真人恒 0，客机据此在队伍 HUD 显示「已学 N」并在计数增长时飘字，不参与任何结算）；sd：持续性按键技剩余持续时间×10（2026-10-28 用户令追加——纯显示字段，客机据此在该成员名牌下画金字倒数；房主本人行传本机 localSpecDurLeft、NPC 行传 npcSpecDurLeft、真人远端成员房主侧无其持续状态恒 0） */
 }
 function buildSnap(){
-  var ps=[playerSnap(N.myId,myName(),N.myHero,P.x,P.y,P.hp,P.maxHp,N.local.downed,N.local.dead,P.faceAng||Math.PI/2,P.moving,P.lastAtkT||-1,-1,N.local.bleed,N.local.prog,SHOP.beef,(typeof panelGuardOn==='function'&&panelGuardOn())?1:0,(P.learnStealthT>0)?1:0)];
+  /* 房主本人 atkT/specT（2026-10-28 真人队友攻击可见修复）：atkT 读 P.lastAtkT（poseAtk 每次真实出手盖戳）、specT 读 P.lastSpecT（doSpecial 提交帧／班仔 releaseExcalibur 释放帧盖戳）——旧版 specT 写死 -1、atkT 读的字段从未赋值，房主本人在客机屏上永不出手；远端 peer 行的 p.lastAtkT/p.lastSpecT 由 hostTick 结算盖戳、本就真实下发，未动 */
+  var ps=[playerSnap(N.myId,myName(),N.myHero,P.x,P.y,P.hp,P.maxHp,N.local.downed,N.local.dead,P.faceAng||Math.PI/2,P.moving,P.lastAtkT||-1,(P.lastSpecT!=null?P.lastSpecT:-1),N.local.bleed,N.local.prog,SHOP.beef,(typeof panelGuardOn==='function'&&panelGuardOn())?1:0,(P.learnStealthT>0)?1:0,0,0,0,Math.round(localSpecDurLeft()*10))];
   for(var id in N.peers){ var p=N.peers[id];
-    ps.push(playerSnap(p.id,p.name,p.hero,p.x,p.y,p.hp,p.maxHp,p.downed,p.dead,p.faceAng,p.moving,p.lastAtkT,p.lastSpecT,p.bleed,p.prog,p.beef,(p.panelGuard||p.learnOpen)?1:0,(p.learnStealthT>0)?1:0)); }
+    ps.push(playerSnap(p.id,p.name,p.hero,p.x,p.y,p.hp,p.maxHp,p.downed,p.dead,p.faceAng,p.moving,p.lastAtkT,p.lastSpecT,p.bleed,p.prog,p.beef,(p.panelGuard||p.learnOpen)?1:0,(p.learnStealthT>0)?1:0,p.isNpc?(p.npcAtk||0):0,p.isNpc?(p.npcPas||0):0,p.isNpc?1:0,p.isNpc?Math.round(npcSpecDurLeft(p)*10):0)); }
   var es=[];
   for(var i=0;i<enemies.length && es.length<420;i++){ var e=enemies[i];
     if(e._nid==null) e._nid=++N.eidSeq;
@@ -15935,6 +16614,14 @@ function clientTick(dt){
   if(!N.inGame || N.role!=='client') return false;
   if(window.P && P.chestDmgT > 0) P.chestDmgT -= dt; // 宝箱力量药剂本机计时：clientTick 只在 playing 态被调——商店/升级/暂停打开时与主机同口径冻结（房主侧 peer 计时为权威伤害口径）
   if(typeof tickLearnStealth === 'function') tickLearnStealth(dt); // 离开学习页后隐身本机计时（客机不跑主机 update 的计时段、改在此递减并在归零时上报房主；房主侧 peer 计时为权威索敌/伤害口径、与本机计时同为 3 秒）
+  if(!N.cliPose) N.cliPose={}; /* 客机远端成员攻击姿态表（id→{atk,spec,learnT,lastAtkT,lastSpecT,lastLearn}）：由快照 atkT/specT/na/np 变化驱动，见下方快照应用段 */
+  /* 【客机视觉实体推进（2026-10-28 NPC 攻击/学习可见性修复）】客机 update() 在 clientTick 后即返回，主动画尾段（update 内）的特效/飘字/粒子推进在客机上永不执行——客机本地推送的任何 effects/texts/vfxList 都会冻在 t=0（画不出/消不掉）。在此按与主机同一口径推进这四类纯视觉实体（不碰任何结算状态），客机屏上的 NPC 斩击/金环/技能名/学习飘字才真正播得出来 */
+  for(var cfi=effects.length-1;cfi>=0;cfi--){ effects[cfi].t+=dt; if(effects[cfi].t>effects[cfi].dur) effects.splice(cfi,1); }
+  for(var cvf=vfxList.length-1;cvf>=0;cvf--){ vfxList[cvf].t+=dt; if(vfxList[cvf].t>vfxList[cvf].dur) vfxList.splice(cvf,1); }
+  for(var cti=texts.length-1;cti>=0;cti--){ var ctxx=texts[cti]; if(ctxx.t<0){ ctxx.t+=dt; continue; } ctxx.t+=dt; ctxx.y-=44*dt; if(ctxx.t>0.75) texts.splice(cti,1); }
+  for(var cpi=particles.length-1;cpi>=0;cpi--){ var cpt=particles[cpi]; cpt.t+=dt; cpt.x+=cpt.vx*dt; cpt.y+=cpt.vy*dt; cpt.vx*=0.9; cpt.vy*=0.9; if(cpt.t>cpt.life) particles.splice(cpi,1); }
+  for(var cni=novas.length-1;cni>=0;cni--){ var cnv=novas[cni]; cnv.t+=dt; cnv.r+=(cnv.maxR-cnv.r)*Math.min(1,dt*9); if(cnv.t>0.45) novas.splice(cni,1); }
+  for(var cpid in N.cliPose){ var cpz=N.cliPose[cpid]; cpz.atk=Math.max(0,cpz.atk-dt); cpz.spec=Math.max(0,cpz.spec-dt); cpz.learnT=Math.max(0,cpz.learnT-dt); } /* 远端姿态计时逐帧衰减（与房主 peer 的 atkPoseT/specPoseT 同口径） */
   var sp=N.snap;
   /* 输入上行（20Hz）：移动/朝向（救援已改无按键靠近口径、不再上行救援长按状态 rv——房主按成员坐标 56px 内直接判定施救，见 hostTick 倒地段） */
   N.inT-=dt;
@@ -15987,7 +16674,26 @@ function clientTick(dt){
         P.faceAng=pl.fa; P.face=Math.cos(pl.fa)<0?-1:1;
         P.moving=!!pl.mv;
         if(pl.atkT!==N._lastAtkT){ N._lastAtkT=pl.atkT; if(pl.atkT>=0) P.atkPoseT=Math.max(P.atkPoseT||0,0.22); }
-        if(pl.specT!==N._lastSpecT){ N._lastSpecT=pl.specT; if(pl.specT>=0){ P.specPoseT=0.5; effects.push({k:'text',x:P.x,y:P.y-56,txt:CHARACTERS[P.charIdx].specName,t:0,dur:0.9,color:'#ffd76a',big:true}); } }
+        if(pl.specT!==N._lastSpecT){ N._lastSpecT=pl.specT; if(pl.specT>=0){ P.specPoseT=0.5; texts.push({x:P.x,y:P.y-56,v:0,txt:CHARACTERS[P.charIdx].specName,t:0,color:'#ffd76a',big:true}); } } /* 技能名飘字：旧 {k:'text'} 死格式→实机 texts（同房主侧根因注）；客机 texts 推进已在本函数头部补齐 */
+      } else {
+        /* 【客机看不到 NPC/队友攻击修复（2026-10-28）】快照本就带每位成员的 atkT/specT（上次出手的 gameTime），旧版客机只把本机那份转成姿态、其余成员在 remoteActors 里被写死 atk:0/spec:0——客机屏上 NPC 与真人队友永远只有走路/待机帧，出手完全不可见。现按成员逐个比对：atkT/specT 一变即点亮本地姿态计时（remoteActors 据此出攻击/施法帧）并补本地纯视觉（斩击素材落在最近的影子敌人身上、无敌可落时落在朝向前方；按键技出 type:'ring' 金环＋技能名飘字，与房主屏同款通道）；NPC 已学计数 na+np 增长时飘「学到新技能！」。全部只读快照、只动本地渲染，不参与任何结算、不复刻武器弹道 */
+        var cp9=N.cliPose[pl.id];
+        if(!cp9){ cp9=N.cliPose[pl.id]={atk:0,spec:0,learnT:0,lastAtkT:pl.atkT,lastSpecT:pl.specT,lastLearn:(pl.na||0)+(pl.np||0)}; }
+        if(pl.atkT!==cp9.lastAtkT){ cp9.lastAtkT=pl.atkT;
+          if(pl.atkT>=0){ cp9.atk=0.25;
+            var be9=null, bd9=620*620;
+            for(var ei9=0;ei9<enemies.length;ei9++){ var e9=enemies[ei9]; var dx9=e9.x-pl.x, dy9=e9.y-pl.y, d29=dx9*dx9+dy9*dy9; if(d29<bd9){ bd9=d29; be9=e9; } }
+            if(be9) spawnVfx('slash', be9.x, be9.y, Math.max(30, be9.r*2.1), 0.26, Math.atan2(be9.y-pl.y, be9.x-pl.x));
+            else spawnVfx('slash', pl.x+Math.cos(pl.fa)*44, pl.y+Math.sin(pl.fa)*44, 34, 0.26, pl.fa);
+            effects.push({type:'ric', pts:[{x:pl.x+Math.cos(pl.fa)*24, y:pl.y+Math.sin(pl.fa)*24-14},{x:be9?be9.x:(pl.x+Math.cos(pl.fa)*120), y:be9?be9.y:(pl.y+Math.sin(pl.fa)*120)}], t:0, dur:0.16}); /* 【联机真人队友攻击可见修复（2026-10-28）·客机屏弹道】与房主屏 hostTick 同款 type:'ric' 轨迹：快照不下发投射物实体，客机此前只有命中点斩击、看不出出手者与射向；现自该成员身前向其命中目标（无影子敌可落时向朝向前方）拉一条 0.16 秒金色轨迹线。纯本地视觉、只读快照，不参与结算；房主本人出手自本轮起 atkT 真实下发（见 buildSnap 注），故房主在客机屏上同样有姿势＋斩击＋轨迹＋（按键技）金环技能名 */
+          } }
+        if(pl.specT!==cp9.lastSpecT){ cp9.lastSpecT=pl.specT;
+          if(pl.specT>=0){ cp9.spec=0.5;
+            effects.push({type:'ring',x:pl.x,y:pl.y,t:0,dur:0.4,color:'255,215,106'});
+            texts.push({x:pl.x,y:pl.y-56,v:0,txt:(CHARACTERS[pl.hero]||{}).specName||'技能',t:0,color:'#ffd76a',big:true});
+          } }
+        var ln9=(pl.na||0)+(pl.np||0);
+        if(ln9>cp9.lastLearn){ cp9.lastLearn=ln9; cp9.learnT=1.4; texts.push({x:pl.x,y:pl.y-52,v:0,txt:'学到新技能！已学 '+ln9,t:0,color:'#ffd76a'}); }
       }
     }
     /* 敌人：按 id 对齐本地影子对象（仅渲染，不参与结算） */
@@ -16098,12 +16804,13 @@ function remoteActors(){
   if(!N.inGame) return out;
   if(N.role==='host'){
     for(var id in N.peers){ var p=N.peers[id];
-      out.push({k:7,y:p.y+p.r,r:{id:p.id,name:p.name,hero:p.hero,x:p.x,y:p.y,hp:p.hp,mx:p.maxHp,dn:p.downed,dd:p.dead,fa:p.faceAng,mv:p.moving,wp:p.walkPhase,atk:p.atkPoseT,spec:p.specPoseT,inv:p.invuln,bl:p.bleed,pg:p.prog,gd:(p.panelGuard||p.learnOpen)?1:0,ls:(p.learnStealthT>0)?1:0}});
+      out.push({k:7,y:p.y+p.r,r:{id:p.id,name:p.name,hero:p.hero,x:p.x,y:p.y,hp:p.hp,mx:p.maxHp,dn:p.downed,dd:p.dead,fa:p.faceAng,mv:p.moving,wp:p.walkPhase,atk:p.atkPoseT,spec:p.specPoseT,inv:p.invuln,bl:p.bleed,pg:p.prog,gd:(p.panelGuard||p.learnOpen)?1:0,ls:(p.learnStealthT>0)?1:0,sd:p.isNpc?npcSpecDurLeft(p):0}}); /* sd：持续性按键技剩余秒（2026-10-28 用户令追加，drawRemote 据此在名牌下画倒数；真人成员房主侧无持续状态恒 0） */
     }
   } else if(N.role==='client' && N.snapPlayers){
     for(var i=0;i<N.snapPlayers.length;i++){ var pl=N.snapPlayers[i];
       if(pl.id===N.myId) continue;
-      out.push({k:7,y:pl.y+17,r:{id:pl.id,name:pl.name,hero:pl.hero,x:pl.x,y:pl.y,hp:pl.hp,mx:pl.mx,dn:!!pl.dn,dd:!!pl.dd,fa:pl.fa,mv:!!pl.mv,wp:(pl.mv?gameTime*9:0),atk:0,spec:0,inv:0,bl:pl.bl,pg:pl.pg,gd:pl.gd||0,ls:pl.ls||0}});
+      var cp2=(N.cliPose && N.cliPose[pl.id])||null; /* 攻击/施法姿态改读 cliPose 实时计时（旧版写死 atk:0/spec:0＝客机永不见队友出手，见 clientTick 根因注） */
+      out.push({k:7,y:pl.y+17,r:{id:pl.id,name:pl.name,hero:pl.hero,x:pl.x,y:pl.y,hp:pl.hp,mx:pl.mx,dn:!!pl.dn,dd:!!pl.dd,fa:pl.fa,mv:!!pl.mv,wp:(pl.mv?gameTime*9:0),atk:cp2?cp2.atk:0,spec:cp2?cp2.spec:0,inv:0,bl:pl.bl,pg:pl.pg,gd:pl.gd||0,ls:pl.ls||0,sd:(pl.sd||0)/10}}); /* sd：快照持续剩余秒（×10 整数还原，2026-10-28 用户令追加） */
     }
   }
   return out;
@@ -16121,12 +16828,15 @@ function drawRemote(r,ox,oy){
   ctx.save(); ctx.fillStyle='rgba(0,0,0,0.30)';
   ctx.beginPath(); ctx.ellipse(fx,fy+16,20,6,0,0,Math.PI*2); ctx.fill(); ctx.restore();
   var dir=Math.abs(r.fa-Math.PI/2)<Math.PI/4?'down':(Math.abs(r.fa+Math.PI/2)<Math.PI/4||Math.abs(r.fa-3*Math.PI/2)<Math.PI/4?'up':'side');
-  var frame=r.spec>0?5:(r.atk>0?3:(r.mv?[1,6,2,7][Math.floor(r.wp/1.6)%4]:0));
+  var frame=r.spec>0?(r.spec>0.28?13:3):(r.atk>0?3:(r.mv?[1,6,2,7][Math.floor(r.wp/1.6)%4]:0)); /* 【联机真人队友攻击可见修复（2026-10-28）·远端姿势帧根因】旧版按键技姿势帧写死 5——而 5 在本机 drawPlayerActor 里是待机呼吸帧：远端成员放按键技时本体反而摆出待机帧，金环/技能名之外身体毫无释放动作，真人队友与 NPC 同病。现与本机选帧同口径：specPoseT>0.28 取举势帧 13、其余取释放帧 3（两帧经 getCharSprite 映射到各英雄签名攻击序列的起/终帧，班仔走 qq:slash:3→6）；普攻帧 3＝签名序列命中帧、本就正确，未动；走路/待机/倒地帧未动 */
   if(r.dn) frame=8;
   ctx.save();
   if(r.inv>0 && !r.gd && Math.floor(gameTime*10)%2===0) ctx.globalAlpha=0.45; // 面板护盾期间豁免（gd）：开面板的队友不因无敌被压成半透明——正常渲染可见（2026-10-28 可见性令）
   if(r.ls) ctx.globalAlpha=0.35; // 离开学习页后隐身中（ls）：队友屏上同为半透明——与本机 drawPlayer 的 0.35 同口径；开面板期间 gd 者不带 ls（开页即取消隐身）、两者不冲突
-  ctx.translate(fx,fy);
+  var bx=fx, by=fy; /* 出手前冲（纯绘制）：与本机 drawPlayerActor 同口径——按键技按 specPoseT×16、普攻命中段 +9（姿势计时由房主 atkPoseT/specPoseT 或客机 cliPose 驱动）；影子与名牌仍钉原锚点不跟飘，与本机一致 */
+  if(!r.dn && r.spec>0){ bx+=Math.cos(r.fa)*r.spec*16; by+=Math.sin(r.fa)*r.spec*16*0.55; }
+  else if(!r.dn && r.atk>0){ var lgA=r.atk>0.13?-3:9; bx+=Math.cos(r.fa)*lgA; by+=Math.sin(r.fa)*lgA*0.55; }
+  ctx.translate(bx,by);
   drawCharInto(ctx,r.hero,0,0,-40,86,{dir:dir,frame:frame,raw:1});
   ctx.restore();
   /* 名牌 + 血条 */
@@ -16140,6 +16850,13 @@ function drawRemote(r,ox,oy){
   ctx.fillStyle='rgba(0,0,0,0.55)'; ctx.fillRect(fx-21,fy-60,42,5);
   ctx.fillStyle=r.dn?'#e8483f':'#5ad13f';
   ctx.fillRect(fx-20,fy-59,40*Math.max(0,r.hp)/Math.max(1,r.mx),3);
+  if(r.sd>0 && !r.dn){ /* 持续性按键技剩余时间（2026-10-28 用户令追加）：名牌血条下方金字倒数「技能名 X.Xs」，随快照/hostTick 实时递减、持续结束（sd=0）即不再画——与本机 cdSpecial 冷却条的 active 金色态同口径 */
+    ctx.font='bold 11px sans-serif';
+    var sdt=CHARACTERS[r.hero].specName+' '+r.sd.toFixed(1)+'s';
+    var stw=ctx.measureText(sdt).width+10;
+    ctx.fillStyle='rgba(20,16,4,0.6)'; ctx.fillRect(fx-stw/2,fy-52,stw,14);
+    ctx.fillStyle='#ffd76a'; ctx.fillText(sdt,fx,fy-41.5);
+  }
   if(r.dn){
     ctx.fillStyle='#ff3b30'; ctx.font='bold 16px sans-serif'; /* 屏内倒地字标同步放大变红（2026-10-28 用户令）：旧粗体 13px／#ff6b5e → 新粗体 16px（约 ×1.25）／纯红 #ff3b30，与边缘指示标同口径；救起/死亡后随 dn 回落自动消失 */
     ctx.fillText('倒地 '+Math.ceil(r.bl||0)+'s', fx, fy-84);
@@ -16159,10 +16876,10 @@ function teamRows(){
   var rows=[];
   if(N.role==='host'){
     rows.push({name:myName(),hero:N.myHero,hp:P.hp,mx:P.maxHp,dn:N.local.downed,dd:N.local.dead,bl:N.local.bleed,me:true});
-    for(var id in N.peers){ var p=N.peers[id]; rows.push({name:p.name,hero:p.hero,hp:p.hp,mx:p.maxHp,dn:p.downed,dd:p.dead,bl:p.bleed}); }
+    for(var id in N.peers){ var p=N.peers[id]; rows.push({name:p.name,hero:p.hero,hp:p.hp,mx:p.maxHp,dn:p.downed,dd:p.dead,bl:p.bleed,npc:!!p.isNpc,lk:(p.npcAtk||0)+(p.npcPas||0)}); } /* npc/lk：NPC 已学计数（2026-10-28 学习可见性修复，renderTeamHud 据此常显「已学 N」） */
   } else if(N.snapPlayers){
     for(var i=0;i<N.snapPlayers.length;i++){ var pl=N.snapPlayers[i];
-      rows.push({name:pl.name,hero:pl.hero,hp:pl.hp,mx:pl.mx,dn:!!pl.dn,dd:!!pl.dd,bl:pl.bl,me:pl.id===N.myId}); }
+      rows.push({name:pl.name,hero:pl.hero,hp:pl.hp,mx:pl.mx,dn:!!pl.dn,dd:!!pl.dd,bl:pl.bl,me:pl.id===N.myId,npc:!!pl.nc,lk:(pl.na||0)+(pl.np||0)}); } /* 客机同口径：nc/na/np 来自快照（见 playerSnap 注） */
   }
   return rows;
 }
@@ -16184,7 +16901,7 @@ function renderTeamHud(){
   }
   for(var i=0;!teamHudCollapsed && i<mates.length;i++){ var r=mates[i];
     var hn=CHARACTERS[r.hero].name;
-    var stat=(r.dd?' · 观战':(r.dn?' · 倒地 '+Math.ceil(r.bl||0)+'s':''));
+    var stat=(r.dd?' · 观战':(r.dn?' · 倒地 '+Math.ceil(r.bl||0)+'s':''))+(r.npc?' · 已学 '+(r.lk||0):''); /* NPC 行常显已学技能数（2026-10-28 学习可见性修复：0 也显示——学没学一眼可辨，不再是内部黑数） */
     var label;
     if(teamHudMini){ label=escHtml(hn)+stat; } /* 简化版：只留英雄名（全队英雄不重复、足够辨人）＋状态＋下方血条 */
     else{ /* 去重复名（2026-10-28 用户令）：成员名本身已含英雄名时（如 NPC 名＝「NPC·闻西」）不再尾拼英雄名，旧写法会出现「NPC·闻西 · 闻西 · 观战」；名里没有英雄名时才拼「 · 英雄名」 */
@@ -16212,7 +16929,7 @@ function cleanupNet(toTitle){
   N.slots=[];
   if(N.cpc){ try{N.cpc.close();}catch(e){} }
   N.cpc=null; N.cdc=null;
-  N.peers={}; N.npcs=[]; clientEnemyMap={};
+  N.peers={}; N.npcs=[]; clientEnemyMap={}; N.cliPose={}; /* 客机远端姿态表一并清零（2026-10-28 新增字段，防跨局残留姿态/学习计数） */
   N.active=false; N.role=null; N.inGame=false; N.ready=false;
   N.members=[]; N.rosterCount=1; /* 【大厅三 bug 根因修复（2026-10-28 真机报障）】旧版清理只清 role/npcs/peers、独漏 members：上一局的名单（房主＋5 NPC、全员已准备）残留进下一次 openLobby（它只在名单为空时才补本机行），大厅画出一份「幽灵名单」——有皇冠、有 NPC 行、全员已准备，但 role 已是 null：开始按钮渲染客机分支文案「等待房主开始」且点击处理首行 role!=='host' 直接返回（开始不了／点了没用）、移除 NPC 按钮被 disabled 且 lobbyDelNpc 同因早退（npcs 实际已清空）、添加 NPC 又被残留名单 members.length>=6 禁用——房主被锁死在假大厅里；且「离开联机」走的也是本函数，退出重进必然复现（确定性、非偶发）。现拆房时名单与人数一并清零，下次进大厅必从干净名单重建。 */
   window.__NET_MUL=null; window.__NET_CAPMUL=1; window.__NET_SPAWNMUL=1;
@@ -16302,8 +17019,8 @@ window.__NET={
   api:{
     state:function(){ var pls=[];
       if(N.role==='host'){ pls.push({id:N.myId,x:Math.round(P.x),y:Math.round(P.y),hp:Math.round(P.hp),dn:N.local.downed,dd:N.local.dead,beef:SHOP.beef,kills:N.hostKills});
-        for(var id in N.peers){ var p=N.peers[id]; pls.push({id:id,x:Math.round(p.x),y:Math.round(p.y),hp:Math.round(p.hp),dn:p.downed,dd:p.dead,kills:p.kills,beef:p.beef}); } }
-      else if(N.snapPlayers){ pls=N.snapPlayers.map(function(pl){ return {id:pl.id,x:pl.x,y:pl.y,hp:pl.hp,dn:!!pl.dn,dd:!!pl.dd,beef:pl.bf|0}; }); }
+        for(var id in N.peers){ var p=N.peers[id]; pls.push({id:id,x:Math.round(p.x),y:Math.round(p.y),hp:Math.round(p.hp),dn:p.downed,dd:p.dead,kills:p.kills,beef:p.beef,npc:p.isNpc?1:0,na:p.npcAtk||0,np:p.npcPas||0,bc:p.buildCount||0,atkT:p.lastAtkT,specT:p.lastSpecT}); } } /* npc/na/np/bc/atkT/specT：NPC 是否在攻击与学习（2026-10-28 修复验收字段——atkT/specT 随出手更新、na/np 随队伍升级增长，与局内飘字/HUD 同源） */
+      else if(N.snapPlayers){ pls=N.snapPlayers.map(function(pl){ return {id:pl.id,x:pl.x,y:pl.y,hp:pl.hp,dn:!!pl.dn,dd:!!pl.dd,beef:pl.bf|0,npc:pl.nc?1:0,na:pl.na||0,np:pl.np||0,atkT:pl.atkT,specT:pl.specT}; }); }
       return {active:N.active,role:N.role,inGame:N.inGame,members:N.members,roster:N.rosterCount,npcs:N.npcs.length,scale:(window.__NET_MUL?{hp:window.__NET_MUL.hp,dmg:window.__NET_MUL.dmg,bossHp:window.__NET_MUL.bossHp}:null),
       peers:Object.keys(N.peers).length,snapSeq:N.snapSeq,local:N.local,version:NET_VERSION,players:pls,
       dungeon:{ maze:(typeof MAZE!=='undefined'&&MAZE.active)?MAZE.floor:0, street:(typeof STREET!=='undefined'&&STREET.active)?STREET.kills:-1, streetChest:(typeof STREET!=='undefined'&&STREET.chest)?1:0, void:(typeof voidArena!=='undefined'&&voidArena)?1:0 } }; }, /* 探针：副本进图状态（新屋层数/街尾击杀数/虚空竞技场），双实例对比全队是否同图 */
