@@ -15,8 +15,8 @@
         --ink:#f2f0e4; --ink-dim:#b9bfa8; --line:#39412f;
         --accent:#ffb02e; --accent2:#7ac74f; --danger:#ff5a4e;
         --hp:#e8483f; --xp:#57c7e8; --mana:#ffd23e; --radius:14px;
-        /* 按键自定义（2026-10-28 用户令，设置面板可调）：默认值与旧版写死数值逐一相同——未改设置时局内按键位置/大小与从前一模一样；玩家改动后由 btnLayoutApply() 写入这组变量并存 localStorage，下次进局仍在。--btnS 按键缩放、--spR/--spB 特殊技能键右/下偏移、--dgR/--dgB 闪避键右/下偏移 */
-        --btnS:1; --spR:12px; --spB:14px; --dgR:86px; --dgB:17px;
+        /* 按键自定义（2026-10-28 用户令，设置面板可调）：玩家改动后由 btnLayoutApply() 写入这组变量并存 localStorage，下次进局仍在。--btnS 按键缩放、--spR/--spB 特殊技能键右/下偏移、--dgR/--dgB 闪避键右/下偏移。特殊技能键默认位置 2026-10-28 移位：由右下角改为右侧中部（--spB 锚点＝40vh−半键高，键中心约在竖屏高度 60% 处、靠右边缘）；闪避键仍在右下、默认值未动 */
+        --btnS:1; --spR:12px; --spB:calc(40vh - 32px); --dgR:86px; --dgB:17px;
       }
       *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
       html,body{height:100%;}
@@ -192,7 +192,8 @@
       #btnSpecial{width:calc(64px * var(--btnS)); height:calc(64px * var(--btnS)); right:var(--spR); bottom:calc(var(--spB) + env(safe-area-inset-bottom)); border:none; color:var(--mana); font-size:calc(11px * var(--btnS)); background:transparent; box-shadow:none;}
       /* 「可学习」按钮（2026-10-28 用户令第 15 项）：升级不再自动弹学习页——待学次数 >0 时在屏幕上方中央亮出此按钮，玩家点它才进学习页；学完自动隐藏 */
       /* 2026-10-28 真机反馈追加：按钮调小（字号 17→13.5、内边距 10/24→6/16、字距 3→2，高约 44→33px）；窄屏（≤600px）改置顶栏下方空带（见 net 样式后的 ≤600px 覆盖块），不压计时行/连接状态/地图名 */
-      #btnLearn{position:fixed; top:calc(58px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%); z-index:36; display:none; padding:6px 16px; border-radius:999px; border:2px solid #ffe98a; background:linear-gradient(180deg,#f5b921,#e8890c); color:#2a1503; font-size:13.5px; font-weight:900; letter-spacing:2px; box-shadow:0 4px 18px rgba(245,185,33,.45); cursor:pointer; font-family:inherit;}
+      /* 可点修复（2026-10-28 用户令）：父层 #touchUI 为 pointer-events:none，本按钮旧规则未单独开启点击，used 值随父层为 none——按钮只显示、点不动，且摇杆 touchstart 用 elementFromPoint 判 UI 时会穿透按钮误认领摇杆并 preventDefault 把 click 一并吞掉。现显式 pointer-events:auto：elementFromPoint 命中 button（joyIsUI 的 button 选择器）→ 摇杆不抢、click 正常触发进学习页；位置/尺寸与上一轮避让口径（竖屏 top 140、与队伍血条/连接状态/地图名/技能状态错开）未动 */
+      #btnLearn{position:fixed; top:calc(58px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%); z-index:36; display:none; padding:6px 16px; border-radius:999px; border:2px solid #ffe98a; background:linear-gradient(180deg,#f5b921,#e8890c); color:#2a1503; font-size:13.5px; font-weight:900; letter-spacing:2px; box-shadow:0 4px 18px rgba(245,185,33,.45); cursor:pointer; font-family:inherit; pointer-events:auto; touch-action:manipulation;}
       #btnLearn.on{display:block; animation:learnPulse 1.2s ease-in-out infinite;}
       @keyframes learnPulse{0%,100%{transform:translateX(-50%) scale(1);}50%{transform:translateX(-50%) scale(1.06);}}
       @media (prefers-reduced-motion: reduce){ #btnLearn.on{animation:none;} }
@@ -210,6 +211,22 @@
       .overlay{position:fixed; inset:0; z-index:10; display:none; align-items:center; justify-content:center; flex-direction:column; background:rgba(6,8,5,.84); padding:18px; overflow-y:auto;}
       #learnedScreen{z-index:20;} /* 已学技能面板须能盖在死亡结算页之上（DOM 中它排在 overScreen 之前、同为 z-10 时会被结算页压住）——2026-10-28 结算页入口接入 */
       .overlay.on{display:flex;}
+      /* 技能槽满替换界面（2026-10-28 用户令）：盖在学习页（z-10）/商店（z-10）之上、低于选角/联机层；面板沿用学习页 .lv-panel 浅色口径，候选列表内部纵滑（390 宽不溢出、候选再多也滑得完） */
+      #replaceScreen{z-index:24;}
+      .rep-panel{height:auto; max-height:94dvh; display:flex; flex-direction:column;}
+      .rep-new{display:flex; gap:10px; align-items:center; background:#fff8e6; border:2px solid #e8a83e; border-radius:10px; padding:8px 10px; margin-bottom:8px; flex:none;}
+      .rep-new canvas{width:52px; height:52px; border-radius:8px; flex:none; image-rendering:pixelated;}
+      .rep-new .rn-name{font-weight:900; font-size:16px; line-height:1.3;}
+      .rep-new .rn-desc{font-size:12.5px; color:#55534a; line-height:1.45;}
+      .rep-hint{font-size:12px; color:#7a7663; line-height:1.55; margin:0 0 8px; flex:none;}
+      .rep-list{display:flex; flex-direction:column; gap:8px; overflow-y:auto; min-height:0; touch-action:pan-y; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; padding-bottom:4px; margin-bottom:12px;}
+      .rep-row{display:flex; gap:10px; align-items:flex-start; background:#fff; border:2px solid #d8d3c2; border-radius:10px; padding:8px 10px; cursor:pointer; text-align:left; width:100%; box-sizing:border-box; font-family:inherit; color:#23231f;}
+      .rep-row.sel{border-color:#e23c2e; background:#fff4f2;}
+      .rep-row canvas{width:44px; height:44px; border-radius:8px; flex:none; image-rendering:pixelated;}
+      .rep-row .rr-name{font-weight:900; font-size:14.5px; line-height:1.3;}
+      .rep-row .rr-desc{font-size:12px; color:#55534a; line-height:1.4;}
+      #btnReplaceOk:disabled{opacity:.45; cursor:default;}
+      #replaceScreen .btn.ghost{color:#23231f; border-color:#b9b4a2;}
       .logo-badge{width:92px; height:92px; border-radius:26px; margin-bottom:12px; background:#233018; border:2px solid var(--accent2); display:flex; align-items:center; justify-content:center; box-shadow:0 10px 34px rgba(0,0,0,.55);}
       h1.game-title{margin:0; font-size:clamp(36px,9vw,56px); font-weight:900; letter-spacing:.1em; color:#fff; text-shadow:0 4px 0 #2c4416, 0 8px 26px rgba(0,0,0,.6); text-align:center;}
       .game-sub{margin:8px 0 4px; color:var(--mana); font-weight:800; letter-spacing:.34em; font-size:13px; text-align:center;}
@@ -217,6 +234,9 @@
       .pick-label{font-size:13px; font-weight:800; letter-spacing:.24em; color:var(--ink-dim); margin-bottom:10px;}
       .char-row{display:flex; gap:10px; flex-wrap:nowrap; justify-content:flex-start; margin-bottom:22px; max-width:860px; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; touch-action:pan-x pan-y; padding:4px 2px 10px; scrollbar-width:thin; cursor:grab;}
       .char-row .char-card{flex:0 0 auto; scroll-snap-align:center;} /* 选角滑动（用户令）：角色卡单行横排，手指/触控左右滑动浏览（吸附对齐），点按仍选中；滑动位移过大时不触发误选（见 buildCharCards 后滑动处理） */
+      /* 选角改上下滑动（2026-10-28 用户令，取代上方横排口径、仅 #charRow）：7 卡改竖向单列、上下滑浏览——旧横排单行在竖屏里左右卡被裁切一半（真机截图闻西/莫哈哈/塌头鸡哥均切半）；新列宽 min(430px,94vw)、卡片 width:100% 占满列宽，左右不再裁切；列表 max-height:52vh 内部纵向滚动＋y 吸附，触摸 pan-y 原生滚动、鼠标拖拽由 charRowSwipe 竖向版兜底；误选门槛同旧口径（位移 >8px 吞掉紧随 click、轻点照常选中，见 charRowSwipe）。模式页 .char-row（普通/无尽两卡）不走本规则、原样不动 */
+      #charRow{flex-direction:column; flex-wrap:nowrap; justify-content:flex-start; align-items:stretch; width:min(430px,94vw); max-width:430px; max-height:52vh; overflow-x:hidden; overflow-y:auto; scroll-snap-type:y proximity; touch-action:pan-y; overscroll-behavior:contain; cursor:default;}
+      #charRow .char-card{flex:0 0 auto; width:100%; scroll-snap-align:center;}
       .char-card{width:158px; background:var(--panel); border:2px solid var(--line); border-radius:var(--radius); padding:10px 10px 10px; cursor:pointer; text-align:center; transition:border-color .15s, transform .15s;}
       .char-card:hover{transform:translateY(-2px);}
       .char-card.sel{border-color:var(--accent);}
@@ -441,7 +461,7 @@
   #cdHud{top:calc(136px + env(safe-area-inset-top)); right:calc(12px + env(safe-area-inset-right));}
   #comboHud{top:calc(206px + env(safe-area-inset-top)); right:calc(12px + env(safe-area-inset-right));}
   #vitals{left:calc(8px + env(safe-area-inset-left));}
-  #btnSpecial{right:calc(var(--spR) + env(safe-area-inset-right));}
+  #btnSpecial{right:calc(var(--spR) + env(safe-area-inset-right)); bottom:calc(14px + env(safe-area-inset-bottom));} /* 横屏：特殊键回右下角旧位——40vh 中部锚点在矮横屏（高约 390）会落进右侧连杀区（top 206 起），竖屏移位不带入横屏；bottom 写死旧值、y 微调在横屏不作用于特殊键（闪避不受影响） */
   #btnDodge{right:calc(var(--dgR) + env(safe-area-inset-right));}
   #netReviveBtn{right:calc(160px + env(safe-area-inset-right)); bottom:calc(16px + env(safe-area-inset-bottom));}
   #bossBar{bottom:calc(96px + env(safe-area-inset-bottom));}
@@ -644,7 +664,7 @@
     <div class="overlay" id="pauseScreen">
       <h2 class="panel-title">暂 停</h2>
       <p class="panel-sub" id="pauseStats">战斗暂停中</p>
-      <p class="panel-sub" style="margin-top:-8px;">版本 <span class="gameVerVal">1.0</span></p>
+      <p class="panel-sub" style="margin-top:-8px;">版本 <span class="gameVerVal">1.1</span></p>
       <div id="pauseSkills" style="width:min(560px,92vw); max-height:38vh; overflow-y:auto; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 16px; margin-bottom:18px; font-size:13.5px; line-height:1.8; text-align:left;"></div>
       <div class="pause-col">
         <button class="btn" id="btnResume">继续战斗</button>
@@ -685,7 +705,7 @@
       <h1 class="game-title">中山路KLF大冒险</h1>
       <div class="game-sub">ZHONGSHAN ROAD KLF ADVENTURE</div>
       <p class="game-author">作者：陈哈哈</p>
-      <p class="game-version">版本 <span class="gameVerVal">1.0</span></p>
+      <p class="game-version">版本 <span class="gameVerVal">1.1</span></p>
       <p class="game-desc">中山路的夜很普通——天突然暗了一块，像被扯开一个口子，七个人还没来得及跑，就被吸了进去。</p>
       <div class="pause-col">
         <button class="btn" id="btnTitleStart">开 始</button>
@@ -725,7 +745,7 @@
           <label class="set-slider-row"><span>左右位置</span><input type="range" id="setBtnX" min="0" max="120" step="4" value="0"><b id="setBtnXVal">0</b></label>
           <label class="set-slider-row"><span>上下位置</span><input type="range" id="setBtnY" min="0" max="120" step="4" value="0"><b id="setBtnYVal">0</b></label>
           <button class="btn ghost" id="btnBtnLayoutReset" type="button">恢复默认按键</button>
-          <p class="set-btnbox-note">左右/上下是把右下按键区往屏幕内侧推的距离。拖动即时生效并自动保存，下次进局仍在。</p>
+          <p class="set-btnbox-note">特殊技能键默认在右侧中部、闪避键在右下；左右/上下滑杆在此基础上微调两键位置。拖动即时生效并自动保存，下次进局仍在。</p>
         </div>
         <button class="btn" id="btnSettingsBack">返 回</button>
       </div>
@@ -874,8 +894,8 @@
           <li><b>地图道具：</b>打死怪物有小机率掉落道具（小怪 1%、精英必掉一件、普通 Boss 六种道具各掉一件；隐藏 Boss 朱德与最终 Boss 劳农必掉一件），掉在地上发着彩色辉光，永久留在地上、不会消失，直到走过去碰到拾取为止，碰到就生效：<b>回血饮料</b>立即回复 30% 生命；<b>磁石</b>把全屏经验宝石一次吸光；<b>炸弹</b>以拾取点为中心大范围爆炸；<b>兴奋剂</b>移速＋攻速提升 8 秒；<b>护盾发生器</b>立即补满一层护盾；<b>前晚的尿液</b>冷却 −60%（倍率 ×0.4），持续 60 秒，重复拾取刷新时长。</li>
           <li><b>新街尾之影：</b>主地图会刷出橙色「新街尾之影」传送门（开局 7 分钟后概率出现、存在 40 秒），站稳 3 秒进入单层街景副本：分 2 波迎战共 10 只精英怪（第一波 4 只、第一波全清后刷第二波 6 只），全数击杀后街尾尽头刷出奖励宝箱，走近开启（岩石魔像／亡灵战士／尾爷三选一方向：优先未持有、按 35%/35%/30% 权重抽取），开箱后站进旁边的回程传送门 2 秒返回主地图原位置。</li>
           <li><b>宝箱：</b>地图会随机刷新金色宝箱，靠近后停留在范围内累积 10 秒即可开启（离开范围进度暂停、不重置）。宝箱开出的是<b>专属特殊被动</b>（不死鸟之心、时空回溯、连锁爆核、毁灭契约、疾风血契等 10 种），只能从宝箱取得，独立成栏、不占技能槽。主地图宝箱另可开出攻击技能「雷云」（同样不占攻击格）；召唤技能分两处出：雷灵／树人／水元素出自「班仔的新屋」三层宝箱，岩石魔像／亡灵战士／尾爷出自「新街尾之影」奖励宝箱，主地图宝箱绝不产出。开箱时可选择<b>学或不学</b>：部分契约类被动带有负面属性（会在弹窗上红字列明），放弃无惩罚、之后仍可能再开出来。</li>
-          <li><b>梁鸡细佬：</b>击杀怪物直接获得<b>牛筋</b>（小怪 +5、精英 +15、Boss +80，顶栏常驻显示）。商人会不定时在主地图随机位置摆摊 60 秒（屏幕边缘有金色箭头指引），走近自动开店、战斗暂停。他是中立 NPC，怪物不会攻击他，你的技能也伤不到他。店里卖两样东西：<b>五项属性强化</b>（生命力/速度/吸血/技能冷却/爆击机率，每项本趟限购 10 次、整局上限 100 次（技能冷却 40 次），总加成买满才拿满；同一趟里越买越贵，下一趟价格回落）与<b>随机技能货架</b>（每次上架 4 件，每件限买一次，池子与升级选项相同，本角色的专属技能只会为本角色上架；每趟可在店内刷新货架 1 次，新商人到访重置），另有独立的<b>道具购买</b>页签：只卖地图道具池里的六种道具（自选），普通道具 50 牛筋一件、每次刷新可买 3 次，前晚的尿液 200 牛筋一件、每趟限购 1 次，买下掉落在脚边、离开商店即拾取生效。只逛不买完全可以，关店走开后、他收摊前走回来还能接着买。</li>
-          <li><b>技能槽：</b>攻击技能最多 13 个、被动技能最多 30 个（宝箱系技能与特殊被动不占格子）；攻击技能升满并持有配对被动时，可在升级时<b>合成进化</b>成更强的技能（配方会直接显示在选项卡上）。</li>
+          <li><b>梁鸡细佬：</b>击杀怪物直接获得<b>牛筋</b>（小怪 +5、精英 +15、Boss +80，顶栏常驻显示）。商人会不定时在主地图随机位置摆摊 60 秒（屏幕边缘有金色箭头指引），走近停留满 3 秒开店、战斗暂停。他是中立 NPC，怪物不会攻击他，你的技能也伤不到他。店里卖两样东西：<b>五项属性强化</b>（生命力/速度/吸血/技能冷却/爆击机率，每项本趟限购 10 次、整局上限 100 次（技能冷却 40 次），总加成买满才拿满；同一趟里越买越贵，下一趟价格回落）与<b>随机技能货架</b>（每次上架 4 件，每件限买一次，池子与升级选项相同，本角色的专属技能只会为本角色上架；每趟可在店内刷新货架 1 次，新商人到访重置），另有独立的<b>道具购买</b>页签：只卖地图道具池里的六种道具（自选），普通道具 50 牛筋一件、每次刷新可买 3 次，前晚的尿液 200 牛筋一件、每趟限购 1 次，买下掉落在脚边、离开商店即拾取生效。只逛不买完全可以，关店走开后、他收摊前走回来还能接着买。</li>
+          <li><b>技能槽：</b>攻击技能最多 13 个、被动技能最多 30 个（宝箱系技能与特殊被动不占格子）；槽满时学一个没学过的新技能，可以选一个同类型已学技能<b>替换</b>掉（被替换的连同等级、分支、进化一并移除，新技能从 Lv1 开始；专属主武器不能被替换）；攻击技能升满并持有配对被动时，可在升级时<b>合成进化</b>成更强的技能（配方会直接显示在选项卡上）。</li>
           <li><b>鹰眼与波次：</b>中立被动「鹰眼」每级扩大可视范围（镜头拉远），最高 5 级。怪物血量会随时间成长，并约每 40 秒成波次围攻——前期吃力是正常的，靠升级、攻击次数叠加与合成进化把火力堆起来，中后期成型后就能反过来割草。</li>
           <li><b>隐藏 Boss：</b>异世界最暗的地方，还藏着一个极难遇见的强敌，偶尔会毫无征兆地乱入战场——打倒他必定掉落一件宝贝（一次判定二选一）：90% 是传说技能「替身」（攻击小机率召唤替身分身作战 60 秒），10% 是隐藏被动「班仔的充气小伙伴」（攻击时 1% 机率变身 15 秒：体型×3、移速−70%、移动释放冲击波，伤害等于普攻伤害）。</li>
           <li><b>暂停：</b>右上角按钮或 <span class="kbd">Esc</span> / <span class="kbd">P</span> 键可以暂停、重新开始或返回主菜单。</li>
@@ -892,6 +912,21 @@
         <h2 class="panel-title">升级！选一项强化</h2>
         <p class="panel-sub" id="levelupSub">等级提升</p>
         <div class="choice-row" id="choiceRow"></div>
+      </div>
+    </div>
+
+    <!-- Skill replace（技能槽满时替换已学技能，2026-10-28 用户令） -->
+    <div class="overlay" id="replaceScreen">
+      <div class="lv-panel rep-panel">
+        <h2 class="panel-title">技能槽已满 · 选择替换</h2>
+        <p class="panel-sub" id="replaceSub"></p>
+        <div class="rep-new" id="replaceNew"></div>
+        <p class="rep-hint">点选一个同类型已学技能，再按「确认替换」：被替换的技能连同它的等级、分支与进化一并移除，新技能从 Lv1 开始（不继承旧等级）。取消则什么都不变。</p>
+        <div class="rep-list" id="replaceList"></div>
+        <div class="btn-row">
+          <button class="btn" id="btnReplaceOk" disabled>确认替换</button>
+          <button class="btn ghost" id="btnReplaceCancel">取消</button>
+        </div>
       </div>
     </div>
 
@@ -1685,7 +1720,58 @@ function syncSfxBtns(){
   var bs = document.getElementById('btnSfxSet');
   if(bs) bs.textContent = SFX.on ? '音效：开' : '音效：关';
 }
-function toggleSfx(){ SFX.on = !SFX.on; if(SFX.on) sfx('click'); syncSfxBtns(); }
+function toggleSfx(){ SFX.on = !SFX.on; if(!SFX.on) bzChargeSfxStop(); if(SFX.on) sfx('click'); syncSfxBtns(); }
+
+/* ---------------- 班仔按键技蓄力循环音效（2026-10-28 用户令） ----------------
+   口径（只限班仔）：按键技长按蓄力期间一直播放蓄力音效（持续/循环，不只按下播一下）；松手释放的瞬间停蓄力音、
+   并播放攻击音效（光束攻击音效＝releaseExcalibur 释放帧的 swordheavy/holy/fboom，只在释放帧触发、绝不提前到按下时播）；
+   蓄力音效在松手释放或取消时停（取消＝touchcancel/失焦/死亡作废，同样停、不播攻击音）。
+   触发点旧→新：旧版按下只有喊声 excalibur＋一次性合成声 special、蓄力全程再无持续音；新版按下同帧另起本循环音并持续到松手/取消为止。
+   实现：WebAudio 合成循环（与全场音效同路线、无新增音频文件）——双振荡器基音自 150Hz 随蓄力爬升扫向 880Hz（EXC_CHARGE_DUR 后到顶并保持、叠 9Hz 微颤出临界感，与蓄满视觉细颤同口径）
+   ＋带通噪声气流声同向爬升；走 SFX.gain 混音链、受音效开关 SFX.on 约束（关音效即停）；停止时 0.06 秒快速淡出再断开节点，不留残音、不叠开（重复 start 为 no-op）。
+   起点唯一＝bzExcHoldStart 按下起势（与喊声同帧）；止点＝bzAimEnd（松手/取消）、releaseExcalibur 释放帧（兜底）、excChargeTick 死亡/离场作废、toggleSfx 关音效。
+   起止均记入 window.__sfxLog（bzcharge_start/bzcharge_stop），供探针核对触发与时机。 */
+var BZ_CHG = { on: false, g: null, o1: null, o2: null, ns: null, lfo: null };
+function bzChargeSfxStart(){
+  if(BZ_CHG.on || !SFX.on) return;
+  try{
+    if(!AC){ try{ AC = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){} }
+    if(!AC) return;
+    if(AC.state === 'suspended' || AC.state === 'interrupted') AC.resume();
+    sfxInit();
+    if(!SFX.gain || !SFX.noiseBuf) return;
+    var t = AC.currentTime;
+    var g = AC.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.14, t + 0.15); g.connect(SFX.gain);
+    var o1 = AC.createOscillator(); o1.type = 'sine';
+    o1.frequency.setValueAtTime(150, t); o1.frequency.exponentialRampToValueAtTime(880, t + EXC_CHARGE_DUR);
+    var o2 = AC.createOscillator(); o2.type = 'triangle';
+    o2.frequency.setValueAtTime(302, t); o2.frequency.exponentialRampToValueAtTime(1760, t + EXC_CHARGE_DUR);
+    var g2 = AC.createGain(); g2.gain.value = 0.35; o2.connect(g2); g2.connect(g);
+    o1.connect(g);
+    var ns = AC.createBufferSource(); ns.buffer = SFX.noiseBuf; ns.loop = true;
+    var fl = AC.createBiquadFilter(); fl.type = 'bandpass'; fl.Q.value = 1.4;
+    fl.frequency.setValueAtTime(420, t); fl.frequency.exponentialRampToValueAtTime(2600, t + EXC_CHARGE_DUR);
+    var ng = AC.createGain(); ng.gain.value = 0.5; ns.connect(fl); fl.connect(ng); ng.connect(g);
+    var lfo = AC.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 9;
+    var lfoG = AC.createGain(); lfoG.gain.setValueAtTime(0, t); lfoG.gain.linearRampToValueAtTime(26, t + EXC_CHARGE_DUR); // 爬升段不颤、蓄满后基音微颤（临界感）
+    lfo.connect(lfoG); lfoG.connect(o1.frequency);
+    o1.start(t); o2.start(t); ns.start(t); lfo.start(t);
+    BZ_CHG.on = true; BZ_CHG.g = g; BZ_CHG.o1 = o1; BZ_CHG.o2 = o2; BZ_CHG.ns = ns; BZ_CHG.lfo = lfo;
+    window.__sfxLog.push({ k: 'bzcharge_start', via: 'webaudio', t: Date.now() });
+  }catch(e){}
+}
+function bzChargeSfxStop(){
+  if(!BZ_CHG.on) return;
+  BZ_CHG.on = false;
+  try{
+    var t = AC ? AC.currentTime : 0, g = BZ_CHG.g;
+    if(g && AC){ g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(Math.max(g.gain.value, 0.0001), t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06); }
+    var nodes = [BZ_CHG.o1, BZ_CHG.o2, BZ_CHG.ns, BZ_CHG.lfo];
+    for(var i = 0; i < nodes.length; i++){ if(nodes[i]){ try{ nodes[i].stop(t + 0.08); }catch(e){} } }
+    window.__sfxLog.push({ k: 'bzcharge_stop', via: 'webaudio', t: Date.now() });
+  }catch(e){}
+  BZ_CHG.g = null; BZ_CHG.o1 = null; BZ_CHG.o2 = null; BZ_CHG.ns = null; BZ_CHG.lfo = null;
+}
 
 /* ---------------- 震动反馈（手机触觉打击感） ----------------
    与音效/震屏/顿帧同一套反馈语言，按事件份量分级：普通击杀只轻震一下（280ms 节流，怪潮里不会震成按摩器），
@@ -1995,7 +2081,7 @@ var BRANCHES = {
   ak47:{ C:{ name:'追踪弹', desc:'子弹获得追踪能力：出膛后自动拐弯咬住最近的敌人，转向不减速、弹速不减；弹射是 AK 的升级专属强化（升级时解锁）：每颗子弹最多弹射 3 次' } } // AK 弹射（2026-10-27 用户定版，取代 2026-10-23 写死恒定规则）：Lv1 初始无弹射；升级抽卡时出一张专属强化卡（type:'akmod'，见 buildChoices），选到后解锁、已得不再出现——每颗子弹弹射封顶 3 次（逐跳 ×0.72），不叠加、不随等级/进化增长（见 ak47 发射处 ricoB）；AK 普攻分裂已于同日新令整体去除（splitB 恒 0）；Lv3 分支只保留 C「追踪弹」；穿透为进化「黄金AK」专属（见 evoDesc）
 };
 /* 主技能终极进化所需的对应道具 */
-var GAME_VERSION = '1.0'; // 游戏版本号（单一来源，2026-10-27 用户定稿本轮为 1.0）：标题页与暂停菜单都从此常量渲染；本轮按用户新令直接定为 1.0（不沿用旧 +0.1 递增规则）
+var GAME_VERSION = '1.1'; // 游戏版本号（单一来源）：标题页与暂停菜单都从此常量渲染；2026-10-28 用户令由 1.0 改为 1.1
 var SIG_ITEM = { weiye:'luckbell', undeadwar:'fang', thundercloud:'voltcore', icelance:'icevein', emberring:'emberboots', voltspirit:'voltcore', skystrike:'magcore', vacuumblade:'windheart', corona:'luckbell', oldtreant:'thorn', vinegrip:'regen', rockgolem:'stoneskin', quake:'earthheart', waterelemental:'tidalheart', tidalwave:'tidalcore', currybat:'grail', boomerang:'boots', cigshot:'rune', octoshot:'rune', stamp:'magnet', chainvolt:'xpcrystal',
   firebolt:'fang', leafblade:'boots', lightning:'rune', frostnova:'shield', stardart:'shadow', flameaura:'thorn',
   moonwheel:'critlens', fireball:'glove', frostcone:'shield', poisonspray:'fang', earthspike:'thornheart', orbitblade:'windheart', totem:'magcore', gravitytrap:'hourglass',
@@ -2131,12 +2217,14 @@ var DMG_SRC = null; // 当前伤害来源的玩家 id（联机时房主模拟远
    Boss 不锁晕——只在烟雾跳伤节拍（0.4 秒）按现有眩晕抗性代码 applyStunResist(1.0) 逐跳短晕（Boss 实得 ×0.35＝0.35 秒），出烟即停；
    ④隐身回血：隐身存续期间（含计时暂停帧）每秒恢复 JG_INVIS_HEAL＝5% 生命上限，封顶不溢出，隐身结束即停。
    班仔：解放光束击退 140、释放点圣光爆击退 110（位移量，damageEnemy 内 Boss ×0.25、精英不打折、相位幽灵免疫——既有口径）；
-   无敌窗＝蓄力 1.32 秒＋光束 0.85 秒＝excInvT 2.17 秒，释放结束即失效。
+   无敌门槛（2026-10-28 11:34 用户令，取代旧「蓄力全程无敌／2.17 秒无敌窗」）：长按蓄力持续超过 BZ_INV_HOLD_T＝3 秒后无敌才生效——
+   未满 3 秒蓄力期间不无敌；越过 3 秒后，剩余蓄力期间与松手后的光束期间（0.85 秒）无敌，释放结束即失效；未满 3 秒就松手释放则全程（含光束段）不无敌。
    陈哈哈：感电持续到该怪被打死为止（2026-10-27 20:05 用户澄清：触发互击后不消耗、不消失、无计时）、互击触发距离 180（中心距）、
    互击伤害 30（挂状态时按当次 mul×sMul 锁定存入 e.shockDmg）；持续靠近期间可重复互击——每只怪互击冷却 1.0 秒、每次扫描每只至多参与一对，
    防同帧连锁爆链；精英/Boss 同样适用。 */
 var JG_INVIS_DUR = 5, JG_SMOKE_R = 235, JG_TRAIL_R = 90, JG_LURE_R = 900, JG_LURE_MUL = 1.3, JG_INVIS_HEAL = 0.05;
 var BZ_SPEC_KB_BEAM = 140, BZ_SPEC_KB_BLAST = 110, BZ_SPEC_BEAM_DUR = 0.85;
+var BZ_INV_HOLD_T = 3; // 班仔按键技无敌门槛（2026-10-28 用户令）：单次长按蓄力持续超过 3 秒（P.excHoldT 累计、真实秒）无敌才生效，未满不无敌
 var CH_SHOCK_RANGE = 180, CH_SHOCK_DMG = 30, CH_SHOCK_ZAP_CD = 1.0;
 /* ===== 破浪冲击击退（2026-10-27 用户令＋20:11 最终口径） =====
    破浪冲击命中没死的敌人沿冲击方向（浪头前进方向）向外击退：位移量＝WC_KB_BASE＋等级×WC_KB_PER_LV
@@ -2705,7 +2793,7 @@ function newPlayer(ci){
     shopCrit:0, shopLeech:0, shopCdMul:1,
     awkGiven:false, chestP:{}, reviveCd:0, drainAcc:0, distPx:0, windStacks:0,
     moving:0, atkPoseT:0, specPoseT:0, hurtT:0, atkStyle:'slash', atkAnimT:9, atkAnimDur:0.32, atkAlt:0, atkAltMap:{}, hasStandSkill:false, standAtkT:0, dollPartner:false, dollFormT:0, dollGrowT:0, shockAcc:0, // dollPartner＝持有隐藏被动（拾取后常驻）；dollFormT＝变身剩余秒数（改版：攻击 1% 触发 15 秒，非常驻）
-    excT:0, excMul:1, excSMul:1, excSR:1, excInvT:0, excAimAng:null
+    excT:0, excMul:1, excSMul:1, excSR:1, excInvT:0, excAimAng:null, excHold:false, excHoldT:0
   };
   p.weapons[c.weapon] = { lv:1, evo:false };
   /* 莫哈哈的按键专属技能是「发压德轰（子母雷）」（doSpecial，带冷却）：母雷爆炸后分裂 6 个小炸弹散开再爆、每个小炸弹再分裂 2 个小小炸弹（共 12 个），两次分裂到此为止、不随 AK47 等级成长（定版见 doSpecial 莫哈哈段）；原独立可学技能「分裂蛋」已按定版并入此技能、彻底删除 */
@@ -3929,11 +4017,12 @@ function gainShield(v){
 var DROP_ITEMS = {
   drink:  { name:'回血饮料',   fx:'回复 30% 生命',      color:'#ff8a5a', glow:'255,110,80',  img:'dropdrink' },
   magnet: { name:'磁石',       fx:'全图经验宝石吸附！',  color:'#d8a7f2', glow:'190,120,255', img:'dropmagnet' },
-  bomb:   { name:'炸弹',       fx:'拾取即爆：全屏清场',    color:'#ffb02e', glow:'255,160,60',  img:'dropbomb' },
+  bomb:   { name:'炸弹',       fx:'拾取即爆：全屏＋屏外清场', color:'#ffb02e', glow:'255,160,60',  img:'dropbomb' }, // 主地图范围含视口外扩 320（2026-10-28）；副本内仍半径 175
   stim:   { name:'兴奋剂',     fx:'移速＋攻速提升 8 秒', color:'#a8e063', glow:'140,230,90',  img:'dropstim' },
   shield: { name:'护盾发生器', fx:'获得一层护盾',        color:'#7ad7f0', glow:'110,200,255', img:'dropshield' },
   urine:  { name:'前晚的尿液', fx:'冷却 −60%（倍率 ×0.4），持续 60 秒', color:'#e8d44d', glow:'232,212,77', img:'dropurine' } // 新道具（2026-10-28 用户令）：名称与效果由用户定版——拾取后 60 秒内冷却倍率 ×0.4；无专属贴图素材，地图上走 DROP 绘制的主题色圆角块兜底、商店卡走 shopItemIcon 兜底（首字）；权重为施工安排并已报出：普通掉落池 5/105（≈4.8%）、精英非饮料段 5/75、普通 Boss 全池各掉 1 个含尿液（朱德/劳农只必掉单个、按池权重可抽中尿液）、商店自选 200 牛筋限购见 SHOP_URINE_*
 };
+var BOMB_VIEW_OUT = 320; // 炸弹主地图外扩距离（2026-10-28 用户令）：主地图炸弹判定由「视口内（外扩 0）」改为「视口每边再向外扩 320 世界单位」——判定矩形＝以相机为中心、半宽 W/2＋320、半高 H/2＋320（另加目标自身半径，与旧视口判定同口径）；视野内外的三档伤害规则不变（普通怪秒杀／精英扣当前血量一半／Boss 60×pDmgMul）；新屋／新街尾副本内仍走半径 175 旧规则、不受此外扩影响
 function applyDropPickup(kind, x, y){
   var d = DROP_ITEMS[kind]; if(!d) return;
   texts.push({ x: P.x, y: P.y - 56, v: 0, txt: d.name, t: 0, color: d.color, big: true });
@@ -3949,6 +4038,7 @@ function applyDropPickup(kind, x, y){
     burst(P.x, P.y, '#c99af2', fxN(10));
     sfx('gem');
   } else if(kind === 'bomb'){ // 炸弹改版（2026-10-26 用户令）：拾取瞬间爆炸。主地图（及虚空竞技场）＝当前屏幕全屏结算——以拾取瞬间相机为中心、当前视口（W×H 世界单位）内的怪物才受影响，屏幕外怪物不受影响：普通怪直接秒杀；精英怪不秒杀、按【当前血量】减半（直接扣当前血量的一半向下取整，不走 damageEnemy 的暴击/纹章/天气修正，保证血条精确减半）；Boss 不秒杀、不减半，仍按原炸弹伤害（60×pDmgMul）结算。新屋（MAZE.active）内不套用全屏：沿用原规则（半径 175＋原伤害打全部命中目标），避免把主地图全屏误用到新屋房间。
+    // 外扩改版（2026-10-28 用户令，取代上行「屏幕外怪物不受影响」）：主地图判定矩形由视口向外扩 BOMB_VIEW_OUT（320 世界单位／每边）——视口外 320 以内的怪物同样按三档规则结算（普通秒杀／精英减半／Boss 60×），再往外不受影响；副本内半径 175 分支不变。
     var bDmg = Math.round(60 * pDmgMul());
     var inMazeB = (typeof MAZE !== 'undefined' && MAZE.active) || (typeof STREET !== 'undefined' && STREET.active); // 副本内（新屋／新街尾之影）炸弹沿用半径规则、不套主地图全屏
     var bTargets = []; // 先快照命中名单再逐个结算：killEnemy 会往 gems/effects/texts 追加实体、Boss 死亡还会切状态，禁止边遍历 live 数组边结算（拾取闪退查修同口径）
@@ -3964,15 +4054,15 @@ function applyDropPickup(kind, x, y){
         if(dist2(x, y, bme.x, bme.y) < brr2 * brr2) bTargets.push({ e: bme, mode: 'dmg' });
       }
     } else {
-      var bDiag = Math.hypot(W, H);
-      novas.push({ x: x, y: y, r: 8, maxR: bDiag * 0.62, t: 0, color: '#ffb02e', big: true }); // 冲击波扩散覆盖整屏，与全屏判定对上
+      var bDiag = Math.hypot(W + BOMB_VIEW_OUT * 2, H + BOMB_VIEW_OUT * 2); // 视觉扩散按外扩后的判定矩形对角线计，与外扩判定对上
+      novas.push({ x: x, y: y, r: 8, maxR: bDiag * 0.62, t: 0, color: '#ffb02e', big: true }); // 冲击波扩散覆盖外扩后整片判定区，与判定范围对上
       spawnVfx('explosion', x, y, bDiag * 1.05, 0.6);
       spawnVfx('fire', x, y - 6, bDiag * 0.7, 0.65);
       burst(x, y, '#ff7a3e', fxN(26));
       effects.push({ type:'ring', x: x, y: y, r: bDiag * 0.5, t: 0, dur: 0.4, max: bDiag * 0.5, color: '#ffb02e' });
       for(var bsi = 0; bsi < enemies.length; bsi++){
         var bse = enemies[bsi]; if(bse.dead) continue;
-        if(Math.abs(bse.x - cam.x) <= W / 2 + bse.r && Math.abs(bse.y - cam.y) <= H / 2 + bse.r)
+        if(Math.abs(bse.x - cam.x) <= W / 2 + BOMB_VIEW_OUT + bse.r && Math.abs(bse.y - cam.y) <= H / 2 + BOMB_VIEW_OUT + bse.r)
           bTargets.push({ e: bse, mode: bse.boss ? 'dmg' : (bse.elite ? 'half' : 'kill') });
       }
     }
@@ -4015,7 +4105,7 @@ function hurtPlayer(dmg){
   if(panelGuardOn()) return; // 面板护盾（2026-10-28 定版）：学习页/已学技能/属性/设置任一面板打开期间本机无敌（含持续伤害——开面板不该被毒死），关完即恢复
   if(P.charIdx === 3 && P.invisT > 0 && !drainHit) return; // 鸡哥隐身不被攻击（2026-10-28 用户令，覆盖旧例外）：隐身期间怪物的一切攻击整段不命中——接触/敌方弹道/预警圈爆发/扇形弹幕/裂缝与凝视射线/虚空风暴区/物种专属命中（幽灵爪/锁链横扫/龙息/毒针直伤）全部经此门禁跳过，护盾不被消耗；旧「Boss/精英预警圈与扇形弹幕按真实位置结算」例外作废，瞄准侧同步改走最后已知位置（aimPos／敌人主循环 tgt）；持续伤害（drainHit 口径，与闻西龙卷风/班仔解放无敌窗同规）照常结算；invisT 归零即恢复受击
   if(P.charIdx === 1 && P.tornadoT > 0 && !drainHit) return; // 闻西按键技「龙卷风吹毁停车场」无敌窗（2026-10-26 用户新规）：龙卷风存续期间（tornadoT>0：持续 8 秒）接触/弹道伤害全免；tornadoT 归零即失效、不延续到冷却期；持续伤害（drainHit 口径，与闪避无敌同规）照常结算；只限闻西一人
-  if(P.charIdx === 0 && P.excInvT > 0 && !drainHit) return; // 班仔按键技「Ex咖哩棒解放」无敌窗（2026-10-27 用户令）：释放期间无敌——自按下起覆盖蓄力 1.32 秒＋光束持续 0.85 秒（excInvT=2.17 秒，doSpecial 按下时置入、updatePlayer 递减），光束结束即失效、不延续到冷却期；持续伤害（drainHit 口径，与闻西龙卷风/闪避无敌同规）照常结算；只限班仔一人
+  if(P.charIdx === 0 && P.excInvT > 0 && !drainHit) return; // 班仔按键技「Ex咖哩棒解放」无敌窗（2026-10-28 11:34 用户令改门槛，取代蓄力全程无敌）：单次长按蓄力持续超过 3 秒（BZ_INV_HOLD_T）后无敌才生效——excChargeTick 仅在 excHoldT>3 时滚动维持 excInvT、bzAimEnd 仅在越过门槛时把无敌补到光束段 0.85 秒（updatePlayer 递减），未满 3 秒蓄力与释放全程不无敌；光束结束即失效、不延续到冷却期；持续伤害（drainHit 口径，与闻西龙卷风/闪避无敌同规）照常结算；只限班仔一人
   if(P.shieldUp && !drainHit){ // 守护力场抵挡一次
     P.shieldUp = false;
     P.shieldCd = Math.max(5, 13 - (P.passives.shield || 0));
@@ -4090,6 +4180,7 @@ function angDiffPi(a, b){ return Math.abs(((a - b) % (Math.PI * 2) + Math.PI * 3
 function inFaceCone(e){ return angDiffPi(Math.atan2(e.y - P.y, e.x - P.x), P.faceAng || 0) <= CONE_HALF + 1e-9; }
 function faceAim(ang){ // 开火转身：朝向帧对准开火方向并刷新朝向锁（例外英雄不转身、保持原行为）
   if(coneFree()) return;
+  if(P.charIdx === 0 && (P.excT > 0 || (typeof BZ_AIM !== 'undefined' && BZ_AIM.active))) return; // 班仔按键技蓄力中（2026-10-28 纠正口径）：瞄准/长按蓄力期间正面保持指示方向，普攻不开火转身、不转回最近怪物方向；松手释放后（excT 归零）恢复正常转向
   P.faceAng = ang;
   var ca = Math.cos(ang); if(ca !== 0) P.face = ca >= 0 ? 1 : -1;
   P.faceLockT = Math.max(P.faceLockT || 0, 0.3);
@@ -6393,17 +6484,27 @@ function updateTotems(dt){
   }
 }
 
-/* ================= 班仔按键技「Ex咖哩棒解放」蓄力释放编排（用户锁定规格） =================
-   声画同步基准（实测 excalibur.mp3 定稿 v4 波形包络）：「Ex!」约 0.10–0.50s → 静默停顿 0.55–1.30s →「咖哩棒——」高潮 1.32s 起音、峰值 1.70–1.90s、尾音收于约 2.05s。
-   编排：按下按键技＝喊声起声＋举剑蓄力；前 0.8s 为蓄力爬升（金色光粒向剑身汇聚、剑身渐亮、脚下蓄力圈收拢读进度）；
-   0.8s 后进入蓄满待发（剑光最亮、临界细光柱＋本体细颤，张力拉满，正对音频停顿的屏息段——不是站着干等）；
-   蓄力总时长 = 高潮起点 1.32s：释放帧与「咖」字起音同帧轰出巨型金色光束，「棒——」长音正好覆住光束的持续/衰减段（光束时长 0.85s，收束于约 2.17s）。
-   计时走 frame() 的真实 dt（先于慢动作缩放执行），声画同步不漂移；蓄力中移速 ×0.45 可挪动调向、不被打断、不可取消，冷却自按下起算。 */
-var EXC_CHARGE_DUR = 1.32; // 按下→释放总时长（＝喊声高潮起点）
+/* ================= 班仔按键技「Ex咖哩棒解放」蓄力释放编排（2026-10-28 改版：长按蓄力、松手释放） =================
+   现行口径（用户令，取代旧 1.32 秒定时释放）：班仔按键技没有蓄力时间上限——按下按键技＝喊声起声＋举剑蓄力（bzExcHoldStart），
+   只要一直长按就一直处于蓄力状态、不自动释放，松手才释放（bzAimEnd 置待发 → releaseExcalibur 沿松手时指示标方向轰出）；
+   蓄力期间可拖动改向：紫色箭头指示标随拖动实时改变、正面同步保持指示方向，最终攻击方向以松手时指示标所指为准、不是按压瞬间锁定；
+   冷却自松手释放时起算；蓄力中移速 ×0.45 可挪动（移动不改朝向）、不被打断；touchcancel/失焦取消蓄力＝不释放、不进冷却（死亡同样作废、不补放）。
+   EXC_CHARGE_DUR 现只作蓄力爬升的视觉时长：excT 自 1.32 在 excHold 期间只降到 0.05 封顶（爬升 0.8 秒后进入蓄满待发：剑光最亮、临界细光柱＋本体细颤），永不归零、永不自动释放。
+   喊声触发点＝按下起势（沿旧口径的起声点：excalibur.mp3「Ex!」约 0.10–0.50s 起声）；光束改由松手触发后，不再与喊声 1.32 秒高潮点对齐——无蓄力时长口径的必然结果。光束时长 0.85s、伤害/范围公式不变；无敌门槛（2026-10-28 11:34 用户令，取代蓄力全程无敌）：单次长按超过 3 秒（excHoldT 累计真实秒、BZ_INV_HOLD_T）后无敌才生效，生效后覆盖剩余蓄力期＋释放后光束段 0.85 秒，未满 3 秒全程不无敌。
+   音效口径（2026-10-28 用户令，只改班仔）：蓄力音效＝按下起势同帧起播的持续合成循环（bzChargeSfxStart，音高随蓄力爬升、蓄满保持微颤），长按多久响多久；松手释放瞬间停蓄力音、同帧链路进入 releaseExcalibur 播攻击音效（swordheavy/holy/fboom，只在释放帧、按下时绝不播）；取消蓄力（touchcancel/失焦/死亡）停蓄力音且不播攻击音。喊声仍在按下起势、不动；其他六人音效一字未动。 */
+var EXC_CHARGE_DUR = 1.32; // 蓄力爬升视觉时长（不再是按下→释放总时长：长按期间 excT 只降到 0.05 封顶、不自动释放）
 var EXC_RAMP_T = 0.8;      // 蓄力爬升时长（其后为蓄满待发段，占比 0.8/1.32）
 function excChargeTick(rdt){
   if(!P || P.charIdx !== 0 || !(P.excT > 0)) return;
-  if(P.hp <= 0 || state === 'over' || state === 'start' || state === 'ending'){ P.excT = 0; P.excAimAng = null; return; } // 死亡/离场：蓄力作废，不补放（选向一并作废）
+  if(P.hp <= 0 || state === 'over' || state === 'start' || state === 'ending'){ P.excT = 0; P.excHold = false; P.excAimAng = null; P.excHoldT = 0; bzChargeSfxStop(); return; } // 死亡/离场：蓄力作废，不补放（选向一并作废），蓄力音效同步停（2026-10-28），无敌门槛计时一并清零
+  if(P.excAimAng != null){ P.faceAng = P.excAimAng; var fca = Math.cos(P.excAimAng); if(fca !== 0) P.face = fca >= 0 ? 1 : -1; } // 待发/释放帧：正面钉在指示方向（蓄力期间正面保持释放方向；excHold 期间 excAimAng 恒为 null、不进此行，方向由 BZ_AIM 拖动实时驱动）
+  if(P.excHold){ // 长按蓄力中（2026-10-28 用户令：蓄力无时间上限、松手才释放）：excT 只作视觉爬升、降到 0.05 封顶，永不归零、永不自动释放；无敌门槛计时 excHoldT 累计真实秒、仅越过 3 秒后才滚动维持无敌（2026-10-28 11:34 用户令）；蓄满段剑尖火花
+    if(P.excT > 0.05) P.excT = Math.max(0.05, P.excT - rdt);
+    P.excHoldT = (P.excHoldT || 0) + rdt;
+    if(P.excHoldT > BZ_INV_HOLD_T) P.excInvT = Math.max(P.excInvT || 0, 0.25); // 未满 3 秒：不授予无敌（本行不执行、excInvT 保持 0）
+    if(Math.random() < rdt * 9) particles.push({ x: P.x + rand(-6, 6), y: P.y - rand(44, 58), vx: rand(-26, 26), vy: rand(-70, -30), t: 0, life: rand(0.2, 0.4), color: Math.random() < 0.6 ? '#ffd76a' : '#fff3c4', r: rand(1.6, 2.8), star: true });
+    return;
+  }
   P.excT -= rdt;
   var prog = clamp(1 - P.excT / EXC_CHARGE_DUR, 0, 1);
   if(prog > EXC_RAMP_T / EXC_CHARGE_DUR && Math.random() < rdt * 9) // 蓄满段：剑尖不时迸出临界火花
@@ -6414,6 +6515,7 @@ function excChargeTick(rdt){
   }
 }
 function releaseExcalibur(){
+  bzChargeSfxStop(); // 释放帧兜底止点（2026-10-28）：蓄力音效到释放瞬间为止（正常长按路径已在 bzAimEnd 松手时停过、此处为 no-op）；下方释放帧攻击音效即「释放瞬间」的攻击音、不提前
   DMG_CRIT = 0.10; DMG_EL = null; // 与 doSpecial 同口径：按键技基础暴击 10%、不吃天气元素加成（在真正的释放帧重设，防蓄力期间被其他攻击覆盖）
   var mul = P.excMul, sMul = P.excSMul, sR = P.excSR;
   P.specPoseT = 0.55; tryStandProc('player');
@@ -6542,8 +6644,8 @@ function doSpecial(){
   if(P.charIdx === 0){
     // 班仔：Ex咖哩棒解放——按下＝起声＋举剑蓄力（编排见 EXC_CHARGE_DUR 注释）；伤害/光束/光爆全部在蓄满瞬间由 releaseExcalibur 释放，与喊声「咖哩棒」高潮同帧
     EXC_T = gameTime + 12; sfx('excalibur'); // 喊声在蓄力开始时起声（定稿 v4 双通道保底，每次解放必喊）；EXC_T 只继续节流洪流普攻喊声防叠声
-    P.excT = EXC_CHARGE_DUR; P.excMul = mul; P.excSMul = sMul; P.excSR = sR; // 蓄力计时开始（frame 的真实 dt 推进）；倍率按下时锁定
-    P.excInvT = EXC_CHARGE_DUR + BZ_SPEC_BEAM_DUR; // 无敌窗（2026-10-27 用户令）：释放期间无敌——蓄力 1.32 秒＋光束 0.85 秒＝2.17 秒，自按下起算、光束结束即失效（结算在 hurtPlayer 的 excInvT 门禁，递减在 updatePlayer）
+    P.excT = 0.001; P.excMul = mul; P.excSMul = sMul; P.excSR = sR; // 兜底入口（压测/瞄准起势被门禁拦下后的旧路径）：无蓄力、下一帧即释放——班仔蓄力只存在于长按流程（bzExcHoldStart 按下起、松手止），本函数不再排 1.32 秒定时释放（2026-10-28 用户令：蓄力无时间上限、松手才释放）；倍率按下时锁定
+    P.excInvT = 0; // 无敌门槛（2026-10-28 11:34 用户令）：兜底路径无长按蓄力、未越过 3 秒门槛 → 不授予无敌（旧口径曾在此给光束段 0.85 秒无敌、已作废；长按路径的无敌由 excChargeTick 越过门槛后滚动维持、bzAimEnd 越过门槛时补到光束段）
     if(P.excAimAng != null) P.faceAng = P.excAimAng; // 起势朝选定方向举剑；未选向时保持本体当前朝向（不锁怪：不起势自动瞄准、不在释放帧重取最近怪物）
     effects.push({ type:'pillar', x: P.x, y: P.y, t: 0, dur: 0.9 }); // 起势：脚下升起金色光柱——力量开始灌入
     texts.push({ x: P.x, y: P.y - 74, v: 0, txt: 'Ex——！', t: 0, color: '#ffe9a3', big: true });
@@ -6859,7 +6961,7 @@ function openChest(){
    刷新：开局 90 秒内不刷；间隔故意不均（约 100–285 秒、均值约 3 分钟），距上次出现满 300 秒保底必刷，来过后至少隔 90 秒；
    随机位置（离玩家 ≥700px，不与宝箱/新屋入口重叠），只在主地图出现（新屋/虚空战场不刷，期间计时冻结）；
    在场 60 秒，屏幕边缘金箭头指引，最后 10 秒头顶倒计时闪烁；中立 NPC：独立对象、不进敌人列表，任何索敌/伤害结算都碰不到他，无血条；
-   走近自动开店（战斗暂停），关店无惩罚，消失前走回来可继续买（关店后需先走开再走近才重新开店，防贴身反复弹窗）。
+   走近停留满 3 秒开店（战斗暂停；2026-10-28 用户令：64px 内连续停留满 3 秒才开、不满离开即计时重置，关店/新商人刷出/商人离场同样清零；联机远端由房主逐人同口径计时），关店无惩罚，消失前走回来可继续买（关店后需先走开再走近才重新开店，防贴身反复弹窗）。
    牛筋：击杀直接到账（普通 +5 / 精英 +15 / Boss +80），HUD 顶栏常驻显示（击杀数旁黄色牛筋片）。
    属性仅 5 项，总加成平摊到买满：生命力 +600（+6/次）、速度 +30%（+0.3%/次）、吸血 +30%（+0.3%/次）、
    技能冷却 −8%（−0.2%/次、整局上限 40 次）、爆击机率 +30%（+0.3%/次）；起价分档，本趟内每买一次 ×1.35 涨价；
@@ -6882,14 +6984,14 @@ var SHOP_URINE_PRICE = 200; // 「前晚的尿液」购买价（2026-10-28 用�
 var SHOP_ITEM_BUYS = 3; // 普通道具每刷新可买次数（2026-10-28 用户令细化）：每次刷新可买 3 次、买满等下一次刷新；「刷新」口径＝新商人到访（spawnMerchant）或店内刷新货架（refreshShopStock），联机客机每趟开店同口径重置（见快照开店段）
 var SHOP_URINE_BUYS = 1; // 「前晚的尿液」限购（2026-10-28 用户令）：每个商人到访期间限购 1 次，刷新（新商人到访/店内刷新货架，与普通道具同一刷新口径）后重置可再买；与普通道具的 3 次计数不共用入口——尿液走独立计数 urineLeft、不占普通道具 3 次，普通道具也不占尿液这 1 次
 var SHOP_ITEM_KINDS = ['drink', 'magnet', 'bomb', 'stim', 'shield', 'urine']; // 道具购买可售清单：只限地图道具池（DROP_ITEMS）内六种——回血饮料/磁石/炸弹/兴奋剂/护盾发生器/前晚的尿液，池外一律不卖；获得方式＝玩家自选（逐件明码标价自选购买，非随机抽：尿液有独立价格与限购、自选最清晰，随机抽口径不采用）
-var SHOP = { beef:0, earned:0, npc:null, nextT:120, sinceLast:0, visit:{}, totals:{}, stock:[], seq:0, refreshLeft:0, itemLeft:0, urineLeft:0 }; // seq：商人刷新序号（每趟 +1；联机随快照下发，客户端据此每趟只播一次「你好」）；refreshLeft：本趟剩余商品刷新次数；itemLeft：本刷新剩余普通道具可买次数；urineLeft：本趟剩余尿液可买次数（道具购买独立选项，与技能货架/五维完全分开）
+var SHOP = { beef:0, earned:0, npc:null, nextT:120, sinceLast:0, visit:{}, totals:{}, stock:[], seq:0, refreshLeft:0, itemLeft:0, urineLeft:0, nearT:0 }; // seq：商人刷新序号（每趟 +1；联机随快照下发，客户端据此每趟只播一次「你好」）；refreshLeft：本趟剩余商品刷新次数；itemLeft：本刷新剩余普通道具可买次数；urineLeft：本趟剩余尿液可买次数（道具购买独立选项，与技能货架/五维完全分开）；nearT：本机玩家在开店距离 64px 内的连续停留计时（2026-10-28 用户令：满 3 秒才开店，离开即重置）
 var MONK_IMG = new Image(); MONK_IMG.src = 'assets/npc/merchant_monk.png'; // 场上精灵：Mystery Monk（Calciumtrice / Merry Dream Games，CC-BY 3.0）
 function shopNextDelay(first){
   if(first) return rand(95, 160); // 开局 1 分半内不刷，首访约 1.6–2.7 分钟
   return 100 + Math.pow(Math.random(), 1.35) * 185; // 100–285 秒不均匀间隔（均值 ≈179 秒），90 秒冷却已内含
 }
 function shopReset(){
-  SHOP.beef = 0; SHOP.earned = 0; SHOP.npc = null; SHOP.sinceLast = 0;
+  SHOP.beef = 0; SHOP.earned = 0; SHOP.npc = null; SHOP.sinceLast = 0; SHOP.nearT = 0;
   SHOP.nextT = shopNextDelay(true); SHOP.visit = {}; SHOP.totals = {}; SHOP.stock = []; SHOP.refreshLeft = SHOP_REFRESH_MAX; SHOP.itemLeft = SHOP_ITEM_BUYS; SHOP.urineLeft = SHOP_URINE_BUYS;
   var ss = document.getElementById('shopScreen'); if(ss) ss.classList.remove('on');
 }
@@ -6899,7 +7001,7 @@ function shopSkillPool(){
   for(gi = 0; gi < GENERIC_WEAPONS.length; gi++){
     k = GENERIC_WEAPONS[gi];
     if(P.weapons[k]){ if(P.weapons[k].lv < WEAPONS[k].max) pool.push({ kind:'w', key:k, mode:'up' }); }
-    else if(attackCount() < 13 && !hasCP('doomcontract')) pool.push({ kind:'w', key:k, mode:'new' });
+    else if(!hasCP('doomcontract')) pool.push({ kind:'w', key:k, mode:'new' }); // 【2026-10-28 槽满替换】攻击槽满时新招式照常上架，购买走替换流程（buyShopSkill 拦截，确认替换后才扣费）；毁灭契约仍不上架
   }
   var sig = CHARACTERS[P.charIdx].weapon; // 角色专属：只有正在玩的角色才刷得出自己的专属（主武器恒已持有，以「强化」形式上架）
   if(P.weapons[sig] && P.weapons[sig].lv < WEAPONS[sig].max) pool.push({ kind:'w', key:sig, mode:'up', sig:true });
@@ -6907,7 +7009,7 @@ function shopSkillPool(){
   for(k in PASSIVES){
     if(PASSIVES[k].hidden) continue;
     if(P.passives[k]){ if(P.passives[k] < PASSIVES[k].max) pool.push({ kind:'p', key:k, mode:'up' }); }
-    else if(pc < 30 && !hasCP('doomcontract')) pool.push({ kind:'p', key:k, mode:'new' });
+    else if(!hasCP('doomcontract')) pool.push({ kind:'p', key:k, mode:'new' }); // 【2026-10-28 槽满替换】被动槽满时新被动照常上架，购买走替换流程（同上）；pc 计数保留供本函数原口径参考
   }
   return pool;
 }
@@ -6934,6 +7036,7 @@ function spawnMerchant(){
   }
   if(typeof bossBarriers !== 'undefined'){ for(var bj2 = 0; bj2 < bossBarriers.length; bj2++){ var BC = bossBarriers[bj2]; var bd = Math.hypot(x - BC.x, y - BC.y); if(bd < BC.r + 10){ var ba2 = bd > 1 ? Math.atan2(y - BC.y, x - BC.x) : rand(0, Math.PI * 2); x = BC.x + Math.cos(ba2) * (BC.r + 40); y = BC.y + Math.sin(ba2) * (BC.r + 40); } } } // 30 次重选仍落在结界内时的兜底：沿径向推到圈外 40px，保证绝不在结界内刷出；只动刷新落点——已在场商人不因之后结界形成而移走/清除（merchantTick 不改其坐标）
   SHOP.npc = { x: x, y: y, t: 60, needLeave: false };
+  SHOP.nearT = 0; // 新商人刷出：3 秒开店计时清零（2026-10-28 用户令）
   SHOP.seq = (SHOP.seq || 0) + 1;   // 本趟序号（联机：随快照下发客户端，每趟只播一次「你好」）
   SHOP.visit = {};                // 每趟重置：属性本趟计数与涨价计数清零
   SHOP.stock = rollShopStock();  // 本机货架：按本机玩家自己的构筑/等级上限/专属池自滚（联机时每位玩家各自一架，不共用）
@@ -6952,14 +7055,15 @@ function merchantTick(dt){
   if(n){
     n.t -= dt;
     if(n.t <= 0){
-      SHOP.npc = null; SHOP.nextT = shopNextDelay(false);
+      SHOP.npc = null; SHOP.nearT = 0; SHOP.nextT = shopNextDelay(false); // 商人离场：3 秒开店计时清零
       texts.push({ x: P.x, y: P.y - 60, v: 0, txt: '梁鸡细佬收摊离开了', t: 0, color: '#b9bfa8' });
       return;
     }
     var dd = dist2(P.x, P.y, n.x, n.y);
     if(!SHOP.nihaoDone && dd < 110 * 110){ SHOP.nihaoDone = true; sfx('nihao'); } // 靠近触发「你好」（milo 口径）：靠得很近（110px 内，与走开重置距离同档）才播、本趟只此一次；排在 openShop 之前，同帧先问候再开店
-    if(n.needLeave){ if(dd > 110 * 110) n.needLeave = false; }
-    else if(dd < 64 * 64) openShop();
+    if(n.needLeave){ SHOP.nearT = 0; if(dd > 110 * 110) n.needLeave = false; } // needLeave 门禁（110px）不动，门禁期间不计时
+    else if(dd < 64 * 64){ SHOP.nearT += dt; if(SHOP.nearT >= 3){ SHOP.nearT = 0; openShop(); } } // 2026-10-28 用户令：开店距离 64px 内连续停留满 3 秒才开店（取代旧「进圈即开」）
+    else SHOP.nearT = 0; // 不满 3 秒离开开店距离（≥64px）→ 计时重置为 0（重置，不是暂停）
   } else {
     SHOP.sinceLast += dt; SHOP.nextT -= dt;
     if(SHOP.nextT <= 0 || SHOP.sinceLast >= 300) spawnMerchant(); // 300 秒保底必刷
@@ -6976,6 +7080,7 @@ function openShop(){
 function closeShop(){
   el('shopScreen').classList.remove('on');
   if(state === 'shop') state = 'playing';
+  SHOP.nearT = 0; // 关店：3 秒开店计时清零
   if(SHOP.npc) SHOP.npc.needLeave = true;
 }
 function shopApplyAttr(def){
@@ -7014,7 +7119,23 @@ function shopSkillEligible(it){
 function buyShopSkill(idx){
   var it = SHOP.stock[idx];
   if(!it || it.sold || state !== 'shop') return;
+  // 【2026-10-28 槽满替换（用户令）】买的是从未学过的新技能且对应槽已满（攻击 13／被动 30）→ 不扣费、不标售出，先弹替换界面（openReplace）；玩家确认替换后才由 buyShopSkillAfterReplace 走下方原购买结算（扣费只发生一次、在确认之后）；取消＝不扣费、不丢旧技能、货架原样。已学技能的强化购买（mode:'up'）即使槽满也不走替换、走原路径。毁灭契约缔结时新技能不上架（shopSkillPool 已封），此处再兜底拦截。
+  if(it.mode === 'new' && ((it.kind === 'w' && attackCount() >= 13) || (it.kind === 'p' && Object.keys(P.passives).length >= 30))){
+    if(hasCP('doomcontract') || SHOP.beef < it.price){ beep(220, 0.09, 'square', 0.04); renderShop(); return; }
+    openReplace({ kind: it.kind, key: it.key, source: 'shop', shopIdx: idx });
+    return;
+  }
   if(!shopSkillEligible(it) || SHOP.beef < it.price){ beep(220, 0.09, 'square', 0.04); renderShop(); return; }
+  doBuyShopSkill(idx);
+}
+function buyShopSkillAfterReplace(idx){ // 替换确认后回到商店购买结算：槽已腾出一位，资格/余额按原口径复核后才扣费（取消路径根本不会走到这里，故取消绝不扣费）
+  var it = SHOP.stock[idx];
+  if(!it || it.sold || state !== 'shop'){ renderShop(); return; }
+  if(!shopSkillEligible(it) || SHOP.beef < it.price){ beep(220, 0.09, 'square', 0.04); renderShop(); return; }
+  doBuyShopSkill(idx);
+}
+function doBuyShopSkill(idx){
+  var it = SHOP.stock[idx];
   SHOP.beef -= it.price; it.sold = true;
   if(window.__NET && __NET.reportSpend) __NET.reportSpend(it.price); // 联机客户端：从自己钱包扣，并报房主在本人钱包记账（单人/房主为空操作）
   if(window.__NET && __NET.reportShopBuy) __NET.reportShopBuy({ kind:'skill', key:it.key }); // 联机客户端：技能只学到购买者本人（房主侧计入该成员构筑，不影响队友）
@@ -7101,10 +7222,11 @@ function renderShop(){
     desc.textContent = it.kind === 'w' ? WEAPONS[it.key].desc[Math.min(curLv, WEAPONS[it.key].desc.length - 1)] : PASSIVES[it.key].desc;
     card.appendChild(desc);
     var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'shop-buy';
+    var fullNew = it.mode === 'new' && ((it.kind === 'w' && attackCount() >= 13) || (it.kind === 'p' && Object.keys(P.passives).length >= 30)); // 【2026-10-28 槽满替换】新技能且槽满：不再显示「已达上限」死钮，改为可点的「替换学习」入口（点后弹替换界面，确认才扣费）
     if(it.sold){ btn.textContent = '已售出'; btn.disabled = true; }
-    else if(!shopSkillEligible(it)){ btn.textContent = '已达上限'; btn.disabled = true; }
+    else if(!fullNew && !shopSkillEligible(it)){ btn.textContent = '已达上限'; btn.disabled = true; }
     else if(SHOP.beef < it.price){ btn.textContent = '牛筋不足 · ' + it.price; btn.disabled = true; }
-    else { btn.innerHTML = '<span class="beef-ico"></span>' + it.price; btn.addEventListener('click', function(){ buyShopSkill(idx); }); }
+    else { btn.innerHTML = '<span class="beef-ico"></span>' + it.price + (fullNew ? ' · 替换学习' : ''); btn.addEventListener('click', function(){ buyShopSkill(idx); }); }
     card.appendChild(btn);
     if(it.sold){ var stamp = document.createElement('div'); stamp.className = 'sc-sold'; stamp.textContent = '已售出'; card.appendChild(stamp); }
     sw.appendChild(card);
@@ -7250,7 +7372,7 @@ function buildChoices(exclude){
     if((w.bonus || 0) < 3 && w.lv >= 2) pool.push({ type:'count', key: key, weight: 2.3 });
     if(key === 'ak47' && !w.akRico) pool.push({ type:'akmod', key:'ak47', mod:'rico', weight: 4.5 }); // AK 弹射专属强化卡（2026-10-27 用户定版，取代旧写死恒定 1）：Lv1 初始无弹射；升级抽卡时以一张专属卡出现，未得时在后续升级仍可出现、已得后不再出现、不叠加（数值：每颗子弹弹射封顶 3 次、逐跳 ×0.72）；AK 普攻分裂已于同日新令整体去除，不再有分裂卡
   }
-  if(attackCount() < 13 && !hasCP('doomcontract')){ // 攻击技能学习上限：13 个（宝箱系不计）（按不同技能计数）；已学技能的升级/进化/分支/数量卡不受上限影响
+  if(!hasCP('doomcontract')){ // 攻击技能学习上限：13 个（宝箱系不计）（按不同技能计数）；已学技能的升级/进化/分支/数量卡不受上限影响。【2026-10-28 槽满替换（用户令）】槽满（13）时新招式卡照常出现——选中后不直接入槽、先走替换流程（applyChoice 拦截→openReplace 选同类型已学技能替换、新技能 Lv1 入槽、总数仍 ≤13）；毁灭契约缔结后仍不出新技能卡（契约「不能再学新技能」口径不变，替换不绕过契约）
     for(var gi = 0; gi < GENERIC_WEAPONS.length; gi++){
       key = GENERIC_WEAPONS[gi];
       if(!P.weapons[key] && !WEAPONS[key].summon && !WEAPONS[key].chestOnly) pool.push({ type:'new', key: key, weight: 2.2 }); // 召唤五将仅新屋宝箱授予；雷云仅主地图宝箱开出 // 新技能保留合理出现率，不被已学技能挤没
@@ -7259,7 +7381,7 @@ function buildChoices(exclude){
   var passCount = Object.keys(P.passives).length;
   for(key in PASSIVES){
     pl = P.passives[key] || 0;
-    if(!PASSIVES[key].hidden && pl < PASSIVES[key].max && (pl > 0 || (passCount < 30 && !hasCP('doomcontract')))){ // 被动学习上限：30 个（按不同技能计数）；已学被动的升级卡（pl>0）不受上限影响
+    if(!PASSIVES[key].hidden && pl < PASSIVES[key].max && (pl > 0 || !hasCP('doomcontract'))){ // 被动学习上限：30 个（按不同技能计数）；已学被动的升级卡（pl>0）不受上限影响。【2026-10-28 槽满替换（用户令）】被动槽满（30）时未学被动卡照常出现——选中后走替换流程（同 applyChoice 拦截，替换同类型已学被动、新被动 Lv1 入槽、总数仍 ≤30）；毁灭契约仍封新被动卡（同攻击口径）
       var pwB = pl > 0 ? 9.5 : 2.0; // 已学被动加权（2026-10-26 用户令三度调高：4.2 → 6.3 → 9.5，约新被动 2.0 的 4.75 倍）；满级被动已被上方 pl < max 条件排除、不占卡位
       for(var wkB in P.weapons){ if(SIG_ITEM[wkB] === key && !P.weapons[wkB].evo){ pwB += 1.2; break; } } // 配套被动加权：已学攻击的合成搭档被动 +1.2（未学 2.0→3.2、已学 4.2→5.4），方便凑合成进化，幅度克制
       pool.push({ type:'passive', key: key, weight: pwB });
@@ -7421,6 +7543,11 @@ function rerollChoice(idx, card){
   }
 }
 function applyChoice(c){
+  // 【2026-10-28 槽满替换（用户令）】选到「从未学过的新技能」且对应槽已满（攻击 new 卡且 attackCount ≥13／被动新卡且被动数 ≥30）→ 不直接入槽：先弹替换界面（openReplace），玩家选同类型已学技能并确认后由 confirmReplace 先移除旧技能腾位、再回调本函数真正入槽（此时 REPLACE 已清空、槽有空位、不会二次拦截）；取消则回到四选一、本次 pendingLevels 不消耗（下方 pendingLevels-- 不执行）、旧技能不丢。已学技能的升级/进化/分支/连发/AK 弹射卡即使槽满也绝不走替换（c.type 非 new、或被动 pl>0 时不满足条件），走下方原路径。
+  if(!REPLACE && ((c.type === 'new' && attackCount() >= 13) || (c.type === 'passive' && !(P.passives[c.key] > 0) && Object.keys(P.passives).length >= 30))){
+    openReplace({ kind: c.type === 'new' ? 'w' : 'p', key: c.key, source: 'level', choice: c });
+    return 'replacePending'; // 哨兵返回值：联机客机的 applyChoice 包装层据此跳过本次 choice 上报（还没真学到，房主构筑层不能先 +1）；确认替换后 confirmReplace 再次调用本函数走完入槽，包装层才正常上报一次；取消则永不上报
+  }
   skillBarDirty = true;
   if(c.type === 'branch'){ P.weapons[c.key].branch = c.branch; burst(P.x, P.y, WEAPONS[c.key].color, 22); texts.push({ x: P.x, y: P.y - 40, v: 0, txt: BRANCHES[c.key][c.branch].name + '！', t: 0, color: '#ffd76a', big: true }); }
   else if(c.type === 'new') P.weapons[c.key] = { lv: 1, evo: false };
@@ -7459,6 +7586,106 @@ function applyChoice(c){
     learnBtnSync();
   });
 }
+/* ---------------- 技能槽满替换（2026-10-28 用户令） ----------------
+   触发（唯一条件）：学习一个「从未学过」的新技能时对应槽已满——攻击 attackCount() ≥13（宝箱系 summon/chestOnly 不计，与既有上限口径一致）或被动 Object.keys(P.passives).length ≥30。来源只有两处真正占槽的学习入口：升级选卡（applyChoice 的 new 卡／未学被动卡）与商店货架（buyShopSkill 的 mode:'new'）。宝箱来源不走替换：主地图宝箱的雷云（chestOnly）与宝箱专属被动（P.chestP 独立栏）、新屋/街尾的召唤技能（summon）按既有口径本就不占 13/30 槽，槽满不影响其获取、更无需替换（源码核查结论，见 openChest/grantHouseSkill/grantStreetSkill 与 attackCount 注）。
+   等级：新技能恒以 Lv1 入槽，绝不继承被替换技能的等级（入槽走原 applyChoice/doBuyShopSkill 的 Lv1 路径）。
+   觉醒配对（合成进化）：配对关系是静态表 SIG_ITEM（武器→被动），资格每次按「武器满级＋持有配对被动 ≥1」现算（见 buildChoices evo 分支）——移除武器＝其进化资格随条目一并消失；移除被动＝对应未进化武器暂时失去进化资格、重学该被动即恢复；已完成进化的武器 evo 标记在武器条目上，替换掉其配对被动不会撤销已进化状态。
+   联机：替换全程只动本机 P（与 buildChoices/商店货架「各人按自己构筑自滚」同口径），各人槽位/选择/取消互不干扰、不需房主确认，替换不新增任何网络消息；房主权威侧对远端成员的技能只记 buildCount 构筑层——升级来源靠 wireUi 里的 applyChoice 包装层上报 choice：本轮给包装层加了 'replacePending' 哨兵判断，被拦截的那次点击不上报、确认入槽后才上报一次、取消永不上报，构筑层不多计不漏计；商店来源的 reportSpend/reportShopBuy 只在 doBuyShopSkill 内（确认后才发），取消不发、不扣费。净效果与「正常学一个新技能」在房主侧完全一致（构筑层 +1）。
+   NPC：npcAutoLearn 是独立的计数器模拟（npcAtk/npcPas，非真实技能槽），现行口径为两类皆满即不再学——本轮不给 NPC 接替换（不弹界面、不自动替掉任何东西），维持「满了就跳过」原口径。
+   面板口径：升级来源时学习页（levelupScreen）不关、面板护盾 learn 照旧挂着（替换界面 z-24 盖在其上），确认/取消都回到学习流程内，pendingLevels 在确认入槽前不消耗、多级待学不丢；商店来源时 state 保持 'shop'（战斗暂停原口径），确认才扣费、取消不扣费且货架不标售出。 */
+var REPLACE = null; // { kind:'w'|'p', key, source:'level'|'shop', choice, shopIdx, sel }
+function removeLearnedSkill(kind, key){ // 被替换技能的彻底移除（源码此前没有任何「移除已学技能」路径，以下为本轮新清理口径，逐项钉死）
+  skillBarDirty = true;
+  if(kind === 'w'){
+    if(key === 'totem'){ totemRespawns.length = 0; } // 图腾本体：updateTotems 已有 !tw 分支会自行移除在场图腾且不压重召队列；此处再清残留重召队列，防日后重学图腾被旧倒计时卡住
+    if(P.timers) delete P.timers[key]; // 该武器的自动攻击计时清零（重学时从新条目重新计时）
+    delete P.weapons[key]; // 等级 lv／进化 evo／分支 branch／连发 bonus／AK 弹射 akRico 全部随条目一并删除；updateWeapons 按 P.weapons 现有条目逐帧驱动，删条目即停火。已发出的投射物/区域效果（projectiles/zones 各自持有伤害与存续时间）按既有结算自然打完消散，不追溯清除；召唤图腾本体走上方 !tw 清理
+  } else {
+    var lv = P.passives[key] || 0;
+    if(lv > 0){
+      // 学入时一次性灌进生命上限的部分按级数原额扣回：crystal 25/级、thornheart 12/级、hpV 类（大地之心 18/石肤 6/瘟疫之心 10）按 PASSIVES.hpV/级——与 applyChoice/buyShopSkill 的学入加算逐项对应；扣后当前血量钳到新上限。其余被动加成（pSum 按 P.passives 动态求和的 dmgP/armorP/spdP 等，以及 pCritRate 等现算项）删条目即自动失效，无需另行回滚
+      var grant = (key === 'crystal' ? 25 * lv : 0) + (key === 'thornheart' ? 12 * lv : 0) + ((PASSIVES[key].hpV || 0) * lv);
+      if(grant > 0){ P.maxHp = Math.max(1, P.maxHp - grant); P.hp = Math.min(P.hp, P.maxHp); }
+    }
+    delete P.passives[key];
+  }
+}
+function openReplace(req){
+  REPLACE = { kind: req.kind, key: req.key, source: req.source, choice: req.choice || null, shopIdx: (req.shopIdx != null ? req.shopIdx : -1), sel: null };
+  renderReplace();
+  document.getElementById('replaceScreen').classList.add('on');
+  beep(660, 0.09, 'square', 0.04);
+}
+function renderReplace(){
+  var isW = REPLACE.kind === 'w';
+  var nDef = isW ? WEAPONS[REPLACE.key] : PASSIVES[REPLACE.key];
+  document.getElementById('replaceSub').textContent = (isW ? '攻击技能槽已满（13 / 13）' : '被动技能槽已满（30 / 30）') + '，想学新技能必须先替换掉一个同类型已学技能。';
+  var nw = document.getElementById('replaceNew'); nw.innerHTML = '';
+  nw.appendChild(iconCanvas(REPLACE.key, ''));
+  var nTx = document.createElement('div');
+  var nNm = document.createElement('div'); nNm.className = 'rn-name'; nNm.style.color = nDef.color; nNm.textContent = '新技能：' + nDef.name + '（' + (isW ? '攻击' : '被动') + ' · Lv1）';
+  var nDs = document.createElement('div'); nDs.className = 'rn-desc'; nDs.textContent = isW ? nDef.desc[0] : (nDef.desc || '隐藏被动');
+  nTx.appendChild(nNm); nTx.appendChild(nDs); nw.appendChild(nTx);
+  var list = document.getElementById('replaceList'); list.innerHTML = '';
+  var sigK = CHARACTERS[P.charIdx].weapon;
+  var keys = isW
+    ? Object.keys(P.weapons).filter(function(k){ var d = WEAPONS[k]; return d && !d.summon && !d.chestOnly && k !== sigK; }) // 候选＝占槽的同类型已学技能；角色专属主武器除外——它是英雄固有普攻（分支/进化/AK 弹射等专属池都按恒持有构建），不许被替换掉，界面下方有注明
+    : Object.keys(P.passives);
+  keys.forEach(function(k){
+    var row = document.createElement('button'); row.type = 'button'; row.className = 'rep-row' + (REPLACE.sel === k ? ' sel' : '');
+    row.appendChild(iconCanvas(k, ''));
+    var tx = document.createElement('div');
+    var nm = document.createElement('div'); nm.className = 'rr-name';
+    var ds = document.createElement('div'); ds.className = 'rr-desc';
+    if(isW){
+      var w = P.weapons[k], wd = WEAPONS[k];
+      nm.textContent = wd.name + ' Lv' + w.lv + ' / ' + wd.max + (w.evo ? ' · 已进化「' + wd.evoName + '」' : '') + (w.branch && BRANCHES[k] && BRANCHES[k][w.branch] ? ' · 分支：' + BRANCHES[k][w.branch].name : '') + ((w.bonus || 0) > 0 ? ' · 连发 +' + w.bonus : '') + (k === 'ak47' && w.akRico ? ' · 弹射' : '');
+      ds.textContent = wd.desc[Math.min(Math.max(0, w.lv - 1), wd.desc.length - 1)];
+    } else {
+      var pd = PASSIVES[k];
+      nm.textContent = pd.name + ' Lv' + P.passives[k] + ' / ' + pd.max;
+      ds.textContent = pd.desc || '隐藏被动';
+    }
+    tx.appendChild(nm); tx.appendChild(ds); row.appendChild(tx);
+    row.addEventListener('click', function(){
+      REPLACE.sel = k;
+      var rows = list.children; for(var ri = 0; ri < rows.length; ri++) rows[ri].classList.remove('sel');
+      row.classList.add('sel');
+      document.getElementById('btnReplaceOk').disabled = false;
+      beep(880, 0.06, 'square', 0.03);
+    });
+    list.appendChild(row);
+  });
+  if(isW){
+    var note = document.createElement('p'); note.className = 'rep-hint';
+    note.textContent = '注：你的专属主武器「' + WEAPONS[sigK].name + '」是英雄固有普攻，不能被替换；宝箱系技能（雷云/召唤）不占攻击槽、不在替换候选内。';
+    list.appendChild(note);
+  }
+  document.getElementById('btnReplaceOk').disabled = !REPLACE.sel;
+}
+function confirmReplace(){
+  if(!REPLACE || !REPLACE.sel) return;
+  var req = REPLACE, oldKey = REPLACE.sel;
+  var oldDef = req.kind === 'w' ? WEAPONS[oldKey] : PASSIVES[oldKey];
+  removeLearnedSkill(req.kind, oldKey); // 先移除旧技能腾出一位：替换后总数与替换前相同（攻击 ≤13／被动 ≤30），绝不超上限
+  REPLACE = null;
+  document.getElementById('replaceScreen').classList.remove('on');
+  texts.push({ x: P.x, y: P.y - 58, v: 0, txt: '替换：' + oldDef.name + ' → ' + (req.kind === 'w' ? WEAPONS[req.key].name : PASSIVES[req.key].name) + '（Lv1）', t: 0, color: '#ffd76a', big: true });
+  if(req.source === 'shop'){ buyShopSkillAfterReplace(req.shopIdx); return; } // 商店：确认后才走购买结算（此刻才扣费/标售出/上报房主）
+  applyChoice(req.choice); // 升级：槽已腾位，走原入槽路径（含 pendingLevels-- 与多级续开/觉醒判定，待学次数不丢）
+}
+function cancelReplace(){
+  if(!REPLACE) return;
+  var src = REPLACE.source;
+  REPLACE = null;
+  document.getElementById('replaceScreen').classList.remove('on');
+  beep(440, 0.08, 'square', 0.04);
+  if(src === 'shop') renderShop(); // 商店取消：未扣费、未标售出、旧技能不丢，货架按当前构筑重渲染（仍在商店内）
+  // 升级取消：levelupScreen 未曾关闭、四张卡原样可选，pendingLevels 未消耗——什么都不用做
+}
+document.getElementById('btnReplaceOk').addEventListener('click', confirmReplace);
+document.getElementById('btnReplaceCancel').addEventListener('click', cancelReplace);
+window.__replace = { state: function(){ return REPLACE; }, counts: function(){ return { atk: attackCount(), pas: Object.keys(P.passives).length }; }, open: openReplace, confirm: confirmReplace, cancel: cancelReplace, remove: removeLearnedSkill }; // 验收探针：与实机同一套替换函数
 function applyAwkPassive(c){
   var t = c.awk.type;
   if(t === 'dmg') P.bonusDmg += 0.15;
@@ -7840,7 +8067,7 @@ function update(dt){
     var pStep = pSpeed() * wSpdMul * excSpdMul * ((P.mossSlowT > 0) ? 0.6 : 1) * (window.__NET_CRAWLMUL || 1) * dt; // 联机倒地爬行 ×0.3（__NET_CRAWLMUL 仅联机倒地时由联机模块置 0.3） // 苔痕减速：苔藓史莱姆的苔痕只黏玩家（×0.6，离开苔痕 2.5 秒后消退）
     var pxPre = P.x, pyPre = P.y; // 步频同步用：slideMove 前的真实位置（治滑步——帧推进改由真实位移驱动，见下方 walkPhase 行）
     slideMove(P, mx * pStep, my * pStep);
-    if(!(P.faceLockT > 0)){ // 朝向令：开火朝向锁生效期间（开火中＋停火 0.3 秒内）移动不改朝向；锁过期后朝向回归移动方向
+    if(!(P.faceLockT > 0) && !(P.charIdx === 0 && (P.excT > 0 || (typeof BZ_AIM !== 'undefined' && BZ_AIM.active)))){ // 朝向令：开火朝向锁生效期间（开火中＋停火 0.3 秒内）移动不改朝向；锁过期后朝向回归移动方向；班仔按键技瞄准/蓄力期间（2026-10-28 纠正口径）移动同样不改朝向——正面保持指示方向，释放后恢复
       P.face = mx !== 0 ? Math.sign(mx) : P.face;
       P.faceAng = Math.atan2(my, mx);
     }
@@ -7879,7 +8106,7 @@ function update(dt){
   if(P.specCd > 0) P.specCd -= dt;
   if(P.dodgeCd > 0) P.dodgeCd -= dt;
   if(P.invuln > 0) P.invuln -= dt;
-  if(P.excInvT > 0) P.excInvT -= dt; // 班仔解放无敌窗计时：2.17 秒（蓄力＋光束）到点即失效
+  if(P.excInvT > 0) P.excInvT -= dt; // 班仔解放无敌窗计时（2026-10-28 11:34 门槛口径）：长按越过 3 秒后由 excChargeTick 滚动维持、松手时补到光束段 0.9 秒，递减到点即失效
   if(P.shieldT > 0){ P.shieldT -= dt; if(P.shieldT <= 0) P.shield = 0; } // 水系护盾：4 秒未刷新则消散
   if(P.windrushT > 0) P.windrushT -= dt; // 疾风掠影计时
   if(P.passives.shieldweb && P.shield > 0 && P.shieldT > 0){ var shCapW = P.maxHp * (0.10 + 0.02 * (P.passives.tidalheart || 0)); P.shield = Math.min(shCapW, P.shield + 0.6 * P.passives.shieldweb * dt); } // 护盾织网：护盾缓慢再生
@@ -8959,8 +9186,8 @@ function bzSeqCanvasFor(act, dir, idx){
 function bzSeqSprite(dir, frame){ // 班仔取帧：序列帧优先；数字帧/旧 slash 姿势串映射到序列等价帧；cast/throw/shoot 返回 null 回落旧姿势帧
   if(typeof frame === 'string' && frame.indexOf('qq:') === 0){ var qc0 = bzqSprite(dir, frame); if(qc0) return qc0; return bzqCanvasFor('idle', dir, 0); } // Q版帧：未就绪时先借同动作邻帧（bzqSprite 内），再落空才借 Q 待机帧顶上，不留透明窗（2026-10-27：成人序列已删，借帧不再指 banzai_seq）
   { // 数字帧（立绘/受击/旧选帧回落）与通用技能姿势串在预览期同样指向 Q 帧，保证选角立绘与局内同一张脸
-    if(typeof frame === 'number'){ var qm = { 0:'qq:idle:0', 5:'qq:idle:0', 1:'qq:walk:0', 6:'qq:walk:5', 2:'qq:walk:10', 7:'qq:walk:15', 3:'qq:slash:2', 4:'qq:idle:0', 8:'qq:idle:0', 13:'qq:slash:1' }; if(qm[frame]){ var qc1 = bzqSprite(dir, qm[frame]); if(qc1) return qc1; } }
-    else if(typeof frame === 'string' && frame.indexOf('a:') === 0){ var paq = frame.split(':'); var qc2 = bzqSprite(dir, 'qq:slash:' + [1, 2, 4][parseInt(paq[2], 10) || 0]); if(qc2) return qc2; }
+    if(typeof frame === 'number'){ var qm = { 0:'qq:idle:0', 5:'qq:idle:0', 1:'qq:walk:0', 6:'qq:walk:5', 2:'qq:walk:10', 7:'qq:walk:15', 3:'qq:slash:6', 4:'qq:idle:0', 8:'qq:idle:0', 13:'qq:slash:3' }; if(qm[frame]){ var qc1 = bzqSprite(dir, qm[frame]); if(qc1) return qc1; } }
+    else if(typeof frame === 'string' && frame.indexOf('a:') === 0){ var paq = frame.split(':'); var qc2 = bzqSprite(dir, 'qq:slash:' + [3, 6, 12][parseInt(paq[2], 10) || 0]); if(qc2) return qc2; }
   }
   var act = null, idx = 0;
   if(typeof frame === 'string' && frame.charAt(0) === 'q'){ var pp = frame.split(':'); act = pp[1]; idx = parseInt(pp[2], 10) || 0; }
@@ -9015,8 +9242,8 @@ var BZQ_SCALE = 0.675; // ← 大头Q版局内统一缩放（2026-10-27 修糊�
 var BZQ_META = { idle:[566, 491, 324], walk:[592, 533, 388], slash:[686, 492, 434], death:{ down:[334, 430, 429], side:[960, 479, 478], up:[306, 653, 652] }, dodge:{ down:[614, 545, 544], side:[596, 556, 555], up:[484, 539, 538] } }; // 每动作 [画布W, 画布H, 地平线行G]（v2 帧离线转换实测：剑/臂缩短后包围盒收紧、身体高与 idle/walk 的 G 不变，显示尺寸经 _bzK∝H 与身体占比耦合自动保持）；death/dodge 为 2026-10-27 接入轮逐方向实测（并集裁切后 G=H-1、触地锚定）
 var BZQ_K = { idle:{ down:1.0, side:1.0068, up:0.9933 }, walk:{ down:1.1113, side:0.9342, up:1.0 }, slash:{ down:1.0405, side:0.9362, up:1.0 } }; // 班仔Q版每(动作,方向)体高校准（2026-10-27 左右/前后大小修复）：_bzK 原只按动作取 META_H、方向一律同系数，但离线去剑量测（浅灰剑刃剔除＋开运算取身体核心，中位数）显示同动作三方向体高并不一致——idle 298/296/300 已对齐、walk 287.5/342/319.5（侧向比下向高 19%）、slash 296/329/308（侧向比下向高 11%）；渲染期逐方向换算口径只在 idle 上对齐过，walk/slash 的方向差被原样带到局内。现按每动作三方向体高中位数为目标（idle 298／walk 319.5／slash 308 PNG px）逐方向等比缩放：只改显示尺寸、不改帧像素、不做横向拉伸（不变形）、三方向平均尺寸基本不变（walk 均值系数 1.015、slash 0.992、idle 1.0）；体宽仍保留姿态剪影差（侧向舒展姿态本就宽于后向收拢姿态，见轮次注），不强行拉齐。G 脚底锚点不受影响（行 G 映射到脚底与 _bzK 无关）。
 var BZQ_COMP_DX = { down:16, side:21, up:0 }; // 班仔Q版移动攻击合成下层水平修正（PNG px，见 drawPlayerActor 合成段注）。
-var BZQ_COMP_ADX = { down:[5, -7, 7, -43, 9], side:[-3, 29, -10, -19, 5], up:[-27, -15, 89, 14, -29] }; // 班仔Q版移动攻击合成上层（攻击帧）逐帧水平修正（slash 画布 PNG px，2026-10-28 攻击错位修复）：按现行代码全量仿真（BZQ_SCALE=0.675＋现行 BZQ_K＋上行走层修正，P.r=20）实测腰线台阶中位数（世界 px，下层带中心−上层带中心）——下 [+1.1, −1.5, +1.6, −9.5, +2.1]／侧 [−0.5, +5.8, −2.0, −3.7, +1.0]／上 [−5.6, −3.1, +18.7, +2.9, −6.0]，逐帧各异、单方向值修不平（原注的「上向双峰」即此：上 f2 +18.7 与上 f0/f4 约 −6 符号相反）。改为只平移攻击上层（不动走路层与脚底锚点/接地影）：本表＝台阶÷(显示高/画布高) 换算的逐帧反向平移量；修正后仿真 15 个（方向×帧）台阶中位数全部 |值|≤0.73 世界 px（最差由 +18.7 降至 −0.27）。站立攻击为整帧锚脚绘制、无腰线接缝，不适用本表、未动。
-var BZQ_COUNT = { idle:1, walk:20, slash:5, death:73, dodge:45 };
+var BZQ_COMP_ADX = { down:[5, 1, -3, -7, -2, 2, 7, -10, -26, -43, -26, -8, 9], side:[-3, 8, 18, 29, 16, 3, -10, -13, -16, -19, -11, -3, 5], up:[-27, -23, -19, -15, 20, 54, 89, 64, 39, 14, 0, -15, -29] }; // 班仔Q版移动攻击合成上层（攻击帧）逐帧水平修正（slash 画布 PNG px，2026-10-28 攻击错位修复；13 帧版：关键帧 0/3/6/9/12 保持原 5 帧实测值、过渡帧线性内插，见 BZQ_COUNT slash 补帧注）：按现行代码全量仿真（BZQ_SCALE=0.675＋现行 BZQ_K＋上行走层修正，P.r=20）实测腰线台阶中位数（世界 px，下层带中心−上层带中心）——下 [+1.1, −1.5, +1.6, −9.5, +2.1]／侧 [−0.5, +5.8, −2.0, −3.7, +1.0]／上 [−5.6, −3.1, +18.7, +2.9, −6.0]，逐帧各异、单方向值修不平（原注的「上向双峰」即此：上 f2 +18.7 与上 f0/f4 约 −6 符号相反）。改为只平移攻击上层（不动走路层与脚底锚点/接地影）：本表＝台阶÷(显示高/画布高) 换算的逐帧反向平移量；修正后仿真 15 个（方向×帧）台阶中位数全部 |值|≤0.73 世界 px（最差由 +18.7 降至 −0.27）。站立攻击为整帧锚脚绘制、无腰线接缝，不适用本表、未动。
+var BZQ_COUNT = { idle:1, walk:20, slash:13, death:73, dodge:45 }; // slash 5→13 补帧（2026-10-28 用户视频反馈：班仔普攻挥砍只有 5 张样张关键帧、0.32 秒攻击窗内逐张硬切、模型看着断层跳变——六人攻击序列都有 28–60 帧、唯班仔 Q 挥砍是 5 帧）：原 5 关键帧逐像素保留为新序 0/3/6/9/12，每对关键帧间离线补 2 张过渡帧（t=1/3、2/3：alpha 按权重混合后用 Bayer 抖动硬化为全不透明/全透明、无半透明重影，轮廓与颜色渐变过渡）；攻击总时长/伤害/间隔/冷却未动（bzqPick 仍按 atkAnimT/atkAnimDur 同一进度窗映射，只是帧密度 ×2.6）；蓄力/释放/借帧引用已同步改指关键帧新号（3/6/12）
 var BZQ_WALKUP_COUNT = 4; // 上向走路只有主样张 4 帧
 var BZQ_STRIDE = { down:240, side:262, up:214 }; // 画布 px/循环（逐方向随缩放系数换算，见上方标定注）
 var BZQ_IMGS = {}, BZQ_PENDING = [], bzqFlushStarted = false;
@@ -9109,12 +9336,12 @@ function bzqWalkIdx(pDir, wp){ // 走路帧号：真实位移相位驱动（与 
 }
 function bzqPick(pMoving, pDir){ // Q 版选帧：状态优先级与 bzSeqPick 一致（死亡/闪避在 bzSeqPick 上层已处理、不进这里）
   if(P.hurtT > 0.05) return { f: 'qq:idle:0', k: 'hurt' }; // 受击借待机帧（与原序列同口径）
-  if(P.excT > 0) return { f: 'qq:slash:1', k: 'charge' }; // 按键技蓄力举剑 → 挥砍样张 f10
-  if(P.specPoseT > 0) return { f: 'qq:slash:' + (P.specPoseT > 0.28 ? 1 : 2), k: 'spec' }; // 释放姿态 → 举剑/命中帧
+  if(P.excT > 0) return { f: 'qq:slash:3', k: 'charge' }; // 按键技蓄力举剑 → 挥砍关键帧 1（13 帧序新号 3；长按蓄力全程保持此举剑姿态）
+  if(P.specPoseT > 0) return { f: 'qq:slash:' + (P.specPoseT > 0.28 ? 3 : 6), k: 'spec' }; // 释放姿态 → 举剑/命中关键帧（新号 3/6）
   if(P.atkPoseT > 0 && P.atkStyle){
     if(P.atkStyle !== 'slash') return null; // cast/throw/shoot 回落姿势串（bzSeqSprite 内已映射到 Q 挥砍帧）
     var prog = clamp(P.atkAnimT / Math.max(0.05, P.atkAnimDur || 0.35), 0, 1);
-    return { f: 'qq:slash:' + Math.min(4, Math.floor(prog * 5)), k: prog < 0.22 ? 'atk0' : (prog < 0.58 ? 'atk1' : 'atk2') }; // 样张 5 帧按攻击进度一次性播完
+    return { f: 'qq:slash:' + Math.min(12, Math.floor(prog * 13)), k: prog < 0.22 ? 'atk0' : (prog < 0.58 ? 'atk1' : 'atk2') }; // 13 帧（5 关键＋8 过渡）按攻击进度一次性播完：总时长与进度窗未动、帧密度补足治断层
   }
   if(pMoving) return { f: 'qq:walk:' + bzqWalkIdx(pDir, P.walkPhase), k: '' }; // 走/跑同用走路全套帧（Q 版无奔跑帧，步频随相位自然加快）
   return { f: 'qq:idle:0', k: '' }; // 待机：主样张单帧
@@ -9433,7 +9660,7 @@ function fsqPick(pMoving, pDir){ // 六人全套选帧：状态优先级与 draw
 var SIXQ_SCALE = 0.675; // 与 BZQ_SCALE 同口径；2026-10-27 全人物再缩小令：七人统一 ×0.90（0.75→0.675，班仔 BZQ_SCALE 同步同倍率，七人相对大小不变）——只乘进 Q 帧 _bzK、Q 步幅与 AK 枪口/八思杖尖锚点换算（同常量同源，锚点自动跟调、不留在原处），碰撞半径/攻击范围/移速/翻滚距离/技能数值一字未动
 var SIXQ_DIRK = { // 六人每(动作,方向)显示体高校准（2026-10-27 全角色方向尺寸统一令，沿用班仔 BZQ_K 办法）：离线逐帧量测身体高（地平线行 G − 身体顶部行，逐行不透明像素 ≥6 取顶、全动作全帧中位数），旧局内三方向并不一致（闻西 idle 侧向矮 10%／run 上向矮 13%、莫哈哈 run 下向高 20%、八思 run 下向高 15%、陈哈哈 run 下向高 12% 等），转向即忽大忽小。现按每动作三方向中位数为目标逐方向等比缩放：只乘进 _bzK 显示层、帧像素不动、不做横向拉伸（等比缩放不变形）、脚底 G 锚点不受影响；与统一缩小 ×0.90 正交（比例校准与整体倍率互不干扰，缩后方向差仍为零）。未收录：wx throw／bs cast——其「高」由投掷臂+星镖／法杖法球的姿势外延定义（wx throw 下向 488 vs 侧向 409、bs cast 下向 408 vs 侧向 348），按中位数硬拉会把整帧缩错并与杖尖锚点脱钩，列遗留待定；dodge/death 为翻滚/倒地姿势外延、方向在动作内锁定不发生转向跳变，同班仔口径不校准
   mh: { idle:{ down:0.962, side:1.016, up:1.0 }, walk:{ down:0.994, side:1.0, up:1.012 }, run:{ down:0.833, side:1.0, up:1.034 }, burst:{ down:1.0, side:1.031, up:1.0 } },
-  jg: { idle:{ down:0.991, side:1.0, up:1.041 }, walk:{ down:1.0, side:0.976, up:1.019 }, run:{ down:0.964, side:1.0, up:1.020 }, shot:{ down:0.987, side:1.0, up:1.036 } },
+  jg: { idle:{ down:0.991, side:1.0, up:1.0 }, walk:{ down:1.0, side:0.976, up:1.0 }, run:{ down:0.964, side:1.0, up:1.0 }, shot:{ down:0.987, side:1.0, up:1.036 } }, // idle/walk/run 上向 2026-10-28 改 1.0：上向帧已离线重渲拉齐（尺寸 baked 进帧，见 SIXQ_META jg 注释），不再二次缩放；shot 上向不动（宽差仍在，遗留）
   wx: { idle:{ down:0.942, side:1.052, up:1.0 }, walk:{ down:1.0, side:1.015, up:0.932 }, run:{ down:1.0, side:0.964, up:1.150 } },
   bs: { idle:{ down:1.0, side:0.997, up:1.019 }, walk:{ down:1.0, side:1.014, up:0.959 }, run:{ down:0.868, side:1.006, up:1.0 } },
   hz: { idle:{ down:0.972, side:1.033, up:1.0 }, walk:{ down:1.0, side:1.005, up:0.984 }, run:{ down:0.997, side:1.0, up:1.087 }, stamp:{ down:0.976, side:1.0, up:1.052 } },
@@ -9444,7 +9671,7 @@ var SIXQ_COUNT = { idle: 50, walk: 40, run: 20, dodge: 45, death: 73 };
 var SIXQ_META = {
   wx: { atkAct:'throw', atkCount:60, acts: { idle:{down:[405,385,384],side:[576,346,344],up:[323,352,351]}, walk:{down:[436,417,415],side:[376,419,418],up:[371,434,432]}, run:{down:[576,426,425],side:[502,419,418],up:[347,347,346]}, dodge:{down:[481,535,534],side:[670,546,544],up:[481,695,694]}, death:{down:[460,442,440],side:[989,620,619],up:[481,736,735]}, throw:{down:[697,518,517],side:[962,439,438],up:[691,620,619]} } },
   mh: { atkAct:'burst', atkCount:28, acts: { idle:{down:[283,348,347],side:[377,339,338],up:[262,335,334]}, walk:{down:[373,375,374],side:[317,377,376],up:[366,377,376]}, run:{down:[559,439,438],side:[421,359,358],up:[322,344,343]}, dodge:{down:[451,526,524],side:[568,376,375],up:[403,510,508]}, death:{down:[324,557,556],side:[846,358,357],up:[281,564,562]}, burst:{down:[377,340,339],side:[373,339,338],up:[366,340,339]} } },
-  jg: { atkAct:'shot', atkCount:28, acts: { idle:{down:[343,339,338],side:[488,346,345],up:[245,323,322]}, walk:{down:[299,390,389],side:[488,399,398],up:[217,386,385]}, run:{down:[394,387,386],side:[611,377,376],up:[197,369,368]}, dodge:{down:[320,601,600],side:[816,520,519],up:[240,598,597]}, death:{down:[348,551,550],side:[1145,551,550],up:[284,724,722]}, shot:{down:[302,392,391],side:[1043,387,386],up:[202,375,373]} } },
+  jg: { atkAct:'shot', atkCount:28, acts: { idle:{down:[343,339,338],side:[488,346,345],up:[406,339,338]}, walk:{down:[299,390,389],side:[488,399,398],up:[315,390,389]}, run:{down:[394,387,386],side:[611,377,376],up:[413,382,381]}, dodge:{down:[320,601,600],side:[816,520,519],up:[240,598,597]}, death:{down:[348,551,550],side:[1145,551,550],up:[284,724,722]}, shot:{down:[302,392,391],side:[1043,387,386],up:[202,375,373]} } }, /* 鸡哥 idle/walk/run 上向 2026-10-28 帧级修复：旧上向帧本身过窄（局内实测走路下 251×361 vs 上 173×357、待机下 295×331 vs 上 178×315、奔跑下 338×347 vs 上 154×321），110 帧离线最近邻拉齐替换（walk 横 ×1.4509/纵 ×1.0112、idle 横 ×1.6573/纵 ×1.0508、run 横 ×2.1948/纵 ×1.0810），画布改新值、DIRK 上向改 1.0；代价：上向头盔由圆变宽扁（为尺寸一致接受的变形）；shot 上向未修、列遗留；run 上向同日复核再校正：首版拉伸后按显示公式（体高×画布高×DIRK）复测反超下向约 +9%（374×399×1.0 对 366×387×0.964），20 帧再等比最近邻 ×0.9566 收回（413×382、G=381），复测显示体高 上 284.9 对 下 284.5（+0.1%）、显示宽 257.1 对 262.7（−2.1%），DIRK 上向仍 1.0；idle/walk 复测显示体高差 ≤0.9%、宽差 ≤0.9%，未再动 */
   bs: { atkAct:'cast', atkCount:28, acts: { idle:{down:[340,335,334],side:[434,346,345],up:[285,339,337]}, walk:{down:[290,361,360],side:[375,366,365],up:[253,386,385]}, run:{down:[417,423,422],side:[514,356,355],up:[251,356,355]}, dodge:{down:[375,546,545],side:[677,537,536],up:[342,679,677]}, death:{down:[536,430,429],side:[953,525,524],up:[494,706,705]}, cast:{down:[310,426,424],side:[653,356,355],up:[268,460,459]} } },
   hz: { atkAct:'stamp', atkCount:30, acts: { idle:{down:[294,345,343],side:[409,324,323],up:[235,330,329]}, walk:{down:[431,388,387],side:[247,387,385],up:[361,393,391]}, run:{down:[491,420,419],side:[476,382,381],up:[290,349,348]}, dodge:{down:[412,552,551],side:[610,478,476],up:[326,572,571]}, death:{down:[354,317,316],side:[919,546,545],up:[438,681,680]}, stamp:{down:[309,391,390],side:[323,382,381],up:[290,354,353]} } },
   ch: { atkAct:'cast', atkCount:28, acts: { idle:{down:[314,368,367],side:[374,342,341],up:[283,329,328]}, walk:{down:[279,356,355],side:[398,372,370],up:[260,368,367]}, run:{down:[398,391,389],side:[531,351,350],up:[243,339,338]}, dodge:{down:[333,591,590],side:[607,504,503],up:[272,600,599]}, death:{down:[372,395,394],side:[884,486,485],up:[360,678,677]}, cast:{down:[331,362,361],side:[353,355,354],up:[322,362,361]} } }
@@ -11270,7 +11497,7 @@ function draw(){
       ctx.fillText('梁鸡细佬 · 神秘商店', mx2, my2 - 94);
       if(mn.t <= 10){ // 最后 10 秒：头顶倒计时大字闪烁催客
         if(Math.floor(gameTime * 2.5) % 2 === 0){ ctx.font = '900 21px sans-serif'; ctx.fillStyle = '#ff5a4e'; ctx.fillText(Math.ceil(mn.t), mx2, my2 - 106); }
-      } else { ctx.font = '11px sans-serif'; ctx.fillStyle = '#d8cba0'; ctx.fillText('剩 ' + Math.ceil(mn.t) + ' 秒 · 走近开店', mx2, my2 + 32); }
+      } else { ctx.font = '11px sans-serif'; ctx.fillStyle = '#d8cba0'; ctx.fillText(SHOP.nearT > 0 ? ('开店倒计时 ' + Math.max(0, 3 - SHOP.nearT).toFixed(1) + ' 秒 · 站在圈内别走开') : ('剩 ' + Math.ceil(mn.t) + ' 秒 · 走近停留 3 秒开店'), mx2, my2 + 32); } // 3 秒计时期间显示剩余秒数（2026-10-28 用户令）
     }
   }
   if(voidPortal){ // 虚空裂缝传送门（Portals 图集紫色改版＋Cosmic 涡旋，CC0）：玩家踏入即传送虚空裂缝竞技场决战劳农
@@ -13369,11 +13596,14 @@ window.addEventListener('keydown', function(ev){
     return;
   }
   if(state === 'playing'){
-    if(k === ' ') doSpecial();
+    if(k === ' '){ // 空格：班仔同走长按蓄力（按下起势、松开释放，方向＝当前朝向、无拖动选向）；其他六人维持点按即放；班仔冷却中/蓄力中重复按下无反应（与触屏同门禁）
+      if(P && P.charIdx === 0){ if(!ev.repeat && !BZ_AIM.active && bzAimCanStart()){ BZ_AIM.active = true; BZ_AIM.id = 'kbd'; BZ_AIM.mouse = false; BZ_AIM.ang = (typeof P.faceAng === 'number') ? P.faceAng : 0; BZ_AIM.has = false; bzExcHoldStart(); } }
+      else doSpecial();
+    }
     if(k === 'shift' || k === 'l') doDodge(); // 闪避键：Shift / L（与右下青色闪避按钮同一入口）
   }
 });
-window.addEventListener('keyup', function(ev){ keys[ev.key.toLowerCase()] = false; });
+window.addEventListener('keyup', function(ev){ var kk = ev.key.toLowerCase(); keys[kk] = false; if(kk === ' ' && typeof BZ_AIM !== 'undefined' && BZ_AIM.active && BZ_AIM.id === 'kbd') bzAimEnd(true); }); // 空格松开＝班仔蓄力释放（与触屏松手同口径）
 
 var joy = { active: false, id: null, ox: 0, oy: 0, dx: 0, dy: 0 };
 var stickBase = el('stickBase'), stickKnob = el('stickKnob');
@@ -13425,17 +13655,16 @@ bindBtn('btnDodge', function(){ doDodge(); });
 
 /* ---------------- 班仔按键技方向瞄准（2026-10-28 用户令） ----------------
    只做班仔（charIdx 0）的 Ex咖哩棒解放，其他六人按键技维持点按即放（下方 btnSpecial 非班仔路径仍走原 bindBtn 式即时触发）。
-   操作：按住特殊技能键不放 → 进入瞄准（屏幕上出现紫色箭头指标：与实际光束同长 940×sR、同宽 150×sR 的扇形轮廓＋紫色箭头，
-   指标角度与释放角度是同一个值）；像摇杆一样拖动手指（以按钮中心为原点、拖出 >10px 起算方向）→ 360° 任意选向、箭头实时转向；
-   松手 → 按箭头所指方向起势蓄力，释放帧原样沿该方向轰出（releaseExcalibur 读 excAimAng）。
+   操作：按住特殊技能键不放 → 进入瞄准并同时起势蓄力（bzExcHoldStart：喊声/横幅/光柱/倍率锁定；屏幕上出现紫色箭头指标：与实际光束同长 940×sR、同宽 150×sR 的扇形轮廓＋紫色箭头，
+   指标角度与释放角度是同一个值）；像摇杆一样拖动手指（以按钮中心为原点、拖出 >10px 起算方向）→ 360° 任意选向、箭头实时转向、蓄力期间随时可改向（不是按压瞬间锁定）；
+   蓄力无时间上限、不自动释放；松手 → 按松手时箭头所指方向释放，释放帧原样沿该方向轰出（releaseExcalibur 读 excAimAng）。蓄力期间正面保持指示方向（faceAim/移动转向守卫，见 faceAim 注），释放后恢复正常转向。
    不锁怪（2026-10-28 00:58 定版）：指标初始方向＝本体当前朝向、不预瞄最近怪物；点按（按下即松、没拖出方向）＝朝本体当前朝向释放；
    键盘空格同口径（朝当前朝向）；释放帧绝不自动转回最近怪物方向。
-   边界口径（报备）：① 蓄力本身按既有规则不可取消——瞄准发生在起势之前，故取消只存在于瞄准阶段：
-   touchcancel／窗口失焦 → 取消瞄准、不释放、不进冷却（与蓄力「死亡作废不补放」同为不消耗口径）；
+   边界口径（报备）：① 瞄准与蓄力同程（按下即起势）：touchcancel／窗口失焦 → 取消蓄力、不释放、不进冷却（喊声已在按下起势播出、不回收；与「死亡作废不补放」同为不消耗口径）；
    ② 手指滑出按钮范围不取消——触点按 id 在 window 级跟手（与摇杆同规），滑到哪指标跟到哪；
    ③ 瞄准途中状态变化（升级弹窗等）导致松手时 doSpecial 被其既有门禁拦下 → 选向一并作废、不残留；
    ④ 联机客户端模式不做瞄准（sendSpec 协议只发「放技能」信号、无方向字段）→ 点按触发，房主端按该玩家本体当前朝向释放（同不锁怪口径）；
-   ⑤ 冷却中/蓄力中再按 → 不进入瞄准、走 doSpecial 既有门禁（无反应）。伤害/范围/冷却/蓄力时长一字未动。 */
+   ⑤ 冷却中/蓄力中再按 → 不进入瞄准、走 doSpecial 既有门禁（无反应）。伤害/范围/冷却数值一字未动；蓄力时长按 2026-10-28 用户令改为无上限、松手释放（见 excChargeTick 编排注），键盘空格同走长按口径（按下起势、松开释放、方向＝当前朝向、无拖动选向）。 */
 var BZ_AIM = { active: false, id: null, cx: 0, cy: 0, ang: 0, has: false, mouse: false };
 function bzAimCanStart(){
   return !!(P && P.charIdx === 0 && state === 'playing' && !(P.specCd > 0) && !(P.excT > 0) && !window.__NET_CLIENT_MODE && !(window.__NET && __NET.localDowned && __NET.localDowned()));
@@ -13444,6 +13673,25 @@ function bzAimStart(cx, cy, id, mouse){
   BZ_AIM.active = true; BZ_AIM.id = id; BZ_AIM.cx = cx; BZ_AIM.cy = cy; BZ_AIM.mouse = !!mouse;
   BZ_AIM.ang = (typeof P.faceAng === 'number') ? P.faceAng : 0; BZ_AIM.has = false; // 指标初始方向＝本体当前朝向（不锁怪：不预瞄最近怪物），玩家没拖之前看到的就是点按会放出去的方向
 }
+function bzExcHoldStart(){ // 班仔长按蓄力起势（2026-10-28 用户令：蓄力无时间上限、松手才释放）：按下瞬间触发，与旧 doSpecial 班仔段同口径——喊声起声、横幅、光柱、倍率按下锁定；冷却不在此时起算（松手释放时才起算、取消蓄力不消耗）；无敌窗由 excChargeTick 在 excHold 期间滚动维持、释放后补到光束段
+  if(!P || P.charIdx !== 0 || P.excHold || P.excT > 0) return;
+  if(state !== 'playing' || P.specCd > 0 || panelGuardOn()) return;
+  if(window.__NET && __NET.localDowned && __NET.localDowned()) return;
+  var c = CHARACTERS[0];
+  P.excMul = pDmgMul(); P.excSMul = 1 + P.stage * 0.45; P.excSR = 1 + P.stage * 0.16; // 倍率按下时锁定（与 doSpecial 同式：伤害倍率/觉醒倍率/范围倍率）
+  P.excHold = true;
+  P.excHoldT = 0; // 无敌门槛计时（2026-10-28 11:34）：每次按下重新累计、持续长按超过 3 秒无敌才生效
+  P.excT = EXC_CHARGE_DUR; // 蓄力爬升视觉计时（excChargeTick 在 excHold 期间只降到 0.05 封顶、永不自动释放）
+  EXC_T = gameTime + 12; sfx('excalibur'); // 喊声触发点＝按下起势（沿旧口径起声点）；光束改由松手触发、不再与喊声 1.32 秒高潮点对齐（无蓄力时长口径的必然结果）
+  bzChargeSfxStart(); // 蓄力音效触发点（2026-10-28 用户令）：按下起势同帧起播、长按期间持续循环，直到松手释放或取消才停（bzAimEnd/releaseExcalibur/excChargeTick 止点）；攻击音效不在此处播、只在松手释放帧播
+  sfx('special'); buzz('special', 26);
+  showBanner(c.specName + '！', c.name + ' 的特殊技能');
+  effects.push({ type:'ring', x: P.x, y: P.y, t: 0, dur: 0.6, color: '255,240,200' });
+  shake = Math.max(shake, 3);
+  effects.push({ type:'pillar', x: P.x, y: P.y, t: 0, dur: 0.9 }); // 起势：脚下升起金色光柱——力量开始灌入
+  texts.push({ x: P.x, y: P.y - 74, v: 0, txt: 'Ex——！', t: 0, color: '#ffe9a3', big: true });
+  buzz('special', 16);
+}
 function bzAimMove(x, y){
   if(!BZ_AIM.active) return;
   var dx = x - BZ_AIM.cx, dy = y - BZ_AIM.cy;
@@ -13451,21 +13699,34 @@ function bzAimMove(x, y){
 }
 function bzAimEnd(fire){
   if(!BZ_AIM.active) return;
+  bzChargeSfxStop(); // 蓄力音效止点（2026-10-28 用户令）：松手（fire）与取消（!fire）都在此停蓄力音——松手后攻击音效由随后的 releaseExcalibur 释放帧播出、取消则不播攻击音
   var has = BZ_AIM.has, ang = BZ_AIM.ang;
   BZ_AIM.active = false; BZ_AIM.id = null;
-  if(!fire) return; // 取消：不释放、不进冷却（见上方口径①）
-  P.excAimAng = ang; // 松手方向＝箭头方向（没拖动时 ang＝按下瞬间的本体朝向）：点按也走选向路径，释放绝不转回最近怪物（不锁怪定版）
-  doSpecial();
+  if(!fire){ // 取消（touchcancel/失焦）：蓄力作废、不释放、不进冷却（见上方口径①）；喊声已在按下起势播出、不回收
+    if(P && P.excHold){ P.excHold = false; P.excT = 0; P.excAimAng = null; P.excHoldT = 0; }
+    return;
+  }
+  P.excAimAng = ang; // 松手方向＝箭头方向（没拖动时 ang＝按下瞬间的本体朝向）：最终攻击方向以松手时指示标所指为准（蓄力期间可随时拖动改向、非按压瞬间锁定）；释放绝不转回最近怪物（不锁怪定版）
+  if(P.excHold){ // 长按蓄力正常松手 → 释放（2026-10-28 用户令）：冷却自松手释放时起算（与 doSpecial 同式同乘区）；无敌仅在本次长按已越过 3 秒门槛时才补到光束段（2026-10-28 11:34 用户令、未满 3 秒释放全程不无敌）；excT 置待发、由 excChargeTick 下一帧轰出（覆盖层正开着则顺延到回战斗首帧、不吞技能）
+    P.excHold = false;
+    var c0 = CHARACTERS[0];
+    P.specCd = c0.specCd * (1 - Math.min(0.25, pSum('specCdV'))) * P.specCdMul * Math.pow(0.94, P.passives.hourglass || 0) * Math.pow(0.92, P.passives.pocketwatch || 0) * (P.stage === 2 ? 0.85 : 1) * (P.urineT > 0 ? 0.4 : 1);
+    if((P.excHoldT || 0) > BZ_INV_HOLD_T) P.excInvT = Math.max(P.excInvT || 0, BZ_SPEC_BEAM_DUR + 0.05);
+    P.excHoldT = 0;
+    P.excT = 0.001;
+    return;
+  }
+  doSpecial(); // 蓄力没能起势（按下瞬间被面板护盾等门禁拦下）→ 走旧入口兜底（其内部再按自有门禁决定放或不放；班仔段已改无蓄力即时待发）
   if(!(P.excT > 0)) P.excAimAng = null; // 没能起势（门禁拦下/状态已变）→ 选向作废、不残留到下一次（口径③）
 }
 (function(){
   var b = el('btnSpecial'); if(!b) return;
   b.addEventListener('touchstart', function(ev){
     ev.preventDefault(); ev.stopPropagation();
-    if(bzAimCanStart()){ var t = ev.changedTouches[0], r = b.getBoundingClientRect(); bzAimStart(r.left + r.width / 2, r.top + r.height / 2, t.identifier, false); }
+    if(bzAimCanStart()){ var t = ev.changedTouches[0], r = b.getBoundingClientRect(); bzAimStart(r.left + r.width / 2, r.top + r.height / 2, t.identifier, false); bzExcHoldStart(); }
     else doSpecial(); // 非班仔／冷却中／联机客户端等：旧即时触发路径
   }, { passive: false });
-  b.addEventListener('mousedown', function(ev){ ev.preventDefault(); if(bzAimCanStart()){ var r = b.getBoundingClientRect(); bzAimStart(r.left + r.width / 2, r.top + r.height / 2, 'mouse', true); } else doSpecial(); });
+  b.addEventListener('mousedown', function(ev){ ev.preventDefault(); if(bzAimCanStart()){ var r = b.getBoundingClientRect(); bzAimStart(r.left + r.width / 2, r.top + r.height / 2, 'mouse', true); bzExcHoldStart(); } else doSpecial(); });
   window.addEventListener('touchmove', function(ev){
     if(!BZ_AIM.active || BZ_AIM.mouse) return;
     for(var i = 0; i < ev.changedTouches.length; i++) if(ev.changedTouches[i].identifier === BZ_AIM.id){ bzAimMove(ev.changedTouches[i].clientX, ev.changedTouches[i].clientY); if(ev.cancelable) ev.preventDefault(); break; }
@@ -13809,7 +14070,7 @@ function btnLayoutApply(){
   var r = document.documentElement.style;
   r.setProperty('--btnS', BTN_LAYOUT.s);
   r.setProperty('--spR', (12 + BTN_LAYOUT.x) + 'px');
-  r.setProperty('--spB', (14 + BTN_LAYOUT.y) + 'px');
+  r.setProperty('--spB', 'calc(40vh - ' + Math.round(32 * BTN_LAYOUT.s) + 'px + ' + BTN_LAYOUT.y + 'px)'); // 特殊技能键移位（2026-10-28 用户截图令）：默认锚点由右下角（旧 14+y px）改为右侧中部——下距＝40vh−半键高，键中心落在竖屏高度约 60% 处（截图手绘箭头所指、靠右边缘，right 仍 12+x）；y 滑杆改为自新锚点上推的微调量；闪避键 --dgB 不动、仍在右下；横屏矮屏由横屏媒体规则把特殊键压回右下角旧位（避连杀区）
   r.setProperty('--dgR', (22 + BTN_LAYOUT.x + Math.round(64 * BTN_LAYOUT.s)) + 'px');
   r.setProperty('--dgB', (17 + BTN_LAYOUT.y) + 'px');
 }
@@ -14131,17 +14392,17 @@ el('btnEndless').addEventListener('click', function(){
   if(lt){ var ic2 = document.createElement('img'); ic2.src = 'assets/icon-512.png'; ic2.alt = '游戏图标：一只白猫'; ic2.style.width = '92px'; ic2.style.height = '92px'; ic2.style.objectFit = 'cover'; ic2.style.borderRadius = '24px'; lt.appendChild(ic2); }
 })();
 
-/* 选角界面屏幕滑动：触摸原生横滑（overflow-x＋吸附）之外补鼠标拖拽滑动（桌面端按住拖动同样可浏览）；
-   拖动位移 >8px 记为一次滑动，紧随的 click 被吞掉避免误选角色；轻点（位移小）照常选中。方向：左右横滑；范围：整行 7 名角色。 */
+/* 选角界面屏幕滑动（2026-10-28 改上下滑动，取代旧横滑口径）：触摸原生竖滑（overflow-y＋吸附）之外补鼠标拖拽滑动（桌面端按住上下拖动同样可浏览）；
+   拖动位移 >8px 记为一次滑动，紧随的 click 被吞掉避免误选角色；轻点（位移小）照常选中。方向：上下竖滑；范围：整列 7 名角色。 */
 (function charRowSwipe(){
   var row = el('charRow'); if(!row) return;
-  var downX = 0, downL = 0, dragging = false;
-  row.addEventListener('pointerdown', function(e){ dragging = true; downX = e.clientX; downL = row.scrollLeft; window.__charSwipeMoved = false; });
+  var downY = 0, downT = 0, dragging = false;
+  row.addEventListener('pointerdown', function(e){ dragging = true; downY = e.clientY; downT = row.scrollTop; window.__charSwipeMoved = false; });
   row.addEventListener('pointermove', function(e){
     if(!dragging) return;
-    var dx = e.clientX - downX;
-    if(Math.abs(dx) > 8) window.__charSwipeMoved = true;
-    if(e.pointerType === 'mouse' && window.__charSwipeMoved) row.scrollLeft = downL - dx; /* 触摸端走原生滚动，不重复处理 */
+    var dy = e.clientY - downY;
+    if(Math.abs(dy) > 8) window.__charSwipeMoved = true;
+    if(e.pointerType === 'mouse' && window.__charSwipeMoved) row.scrollTop = downT - dy; /* 触摸端走原生滚动，不重复处理 */
   });
   var end = function(){ dragging = false; setTimeout(function(){ window.__charSwipeMoved = false; }, 60); };
   row.addEventListener('pointerup', end);
@@ -15238,17 +15499,23 @@ function hostTick(dt){
     }
     if(p.hp<=0 && !p.downed && !p.dead) downPeer(p);
   }
-  /* 梁鸡细佬：远端成员走近摊位 → 只通知该成员本机开店（其货架由其本机按自身构筑自滚、购买只扣其本人钱包）；离开 110 外才允许再次触发，同一次停留内关店不会被重复弹窗 */
+  /* 梁鸡细佬：远端成员走近摊位 → 只通知该成员本机开店（其货架由其本机按自身构筑自滚、购买只扣其本人钱包）；离开 110 外才允许再次触发，同一次停留内关店不会被重复弹窗。
+     3 秒口径（2026-10-28 用户令，与单人/房主 merchantTick 同步）：房主对每名真人远端成员单独计 shopNearT——64px 内连续停留满 3 秒才发 shopopen，离开 64px 该成员计时重置；NPC 队友不走开店逻辑、跳过；客户端收到通知直接开店、不再另计 */
   if(typeof SHOP!=='undefined' && SHOP.npc){
     for(var sid2 in N.peers){ var sp2=N.peers[sid2];
+      if(sp2.isNpc){ sp2.shopNearT=0; continue; }
       var dd2=Math.hypot(sp2.x-SHOP.npc.x, sp2.y-SHOP.npc.y);
-      if(dd2>110) sp2.shopAway=false;
+      if(dd2>110){ sp2.shopAway=false; sp2.shopNearT=0; }
       else if(dd2<64 && !sp2.shopAway && !sp2.downed && !sp2.dead){
-        sp2.shopAway=true;
-        for(var sli=0;sli<N.slots.length;sli++) if(N.slots[sli].peerId===sid2) send(N.slots[sli].dc,{t:'shopopen',seq:SHOP.seq||0});
+        sp2.shopNearT=(sp2.shopNearT||0)+dt;
+        if(sp2.shopNearT>=3){
+          sp2.shopAway=true; sp2.shopNearT=0;
+          for(var sli=0;sli<N.slots.length;sli++) if(N.slots[sli].peerId===sid2) send(N.slots[sli].dc,{t:'shopopen',seq:SHOP.seq||0});
+        }
       }
+      else sp2.shopNearT=0; // 离开 64px（仍在 110 内）或倒地/死亡 → 该成员计时重置
     }
-  }
+  } else if(typeof SHOP!=='undefined'){ for(var sid4 in N.peers){ N.peers[sid4].shopNearT=0; } } // 商人离场：全体远端成员计时清零
   /* 队伍升级广播（客户端各自弹选技能）；NPC 同步自动学技能（逐级、不弹窗，口径见 npcAutoLearn） */
   if(P.level>N.hostLevel){ var gained=P.level-N.hostLevel; N.hostLevel=P.level; broadcast({t:'levelup',lv:P.level});
     for(var nid3 in N.peers){ var np4=N.peers[nid3]; if(np4.isNpc){ for(var g9=0;g9<gained;g9++) npcAutoLearn(np4); } } }
@@ -15770,7 +16037,7 @@ function wireUi(){
   /* 选技能回传房主（房主侧计入该成员构筑层数） */
   if(typeof applyChoice==='function'){
     var _ac=applyChoice;
-    applyChoice=function(c){ _ac(c); if(N.role==='client' && N.inGame) send(N.cdc,{t:'choice',id:c&&c.id}); };
+    applyChoice=function(c){ var _r=_ac(c); if(_r!=='replacePending' && N.role==='client' && N.inGame) send(N.cdc,{t:'choice',id:c&&c.id}); }; // 【2026-10-28 槽满替换】被替换流程拦截的选卡（_ac 返回 'replacePending'）不上报：确认后真正入槽的那次调用才上报一次，取消不上报——房主侧构筑层计数与真人实际学到的技能严格同步
   }
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wireUi); else wireUi();
