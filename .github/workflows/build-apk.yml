@@ -19,9 +19,10 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
+      # No setup-android step: ubuntu runners already ship an Android SDK
+      # at $ANDROID_HOME, and setup-android@v3 fails trying to install the
+      # removed 'tools' package (sdkmanager exit 1). The build step below
+      # locates build-tools and android.jar from that preinstalled SDK.
       - name: Check game version
         run: |
           grep -q "GAME_VERSION = '1.5'" index.html
