@@ -769,7 +769,7 @@
     <div class="overlay" id="pauseScreen">
       <h2 class="panel-title">暂 停</h2>
       <p class="panel-sub" id="pauseStats">战斗暂停中</p>
-      <p class="panel-sub" style="margin-top:-8px;">版本 <span class="gameVerVal">1.5</span></p>
+      <p class="panel-sub" style="margin-top:-8px;">版本 <span class="gameVerVal">1.6</span></p>
       <div class="pause-col">
         <button class="btn" id="btnResume">继续战斗</button>
         <button class="btn ghost" id="btnLearned">已学技能</button>
@@ -824,7 +824,7 @@
       <h1 class="game-title">中山路KLF大冒险</h1>
       <div class="game-sub">ZHONGSHAN ROAD KLF ADVENTURE</div>
       <p class="game-author">作者：陈哈哈</p>
-      <p class="game-version">版本 <span class="gameVerVal">1.5</span></p>
+      <p class="game-version">版本 <span class="gameVerVal">1.6</span></p>
       <p class="game-desc">中山路的夜很普通——天突然暗了一块，像被扯开一个口子，七个人还没来得及跑，就被吸了进去。</p>
       <div class="pause-col">
         <button class="btn" id="btnTitleStart">开 始</button>
@@ -2261,7 +2261,7 @@ var BRANCHES = {
   ak47:{ C:{ name:'追踪弹射', desc:'子弹获得追踪能力：出膛后自动拐弯咬住最近的敌人，转向不减速、弹速不减；同时解锁弹射：命中后折线弹射到附近另一名敌人，每颗子弹最多弹射 3 次（逐跳伤害 ×0.72）——追踪与弹射同在本分支一次解锁、不再分开抽卡' } } // AK 普攻双分支合并（2026-10-29 用户令，取代 2026-10-27 两卡分行口径）：旧两条升级路——①Lv3 分支 C「追踪弹」（type:'branch'，homing）与②独立专属强化卡「弹射」（type:'akmod'，置 w.akRico）——合并为同一条路线：只剩 Lv3 分支 C「追踪弹射」一张卡，applyChoice／npcAutoLearn 选入时同置 branch='C' 与 akRico=true，追踪与弹射同帧起效；独立 akmod 卡已从 buildChoices 与 npcLearnPool 两池删除、不再单独出现。数值一字未动：Lv1 初始无追踪无弹射；弹射封顶 3 次（逐跳 ×0.72），不叠加、不随等级/进化增长（见 ak47 发射处 ricoB）；AK 普攻分裂已去除（splitB 恒 0）；穿透为进化「黄金AK」专属（见 evoDesc）
 };
 /* 主技能终极进化所需的对应道具 */
-var GAME_VERSION = '1.5'; // 游戏版本号（单一来源）：标题页与暂停菜单都从此常量渲染；2026-10-28 用户令由 1.0 改为 1.1、同日再改为 1.2、再改为 1.3；2026-10-29 用户令再改为 1.4、同日再改为 1.5
+var GAME_VERSION = '1.6'; // 游戏版本号（单一来源）：标题页与暂停菜单都从此常量渲染；2026-10-28 用户令由 1.0 改为 1.1、同日再改为 1.2、再改为 1.3；2026-10-29 用户令再改为 1.4、同日再改为 1.5、同日再改为 1.6
 var SIG_ITEM = { weiye:'luckbell', undeadwar:'fang', thundercloud:'voltcore', icelance:'icevein', emberring:'emberboots', voltspirit:'voltcore', skystrike:'magcore', vacuumblade:'windheart', corona:'luckbell', oldtreant:'thorn', vinegrip:'regen', rockgolem:'stoneskin', quake:'earthheart', waterelemental:'tidalheart', tidalwave:'tidalcore', boomerang:'boots', cigshot:'rune', octoshot:'rune', stamp:'magnet', chainvolt:'xpcrystal',
   firebolt:'fang', leafblade:'boots', lightning:'rune', frostnova:'shield', stardart:'shadow', flameaura:'thorn',
   moonwheel:'critlens', fireball:'glove', frostcone:'shield', poisonspray:'fang', earthspike:'thornheart', orbitblade:'windheart', totem:'magcore', gravitytrap:'hourglass',
@@ -2867,6 +2867,8 @@ var ZHUDE_DEF = { name:'朱德', r:56, hp:51750, speed:60, dmg:52, color:'#8a103
 var BOSS_TIMES = [150, 300, 450, 600, 750, 900];
 /* 联机 Boss 刷出改版状态（2026-10-29 人数越多怪越多轮，定版口径见 spawnMpBoss 上方注）：mpBossT＝距上次联机 Boss 事件的实时秒数（用 dt 累计、不读 gameTime——Boss 在场时 gameTime 冻结，本计时照常推进，才能在已有 Boss 存活时继续刷出更多 Boss）；mpBossNext＝下次事件的间隔秒（开局 90、每次事件后按人数曲线重掷）；mpFinaleDone＝联机终局（劳农传送门）是否已触发（每局一次）；mpLastBossDef＝上一只随机刷出的 Boss 下标（防连续重复）。resetGame 逐项复位。 */
 var mpBossT = 0, mpBossNext = 90, mpFinaleDone = false, mpLastBossDef = -1;
+/* 联机 Boss 成波状态（2026-10-29 用户纠正令「要不就同时出两个，要不就出了一个后不会出第二个、等第一个被打死了一分钟后才会出现第二个或者两个一起出」）：mpBossWasAlive＝上一帧判定（mpBossTick 内现查 bossAliveNow）场上是否有任一 Boss 存活；mpBossDeadT＝上一波 Boss 死光后已累计的冷却秒数（实时 dt 累计、满 60 才放行下一波判定）。resetGame 逐项复位。 */
+var mpBossWasAlive = false, mpBossDeadT = 0;
 var BOSS_SKILL_RATE = 1.6; // Boss 技能频率（2026-10-28 用户令「放频繁一些」＋01:09 强调「要高、不是小幅、不然没有挑战性」）：全部 Boss 的技能冷却倒计统一 ×1.6 速率——实际间隔变为原值 ÷1.6（缩短约 37.5%，明显可感知）：通用轮换首发 rand(2,3.2)→约 1.25–2.0 秒、各技能重置值 4.2→约 2.63／5.4→约 3.38／5.2→约 3.25／5.0→约 3.13／4.6→约 2.88／3.8→约 2.38 秒；劳农专属轮换 lnT（3.4/3.7/4.2/4.5）同率 → 约 2.13/2.31/2.63/2.81 秒；通用冲锋冷却 rand(2.4,3.4) 同率 → 约 1.5–2.13 秒。半血暴怒的既有加速（轮换 ×1.35／劳农 ×1.3）与本系数叠乘。只动冷却速率：各技能预警时长（0.85/1.0/1.15 秒等）、蓄力时长、伤害与机制一字未动，绝无改回瞬发；可读性下限仍在——最短重置 2.38 秒＞最长预警 1.15 秒＋技能持续，预警不会被下一发吞掉
 
 /* ---------------- 游戏状态 ---------------- */
@@ -3369,6 +3371,17 @@ function earlySigMul(){ return gameTime < 240 ? 1 + 0.60 * (1 - gameTime / 240) 
 function sigDmgMul(){ return 1.25; } // 全员普攻调高一档（2026-10-26 用户令）：七把专属武器（普攻）统一 ×1.25，只乘在专属普攻伤害公式上（与 earlySigMul 同乘区，含进化形态与各分支）；通用武器池/按键技/觉醒/被动/商人/怪物数值一律不吃此系数；七人同倍率、相对强度排名不变
 function openingHpMul(){ return gameTime < 120 ? 0.70 + 0.30 * (gameTime / 120) : 1; } // 开局前期削弱（2026-10-28 用户令）：开局 0–120 秒内刷出的所有怪物（含 Boss/精英基底，经 spawnEnemy 统一入口）血量 ×0.70 起、随局时线性恢复，120 秒起恒 ×1.0；只乘血量——伤害/移速/经验/掉落与 120 秒后的数值一字未动。与既有 earlyHpMul（0–240 秒、仅普通怪 ×0.85→1）是两个独立乘区、叠乘生效：普通怪开局实算 ×0.85×0.70≈×0.60，120 秒时 ×0.925（只余 earlyHpMul），240 秒后完全回到原值
 function earlyHpMul(){ return gameTime < 240 ? 0.85 + 0.15 * (gameTime / 240) : 1; } // 前期怪略调弱（2026-10-26 经验配套，用户定案）：发育期（0–4 分）刷出的普通怪血量 ×0.85 起、随时间线性回到 ×1.0——前期更好打死、靠数量堆升级不磨人；4 分钟后与旧值逐值一致，怪 dmg/速度/精英/Boss 不受影响 // 全员前期补强（用户实机反馈：前期伤害不够、有点刮，七英雄都要调；陈哈哈最刮）：七把专属武器在发育期（0–4 分）统一乘此系数——开局 +60%、随时间线性衰减、240 秒归零；全员同幅度乘法、不打乱英雄强度关系，240 秒后与旧值逐值一致（中后期曲线零改动）；怪物血量/刷怪密度（难度靠怪海数量）/掉率/通用武器池/按键技一律不动，生存仍靠走位与闪避
+/* 【单人前期血量再压低（2026-10-29 用户令「单人模式四分钟前太难打了、怪太肉」）】
+   范围红线：仅单人、仅刷出时刻 gameTime<240 秒、仅血量；联机局（window.__NET_MUL 在位、仅联机房主开局 applyScaling 才写入、单人永不设置——与 timeScale/eliteRate/spawnEnemy 联机补正点同一分流开关）两函数恒返 1、联机缩放一字不动；Boss 走 spawnEnemy 的 isBoss 分支、根本不调本函数（首 Boss 150 秒出场时 openingHpMul 本已 =1、实血 2925×(1+150/350)≈4178.6，改前改后逐值一致）；怪物伤害/刷怪密度/经验/玩家伤害/240 秒后曲线一字未动；难度乘区 DIFF_DEF.hp 在本乘区之外照旧叠乘、三档相对顺序不变（本曲线对三档同乘同一时间因子）。
+   曲线：平滑阶梯 s(u)=u²(3−2u)，u=gameTime/240——s 在 u=0 与 u=1 处导数均为 0，240 秒处以零斜率并入 ×1.0，无断崖、无拐点跳变。
+   普通怪 spEarlyHpMul＝0.60＋0.40s：0 分 0.600／1 分 0.663／2 分 0.800／3 分 0.938／4 分 1.000（4 分后恒 1）。
+   精英 spEarlyEliteHpMul＝0.82＋0.18s（比普通怪温和：最大降幅 −18% 对普通怪 −40%）：0 分 0.820／1 分 0.848／2 分 0.910／3 分 0.972／4 分 1.000；接线＝spawnEnemy 非 Boss 基底先乘普通怪版、精英分支再乘 (精英版/普通怪版) 换算到精英版（精英 ×5.1 起的自有倍率不动、绝不削成普通怪）。注：精英率 eliteRate 在 240 秒前恒 0，前 4 分钟常规刷怪不出精英，本精英档实际只作用于金币/幸运铃被动掷骰与副本强制守门精英等既有早出路径。
+   普通怪三乘区合并实算（earlyHpMul×openingHpMul×本曲线）：改前 0 分 0.595／1 分 0.754／2 分 0.925／3 分 0.963／4 分 1.000 → 改后 0.357／0.500／0.740／0.902／1.000。
+   同条件 TTK 验算（冻结条件：班仔 Lv1、无被动/商人、普通难度、powerTrack=1，打黏液怪 base 55；单发伤＝(13+4.6)×earlySigMul×1.25×pDmgMul、间隔 0.70 秒；TTK 按血量/单发×间隔连续值、发数向上取整）：普通怪 0 分 血 37.6→22.6、2 发→1 发、0.94→0.56 秒；1 分 87.9→58.2、4 发→3 发、2.24→1.48 秒；2 分 157.0→125.6、6 发→5 发、4.14→3.31 秒；3 分 214.6→201.2、9 发→9 发、5.97→5.60 秒；4 分 276.2→276.2、12 发→12 发、8.29 秒不变；5 分（300 秒）329.4→329.4 逐值一致。精英（同怪精英版）0 分 血 191.9→157.4（×0.820）、1 分 478.0→405.4（×0.848）、2 分 907.3→825.7（×0.910）、3 分 1313.2→1276.2（×0.972）、4 分 1783.9→1783.9 不变。 */
+function spEarlySmooth(){ if(gameTime >= 240) return 1; var u = gameTime / 240; return u * u * (3 - 2 * u); }
+function spEarlyHpMul(){ if(window.__NET_MUL || gameTime >= 240) return 1; return 0.60 + 0.40 * spEarlySmooth(); } // 单人前期普通怪血量曲线（2026-10-29）：联机恒 1、240 秒起恒 1
+function spEarlyEliteHpMul(){ if(window.__NET_MUL || gameTime >= 240) return 1; return 0.82 + 0.18 * spEarlySmooth(); } // 单人前期精英血量曲线（温和版，见上方定版注）
+window.__SP_EARLY = { normal: spEarlyHpMul, elite: spEarlyEliteHpMul, smooth: spEarlySmooth }; // 验收探针（与 __WX_POISON 同例）：按当前 gameTime/__NET_MUL 现算两档乘区
 function pCdMul(){ return Math.min(1, Math.max(0, Math.pow(0.93, P.passives.rune || 0) * Math.pow(0.94, P.passives.hourglass || 0) * Math.pow(0.97, P.passives.windheart || 0) * P.bonusCdMul * (P.shopCdMul || 1) * (P.rageT > 0 ? 0.6 : 1) * (P.stimT > 0 ? 0.8 : 1) * (P.urineT > 0 ? 0.4 : 1) * Math.max(0.7, 1 - pSum('cdP')))); } // 减冷却上限 100%（2026-10-28 用户令）：冷却乘数形式化截断于 [0,1]——减冷却至多 100%、乘数最低 0；既有更严的内层封顶全部保留不取消（cdP 分量下限 0.7、商人 ×0.92 封顶、尿液 ×0.4 为单项最低因子），全因子连乘恒 >0、实际乘数永不归零，不存在冷却归零无限连发；攻速 +100% 封顶不在本函数、在 updateWeapons 的 cd 派生点（间隔乘数下限 0.5，见该行注）；属性面板「冷却缩减」显示走本函数、即封顶后数值 // 兴奋剂（地图道具）：冷却 ×0.8＝攻速提升；前晚的尿液（地图道具，2026-10-28）：冷却 ×0.4（−60%），独立乘区、与兴奋剂可同乘 // 商人「技能冷却」：shopCdMul 独立乘区（−0.2%/次，整局上限 40 次封顶 ×0.92；上限 100→40 为 2026-10-28 用户令第 23 项）
 function pPickupR(){ return 64 * (1 + 0.45 * (P.passives.magnet || 0)) * (1 + 0.3 * (P.passives.magcore || 0)) * (P.stage >= 2 ? 1.3 : (P.stage >= 1 ? 1.2 : 1)) * P.bonusMagMul * (hasCP('goldfield') ? 1.8 : 1) * (1 + pSum('pickP')); }
 function pRegen(){ return 0.8 * (P.passives.heart || 0) + P.regenBonus + pSum('regenV'); }
@@ -3393,7 +3406,7 @@ function resetGame(){
   if(typeof STREET !== 'undefined'){ STREET.active = false; STREET.portal = null; STREET.stash = null; STREET.chest = null; STREET.exitPortal = null; STREET.kills = 0; STREET.spawned = 0; }
   zones = []; totems = []; totemRespawns = [];
   stands = []; chests = []; chestTimer = 26;
-  gameTime = 0; kills = 0; spawnTimer = 0; bossIdx = 0; currentBoss = null; bossBarriers = []; BAR_VIEW = null; if(P) P.barRef = null; barrierSpawnLockBosses = []; mpBossT = 0; mpBossNext = 90; mpFinaleDone = false; mpLastBossDef = -1; // 结界状态随对局复位（全部结界清空、本机结界登记解除）；停刷锁同步复位（2026-10-29 停刷清场令：新局不带旧锁）；联机 Boss 刷出改版状态同步复位（2026-10-29 人数越多怪越多轮：事件计时归零、首个事件 90 秒、终局标记清、重复防护清）
+  gameTime = 0; kills = 0; spawnTimer = 0; bossIdx = 0; currentBoss = null; bossBarriers = []; BAR_VIEW = null; if(P) P.barRef = null; barrierSpawnLockBosses = []; mpBossT = 0; mpBossNext = 90; mpFinaleDone = false; mpLastBossDef = -1; mpBossWasAlive = false; mpBossDeadT = 0; // 结界状态随对局复位（全部结界清空、本机结界登记解除）；停刷锁同步复位（2026-10-29 停刷清场令：新局不带旧锁）；联机 Boss 刷出改版状态同步复位（2026-10-29 人数越多怪越多轮：事件计时归零、首个事件 90 秒、终局标记清、重复防护清）
   endless = false; endlessBossTimer = 0; pendingLevels = 0; shake = 0; lastBiome = 0; waveTimer = 38;
   // 开局天气（2026-10-27 改回定版，取代当日临时「开局夜晚」）：每局开局天气为「晴空微风」、首掷计时复位 65 秒（与 weatherTick 的 55–95 秒重掷间隔不变，重掷后走正常权重轮换，夜晚仍在草原/森林轮换内）；同时把 LIGHT 直接吸附到晴空微风光参数，使第一帧即是晴天。
   curWeather = '晴空微风'; weatherT = 65;
@@ -3881,7 +3894,7 @@ function spawnEnemy(typeKey, isBoss, bossDef){
     var m = timeScale() * powerTrackMul(); // 血量对表：时间曲线 × 玩家总战力对表系数（等级＋技能＋梁鸡细佬堆叠都算）
     e = { id: ++enemySeq, boss:false, type: typeKey, name: t.name,
       x: pos.x, y: pos.y, r: t.r * rand(0.9, 1.12),
-      hp: t.hp * m * DIFF_DEF[DIFF].hp * earlyHpMul() * openingHpMul(), maxHp: t.hp * m * DIFF_DEF[DIFF].hp * earlyHpMul() * openingHpMul(), // 前期略调弱只乘普通怪基础血（earlyHpMul，240 秒后恒 1）；开局削弱 openingHpMul（0–120 秒 ×0.70→1）叠乘，精英 ×5.1 在下方基于此基底结算、同受削弱
+      hp: t.hp * m * DIFF_DEF[DIFF].hp * earlyHpMul() * openingHpMul() * spEarlyHpMul(), maxHp: t.hp * m * DIFF_DEF[DIFF].hp * earlyHpMul() * openingHpMul() * spEarlyHpMul(), // 前期略调弱只乘普通怪基础血（earlyHpMul，240 秒后恒 1）；开局削弱 openingHpMul（0–120 秒 ×0.70→1）叠乘，精英 ×5.1 在下方基于此基底结算、同受削弱；单人前期再压低 spEarlyHpMul（2026-10-29，仅单人 gameTime<240、平滑回 1，联机恒 1，见该函数定版注——精英在下方分支换算为温和版 spEarlyEliteHpMul）
       speed: t.speed * rand(0.88, 1.12) * spdGrowth(), dmg: t.dmg * dmgGrowth() * DIFF_DEF[DIFF].dmg, xp: t.xp, // 伤害/速度随时间成长（dmgGrowth/spdGrowth）：普通局伤害 14 分起 ×2.4 封顶、速度 +18% 封顶；无尽解除伤害封顶继续复利缓涨
       color: t.color, atkCd: 0, flash: 0, slow: 0, stun: 0, animPh: rand(0, 6),
       elite: FORCE_ELITE_NEXT || (!NO_ELITE_ROLL && CLEAN_ATLAS.ready && Math.random() < Math.min((eliteRate() * (bossAliveNow() ? 0.5 : 1) + (P && P.passives.coin ? 0.012 * P.passives.coin : 0) + (P && P.passives.luckbell ? 0.008 * P.passives.luckbell : 0)) * DIFF_DEF[DIFF].elite, 0.45)) }; // Boss 在场（含结界期间）：精英刷新率减半（2026-10-26 结界外刷新规则）；总封顶 0.3→0.45（2026-10-28 精英率再加大，与 eliteRate 联机口径同步） // 精英只允许在专属模型图集就绪时产生：普通物种（含史莱姆/小螃蟹）永远不会被贴上精英标记；精英率随时间成长（eliteRate）、受难度倍率加成
@@ -3890,7 +3903,7 @@ function spawnEnemy(typeKey, isBoss, bossDef){
     if(typeKey === 'cobra') e.dmg *= 0.5; // 喷火怪伤害减半（2026-10-26 用户新令，与吐息攻速减半叠加）：绿甲蜥龙全部伤害出口同源 e.dmg（吐息每 0.55 秒一跳 1.2×e.dmg〔节拍 0.38→0.55、系数 0.8→1.2 均为 2026-10-27 口径〕、跃扑落点圈 1.3×e.dmg、接触 e.dmg），刷怪处 ×0.5 一次全减半——基础伤害 11 → 5.5 口径（普通个体开局实算 11×dmgGrowth×1.8 同步减半）；精英个体同种同减；其他怪不动
     if(e.elite && e.ranged && e.ranged.homing){ e.ranged = { range: e.ranged.range, cd: e.ranged.cd, kind: e.ranged.kind, color: e.ranged.color }; } // 精英铁律（用户定版）：精英怪不得拥有追踪技能——任何带 homing 的远程定义在精英个体身上都被剥成直线弹道（虚空之眼已改凝视射线、本就无追踪，此为双保险）
     if(typeKey === 'spellbook' && gameTime >= 600){ e.ranged = { range: e.ranged.range, cd: Math.max(1.7, 3.0 - (gameTime - 600) / 400), kind: e.ranged.kind, color: e.ranged.color, spd: e.ranged.spd }; } // 魔眼书后期开火渐密（补充定版）：冷却 3.0 秒 → 15 分约 2.25 秒 → 无尽深局下限 1.7 秒；配合出场权重渐涨靠数量与频率成势——仍是一攻只发一发大号魔弹、直线飞行、绝无追踪
-    if(e.elite){ e.r *= 1.95; e.hp *= 5.1 * (1 + Math.min(0.9, gameTime / 900)) * (endless && gameTime > 900 ? Math.pow(1.15, (gameTime - 900) / 300) : 1); e.maxHp = e.hp; e.xp *= 6; e.dmg *= 1.5 * (1 + Math.min(0.4, gameTime / 2250)); // 精英血量【2026-10-29 平衡轮削减】：基础倍率 ×6→×5.1（整体 ×0.85）、时间因子 1+min(1.3,t/650)→1+min(0.9,t/900)——合计倍率 360 秒 ×9.32→×7.14、600 秒 ×11.54→×8.50、900 秒 ×13.80→×9.69；无尽复利不变，精英伤害（本行 dmg 段）/精英率/经验 ×6 一字未动
+    if(e.elite){ e.r *= 1.95; e.hp *= (spEarlyEliteHpMul() / spEarlyHpMul()) * 5.1 * (1 + Math.min(0.9, gameTime / 900)) * (endless && gameTime > 900 ? Math.pow(1.15, (gameTime - 900) / 300) : 1); e.maxHp = e.hp; e.xp *= 6; e.dmg *= 1.5 * (1 + Math.min(0.4, gameTime / 2250)); // 单人前期精英换算（2026-10-29）：基底已含普通怪版 spEarlyHpMul，此处乘 (精英版/普通怪版) 换到温和版精英曲线（联机/240 秒后两版同为 1、比值恒 1，逐值不变）；精英自有 ×5.1 倍率不动 // 精英血量【2026-10-29 平衡轮削减】：基础倍率 ×6→×5.1（整体 ×0.85）、时间因子 1+min(1.3,t/650)→1+min(0.9,t/900)——合计倍率 360 秒 ×9.32→×7.14、600 秒 ×11.54→×8.50、900 秒 ×13.80→×9.69；无尽复利不变，精英伤害（本行 dmg 段）/精英率/经验 ×6 一字未动
       var epool = ELITE_BY_BIOME[currentBiomeIdx()] || ELITE_BY_BIOME[0]; // 精英专属造型（与所有小怪不同）
       e.eliteRow = epool[Math.floor(Math.random() * epool.length)]; }
     if(!e.elite) e.dmg *= 1.8; // 普通小怪伤害加强（2026-10-26 用户令「小怪伤害太低了、玩家死不了」）：仅普通个体 ×1.8——开局口径（t=0、普通难度、dmgGrowth=1）黏液怪 8→14.4／噬地魔虫 7→12.6／绿甲蜥龙 11→19.8／毒菇怪 12→21.6／骷髅剑盾兵 14→25.2／虚空影 20→36／裂隙触手怪 21→37.8；精英已在上方分支按原公式结算完毕、不吃此倍率（精英伤害一字未动），Boss 走 isBoss 分支不经此处（Boss 伤害未动）；玩家血量/护盾/回血/吸血未动。前期单 hit 最高为绿甲蜥龙 19.8（最脆英雄闻西 94 血的约 21%），不一碰就死；接触伤害仍须贴身才结算，走位拉开距离即完全避开
@@ -3968,7 +3981,7 @@ function spawnEndlessBoss(){
    不受计时限制、不按固定顺序：取消 BOSS_TIMES 前五点（150–750）的排程出场，改为「事件计时＋概率掷骰」——
      · 事件间隔 mpBossInterval(n)＝max(30, 150×0.96^(n−1)) 秒（×rand(0.85,1.15) 抖动）：2 人 144／4 人 ≈133／6 人 ≈122／10 人 ≈104／20 人 ≈69／40 人起触下限 30；首个事件最早在开局 90 秒（mpBossNext 初值、非时间表排程、掷骰失败还会顺延）。
      · 刷新机率 mpBossChance(n)＝min(0.98, 0.60＋0.02×(n−1))：2 人 62%／4 人 66%／10 人 78%／20 人 98%（20 人起封顶）——人越多刷新机率越大；掷骰失败 15 秒后重试（不整段重等一个间隔）。
-     · 计时用实时 dt 累计（mpBossT），Boss 在场冻结 gameTime 期间照常推进——已有 Boss 活着也能刷出下一只（配合下方同场上限，多 Boss 同场成为常态）；新屋/街尾/虚空竞技场/裂缝门开启期间不累计不刷出（与无尽计时段同门禁口径）。
+     · 计时用实时 dt 累计（mpBossT），Boss 在场冻结 gameTime 期间照常推进——已有 Boss 活着也能刷出下一只（配合下方同场上限，多 Boss 同场成为常态）；新屋/街尾/虚空竞技场/裂缝门开启期间不累计不刷出（与无尽计时段同门禁口径）。【本句「已有 Boss 活着也能刷出下一只」已被 2026-10-29 用户纠正令（成波口径）取代：场上有 Boss 时随机事件整段冻结、上一波死光后满 60 秒才恢复下一波判定，定版见 mpBossTick 内成波门禁注；同场上限公式本身未动、现只约束一波内的同帧刷出数。】
    人数越多 Boss 越多（数量曲线，施工安排）：
      · 单次事件刷出数 mpBossBatch(n)＝1＋floor(max(0, n−2)/8)：2–9 人 1 只／10–17 人 2 只／18–25 人 3 只／26–33 人 4 只／…／98–100 人 13 只。
      · 同场存活 Boss 上限 mpBossAliveCap(n)＝2＋floor(n/10)：2–9 人 2 只／10–19 人 3 只／20–29 人 4 只／50 人 7 只／100 人 12 只；达上限时本次事件跳过刷出、12 秒后重试（不堆积欠账）。
@@ -4010,6 +4023,19 @@ function mpBossTick(dt){
     if(zhudeDue()) spawnZhude();
     openVoidPortal();
     return;
+  }
+  /* 成波门禁（2026-10-29 用户纠正令，取代同日「仅 60 秒冷却」口径）：联机随机 Boss 只成波、不零散补刷——
+     ①场上有任何 Boss 存活（bossAliveNow 现查：随机池 Boss、朱德本体/分身等一切带 boss 旗标者全计）→ 本帧不累计事件计时、不掷骰、不刷出，并把死光冷却清零待下次死光重新计；
+     ②上一波 Boss 死光后：mpBossDeadT 按实时 dt 累计、未满 60 秒不放行（0 秒/59 秒均不刷）；满 60 秒当帧把 mpBossT 顶到 mpBossNext、直接恢复下一波事件判定（机率掷骰/失败 15 秒重试照原口径）；
+     ③开局从未出现过 Boss（mpBossWasAlive 恒假）＝第一波：不走冷却、完全按原 mpBossNext 初值 90 秒＋机率判定（原行不动）。
+     一波内多只同时出现由 spawnMpBoss 既有实现保证（单次事件内 while 循环同帧刷满 mpBossBatch 只、未动）。间隔公式/机率公式/失败重试/同场上限/乱序选池一字未动；
+     例外（用户明令不动、单列说明）：劳农终局仍在本函数上方按 900 秒原口径触发（场上有随机 Boss 活着时终局照样开门，不受成波门禁阻挡）；朱德保底 zhudeDue 判定式与 420 秒时间门未动，但其出场载体是事件首名额——若到期时正有 Boss 在场，须等本波死光＋60 秒冷却后、下一波事件掷骰成功时才占首名额出场（仅时点顺延、保底规则本身不变）。 */
+  if(bossAliveNow()){ mpBossWasAlive = true; mpBossDeadT = 0; return; } // 场上有 Boss：不触发新随机刷出（事件计时冻结在本值、死光后由下方冷却接管）
+  if(mpBossWasAlive){
+    mpBossDeadT += dt;
+    if(mpBossDeadT < 60) return; // 死光后 60 秒冷却未满：不刷
+    mpBossWasAlive = false; mpBossDeadT = 0;
+    mpBossT = mpBossNext; // 冷却已满：本帧即恢复下一波判定（下方 mpBossT += dt 后必过间隔门、直接掷骰）
   }
   mpBossT += dt;
   if(mpBossT < mpBossNext) return;
@@ -10659,7 +10685,7 @@ function update(dt){
           else { spawnEnemy(pickEnemyType(), false); spawnEnemy(pickEnemyType(), false); texts.push({ x: e.x, y: e.y - e.r - 18, v: 0, txt: '召唤仆从！', t: 0, color: '#ffb0a0' }); }
           beep(520, 0.12, 'square', 0.04);
         } else if(d2 < 320 && Math.random() < 0.5){ e.windT = 0.6; e.flash = 0.6; texts.push({ x: e.x, y: e.y - e.r - 18, v: 0, txt: '蓄力冲锋！', t: 0, color: '#ffb0a0' }); beep(140, 0.3, 'sawtooth', 0.05); } // 近战精英：冲锋（0.6 秒蓄力闪烁预警→突进）
-        else { teles.push({ x: tgt.x, y: tgt.y, r: 96, t: 0, dur: 0.85, dmg: Math.round(e.dmg * 1.25), col: '#ff5a4e', allySrc: e }); texts.push({ x: e.x, y: e.y - e.r - 18, v: 0, txt: '重击预警！', t: 0, color: '#ff8a7a' }); beep(180, 0.25, 'sawtooth', 0.05); } // 近战精英：范围重击（目标脚下红圈预警 0.85 秒后爆发；落点走 tgt）；allySrc（吃苦转化，2026-10-29）：记圈源——源在爆发瞬间仍是转化友军时本圈改爆伤敌对怪（见 teles 段 ally 分支），未转化时行为一字不变
+        else if(mazeLOS(e.x, e.y, tgt.x, tgt.y)){ teles.push({ x: tgt.x, y: tgt.y, r: 96, t: 0, dur: 0.85, dmg: Math.round(e.dmg * 1.25), col: '#ff5a4e', allySrc: e }); texts.push({ x: e.x, y: e.y - e.r - 18, v: 0, txt: '重击预警！', t: 0, color: '#ff8a7a' }); beep(180, 0.25, 'sawtooth', 0.05); } // 近战精英：范围重击（目标脚下红圈预警 0.85 秒后爆发；落点走 tgt）；allySrc（吃苦转化，2026-10-29）：记圈源——源在爆发瞬间仍是转化友军时本圈改爆伤敌对怪（见 teles 段 ally 分支），未转化时行为一字不变；新屋视线门禁（2026-10-29 二次查修）：本分支旧版无距离/视线条件——新屋内留在其他房间的近战精英（含守门精英 imp/wraith/tentacle）每轮都隔墙在玩家脚下放重击圈，玩家看不见施法者（预警文字在精英头顶、隔房不可见）、只见脚下红圈反复出现，是本轮「旁边没有怪物却被打死」的根因；新加 mazeLOS 门禁：隔墙本次不放（eliteT 已在上方重置、下一轮再判），主地图 mazeLOS 恒通、行为一字不变
       }
     }
     var spd = e.speed * spMul * (BIOMES[bi].weather === '火山灰' ? 1.06 : 1);
