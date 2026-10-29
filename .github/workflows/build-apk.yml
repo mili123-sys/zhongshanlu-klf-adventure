@@ -1,0 +1,181 @@
+name: Build APK vc9
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Check game version
+        run: |
+          grep -q "GAME_VERSION = '1.5'" index.html
+          grep -q "klf-net-2" index.html
+          grep -q "npcFreeMove" index.html
+          grep -q "攻击技能最多 8 个" index.html
+          echo "markers OK: 1.5 + klf-net-2 + npcFreeMove + skill cap 8/15"
+
+      - name: Build APK
+        run: |
+          set -euo pipefail
+          BT=$(dirname "$(ls "$ANDROID_HOME"/build-tools/*/aapt2 | head -1)")
+          if [ -f "$ANDROID_HOME/platforms/android-34/android.jar" ]; then
+            ANDROID_JAR="$ANDROID_HOME/platforms/android-34/android.jar"
+          else
+            ANDROID_JAR=$(ls "$ANDROID_HOME"/platforms/android-*/android.jar | sort -V | tail -1)
+          fi
+          echo "build-tools: $BT"
+          echo "android.jar: $ANDROID_JAR"
+          mkdir -p work/classes work/dex work/gen work/assets/www app/src/com/klf/game
+          mkdir -p app/res/values app/res/mipmap-mdpi app/res/mipmap-hdpi app/res/mipmap-xhdpi app/res/mipmap-xxhdpi app/res/mipmap-xxxhdpi
+          cp index.html work/assets/www/index.html
+          cp -r assets work/assets/www/assets
+          rm -rf work/assets/www/assets/evidence
+          echo "staged files: $(find work/assets/www -type f | wc -l)"
+          cat > app/src/com/klf/game/MainActivity.java <<'JAVA'
+          package com.klf.game;
+          import android.app.Activity;
+          import android.os.Bundle;
+          import android.view.View;
+          import android.view.WindowManager;
+          import android.webkit.WebChromeClient;
+          import android.webkit.WebSettings;
+          import android.webkit.WebView;
+          import android.webkit.WebViewClient;
+          public class MainActivity extends Activity {
+              private WebView webView;
+              @Override
+              protected void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                  getWindow().getDecorView().setSystemUiVisibility(
+                          View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                  | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                  | View.SYSTEM_UI_FLAG_FULLSCREEN
+                                  | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                  webView = new WebView(this);
+                  setContentView(webView);
+                  WebSettings s = webView.getSettings();
+                  s.setJavaScriptEnabled(true);
+                  s.setDomStorageEnabled(true);
+                  s.setDatabaseEnabled(true);
+                  s.setAllowFileAccess(true);
+                  s.setAllowContentAccess(true);
+                  s.setAllowFileAccessFromFileURLs(true);
+                  s.setAllowUniversalAccessFromFileURLs(true);
+                  s.setMediaPlaybackRequiresUserGesture(false);
+                  s.setUseWideViewPort(true);
+                  s.setLoadWithOverviewMode(true);
+                  s.setSupportZoom(false);
+                  s.setBuiltInZoomControls(false);
+                  s.setCacheMode(WebSettings.LOAD_DEFAULT);
+                  webView.setWebViewClient(new WebViewClient());
+                  webView.setWebChromeClient(new WebChromeClient());
+                  webView.loadUrl("file:///android_asset/www/index.html");
+              }
+              @Override
+              public void onBackPressed() {
+                  if (webView != null && webView.canGoBack()) {
+                      webView.goBack();
+                  } else {
+                      super.onBackPressed();
+                  }
+              }
+          }
+          JAVA
+          cat > app/AndroidManifest.xml <<'XML'
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+              package="com.klf.game"
+              android:versionCode="9"
+              android:versionName="1.5">
+              <uses-sdk android:minSdkVersion="24" android:targetSdkVersion="34" />
+              <uses-permission android:name="android.permission.INTERNET" />
+              <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+              <uses-permission android:name="android.permission.VIBRATE" />
+              <application
+                  android:allowBackup="true"
+                  android:hardwareAccelerated="true"
+                  android:icon="@mipmap/ic_launcher"
+                  android:label="@string/app_name"
+                  android:theme="@android:style/Theme.Material.Light.NoActionBar">
+                  <activity
+                      android:name=".MainActivity"
+                      android:configChanges="orientation|screenSize|keyboardHidden|density|layoutDirection|smallestScreenSize"
+                      android:exported="true"
+                      android:screenOrientation="unspecified">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          XML
+          cat > app/res/values/strings.xml <<'XML'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <string name="app_name">中山路KLF大冒险</string>
+          </resources>
+          XML
+          if [ -f assets/icon-512.png ]; then
+            ICON=assets/icon-512.png
+          elif [ -f assets/icon-192.png ]; then
+            ICON=assets/icon-192.png
+          else
+            echo "ERROR: no game icon found in assets/" >&2
+            ls assets/ | head -20
+            exit 1
+          fi
+          echo "icon source: $ICON"
+          for d in mdpi hdpi xhdpi xxhdpi xxxhdpi; do cp "$ICON" "app/res/mipmap-$d/ic_launcher.png"; done
+          "$BT/aapt2" compile --dir app/res -o work/compiled.zip
+          "$BT/aapt2" link -o work/unsigned.apk \
+            -I "$ANDROID_JAR" \
+            --manifest app/AndroidManifest.xml \
+            --java work/gen \
+            work/compiled.zip \
+            -A work/assets \
+            --auto-add-overlay
+          find app/src -name '*.java' > work/sources.txt
+          javac -cp "$ANDROID_JAR" -d work/classes @work/sources.txt
+          "$BT/d8" --output work/dex work/classes/com/klf/game/MainActivity.class
+          (cd work/dex && zip -q ../unsigned.apk classes.dex)
+          "$BT/zipalign" -f 4 work/unsigned.apk work/aligned.apk
+          keytool -genkeypair -keystore work/debug.keystore -alias klfdebug \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass android -keypass android \
+            -dname "CN=klf-debug, OU=debug, O=klf, L=Zhongshan, C=CN" -noprompt
+          "$BT/apksigner" sign --ks work/debug.keystore --ks-pass pass:android \
+            --key-pass pass:android --out zhongshanlu-klf-adventure-V1.5-vc9.apk work/aligned.apk
+          "$BT/apksigner" verify --verbose zhongshanlu-klf-adventure-V1.5-vc9.apk
+          ls -lh zhongshanlu-klf-adventure-V1.5-vc9.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zhongshanlu-klf-adventure-V1.5-vc9
+          path: zhongshanlu-klf-adventure-V1.5-vc9.apk
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.5-vc9
+          name: 中山路KLF大冒险 V1.5 vc9
+          body: "中山路KLF大冒险 V1.5（版本码 9，包名 com.klf.game），与托管网页版 1.5 同一构建。"
+          files: zhongshanlu-klf-adventure-V1.5-vc9.apk
