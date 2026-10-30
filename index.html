@@ -1284,6 +1284,7 @@
   var TOTAL = 0, i;
   for(i = 0; i < MANIFEST.length; i++) TOTAL += MANIFEST[i][1];
   var doneBytes = 0, doneFiles = 0, failed = [], untried = [], finished = false, cacheObj = null, slowTimer = null, lastPaintAt = 0;
+  var deferredMissing = [], deferredItems = [], bgRetryTimer = null; // 大文件延后名单（2026-10-31 下载层修复，见 dlTimeoutMs 注）：延后文件没下完不记 failed、不堵启动
   /* ===== 下载层修复（2026-10-27 清理与稳定性轮，只动下载层、不动玩法） =====
      ①暂停续传：点「跳过下载／先进入游戏」后 worker 不再领取新文件（在途的单个文件收尾为止），
        避免后台下载与进局加载抢连接／内存叠峰；暂停满 120 秒（回标题空闲）自动续传，
@@ -1357,6 +1358,24 @@
       if(elSkip) elSkip.style.display = 'none';
       return;
     }
+    if(deferredMissing.length){
+      /* 只有大文件延后未完成（2026-10-31）：其余资源已就绪，不把玩家堵在下载页——直接进游戏，
+         背景音乐由游戏侧 Audio 在用到时按原路径自动补下（浏览器直取该文件），本预载下次打开也会继续补这一条；
+         另在进游戏 45 秒后单路、低调地后台重试一次（单 worker、不与局内加载抢并发），成功即记断点清单。 */
+      if(elStatus) elStatus.textContent = '其余资源已就绪，正在进入游戏。较大的背景音乐文件本轮还没下完，已改为不堵启动：进游戏后音乐用到时会自动补下，下次打开也会继续补下。';
+      if(bgRetryTimer) clearTimeout(bgRetryTimer);
+      var retryItems = deferredItems.slice();
+      bgRetryTimer = setTimeout(function(){
+        bgRetryTimer = null;
+        var chain = Promise.resolve();
+        retryItems.forEach(function(it){
+          chain = chain.then(function(){ return dlOne(it).then(function(ok){ if(ok && !cacheMissed[klfAliasOf(it[0])]) dlNoteHit(it[0], it[1]); }); });
+        });
+        chain.catch(function(){});
+      }, 45000);
+      setTimeout(showTitle, 350);
+      return;
+    }
     if(elStatus) elStatus.textContent = '资源已就绪，正在进入游戏…';
     setTimeout(showTitle, 350);
   }
@@ -1370,10 +1389,34 @@
   function settleWithin(p, ms){
     return Promise.race([Promise.resolve(p), new Promise(function(res){ setTimeout(function(){ res(null); }, ms); })]);
   }
+  /* ===== 下载层修复（2026-10-31，真机「1 个文件重试一直失败」轮，只动下载层） =====
+     实查（源码＋清单字节账）：预载清单共 233 个文件、总计 16,438,042 字节（15.7 MB，与真机截图一致）；
+     其中 assets/audio/bgm_main.mp3 单个 6,749,783 字节（6.44 MB），第二大文件仅 464,700 字节。
+     真机截图显示已下 9.2 MB／共 15.7 MB、232/233 个文件：总字节减去已下字节的差额与 BGM 大小唯一吻合
+     （总计−BGM＝9.24 MB，与截图 9.2 MB 对齐；换成任何其他单个文件，差额都对不上）。
+     证据等级：截图没有写文件名，这是按字节账唯一吻合的高置信推断，不是真机日志实证。
+     它为何必然反复失败：旧版每个文件一律 20 秒中止——BGM 需要单路至少约 337 KB/s 才能在 20 秒内下完，
+     而下载是 4 路并发分带宽，慢链路上单路远达不到；且每次重试都从第 0 字节重下（无断点续传），
+     3 次重试只是把同一堵 20 秒的墙撞 3 遍，重试永远失败。
+     本轮改法（组合）：①单次时限按文件大小放宽（见 dlTimeoutMs）；②大文件重试加到 5 次、退避拉长；
+     ③≥2 MB 的文件改延后类：排在全部普通文件之后、单路独占带宽下载，没下完不记 failed、不堵启动，
+     进游戏后按需／后台补下（见 run 的分阶段下载与 finish 的延后分支）；
+     ④缓存写入时限对大文件放宽到 30 秒，流式写缓存失败时大文件不再走整文件 Blob 二次 fetch 兜底
+     （那条兜底对 6.7 MB 只有 10 秒、必然再超时，还平白重下一遍），改为本轮算下载完成、不记断点清单、留下轮补写。 */
+  function dlTimeoutMs(size){ // 单次下载时限：≤1 MB 沿用旧口径 20 秒；更大的按约 60 KB/s 的保底单路速度给足时间，封顶 180 秒（BGM 约 110 秒）
+    if(!(size > 1048576)) return 20000;
+    var ms = Math.ceil(size / 61440) * 1000;
+    return ms < 30000 ? 30000 : (ms > 180000 ? 180000 : ms);
+  }
+  function dlPutMs(size){ return size > 1048576 ? 30000 : 8000; } // 缓存写入时限：大文件落盘更慢，放宽到 30 秒；小文件沿用 8 秒
+  function dlMaxTries(size){ return size >= 1048576 ? 5 : 3; } // 大文件重试 5 次（旧版一律 3 次），小文件不变
+  function dlBackoffMs(tries){ var b = [800, 2000, 4000, 8000]; return b[tries - 1] || 8000; } // 退避：小文件实际只用到前两档（与旧版 0.8/2 秒一致），大文件后续加到 4/8 秒
+  function dlIsDeferred(size){ return size >= 2097152; } // 延后类门槛 2 MB：当前清单里只有 BGM 命中，其余 232 个文件全是普通类
+  window.__klfDownloadFix = { timeoutMs: dlTimeoutMs, putMs: dlPutMs, maxTries: dlMaxTries, isDeferred: dlIsDeferred, version: 'dlfix-20261031' }; // 离线核查钩子：供探针/模拟读取本轮口径，不参与玩法
   function dlAttempt(item){ // 单次尝试：成功 resolve(true)，失败 resolve(false) 并回滚本试已计字节
     var url = klfAliasOf(item[0]), size = item[1]; // 去重别名：重复条目共用保留件一份字节（大小相同，计数照常用清单值）
     var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-    var timer = ctrl ? setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, 20000) : null;
+    var timer = ctrl ? setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, dlTimeoutMs(size)) : null;
     var counted = 0;
     function topUp(){ if(counted < size){ doneBytes += (size - counted); counted = size; } } // 只在下载成功收尾时把该文件份额计满
     function rollBack(){ if(counted > 0){ doneBytes -= counted; if(doneBytes < 0) doneBytes = 0; counted = 0; } } // 失败时回滚本试已计的流式字节：字节只计真正到手并存好的，半截不算数（旧版失败也计满，是进度虚报 100% 的一半根源）
@@ -1385,7 +1428,7 @@
         return res.blob().then(function(b){
           counted = size; doneBytes += size;
           if(timer) clearTimeout(timer);
-          if(cacheObj) return settleWithin(cacheObj.put(url, new Response(b, { status: res.status, statusText: res.statusText, headers: res.headers })).catch(function(){}), 8000).then(function(){ return true; });
+          if(cacheObj) return settleWithin(cacheObj.put(url, new Response(b, { status: res.status, statusText: res.statusText, headers: res.headers })).catch(function(){}), dlPutMs(size)).then(function(){ return true; });
           return true;
         });
       }
@@ -1396,7 +1439,7 @@
          WebView 进程被系统杀掉，玩家看到的就是应用直接闪退。 */
       var putDone = null;
       if(cacheObj){
-        try{ putDone = settleWithin(cacheObj.put(url, res.clone()).then(function(){ return true; }, function(){ return false; }), 8000); } // 时限到点落 null＝当作 put 失败走兜底，绝不让不落定的 put 堵死 worker
+        try{ putDone = settleWithin(cacheObj.put(url, res.clone()).then(function(){ return true; }, function(){ return false; }), dlPutMs(size)); } // 时限到点落 null＝当作 put 失败走兜底，绝不让不落定的 put 堵死 worker；大文件时限 30 秒（2026-10-31）
         catch(e){ putDone = Promise.resolve(false); }
       }
       function pump(){
@@ -1417,7 +1460,7 @@
         if(!putDone) return true;
         return putDone.then(function(okPut){
           if(okPut) return true;
-          if(KLF_LOW_MEM){ cacheMissed[url] = 1; return true; } // 修复③：低内存／内嵌视图禁用整文件 Blob 二次 fetch 兜底（内存峰值诱因）：本轮下载算完成、不记断点清单，留待重试轮补写缓存
+          if(KLF_LOW_MEM || size > 1048576){ cacheMissed[url] = 1; return true; } // 修复③＋2026-10-31：低内存／内嵌视图禁用整文件 Blob 二次 fetch 兜底（内存峰值诱因）；大文件同理——旧兜底整段只有 10 秒，6.7 MB 必然再超时且等于白重下一遍。本轮下载算完成、不记断点清单，留待重试轮补写缓存
           /* 流式 put 被这台 WebView 拒绝（个别 iOS 版本对流式缓存写入支持不全）：先删可能残留的半截条目，
              再单独为这一条走「整文件 put」兜底——内存代价只落在这一个文件上，不影响其余文件的流式路径；
              兜底也失败只当没缓存上，下载本身仍算完成，下次打开校验自然会补下这一条。 */
@@ -1438,23 +1481,25 @@
       return false;
     });
   }
-  /* 单文件自动重试（2026-10-26）：一次网络抖动/20 秒中止不再直接判死——同一文件最多试 3 次，
-     两次之间短暂退避（0.8 秒、2 秒），退避期间刷新心跳，免得看门狗把正在重试误判成卡死。
-     3 次都失败才记入 failed，等玩家点「重试下载」时（缓存校验会跳过已下好的）再补。 */
+  /* 单文件自动重试（2026-10-26，2026-10-31 按大小分档）：一次网络抖动/超时中止不再直接判死——
+     小文件最多试 3 次、大文件（≥1 MB）最多试 5 次，两次之间退避（0.8/2 秒起，大文件后续 4/8 秒），
+     退避期间刷新心跳，免得看门狗把正在重试误判成卡死。
+     全部失败才记入 failed（延后类记入 deferredMissing），等玩家点「重试下载」时（缓存校验会跳过已下好的）再补。 */
   function dlOne(item){
-    var tries = 0;
+    var tries = 0, maxTries = dlMaxTries(item[1]);
     function attempt(){
       tries++;
       window.__klfPreloadBeat = Date.now();
       return dlAttempt(item).then(function(ok){
-        if(ok || tries >= 3) return ok;
-        return new Promise(function(res){ setTimeout(res, tries === 1 ? 800 : 2000); }).then(attempt);
+        if(ok || tries >= maxTries) return ok;
+        return new Promise(function(res){ setTimeout(res, dlBackoffMs(tries)); }).then(attempt);
       });
     }
     return attempt();
   }
   function run(){
     failed = []; untried = []; doneBytes = 0; doneFiles = 0; finished = false; suspended = false; suspendAt = 0; window.__klfPreloadSuspended = false; cacheMissed = {};
+    deferredMissing = []; deferredItems = []; if(bgRetryTimer){ clearTimeout(bgRetryTimer); bgRetryTimer = null; } // 新一轮（含每次重试）延后名单重新起算，已下好的仍由缓存校验跳过、不重下
     deadline = Date.now() + RUN_LIMIT_MS; // 每轮（含每次点「重试下载」）重新起算本轮时限——这是旧版重试必失败的根因所在
     window.__klfPreloadActive = true;
     if(elStatus) elStatus.textContent = '正在下载游戏资源，请稍候…';
@@ -1523,32 +1568,45 @@
         for(var k = 0; k < MANIFEST.length; k++) if(!results[k]) todo.push(MANIFEST[k]);
         if(!todo.length){ finish(); return; }
         if(doneFiles > 0 && elStatus) elStatus.textContent = '本地已有 ' + doneFiles + ' 个文件，只补下载缺少/更新的 ' + todo.length + ' 个…';
-        var idx = 0;
-        function worker(){
-          if(suspended) return waitResume().then(worker); // 修复①：已暂停（玩家已跳过／进游戏）时不领新文件，续传信号到再继续
-          if(idx >= todo.length) return Promise.resolve();
-          if(Date.now() > deadline){
-            /* 本轮时限到：没轮到的文件单列 untried——它们根本没被尝试过，不许记成失败、
-               更不许把它们的字节补进进度（旧版正是这样凑出「100% 却只有 572/6499」的假进度）。
-               玩家点「重试下载」时缓存校验会跳过已下好的，只补这些没下完的。 */
-            for(var m = idx; m < todo.length; m++) untried.push(todo[m][0]);
-            idx = todo.length;
-            return Promise.resolve();
+        /* 分阶段下载（2026-10-31）：普通文件先下（仍 4 路并发）；延后类大文件（≥2 MB，当前只有 BGM）
+           排在最后、改单路独占带宽——不再与另外 3 路分带宽，单路速度翻几倍，配合按大小放宽的时限才下得完；
+           延后类没下完（含本轮 10 分钟时限到而没轮到）只记 deferredMissing、不记 failed/untried，
+           由 finish 的延后分支放行进游戏＋后台/按需补下，绝不重演「232/233 却被 1 个大文件堵死」。 */
+        var urgent = [], deferred = [];
+        for(var ti = 0; ti < todo.length; ti++){ if(dlIsDeferred(todo[ti][1])) deferred.push(todo[ti]); else urgent.push(todo[ti]); }
+        deferredItems = deferred.slice();
+        function runPhase(list, concurrency, isDef){
+          var idx = 0;
+          function worker(){
+            if(suspended) return waitResume().then(worker); // 修复①：已暂停（玩家已跳过／进游戏）时不领新文件，续传信号到再继续
+            if(idx >= list.length) return Promise.resolve();
+            if(Date.now() > deadline){
+              /* 本轮时限到：普通类没轮到的文件单列 untried——它们根本没被尝试过，不许记成失败、
+                 更不许把它们的字节补进进度（旧版正是这样凑出「100% 却只有 572/6499」的假进度）。
+                 玩家点「重试下载」时缓存校验会跳过已下好的，只补这些没下完的。
+                 延后类没轮到则记 deferredMissing，走不堵启动的放行口径。 */
+              if(isDef){ for(var m2 = idx; m2 < list.length; m2++){ if(deferredMissing.indexOf(list[m2][0]) < 0) deferredMissing.push(list[m2][0]); } }
+              else{ for(var m = idx; m < list.length; m++) untried.push(list[m][0]); }
+              idx = list.length;
+              return Promise.resolve();
+            }
+            var item = list[idx++];
+            return dlOne(item).then(function(ok){
+              if(ok){ doneFiles++; if(!cacheMissed[klfAliasOf(item[0])]) dlNoteHit(item[0], item[1]); } // 文件数只计真成功（含缓存命中）：旧版不论成败都 +1，数字和字节一样虚；缓存没写上的（修复③）不记断点清单、留下轮补
+              else if(isDef){ if(deferredMissing.indexOf(item[0]) < 0) deferredMissing.push(item[0]); }
+              else failed.push(item[0]);
+              paint(null);
+              /* 分片推进（2026-10-24）：每下完一个文件让出主线程一拍——进度条重绘、看门狗、
+                 系统内存回收都得有机会跑；旧法多路 worker 一条链无间断猛拉到底，
+                 主线程与内存长时间满载，是下载途中把 WebView 进程拖垮的另一诱因。 */
+              return new Promise(function(res2){ setTimeout(res2, 0); }).then(worker);
+            });
           }
-          var item = todo[idx++];
-          return dlOne(item).then(function(ok){
-            if(ok){ doneFiles++; if(!cacheMissed[klfAliasOf(item[0])]) dlNoteHit(item[0], item[1]); } // 文件数只计真成功（含缓存命中）：旧版不论成败都 +1，数字和字节一样虚；缓存没写上的（修复③）不记断点清单、留下轮补
-            else failed.push(item[0]);
-            paint(null);
-            /* 分片推进（2026-10-24）：每下完一个文件让出主线程一拍——进度条重绘、看门狗、
-               系统内存回收都得有机会跑；旧法多路 worker 一条链无间断猛拉到底，
-               主线程与内存长时间满载，是下载途中把 WebView 进程拖垮的另一诱因。 */
-            return new Promise(function(res2){ setTimeout(res2, 0); }).then(worker);
-          });
+          var workers = [];
+          for(var w = 0; w < concurrency; w++) workers.push(worker()); // 普通阶段并发 4（旧口径）；延后阶段并发 1（独占带宽）
+          return Promise.all(workers);
         }
-        var workers = [];
-        for(var w = 0; w < 4; w++) workers.push(worker()); // 并发 5→4：压低同时在途的响应体与缓存写入峰值
-        return Promise.all(workers).then(finish);
+        return runPhase(urgent, 4, false).then(function(){ return runPhase(deferred, 1, true); }).then(finish);
       });
     }).catch(function(){ finish(); });
   }
