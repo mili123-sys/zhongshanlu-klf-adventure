@@ -229,6 +229,11 @@
       body.hud-edit #cdHud{display:flex !important;} /* 按键技能状态片（#cdSpecial，2026-10-29 状态显示可调轮）：#cdHud 整列在悬停设备平时隐藏——编辑页内强制显示该列，状态片才可点选/拖动/拖角缩放（仅编辑态，与上方 Boss 条/可学习钮强制显示同式）；独立闪避状态片 #cdDodge 已于 2026-10-29 闪避状态并入按键轮删除（闪避状态改在 #btnDodge 键内显示，见 #btnDodge 规则与 updateHud 闪避段），#cdHud 列内现仅余 #cdSpecial 一片 */
       body.hud-edit #netTeam{display:block !important; min-width:132px; min-height:30px;}
       body.hud-edit #netTeam.hud-ph::after{content:'队友血条面板'; display:block; padding:6px 10px; color:#ffe9a3; font-size:12px; font-weight:800;}
+      /* ---- 全图标可拖轮（2026-10-29 用户令「HUD 编辑所有图标都可自由拖动，包括经验条、地图天气名字」）编辑态强制显示：连杀（平时 opacity:0 待击杀点亮）、班仔剑阵状态片（平时 display:none 待 Lv5 点亮）、联机连接状态（平时 display:none 待联机点亮、且无文案时为空）——仅编辑态点亮以便点选/拖动/拖角缩放，非编辑态显示逻辑一字未动；经验条 #xpTop 与地图天气名 #biomeTag 随 #hud 常显、无需强制 ---- */
+      body.hud-edit #comboHud{opacity:1 !important;}
+      body.hud-edit #bzArrayHud{display:block !important;}
+      body.hud-edit #netConn{display:block !important; min-width:110px; min-height:24px;}
+      body.hud-edit #netConn.hud-ph::after{content:'联机连接状态'; display:block; color:#bfe3ae; font-size:11.5px; font-weight:800;}
       #stickPreview{position:absolute; width:118px; height:118px; border-radius:50%; border:2px solid rgba(255,255,255,.28); background:rgba(255,255,255,.07); display:none; left:calc(18px + env(safe-area-inset-left)); bottom:calc(96px + env(safe-area-inset-bottom)); z-index:7;}
       #stickPreview .sp-knob{position:absolute; left:50%; top:50%; width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,.35); border:2px solid rgba(255,255,255,.5); transform:translate(-50%,-50%); pointer-events:none;}
       #stickPreview .sp-lab{position:absolute; left:50%; top:-22px; transform:translateX(-50%); font-size:11px; font-weight:800; color:#ffd23e; white-space:nowrap; pointer-events:none;}
@@ -240,6 +245,10 @@
       #hudHandle{position:fixed; width:30px; height:30px; margin:-15px 0 0 -15px; border-radius:50%; background:#ffd23e; border:2px solid #fff; box-shadow:0 2px 8px rgba(0,0,0,.55); z-index:85; display:none; touch-action:none; cursor:nwse-resize;}
       #hudHandle::after{content:"⤡"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:900; color:#2a1503; pointer-events:none;}
       body.hud-edit #hudHandle.on{display:block;}
+      /* 长度手柄（2026-10-29 大小长度自由轮）：长条类元素（HUD_DEFS bar:true）选中时另在其右缘中点出一颗青色圆点，水平拖动单独拉长/缩短该条（横向 w 倍率，与整体缩放 s 独立），与右下角金色整体缩放手柄并存 */
+      #hudHandleW{position:fixed; width:30px; height:30px; margin:-15px 0 0 -15px; border-radius:50%; background:#57c7e8; border:2px solid #fff; box-shadow:0 2px 8px rgba(0,0,0,.55); z-index:85; display:none; touch-action:none; cursor:ew-resize;}
+      #hudHandleW::after{content:"↔"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:900; color:#08222e; pointer-events:none;}
+      body.hud-edit #hudHandleW.on{display:block;}
       /* 编辑页顶栏：左右两只角落药丸（左＝标题＋选中元素/尺寸只读显示，右＝操作说明），整层 pointer-events:none 不挡顶部中央的计时/可学习钮抓取；缩放改走拖角手柄、无 －/＋ 按钮 */
       #hudEditTop{position:fixed; left:0; right:0; top:0; z-index:80; display:none; justify-content:space-between; align-items:flex-start; gap:8px; padding:calc(6px + env(safe-area-inset-top)) calc(8px + env(safe-area-inset-right)) 0 calc(8px + env(safe-area-inset-left)); pointer-events:none;}
       body.hud-edit #hudEditTop{display:flex;}
@@ -397,15 +406,7 @@
       .choice-card.evo .tag{color:var(--mana);}
       .choice-card p{margin:6px 0 0; font-size:13px; color:var(--ink-dim); line-height:1.6;}
       .pause-col{display:flex; flex-direction:column; gap:12px; align-items:center;}
-      /* 设置·按键自定义（2026-10-28）：滑杆行——标签＋滑杆＋当前值；容器宽度跟随设置列、窄屏不溢出 */
-      .set-btnbox{display:flex; flex-direction:column; gap:9px; width:min(340px,88vw); background:rgba(255,255,255,.05); border:1px solid var(--line); border-radius:12px; padding:12px 14px;}
-      .set-btnbox-title{font-weight:900; font-size:14px; letter-spacing:.06em; text-align:center;}
-      .set-slider-row{display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700;}
-      .set-slider-row span{flex:none; width:64px; text-align:left;}
-      .set-slider-row input[type="range"]{flex:1; min-width:0; accent-color:var(--accent);}
-      .set-slider-row b{flex:none; width:44px; text-align:right; font-size:12.5px; color:var(--mana);}
-      .set-btnbox-note{margin:0; font-size:11.5px; line-height:1.55; color:var(--ink-dim); text-align:center;}
-      .set-btnbox .btn{align-self:center;}
+      /* 设置·按键自定义的滑杆样式（.set-btnbox/.set-slider-row 等）已随该区块按 2026-10-29 删除令一并移除，无残留引用 */
       .pause-col .btn{min-width:230px; text-align:center;}
       .pause-col .btn.ghost{font-size:16px; padding:13px 26px;}
       .stats-grid{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:24px;}
@@ -769,13 +770,14 @@
     <div class="overlay" id="pauseScreen">
       <h2 class="panel-title">暂 停</h2>
       <p class="panel-sub" id="pauseStats">战斗暂停中</p>
-      <p class="panel-sub" style="margin-top:-8px;">版本 <span class="gameVerVal">1.6</span></p>
+      <p class="panel-sub" style="margin-top:-8px;">版本 <span class="gameVerVal">1.7</span></p>
       <div class="pause-col">
         <button class="btn" id="btnResume">继续战斗</button>
         <button class="btn ghost" id="btnLearned">已学技能</button>
         <button class="btn ghost" id="btnHudEdit">调整 HUD 布局</button>
         <button class="btn ghost" id="btnSfxPause">音效：开</button>
         <button class="btn ghost" id="btnBuzzPause">震动：开</button>
+        <button class="btn ghost" id="btnAutoLearnPause" type="button">升级自动打开学习页：关</button>
         <button class="btn ghost" id="btnRestart2">重新开始</button>
         <button class="btn ghost" id="btnPauseHome">返回主菜单</button>
       </div>
@@ -812,6 +814,7 @@
       <div class="het-pill"><div class="het-hint">拖动虚线框住的元素移动位置；选中后拖它右下角的金色圆点调整大小。编辑中不会触发技能或移动。</div></div>
     </div>
     <div id="hudHandle" aria-label="拖动调整所选元素大小"></div>
+    <div id="hudHandleW" aria-label="拖动调整所选长条元素的长度"></div>
     <div id="hudEditBar">
       <button type="button" id="hebReset">恢复默认</button>
       <button type="button" id="hebCancel">取消</button>
@@ -824,7 +827,7 @@
       <h1 class="game-title">中山路KLF大冒险</h1>
       <div class="game-sub">ZHONGSHAN ROAD KLF ADVENTURE</div>
       <p class="game-author">作者：陈哈哈</p>
-      <p class="game-version">版本 <span class="gameVerVal">1.6</span></p>
+      <p class="game-version">版本 <span class="gameVerVal">1.7</span></p>
       <p class="game-desc">中山路的夜很普通——天突然暗了一块，像被扯开一个口子，七个人还没来得及跑，就被吸了进去。</p>
       <div class="pause-col">
         <button class="btn" id="btnTitleStart">开 始</button>
@@ -860,14 +863,7 @@
         <button class="btn ghost" id="btnBuzzSet">震动：开</button>
         <button class="btn ghost" id="btnAutoLearnSet" type="button">升级自动打开学习页：关</button>
         <button class="btn ghost" id="btnHudEditSet" type="button">调整 HUD 布局</button>
-        <div class="set-btnbox">
-          <div class="set-btnbox-title">按键自定义（特殊技能 / 闪避）</div>
-          <label class="set-slider-row"><span>按键大小</span><input type="range" id="setBtnSize" min="80" max="140" step="2" value="100"><b id="setBtnSizeVal">100%</b></label>
-          <label class="set-slider-row"><span>左右位置</span><input type="range" id="setBtnX" min="0" max="120" step="4" value="0"><b id="setBtnXVal">0</b></label>
-          <label class="set-slider-row"><span>上下位置</span><input type="range" id="setBtnY" min="0" max="120" step="4" value="0"><b id="setBtnYVal">0</b></label>
-          <button class="btn ghost" id="btnBtnLayoutReset" type="button">恢复默认按键</button>
-          <p class="set-btnbox-note">特殊技能键默认在右侧中部、闪避键在右下；左右/上下滑杆在此基础上微调两键位置。拖动即时生效并自动保存，下次进局仍在。</p>
-        </div>
+        <!-- 「按键自定义（特殊技能 / 闪避）」整块已按 2026-10-29 用户删除令移除（三滑杆＋恢复默认按键钮＋说明文字全删）；特殊/闪避键此后只走 HUD 布局系统，旧滑杆存档处理见脚本段 BTN_LAYOUT 墓碑注 -->
         <button class="btn" id="btnSettingsBack">返 回</button>
       </div>
     </div>
@@ -1015,7 +1011,7 @@
           <li><b>地图道具：</b>打死怪物有小机率掉落道具（小怪 1%、精英 30% 掉一件、普通 Boss 六种道具各掉一件；隐藏 Boss 朱德与最终 Boss 劳农必掉一件），掉在地上发着彩色辉光，永久留在地上、不会消失，直到走过去碰到拾取为止，碰到就生效：<b>回血饮料</b>立即回复 30% 生命；<b>磁石</b>把全屏经验宝石一次吸光；<b>炸弹</b>以拾取点为中心大范围爆炸；<b>兴奋剂</b>移速＋攻速提升 8 秒；<b>护盾发生器</b>立即补满一层护盾；<b>前晚的尿液</b>冷却 −60%（倍率 ×0.4），持续 60 秒，重复拾取刷新时长。</li>
           <li><b>新街尾之影：</b>主地图会刷出橙色「新街尾之影」传送门（开局 7 分钟后概率出现、存在 40 秒），站稳 3 秒进入单层街景副本：分 2 波迎战共 10 只精英怪（第一波 4 只、第一波全清后刷第二波 6 只），全数击杀后街尾尽头刷出奖励宝箱，走近开启（岩石魔像／亡灵战士／尾爷三选一方向：优先未持有、按 35%/35%/30% 权重抽取），开箱后站进旁边的回程传送门 2 秒返回主地图原位置。</li>
           <li><b>宝箱：</b>地图会随机刷新金色宝箱，靠近后停留在范围内累积 10 秒即可开启（离开范围进度暂停、不重置）。宝箱开出的是<b>专属特殊被动</b>（不死鸟之心、时空回溯、连锁爆核、毁灭契约、疾风血契等 10 种），只能从宝箱取得，独立成栏、不占技能槽。主地图宝箱另可开出攻击技能「雷云」（同样不占攻击格）；召唤技能分两处出：雷灵／树人／水元素出自「班仔的新屋」三层宝箱，岩石魔像／亡灵战士／尾爷出自「新街尾之影」奖励宝箱，主地图宝箱绝不产出。开箱时可选择<b>学或不学</b>：部分契约类被动带有负面属性（会在弹窗上红字列明），放弃无惩罚、之后仍可能再开出来。</li>
-          <li><b>梁鸡细佬：</b>击杀怪物直接获得<b>牛筋</b>（小怪 +1、精英 +15、Boss +80，顶栏常驻显示）。商人会不定时在主地图随机位置摆摊 60 秒（屏幕边缘有金色箭头指引），走近停留满 3 秒开店、战斗暂停。他是中立 NPC，怪物不会攻击他，你的技能也伤不到他。店里卖两样东西：<b>五项属性强化</b>（生命力/速度/吸血/技能冷却/爆击机率，每项本趟限购 10 次、整局上限 100 次（技能冷却 40 次），总加成买满才拿满；同一趟里越买越贵，下一趟价格回落）与<b>随机技能货架</b>（每次上架 4 件，每件限买一次，池子与升级选项相同，本角色的专属技能只会为本角色上架；每趟可在店内刷新货架 1 次，新商人到访重置），另有独立的<b>道具购买</b>页签：只卖地图道具池里的六种道具（自选），普通道具 50 牛筋一件、每次刷新可买 3 次，前晚的尿液 200 牛筋一件、每趟限购 1 次，买下掉落在脚边、离开商店即拾取生效。只逛不买完全可以，关店走开后、他收摊前走回来还能接着买。他在场时以他为中心有一圈<b>金色小结界</b>（半径约 5 米）：怪物进不来、怪物的攻击也打不进来、圈内不刷新怪物，结界出现时圈内的怪会被弹出圈外；你和 NPC 队友可以自由出入，但在结界里面时攻击打不到结界外的敌人（结界内打结界内不受限）；Boss 不会在他附近刷新、他也不会刷在 Boss 结界里；他收摊离开后，结界随之消失。</li>
+          <li><b>梁鸡细佬：</b>击杀怪物直接获得<b>牛筋</b>（小怪 +1、精英 +15、Boss +80，顶栏常驻显示）。商人会不定时在主地图随机位置摆摊 60 秒（屏幕边缘有金色箭头指引），走近停留满 1 秒开店、战斗暂停。他是中立 NPC，怪物不会攻击他，你的技能也伤不到他。店里卖两样东西：<b>六项属性强化</b>（生命力/速度/吸血/技能冷却/爆击机率/攻击力，每项本趟限购 10 次、整局上限 100 次（技能冷却 40 次）；攻击力例外：不限购买次数，每次购买当前伤害 ×1.15（乘算复利、越买每次提升越大），只受攻击力 +1000% 加成封顶（乘区最高 ×11.0、第 18 次封顶）；价格更贵：起价 110 牛筋（五维基础价的 2 倍）、同一趟每次购买 ×1.5 涨价（前 5 次依次 110/165/250/370/555）；同一趟里越买越贵，下一趟价格回落）与<b>随机技能货架</b>（每次上架 4 件，每件限买一次，池子与升级选项相同，本角色的专属技能只会为本角色上架；每趟可在店内刷新货架 1 次，新商人到访重置），另有独立的<b>道具购买</b>页签：只卖地图道具池里的六种道具（自选），普通道具 50 牛筋一件、每次刷新可买 3 次，前晚的尿液 200 牛筋一件、每趟限购 1 次，买下掉落在脚边、离开商店即拾取生效。只逛不买完全可以，关店走开后、他收摊前走回来还能接着买。他在场时以他为中心有一圈<b>金色小结界</b>（半径约 5 米）：怪物进不来、怪物的攻击也打不进来、圈内不刷新怪物，结界出现时圈内的怪会被弹出圈外；你和 NPC 队友可以自由出入，但在结界里面时攻击打不到结界外的敌人（结界内打结界内不受限）；Boss 不会在他附近刷新、他也不会刷在 Boss 结界里；他收摊离开后，结界随之消失。</li>
           <li><b>技能槽：</b>攻击技能最多 8 个、被动技能最多 15 个（宝箱系技能与特殊被动不占格子）；槽满时学一个没学过的新技能，可以选一个同类型已学技能<b>替换</b>掉（被替换的连同等级、分支、进化一并移除，新技能从 Lv1 开始；专属主武器不能被替换）；攻击技能升满并持有配对被动时，可在升级时<b>合成进化</b>成更强的技能（配方会直接显示在选项卡上）。</li>
           <li><b>鹰眼与波次：</b>中立被动「鹰眼」每级扩大可视范围（镜头拉远），最高 5 级。怪物血量会随时间成长，并约每 40 秒成波次围攻——前期吃力是正常的，靠升级、攻击次数叠加与合成进化把火力堆起来，中后期成型后就能反过来割草。</li>
           <li><b>隐藏 Boss：</b>异世界最暗的地方，还藏着一个极难遇见的强敌，偶尔会毫无征兆地乱入战场——打倒他必定掉落一件宝贝（一次判定二选一）：90% 是传说技能「替身」（攻击小机率召唤替身分身作战 60 秒），10% 是隐藏被动「班仔的充气小伙伴」（攻击时 1% 机率变身 15 秒：体型×3、移速−70%、移动释放冲击波，伤害等于普攻伤害）。</li>
@@ -2017,7 +2013,7 @@ var AUTO_LEARN = { on: false };
 var autoLearnHold = false, autoLearnHoldAt = 0; // 「返回游戏」抑制旗与抑制时待学数：见上方口径⑤
 try{ var alRaw = localStorage.getItem('klf_auto_learn_v1'); if(alRaw == null){ try{ alRaw = localStorage.getItem('klf_auto_learn_v1_bak'); }catch(e2){} } if(alRaw === '1') AUTO_LEARN.on = true; else if(alRaw === '0') AUTO_LEARN.on = false; }catch(e){} // 主档缺失时从备份档恢复（永久保存口径）
 function autoLearnSave(){ var av = AUTO_LEARN.on ? '1' : '0'; try{ localStorage.setItem('klf_auto_learn_v1', av); }catch(e){} try{ localStorage.setItem('klf_auto_learn_v1_bak', av); }catch(e){} try{ if(localStorage.getItem('klf_auto_learn_v1') !== av) localStorage.setItem('klf_auto_learn_v1', av); }catch(e){} } // 主档＋备份档双写＋回读校验（永久保存口径）
-function syncAutoLearnBtns(){ var bs = document.getElementById('btnAutoLearnSet'); if(bs) bs.textContent = AUTO_LEARN.on ? '升级自动打开学习页：开' : '升级自动打开学习页：关'; }
+function syncAutoLearnBtns(){ var lbl = AUTO_LEARN.on ? '升级自动打开学习页：开' : '升级自动打开学习页：关'; var bs = document.getElementById('btnAutoLearnSet'); if(bs) bs.textContent = lbl; var bp = document.getElementById('btnAutoLearnPause'); if(bp) bp.textContent = lbl; } // 2026-10-29 暂停菜单追加轮：暂停菜单新增同名开关钮 #btnAutoLearnPause——与设置钮共用同一 AUTO_LEARN 状态与同一存档键 klf_auto_learn_v1（＋备份档）、同一 toggleAutoLearn 切换函数，两处文案同步刷新、切任一处即同一开关，默认关与升级逻辑一字未动
 function toggleAutoLearn(){ AUTO_LEARN.on = !AUTO_LEARN.on; if(!AUTO_LEARN.on) autoLearnHold = false; autoLearnSave(); syncAutoLearnBtns(); sfx('click'); }
 function autoLearnTryOpen(){
   if(!AUTO_LEARN.on) return false;
@@ -2104,11 +2100,13 @@ var WEAPONS = {
     desc:['发射星形星弹自动索敌：拐着弯追住敌人，命中时绽放星爆，波及周围敌人','星弹伤害提升、齐射间隔缩短','星弹 +1 枚，星爆范围扩大','星弹变大、伤害再提升，转向更灵','星弹 +1 枚！满级：普攻命中敌人在命中点地面留下金色光阵（持续 3 秒、每名八思主人场上最多 5 个、第 6 个替换最旧的一个）；敌人碰到光阵即触发爆炸并升起金色光柱，没死的普通小怪和精英会被光柱顶上天（升起约 240px）、再自由落回原地砸伤一次（砸地伤害＝爆炸伤害的一半），Boss 只吃爆炸伤害；下一级可进化'],
     evoName:'星尘超新星', evoDesc:'小蝌蚪终极进化：每轮 6 枚巨型星弹齐射，转向更快、星爆范围与伤害大幅提升，咬住敌群连环星爆；金色光阵在进化后照常按普攻命中留下' },
   stamp:{ name:'牛马印', badge:'印', color:'#e8483f', max:5, sig:true,
-    desc:['红色印章从空中砸向最近的敌人','同时落印 +1 个','伤害与范围提升','同时落印 +1 个','满级！普攻命中时有概率给敌人打上「吃得苦中苦 方为人上人」：普通小怪 4%、精英 2%（Boss 不吃）——被打上的敌人变成友方、转过来攻击敌人 10 秒，头顶顶着红色「牛嗎」，场上最多同时转化 10 个；下一级可进化'],
+    desc:['红色印章从空中砸向最近的敌人','同时落印 +1 个','伤害与范围提升','同时落印 +1 个','满级！普攻命中时有概率给敌人打上「吃得苦中苦 方为人上人」：普通小怪 10%、精英 6%（Boss 不吃）——被打上的敌人变成友方、转过来攻击敌人 15 秒（期间队友及自己打不动它），15 秒一到直接死亡，头顶顶着红色「牛嗎」，同时转化数量无上限；下一级可进化'],
     evoName:'九龙黄金玺', evoDesc:'印章终极进化：黄金大印，砸击范围大增；满级吃苦转化在进化后照常按普攻命中掷点' },
   chainvolt:{ name:'电击小子', badge:'电', color:'#7ad7f0', max:5, sig:true,
     desc:['射出蓝白电弧：首跳索敌 400，逐跳传导（跳距 235）2 名敌人，电弧逐级变粗变亮','跳传 +1 名敌人（共 3 名）、电弧变粗','跳传 +1 名敌人（共 4 名）；形态变化：出现分叉电——从链中分叉打向另一名敌人（50% 伤害）','跳传 +1 名敌人（共 5 名）、落点火花升级','跳传 +1 名敌人（共 6 名）！满级：普攻命中让小怪（非精英／非 Boss）感电至死——两名感电小怪靠近 180 内会互相电击；解锁「天威」：每击杀 10 名敌人，天上会在你附近 320 内随机劈下一道巨大的黄金雷电（不锁敌）——直击圈 120 内的敌人受重伤，落雷无论劈中与否都会以落点为圆心向外散开电弧、波及 250 内的敌人；下一级可进化'],
     evoName:'天罚雷域', evoDesc:'合成进化：电击小子＋贤者之石——电弧跳传 12 名敌人，落雷如雨，整片雷域无处可逃；「天威」在进化后照常按击杀触发' },
+  voltstorm:{ name:'雷爆云', badge:'云', color:'#ffe97a', max:5, sig:true, onlyHero:'chainvolt',
+    desc:['在最近的敌人头顶凝聚一朵雷爆云罩住敌群：半径 126、持续 2.5 秒、每秒 20.5 伤害持续电击云下所有敌人，每 4.4 秒凝聚一朵（原电击小子分支「雷暴云」独立成技，2026-10-30）','雷爆云更大更密：半径 134、持续 2.6 秒、每秒 26 伤害，凝聚间隔 4.2 秒','半径 142、持续 2.8 秒、每秒 31.5 伤害，凝聚间隔 4.0 秒','半径 150、持续 2.9 秒、每秒 37 伤害，凝聚间隔 3.8 秒','满级！半径 158、持续 3.0 秒、每秒 42.5 伤害，凝聚间隔 3.6 秒——云下敌群无处可逃'] },
   firebolt:{ name:'烈焰弹', badge:'焰', color:'#f0782e', max:5,
     desc:['发射烈焰弹追击最近的怪物','烈焰弹 +1 颗','伤害与数量提升','烈焰弹 +1 颗，冷却缩短','满级！下一级可进化'],
     evoName:'爆裂熔核 ‧ 红莲', evoDesc:'烈焰弹终极进化：爆裂熔核，命中范围爆炸' },
@@ -2257,11 +2255,11 @@ var BRANCHES = {
   cigshot:{ A:{ name:'连珠烟幕弹', desc:'烟头数量 +3，射速提升' }, B:{ name:'爆裂烟核', desc:'烟头命中时小范围爆炸' }, C:{ name:'霰弹烟头', desc:'形态变化：一次喷出扇形霰弹烟头，近距离覆盖面大增，射程变短' } },
   octoshot:{ A:{ name:'星爆核心 ‧ 超新星', desc:'星弹与星爆变大，伤害大幅提升' }, B:{ name:'千星连爆阵', desc:'齐射频率大幅提升，星弹一波接一波' }, C:{ name:'猎星风暴阵', desc:'形态变化：星弹转向更急、星爆范围大增，且星爆对周围敌人造成全额伤害' } },
   stamp:{ A:{ name:'连环天章', desc:'同时落印目标 +2' }, B:{ name:'泰山压顶印', desc:'印章伤害与范围大增' }, C:{ name:'连环牛马印', desc:'形态变化：印章落点会再弹出一枚小印追砸附近另一名敌人，连环盖章' } },
-  chainvolt:{ A:{ name:'超载天网', desc:'电弧跳传次数 +4' }, B:{ name:'天雷引 ‧ 九霄', desc:'每 4 秒自动落雷劈向最近的敌人' }, C:{ name:'雷暴云', desc:'形态变化：闪电凝成雷暴云罩住敌群，持续电击范围内所有敌人' } },
+  chainvolt:{ A:{ name:'超载天网', desc:'电弧跳传次数 +4' }, B:{ name:'天雷引 ‧ 九霄', desc:'每 4 秒自动落雷劈向最近的敌人' } }, // 分支 C「雷暴云」已拆出（2026-10-30 用户令）：不再是电击小子的分支——独立成主动技能「雷爆云」（WEAPONS.voltstorm，陈哈哈专属、单独占主动格 Lv1–Lv5），电击小子只余 A／B 两分支；原分支 C 数值（半径 118＋lv×8／持续 2.4＋lv×0.12／dps 15＋lv×5.5／间隔 4.6−lv×0.2）整表移交 voltstorm 按其自身等级同式计算；合成「电击小子 Lv5＋贤者之石→天罚雷域」从不以分支为前置（buildChoices 进化卡只查 lv 满级＋配对被动≥1）、一字未动
   ak47:{ C:{ name:'追踪弹射', desc:'子弹获得追踪能力：出膛后自动拐弯咬住最近的敌人，转向不减速、弹速不减；同时解锁弹射：命中后折线弹射到附近另一名敌人，每颗子弹最多弹射 3 次（逐跳伤害 ×0.72）——追踪与弹射同在本分支一次解锁、不再分开抽卡' } } // AK 普攻双分支合并（2026-10-29 用户令，取代 2026-10-27 两卡分行口径）：旧两条升级路——①Lv3 分支 C「追踪弹」（type:'branch'，homing）与②独立专属强化卡「弹射」（type:'akmod'，置 w.akRico）——合并为同一条路线：只剩 Lv3 分支 C「追踪弹射」一张卡，applyChoice／npcAutoLearn 选入时同置 branch='C' 与 akRico=true，追踪与弹射同帧起效；独立 akmod 卡已从 buildChoices 与 npcLearnPool 两池删除、不再单独出现。数值一字未动：Lv1 初始无追踪无弹射；弹射封顶 3 次（逐跳 ×0.72），不叠加、不随等级/进化增长（见 ak47 发射处 ricoB）；AK 普攻分裂已去除（splitB 恒 0）；穿透为进化「黄金AK」专属（见 evoDesc）
 };
 /* 主技能终极进化所需的对应道具 */
-var GAME_VERSION = '1.6'; // 游戏版本号（单一来源）：标题页与暂停菜单都从此常量渲染；2026-10-28 用户令由 1.0 改为 1.1、同日再改为 1.2、再改为 1.3；2026-10-29 用户令再改为 1.4、同日再改为 1.5、同日再改为 1.6
+var GAME_VERSION = '1.7'; // 游戏版本号（单一来源）：标题页与暂停菜单都从此常量渲染；2026-10-28 用户令由 1.0 改为 1.1、同日再改为 1.2、再改为 1.3；2026-10-29 用户令再改为 1.4、同日再改为 1.5、同日再改为 1.6；2026-10-30 用户令再改为 1.7
 var SIG_ITEM = { weiye:'luckbell', undeadwar:'fang', thundercloud:'voltcore', icelance:'icevein', emberring:'emberboots', voltspirit:'voltcore', skystrike:'magcore', vacuumblade:'windheart', corona:'luckbell', oldtreant:'thorn', vinegrip:'regen', rockgolem:'stoneskin', quake:'earthheart', waterelemental:'tidalheart', tidalwave:'tidalcore', boomerang:'boots', cigshot:'rune', octoshot:'rune', stamp:'magnet', chainvolt:'xpcrystal',
   firebolt:'fang', leafblade:'boots', lightning:'rune', frostnova:'shield', stardart:'shadow', flameaura:'thorn',
   moonwheel:'critlens', fireball:'glove', frostcone:'shield', poisonspray:'fang', earthspike:'thornheart', orbitblade:'windheart', totem:'magcore', gravitytrap:'hourglass',
@@ -2355,7 +2353,7 @@ var ELEMENTS = { undead:{ name:'亡灵', color:'#b8c4ce' },
   light:{ name:'光', color:'#fff3a0' }, wood:{ name:'木', color:'#5da244' }, earth:{ name:'土', color:'#c98a5a' } /* 属性定版 7 种：毒并入木系（自然与剧毒同源），毒不再是独立属性 */
 };
 var EL_OF = { weiye:'earth', undeadwar:'undead', thundercloud:'lightning', frostpuppet:'ice', icelance:'ice', hellhound:'fire', emberring:'fire', voltspirit:'lightning', skystrike:'lightning', windfalcon:'wind', vacuumblade:'wind', lightservant:'light', corona:'light', oldtreant:'wood', vinegrip:'wood', rockgolem:'earth', quake:'earth', waterelemental:'water', tidalwave:'water',
-  currybat:'light', boomerang:'wind', cigshot:'fire', stamp:'earth', chainvolt:'volt', firebolt:'fire', leafblade:'wood',
+  currybat:'light', boomerang:'wind', cigshot:'fire', stamp:'earth', chainvolt:'volt', voltstorm:'volt', firebolt:'fire', leafblade:'wood',
   lightning:'volt', frostnova:'ice', stardart:'light', flameaura:'fire', moonwheel:'light', fireball:'fire', frostcone:'ice',
   earthspike:'earth', orbitblade:'light', totem:'volt', gravitytrap:'earth', ak47:'fire',
   iceshard:'ice', frostorb:'ice', glacier:'ice', magmarain:'fire', staticfield:'volt', voltserpent:'volt', windslash:'wind', cyclone:'wind',
@@ -3320,7 +3318,7 @@ function newPlayer(ci){
     invisT:0, invisX:0, invisY:0, invisTrailT:0, invisDmgTick:0, invisHealAcc:0, invisHealTxtT:0, invisHealShown:0, learnStealthT:0, lsX:0, lsY:0, // learnStealthT＝离开学习页后的隐身剩余秒数（2026-10-28 用户令：关页起 3 秒、归零即恢复可见与受击）；lsX/lsY＝关页瞬间位置（隐身期间怪物索敌/瞄准只扑此点，与鸡哥 invisX/invisY 同机制）；整局重置随 P 重建清零
     rageT:0, stimT:0, urineT:0, chestDmgT:0, shieldUp:false, shieldCd:3, holyFlashT:0, poseUntil:0,
     bonusDmg:0, bonusSpd:0, xpMul:1, bonusCdMul:1, bonusMagMul:1, specCdMul:1, regenBonus:0,
-    shopCrit:0, shopLeech:0, shopCdMul:1,
+    shopCrit:0, shopLeech:0, shopCdMul:1, shopAtk:0, // shopAtk＝商人「攻击力」累计加成（小数存储：乘算复利——每次购买 (1＋shopAtk)×1.15−1、上限 10.0＝+1000%即乘区 ×11.0、第 18 次封顶（2026-10-30 上限纠正、原 +100%/×2.0 作废））；随 P 重建归零＝新局重置
     awkGiven:false, chestP:{}, reviveCd:0, drainAcc:0, distPx:0, windStacks:0,
     moving:0, atkPoseT:0, specPoseT:0, lastAtkT:-1, lastSpecT:-1, hurtT:0, atkStyle:'slash', atkAnimT:9, atkAnimDur:0.32, atkAlt:0, atkAltMap:{}, hasStandSkill:false, standAtkT:0, dollPartner:false, dollFormT:0, dollGrowT:0, shockAcc:0, // dollPartner＝持有隐藏被动（拾取后常驻）；dollFormT＝变身剩余秒数（改版：攻击 1% 触发 15 秒，非常驻）
     excT:0, excMul:1, excSMul:1, excSR:1, excChgMul:1, excInvT:0, excAimAng:null, excHold:false, excHoldT:0, // excChgMul＝蓄力伤害加成倍率（2026-10-29）：松手时按实际蓄力秒数锁定、releaseExcalibur 消费，无蓄力/兜底路径恒 1
@@ -3366,7 +3364,13 @@ function pCritRate(e, base){ // 暴击率 = 技能自带基础值（3–12%，�
 function pCritDmg(){ var baseCritDmg = (P && CHARACTERS[P.charIdx] && CHARACTERS[P.charIdx].critDmg != null) ? CHARACTERS[P.charIdx].critDmg : 1.5; return Math.min(3, baseCritDmg + 0.3 * (P.passives.critlens || 0) + pSum('critDmgP')); } // 暴击伤害上限 300%（2026-10-28 用户令）：暴击倍率最高 ×3.0、超出截断；基础口径不变、不统一抬高——陈哈哈（序号6）基础 200%（2.0）、其余六人 150%（1.5），其上叠暴击镜片 +0.3/级与被动 critDmgP 加成、合计封顶 300%（如陈哈哈＋镜片 5 级＝2.0＋1.5＝3.5 → 截断为 3.0）；七人同口径；属性面板暴击伤害显示走本函数、即封顶后数值
 function stageDmgMul(){ return [1, 1.25, 1.5][P.stage] || 1; } // 觉醒阶段伤害倍率（2026-10-26 定版）：未觉醒 ×1.00、一觉 ×1.25、二觉 ×1.50——阶段特值，取代旧线性公式 (1 + 0.18 × stage)（旧值一觉 ×1.18、二觉 ×1.36）
 function pDmgMul(){ var openMul = gameTime < 240 ? 0.75 + 0.25 * (gameTime / 240) : 1; // 开局输出系数：旧值 0.55 起步（当年反馈「初始伤害过大」而设）＋本轮用户真机反馈「前期打不动」对冲后的定值——0 秒 ×0.75 起步、4 分钟线性回满 ×1.0（相对旧值前期输出 +36%@0s、+23%@1min、+13%@2min、+6%@3min），240 秒后逐值不变，中后期成长曲线一字不动
-  return openMul * P.dmgMul * (1 + 0.03 * (P.level - 1)) * (1 + 0.025 * (P.level - 1)) * (1 + 0.12 * (P.passives.glove || 0)) * stageDmgMul() * (1 + P.bonusDmg) * (P.rageT > 0 ? 1.5 : 1) * (P.chestDmgT > 0 ? 1.25 : 1) * (hasCP('rageblood') && P.hp < P.maxHp * 0.4 ? 1.35 : 1) * (hasCP('doomcontract') ? 1.4 : 1) * (1 + 0.01 * Math.min(30, P.windStacks || 0)) * (1 + pSum('dmgP')) * (typeof CUR_WKEY === 'string' && EL_OF[CUR_WKEY] === 'water' ? 1 + 0.1 * (P.passives.tidalcore || 0) : 1) * (P.passives.berserk && P.hp < P.maxHp * 0.5 ? 1 + 0.10 * P.passives.berserk : 1) * (P.moving ? 1 + pSum('moveP') : 1); } // 基础成长【2026-10-29 平衡轮加强】：每级伤害 +2.5%→+3.0%；升级伤害加成（2026-10-26 用户令新增，独立乘区）：每级再 +2%→+2.5%——两区相乘叠加（源码线性口径总成长：Lv10 ×1.27×1.225≈×1.556〔旧 ×1.446〕，Lv20 ×1.57×1.475≈×2.316〔旧 ×2.036〕，Lv28 ×1.81×1.675≈×3.032〔旧 ×2.580〕，Lv40 ×2.17×1.975≈×4.286〔旧 ×3.516〕）；NPC（npcMul）与远端成员（hostTick lvlMul）同曲线同步；潮核共鸣：当前结算为水系技能时额外加成
+  return openMul * P.dmgMul * (1 + 0.03 * (P.level - 1)) * (1 + 0.025 * (P.level - 1)) * (1 + 0.12 * (P.passives.glove || 0)) * stageDmgMul() * (1 + P.bonusDmg) * (1 + (P.shopAtk || 0)) * timeBuffMul() * (P.rageT > 0 ? 1.5 : 1) * (P.chestDmgT > 0 ? 1.25 : 1) * (hasCP('rageblood') && P.hp < P.maxHp * 0.4 ? 1.35 : 1) * (hasCP('doomcontract') ? 1.4 : 1) * (1 + 0.01 * Math.min(30, P.windStacks || 0)) * (1 + pSum('dmgP')) * (typeof CUR_WKEY === 'string' && EL_OF[CUR_WKEY] === 'water' ? 1 + 0.1 * (P.passives.tidalcore || 0) : 1) * (P.passives.berserk && P.hp < P.maxHp * 0.5 ? 1 + 0.10 * P.passives.berserk : 1) * (P.moving ? 1 + pSum('moveP') : 1); } // 基础成长【2026-10-29 平衡轮加强】：每级伤害 +2.5%→+3.0%；升级伤害加成（2026-10-26 用户令新增，独立乘区）：每级再 +2%→+2.5%——两区相乘叠加（源码线性口径总成长：Lv10 ×1.27×1.225≈×1.556〔旧 ×1.446〕，Lv20 ×1.57×1.475≈×2.316〔旧 ×2.036〕，Lv28 ×1.81×1.675≈×3.032〔旧 ×2.580〕，Lv40 ×2.17×1.975≈×4.286〔旧 ×3.516〕）；NPC（npcMul）与远端成员（hostTick lvlMul）同曲线同步；潮核共鸣：当前结算为水系技能时额外加成
+/* 商人「攻击力」乘区（2026-10-29 用户令新增；算法 2026-10-30 用户令改乘算复利、推翻 +5% 加算）：pDmgMul 内独立因子 (1＋shopAtk)——shopAtk 为累计加成小数，每购买一次按 (1＋shopAtk)×1.15−1 递增（即当前总伤害再 ×1.15、越买单次绝对提升越大），逐次乘区 ×1.15／×1.3225／×1.520875／×1.74900625，第 17 次 ×10.7613、第 18 次按封顶结算钳到 10.0＝乘区 ×11.0（+1000%，2026-10-30 上限纠正）、不再超过；该 +1000% 上限只约束商人攻击力这一项本身（定时全队增幅 timeBuffMul 等其他乘区不受此上限约束），英雄天生倍率/等级成长/阶段/拳套/被动等其他乘区不受约束、公式一字未动；NPC 伤害走 npcMul 独立公式、不读 shopAtk（与商人其余维度只落本机玩家同口径） */
+/* 定时全队伤害增幅（2026-10-30 用户令，第六项）：局时（gameTime，与 Boss 时间表同口径、Boss 战/副本期间冻结同钟）每满 10 分钟一段、替换式递推——第 n 段（n＝floor(gameTime/600)）总加成 ＝ +50%×2^(n−1)，乘区 timeBuffMul＝1＋0.5×2^(n−1)：600 秒 ×1.5、1200 秒 ×2.0、1800 秒 ×3.0、2400 秒 ×5.0、3000 秒 ×9.0、3600 秒 ×17.0，此后每 10 分钟翻倍直至本局结束。每段是「当前总加成被新值替换」：乘区是 gameTime 的纯函数、无累积状态，故结构上不可能叠加（1800 秒总乘区恒为 ×3.0、非各段之和/之积）。适用对象＝全部玩家角色：本机经 pDmgMul、NPC 队友经 npcMul 与 chTwNpcMul、联机真人远端成员经 hostTick 普攻/按键技乘区；怪物/Boss/精英不接（其伤害公式不读本函数）；替身/召唤物伤害本就随召唤者乘区结算（友方替身 dmgS 读 pDmgMul、召唤物同源），自动跟随、不另给独立 buff。独立乘区：与英雄天生/等级/商人攻击力等乘算叠加、不计入商人攻击力 +1000% 封顶。死亡复活保留（不挂在 P 上、复活不丢）；返回主菜单/本局结束即随 gameTime 归零失效、下一局重新计时（timeBuffShown 随 resetGame 的 gameTime 归零同行重置）。提示：每段到达当帧 showBanner 一次（timeBuffTick 由 update 在 gameTime 推进后调用、timeBuffShown 单调推进防重复；同一段内绝不重播）。联机：房主/单人权威推进与结算，客机 gameTime 由快照 gt 同步、其本机显示乘区同值。 */
+var timeBuffShown = 0; // 已播报到的段位（防重复提示；随对局重置）
+function timeBuffStage(){ return Math.floor(gameTime / 600); } // 当前段位：0＝未触发（600 秒前）
+function timeBuffMul(){ var n = timeBuffStage(); return n <= 0 ? 1 : 1 + 0.5 * Math.pow(2, n - 1); } // 当前总乘区（替换式：只由当前段位决定）
+function timeBuffTick(){ var n = timeBuffStage(); if(n > timeBuffShown){ timeBuffShown = n; showBanner('全队伤害增幅 · ' + (n * 10) + ' 分钟', '全队伤害 +' + Math.round((timeBuffMul() - 1) * 100) + '%（替换上一段 · 持续到本局结束）'); sfx('chime'); } } // 每段只报一次：shown 单调推进、到达当帧触发
 function earlySigMul(){ return gameTime < 240 ? 1 + 0.60 * (1 - gameTime / 240) : 1; }
 function sigDmgMul(){ return 1.25; } // 全员普攻调高一档（2026-10-26 用户令）：七把专属武器（普攻）统一 ×1.25，只乘在专属普攻伤害公式上（与 earlySigMul 同乘区，含进化形态与各分支）；通用武器池/按键技/觉醒/被动/商人/怪物数值一律不吃此系数；七人同倍率、相对强度排名不变
 function openingHpMul(){ return gameTime < 120 ? 0.70 + 0.30 * (gameTime / 120) : 1; } // 开局前期削弱（2026-10-28 用户令）：开局 0–120 秒内刷出的所有怪物（含 Boss/精英基底，经 spawnEnemy 统一入口）血量 ×0.70 起、随局时线性恢复，120 秒起恒 ×1.0；只乘血量——伤害/移速/经验/掉落与 120 秒后的数值一字未动。与既有 earlyHpMul（0–240 秒、仅普通怪 ×0.85→1）是两个独立乘区、叠乘生效：普通怪开局实算 ×0.85×0.70≈×0.60，120 秒时 ×0.925（只余 earlyHpMul），240 秒后完全回到原值
@@ -3379,6 +3383,8 @@ function earlyHpMul(){ return gameTime < 240 ? 0.85 + 0.15 * (gameTime / 240) : 
    普通怪三乘区合并实算（earlyHpMul×openingHpMul×本曲线）：改前 0 分 0.595／1 分 0.754／2 分 0.925／3 分 0.963／4 分 1.000 → 改后 0.357／0.500／0.740／0.902／1.000。
    同条件 TTK 验算（冻结条件：班仔 Lv1、无被动/商人、普通难度、powerTrack=1，打黏液怪 base 55；单发伤＝(13+4.6)×earlySigMul×1.25×pDmgMul、间隔 0.70 秒；TTK 按血量/单发×间隔连续值、发数向上取整）：普通怪 0 分 血 37.6→22.6、2 发→1 发、0.94→0.56 秒；1 分 87.9→58.2、4 发→3 发、2.24→1.48 秒；2 分 157.0→125.6、6 发→5 发、4.14→3.31 秒；3 分 214.6→201.2、9 发→9 发、5.97→5.60 秒；4 分 276.2→276.2、12 发→12 发、8.29 秒不变；5 分（300 秒）329.4→329.4 逐值一致。精英（同怪精英版）0 分 血 191.9→157.4（×0.820）、1 分 478.0→405.4（×0.848）、2 分 907.3→825.7（×0.910）、3 分 1313.2→1276.2（×0.972）、4 分 1783.9→1783.9 不变。 */
 function spEarlySmooth(){ if(gameTime >= 240) return 1; var u = gameTime / 240; return u * u * (3 - 2 * u); }
+/* 单人劳农前难度缓和（2026-10-30 用户令，第七项；底线「也不能太简单」）：仅单人模式（__NET_MUL 不存在、与 spEarly 同判定，联机恒不触发）、局时 <900 秒、未进虚空竞技场（voidArena）期间，spawnEnemy 在全部既有缩放结算完毕、夜晚加成存底之前统一乘算——普通怪 血×0.85／伤×0.90、精英 血×0.90／伤×0.95、剧情普通 Boss（非 final 非 hidden、且非无尽）血×0.90／伤×0.95。与既有前期变软曲线（openingHpMul／earlyHpMul／spEarlyHpMul）乘算叠加、不删不改任何既有曲线；怪密度/刷怪速率/怪技能/经验/玩家伤害一字不动。不变项：劳农本人（final 旗标排除）、朱德（hidden 旗标排除、含其分身派生）、联机（__NET_MUL 存在即整段不触发）、劳农之后无尽延续段（无尽随机 Boss 走 spawnEndlessBoss 且本段以 !endless 排除、其刷出时 gameTime 亦多在 900 后、双保险）、虚空竞技场内（voidArena 排除）。降幅目标：普通怪 TTK 约 −15%、精英/Boss TTK 约 −10%、玩家承伤 −10%/−5%，适中不腰斩。 */
+function soloPreActive(){ return !window.__NET_MUL && gameTime < 900 && !voidArena; } // 单人劳农前缓和窗判定（口径见上方定版注）
 function spEarlyHpMul(){ if(window.__NET_MUL || gameTime >= 240) return 1; return 0.60 + 0.40 * spEarlySmooth(); } // 单人前期普通怪血量曲线（2026-10-29）：联机恒 1、240 秒起恒 1
 function spEarlyEliteHpMul(){ if(window.__NET_MUL || gameTime >= 240) return 1; return 0.82 + 0.18 * spEarlySmooth(); } // 单人前期精英血量曲线（温和版，见上方定版注）
 window.__SP_EARLY = { normal: spEarlyHpMul, elite: spEarlyEliteHpMul, smooth: spEarlySmooth }; // 验收探针（与 __WX_POISON 同例）：按当前 gameTime/__NET_MUL 现算两档乘区
@@ -3406,7 +3412,7 @@ function resetGame(){
   if(typeof STREET !== 'undefined'){ STREET.active = false; STREET.portal = null; STREET.stash = null; STREET.chest = null; STREET.exitPortal = null; STREET.kills = 0; STREET.spawned = 0; }
   zones = []; totems = []; totemRespawns = [];
   stands = []; chests = []; chestTimer = 26;
-  gameTime = 0; kills = 0; spawnTimer = 0; bossIdx = 0; currentBoss = null; bossBarriers = []; BAR_VIEW = null; if(P) P.barRef = null; barrierSpawnLockBosses = []; mpBossT = 0; mpBossNext = 90; mpFinaleDone = false; mpLastBossDef = -1; mpBossWasAlive = false; mpBossDeadT = 0; // 结界状态随对局复位（全部结界清空、本机结界登记解除）；停刷锁同步复位（2026-10-29 停刷清场令：新局不带旧锁）；联机 Boss 刷出改版状态同步复位（2026-10-29 人数越多怪越多轮：事件计时归零、首个事件 90 秒、终局标记清、重复防护清）
+  gameTime = 0; timeBuffShown = 0; kills = 0; spawnTimer = 0; bossIdx = 0; currentBoss = null; bossBarriers = []; BAR_VIEW = null; if(P) P.barRef = null; barrierSpawnLockBosses = []; mpBossT = 0; mpBossNext = 90; mpFinaleDone = false; mpLastBossDef = -1; mpBossWasAlive = false; mpBossDeadT = 0; // 结界状态随对局复位（全部结界清空、本机结界登记解除）；停刷锁同步复位（2026-10-29 停刷清场令：新局不带旧锁）；联机 Boss 刷出改版状态同步复位（2026-10-29 人数越多怪越多轮：事件计时归零、首个事件 90 秒、终局标记清、重复防护清）
   endless = false; endlessBossTimer = 0; pendingLevels = 0; shake = 0; lastBiome = 0; waveTimer = 38;
   // 开局天气（2026-10-27 改回定版，取代当日临时「开局夜晚」）：每局开局天气为「晴空微风」、首掷计时复位 65 秒（与 weatherTick 的 55–95 秒重掷间隔不变，重掷后走正常权重轮换，夜晚仍在草原/森林轮换内）；同时把 LIGHT 直接吸附到晴空微风光参数，使第一帧即是晴天。
   curWeather = '晴空微风'; weatherT = 65;
@@ -3515,7 +3521,7 @@ function ghostBlinkStrike(e){ // 幽灵现身补一爪：现身瞬间贴身才�
     e.eyeGlowT = 0.55;
   }
   burst(e.x, e.y, '#cfd4ff', fxN(8));
-  if(Math.sqrt(dist2(e.x, e.y, P.x, P.y)) < 84 + pCollR()){ if(!(bossBarriers.length && barrierBlocksIn(e.x, e.y, P.x, P.y)) && !shopBarProtects(P.x, P.y) && mazeLOS(e.x, e.y, P.x, P.y)) hurtPlayer(e.dmg); if(e.elite) sfx('thwack1'); } // 小怪攻击音效删除（2026-10-26 用户令）：普通小怪的攻击音效全部静音；与精英共用同一触发的，只禁普通个体那条路径、精英保留发声（本文件同类处理下同）；Boss 走专属函数、不经此路；结界外打入不结算（2026-10-28 用户令追加）：幽灵在界外现身、玩家在界内时这一爪不造成伤害（音效保留）；新屋视线门禁（2026-10-29 查修追加）：现身点与玩家隔墙（墙角斜隔）时这一爪同样不结算；商人结界（2026-10-29 用户令）：玩家在商人结界内时这一爪同口径不结算
+  if(Math.sqrt(dist2(e.x, e.y, P.x, P.y)) < 84 + pCollR()){ if(!(bossBarriers.length && barrierBlocksIn(e.x, e.y, P.x, P.y)) && !shopBarProtects(P.x, P.y) && !portalBarSeparates(e.x, e.y, P.x, P.y) && mazeLOS(e.x, e.y, P.x, P.y)) hurtPlayer(e.dmg); if(e.elite) sfx('thwack1'); } // 小怪攻击音效删除（2026-10-26 用户令）：普通小怪的攻击音效全部静音；与精英共用同一触发的，只禁普通个体那条路径、精英保留发声（本文件同类处理下同）；Boss 走专属函数、不经此路；结界外打入不结算（2026-10-28 用户令追加）：幽灵在界外现身、玩家在界内时这一爪不造成伤害（音效保留）；新屋视线门禁（2026-10-29 查修追加）：现身点与玩家隔墙（墙角斜隔）时这一爪同样不结算；商人结界（2026-10-29 用户令）：玩家在商人结界内时这一爪同口径不结算；传送门结界（2026-10-30）：幽灵爪跨侧同口径不结算（以下 sigTick 各点同）
   else if(e.elite) sfx('whoosh');
 }
 function sigTick(e, dt, tgt, d2){
@@ -3523,7 +3529,7 @@ function sigTick(e, dt, tgt, d2){
   if(e.eyeGlowT > 0) e.eyeGlowT -= dt;
   if(e.claw2 > 0){ // 小螃蟹第二钳：首钳命中后 0.42 秒补夹（越过受击无敌帧，仍贴身才吃得到）
     e.claw2 -= dt;
-    if(e.claw2 <= 0 && tgt === P && d2 < e.r + pCollR() + 16){ if(!(bossBarriers.length && barrierBlocksIn(e.x, e.y, P.x, P.y)) && !shopBarProtects(P.x, P.y)) hurtPlayer(Math.round(e.dmg * 0.55)); if(e.elite) beep(920, 0.05, 'square', 0.03); } // 结界外打入不结算（2026-10-28 用户令追加）：第二钳同接触伤害口径，界外夹界内不造成伤害；商人结界（2026-10-29 用户令）：玩家在商人结界内时第二钳同口径不结算
+    if(e.claw2 <= 0 && tgt === P && d2 < e.r + pCollR() + 16){ if(!(bossBarriers.length && barrierBlocksIn(e.x, e.y, P.x, P.y)) && !shopBarProtects(P.x, P.y) && !portalBarSeparates(e.x, e.y, P.x, P.y)) hurtPlayer(Math.round(e.dmg * 0.55)); if(e.elite) beep(920, 0.05, 'square', 0.03); } // 结界外打入不结算（2026-10-28 用户令追加）：第二钳同接触伤害口径，界外夹界内不造成伤害；商人结界（2026-10-29 用户令）：玩家在商人结界内时第二钳同口径不结算；传送门结界（2026-10-30）：第二钳跨侧同口径不结算
   }
   if(state !== 'playing') return false;
   var ty = e.type;
@@ -3566,7 +3572,7 @@ function sigTick(e, dt, tgt, d2){
       if(e.chainT <= 0){
         e.chainState = 'sweep'; e.chainT = 0.24;
         if(e.elite){ sfx('whoosh'); sfx('metal1'); } // 甩链声（普通锁链史莱姆静音、精英保留）
-        if(Math.sqrt(dist2(e.x, e.y, P.x, P.y)) < 122 + pCollR() && Math.abs(angDiff(Math.atan2(P.y - e.y, P.x - e.x), e.chainAng)) < 1.2 && !(bossBarriers.length && barrierBlocksIn(e.x, e.y, P.x, P.y)) && !shopBarProtects(P.x, P.y)) // 结界外打入不结算（2026-10-28 用户令追加）：锁链横扫同口径；商人结界（2026-10-29 用户令）：玩家在商人结界内同口径不结算
+        if(Math.sqrt(dist2(e.x, e.y, P.x, P.y)) < 122 + pCollR() && Math.abs(angDiff(Math.atan2(P.y - e.y, P.x - e.x), e.chainAng)) < 1.2 && !(bossBarriers.length && barrierBlocksIn(e.x, e.y, P.x, P.y)) && !shopBarProtects(P.x, P.y) && !portalBarSeparates(e.x, e.y, P.x, P.y)) // 结界外打入不结算（2026-10-28 用户令追加）：锁链横扫同口径；传送门结界（2026-10-30）：跨侧同口径不结算；商人结界（2026-10-29 用户令）：玩家在商人结界内同口径不结算
           hurtPlayer(Math.round(e.dmg * 1.1));
         for(var cp = 0; cp < 10 && particles.length < 800; cp++){ var ca3 = e.chainAng + rand(-1.1, 1.1); particles.push({ x: e.x + Math.cos(ca3) * 60, y: e.y + Math.sin(ca3) * 60, vx: Math.cos(ca3) * 160, vy: Math.sin(ca3) * 160, t: 0, life: 0.22, color: '#c8ccd4', r: 2 }); }
       }
@@ -3595,7 +3601,7 @@ function sigTick(e, dt, tgt, d2){
       e.breathT -= dt; e.breathHitT -= dt;
       for(var bp = 0; bp < 3 && particles.length < 820; bp++){ var ba2 = e.breathAng + rand(-0.45, 0.45), bs2 = rand(180, 320); particles.push({ x: e.x + Math.cos(ba2) * 14, y: e.y - 4 + Math.sin(ba2) * 14, vx: Math.cos(ba2) * bs2, vy: Math.sin(ba2) * bs2, t: 0, life: 0.34, color: Math.random() < 0.6 ? '#ff7a3e' : '#ffb02e', r: rand(2.6, 4.6) }); } // 火焰粒子速度 240–430 → 180–320：视觉焰长随命中范围 205→155 同步缩短（约 82–146px → 61–109px）
       var pdx = P.x - e.x, pdy = P.y - e.y, pd = Math.sqrt(pdx * pdx + pdy * pdy) || 1;
-      if(pd < 155 && Math.abs(angDiff(Math.atan2(pdy, pdx), e.breathAng)) < 0.52 && e.breathHitT <= 0){ if(!(bossBarriers.length && barrierBlocksIn(e.x, e.y, P.x, P.y)) && !shopBarProtects(P.x, P.y)) hurtPlayer(Math.round(e.dmg * 1.2)); e.breathHitT = 0.55; } // 结界外打入不结算（2026-10-28 用户令追加）：界外喷火怪的吐息打不进界内（跳伤节拍照常置位）；商人结界（2026-10-29 用户令）：玩家在商人结界内同口径不结算（节拍置位不变）；吐息命中距离 205 → 155（2026-10-26 用户令：喷火怪攻击范围缩小，与攻速减半/伤害减半叠加；预警锥绘制半径同步 155、见绘制段）；2026-10-27 用户令：喷火每跳伤害系数 0.8×e.dmg → 1.2×e.dmg（+50%，只改喷火段，不改接触伤害/精英振翅扑击/spawnEnemy 的 cobra ×0.5）；2026-10-27 21:04 口径纠正：用户所指「攻速减少」＝造成伤害的速度变慢，即跳伤节拍拉长——每跳间隔 0.38 秒 → 0.55 秒（伤害系数仍 1.2×e.dmg 不变，喷火时长 0.75 秒不变，故一口喷火内最多结算 2 跳）
+      if(pd < 155 && Math.abs(angDiff(Math.atan2(pdy, pdx), e.breathAng)) < 0.52 && e.breathHitT <= 0){ if(!(bossBarriers.length && barrierBlocksIn(e.x, e.y, P.x, P.y)) && !shopBarProtects(P.x, P.y) && !portalBarSeparates(e.x, e.y, P.x, P.y)) hurtPlayer(Math.round(e.dmg * 1.2)); e.breathHitT = 0.55; } // 结界外打入不结算（2026-10-28 用户令追加）：界外喷火怪的吐息打不进界内（跳伤节拍照常置位）；商人结界（2026-10-29 用户令）：玩家在商人结界内同口径不结算（节拍置位不变）；传送门结界（2026-10-30）：吐息跨侧同口径不结算（节拍置位不变）；吐息命中距离 205 → 155（2026-10-26 用户令：喷火怪攻击范围缩小，与攻速减半/伤害减半叠加；预警锥绘制半径同步 155、见绘制段）；2026-10-27 用户令：喷火每跳伤害系数 0.8×e.dmg → 1.2×e.dmg（+50%，只改喷火段，不改接触伤害/精英振翅扑击/spawnEnemy 的 cobra ×0.5）；2026-10-27 21:04 口径纠正：用户所指「攻速减少」＝造成伤害的速度变慢，即跳伤节拍拉长——每跳间隔 0.38 秒 → 0.55 秒（伤害系数仍 1.2×e.dmg 不变，喷火时长 0.75 秒不变，故一口喷火内最多结算 2 跳）
       if(e.breathT <= 0){
         if(e.breathLeft > 0){ e.breathLeft--; e.breathState = 'wind'; e.breathT = 0.34; } // 精英三段连喷：短蓄势接下一口
         else { e.breathState = null; e.breathCd = rand(8.0, 11.0); } // 喷火间隔沿革：3.2–4.4 → 6.4–8.8 → 8.0–11.0 秒；2026-10-27 一度误按「间隔变长」口径改到 10.5–14.0 秒，同日 21:04 用户澄清「攻速减少」指造成伤害的速度（跳伤节拍），故间隔改回 8.0–11.0 秒（普通与精英共用），节拍改动见上方 breathHitT 0.38→0.55；伤害/蓄势 0.6 秒/喷火 0.75 秒/精英三段连喷一律不动，其他怪不动
@@ -3659,7 +3665,7 @@ function sigTick(e, dt, tgt, d2){
       e.flyH = 50 * (1 - dp) + 3 * dp;
       if(e.diveT <= 0){
         e.diveState = 'climb'; e.diveT = 0.55; e.noContact = false;
-        if(Math.sqrt(dist2(e.x, e.y, P.x, P.y)) < 48 && !jgInvisOn() && !learnStealthOn() && !(typeof panelGuardOn === 'function' && panelGuardOn()) && !shopBarProtects(P.x, P.y)){ // 毒针命中：即时伤害＋3 秒毒；商人结界（2026-10-29 用户令）：玩家在商人结界内时毒针不命中、不挂毒（与隐身/面板护盾同口径并列）（玩家毒结算在主循环 P.venomT）；鸡哥隐身期间毒针不命中、不挂毒（2026-10-28 隐身不被攻击令——直伤虽经 hurtPlayer 门禁，但挂毒是独立赋值、须在此一并跳过）；面板护盾期间同口径：不命中、不挂毒（防关面板后残毒继续掉血）；离开学习页后 3 秒隐身期间同口径追加：不命中、不挂毒（防隐身结束残毒掉血）
+        if(Math.sqrt(dist2(e.x, e.y, P.x, P.y)) < 48 && !jgInvisOn() && !learnStealthOn() && !(typeof panelGuardOn === 'function' && panelGuardOn()) && !shopBarProtects(P.x, P.y) && !portalBarSeparates(e.x, e.y, P.x, P.y)){ // 毒针命中；传送门结界（2026-10-30）：跨侧毒针不命中、不挂毒：即时伤害＋3 秒毒；商人结界（2026-10-29 用户令）：玩家在商人结界内时毒针不命中、不挂毒（与隐身/面板护盾同口径并列）（玩家毒结算在主循环 P.venomT）；鸡哥隐身期间毒针不命中、不挂毒（2026-10-28 隐身不被攻击令——直伤虽经 hurtPlayer 门禁，但挂毒是独立赋值、须在此一并跳过）；面板护盾期间同口径：不命中、不挂毒（防关面板后残毒继续掉血）；离开学习页后 3 秒隐身期间同口径追加：不命中、不挂毒（防隐身结束残毒掉血）
           hurtPlayer(Math.round(e.dmg * 1.1));
           P.venomT = 3; P.venomDps = Math.max(P.venomDps || 0, Math.round(e.dmg * 0.4));
           texts.push({ x: P.x, y: P.y - 40, v: 0, txt: '中毒！', t: 0, color: '#9ae84a' });
@@ -3777,6 +3783,49 @@ function shopBarExpelEnemy(e){ // 把一只怪沿径向钳回商人结界外（�
 function shopBarrierTick(){ // 商人小结界每帧封闭：界内怪物全数推出（移动/冲锋/闪现/跳跃/召唤落点改写等任何途径进圈者当帧推出）；由 merchantTick 在商人在场时调用（房主/单人权威侧）
   if(!shopBarrier()) return;
   for(var i = 0; i < enemies.length; i++) shopBarExpelEnemy(enemies[i]);
+}
+/* ================= 传送门结界（2026-10-30 用户令：所有传送门都加；双向攻击隔断口径为同日追加定版） =================
+   传送门清单（源码枚举、全部现有传送门）：①虚空裂缝门 voidPortal（主地图、终局开启、踏入 55px 进竞技场）；②回程门 returnPortal（虚空竞技场内、踏入回主地图续无尽）；③新屋入口门 MAZE.portal（主地图、站圈 52px/3 秒）；④新屋楼梯 MAZE.stairs（屋内 1/2 层、站 40px 下楼——层间传送点、同属传送门）；⑤街尾入口门 STREET.portal（主地图、站圈 52px/3 秒）；⑥街尾回程门 STREET.exitPortal（街尾内、站圈 52px/2 秒出图）。新屋 3 层宝箱不是传送门（开箱后 exitT 自动出屋、无门实体）、不设结界；召唤物牵引/敌人瞬移的 portal 只是同名特效、不是传送门，不设。
+   几何：半径 PORTAL_BAR_R＝150，与商人小结界同值（商人口径：约 5 米、须罩住互动圈——各门互动圈 40–55px 均远小于 150、整圈稳在界内；门本体尺度相近、无需逐门调整）；结界随门存在而存在、随门消失（portal 置 null/过期/被踏入切图）当帧消失，无独立计时；圆心＝门位置（门静止不动）。
+   效果定版（与商人结界有别、以本条为准）：双向攻击隔断、不是移动墙——
+   ①移动全自由：玩家/NPC/怪物均可自由穿过边界（不钳制、不弹出、不挡刷怪、不设 Boss 刷新禁区），传送门的开启/站圈/踏入/目的地/Boss 门禁等进门规则一字未动（houseTick/streetTick/update 的踏入判定未接本结界）；
+   ②攻击不得跨侧：以「攻击源位置」与「受击者位置」是否被任一传送门结界圆分在两侧判定（portalBarSeparates：一内一外＝跨侧、拦截；同内/同外＝同侧、照常结算——界内怪打界内人、界外打界外均不受限，与 milo 原话「里面的怪打里面的人不在禁止范围」一致）；
+   ③接线（与商人结界同架构、判定换成本结界的源/目标两侧判定）：玩家侧一切伤害经 damageEnemy 统一门禁（普攻/按键技/主动技能/Ex/区域/落物/召唤/替身全覆盖，源位置口径与 Boss/商人门禁相同：本机取 P、DMG_SRC 成员取其位置、无源记者归属本机）；怪物侧逐点并入既有商人结界门禁位（接触伤害 barBlockContact 并入、幽灵爪/第二钳/锁链横扫/蜥龙吐息/毒蜂毒针、预警圈爆发、凝视光束、虚空风暴、苔痕、敌方替身斩击、联机 hostTick 成员接触与敌方弹道结算）；弹体双向跨界销毁（本机投射物与敌方投射物本帧轨迹段穿过任一结界边界 → 边界处销毁、手雷同 Boss/商人口径在边界引爆；回旋镖返航回收段除外、与既有结界同规）；
+   ④不做的事（与商人结界的明示区别）：不逐帧封闭怪物（怪可站在界内）、不推刷怪落点、不清场——商人结界源码一字未动、两套结界并存互不改写。
+   联机：结算判定在房主/单人权威侧（damageEnemy/update/hostTick 均不在客户端本地推进，与商人结界同边界）；客户端按其本地已知的门状态同源绘制光幕（门状态经快照同步者为准）。 */
+var PORTAL_BAR_R = 150; // 传送门结界半径（px，与商人小结界 SHOP_BAR_R 同值，依据见上方段注）
+function portalBarriers(){ // 当前存在的全部传送门结界几何（门不存在 → 不在列）：随门生灭、无独立对象状态
+  var out = [];
+  if(voidPortal) out.push({ x: voidPortal.x, y: voidPortal.y, r: PORTAL_BAR_R, kind: 'void' });
+  if(returnPortal) out.push({ x: returnPortal.x, y: returnPortal.y, r: PORTAL_BAR_R, kind: 'return' });
+  if(typeof MAZE !== 'undefined'){
+    if(MAZE.portal) out.push({ x: MAZE.portal.x, y: MAZE.portal.y, r: PORTAL_BAR_R, kind: 'mazeIn' });
+    if(MAZE.active && MAZE.stairs) out.push({ x: MAZE.stairs.x, y: MAZE.stairs.y, r: PORTAL_BAR_R, kind: 'mazeStairs' });
+  }
+  if(typeof STREET !== 'undefined'){
+    if(STREET.portal) out.push({ x: STREET.portal.x, y: STREET.portal.y, r: PORTAL_BAR_R, kind: 'streetIn' });
+    if(STREET.active && STREET.exitPortal) out.push({ x: STREET.exitPortal.x, y: STREET.exitPortal.y, r: PORTAL_BAR_R, kind: 'streetExit' });
+  }
+  return out;
+}
+function portalBarSeparates(sx, sy, tx, ty){ // 双向隔断判定：源与目标被任一传送门结界分在两侧（一内一外）→ true（拦截）；同侧（同内/同外）→ false
+  var bs = portalBarriers();
+  for(var i = 0; i < bs.length; i++){ var B = bs[i];
+    var si = (sx - B.x) * (sx - B.x) + (sy - B.y) * (sy - B.y) < B.r * B.r;
+    var ti = (tx - B.x) * (tx - B.x) + (ty - B.y) * (ty - B.y) < B.r * B.r;
+    if(si !== ti) return true;
+  }
+  return false;
+}
+function portalBarSegCross(x0, y0, x1, y1){ // 弹道本帧轨迹段是否穿过任一传送门结界边界：端点一内一外 → 穿；两端皆外但线段擦过圆内（穿圆而过）→ 穿；两端同在一圆内（弦不穿界）→ 不穿
+  var bs = portalBarriers();
+  for(var i = 0; i < bs.length; i++){ var B = bs[i];
+    var in0 = (x0 - B.x) * (x0 - B.x) + (y0 - B.y) * (y0 - B.y) < B.r * B.r;
+    var in1 = (x1 - B.x) * (x1 - B.x) + (y1 - B.y) * (y1 - B.y) < B.r * B.r;
+    if(in0 !== in1) return B;
+    if(!in0){ var dx = x1 - x0, dy = y1 - y0, L2 = dx * dx + dy * dy; var tt = L2 > 0 ? clamp(((B.x - x0) * dx + (B.y - y0) * dy) / L2, 0, 1) : 0; var cx = x0 + dx * tt - B.x, cy = y0 + dy * tt - B.y; if(cx * cx + cy * cy < B.r * B.r) return B; }
+  }
+  return null;
 }
 function barrierJoinableBy(b){ // 界外 Boss b 落在哪道结界的加入距离内：在则返回最近的那道，否则 null（加入扫描与新开判定共用同一界限，保证近的不新开、远的不被卡）
   var best = null, bestD = 1e18;
@@ -3917,6 +3966,11 @@ function spawnEnemy(typeKey, isBoss, bossDef){
   if(isBoss){ var SBb = shopBarrier(); if(SBb){ var sbd2 = Math.hypot(e.x - SBb.x, e.y - SBb.y); if(sbd2 < SHOP_BOSS_NEAR){ var sba2 = sbd2 > 1 ? Math.atan2(e.y - SBb.y, e.x - SBb.x) : rand(0, Math.PI * 2); e.x = SBb.x + Math.cos(sba2) * (SHOP_BOSS_NEAR + 40); e.y = SBb.y + Math.sin(sba2) * (SHOP_BOSS_NEAR + 40); } } } // Boss 不在梁鸡细佬附近刷新（2026-10-29 用户令）：Boss 落点距商人 <SHOP_BOSS_NEAR(400) → 沿径向推到 440；覆盖主线 spawnBoss/无尽 spawnEndlessBoss/朱德 spawnZhude 全部经 spawnEnemy 的 Boss 刷出（虚空竞技场内 shopBarrier 为 null、不受影响；朱德分身落点在 spawnZhudeClone 另有同口径推出）
   if(voidArena && !isBoss){ e.x = clamp(e.x, -ARENA.hw + 40, ARENA.hw - 40); e.y = clamp(e.y, -ARENA.hh + 40, ARENA.hh - 40); } // 竞技场内刷怪/召唤不越界
   if(window.__NET_MUL && !DUNGEON_SPAWN_NEXT){ var nm = window.__NET_MUL; if(e.boss){ e.hp *= nm.bossHp; e.maxHp *= nm.bossHp; e.dmg *= nm.bossDmg; e.bossLeech = nm.bossLeech || 0; } else { e.hp *= nm.hp; e.maxHp *= nm.hp; e.dmg *= nm.dmg; } } // 联机人数补正（设计草案四）：仅联机局生效，单人 __NET_MUL 不存在；DUNGEON_SPAWN_NEXT 标记的副本刷怪（新屋/街尾）不在此叠，改由刷怪点 dungeonNetScale 显式缩放一次（同 SCALE 值、恰好一次）；Boss 吸血率 bossLeech 同点挂载（10 人档起 >0，见 SCALE 表注⑧与 bossLeechHeal）
+  if(soloPreActive()){ // 单人劳农前难度缓和（2026-10-30，见 soloPreActive 定版注）：既有全部缩放（难度/时间/前期曲线/精英倍率/普通怪 ×1.8 伤）结算完毕后、在夜晚存底之前统一乘算（夜晚底值存缓和后基底、夜晚乘区按比例叠加不冲掉本缓和）
+    if(e.boss){ if(!e.final && !e.hidden && !endless){ e.hp *= 0.90; e.maxHp *= 0.90; e.dmg *= 0.95; } } // 剧情前五只普通 Boss；劳农 final/朱德 hidden/无尽随机 Boss 不动
+    else if(e.elite){ e.hp *= 0.90; e.maxHp *= 0.90; e.dmg *= 0.95; }
+    else { e.hp *= 0.85; e.maxHp *= 0.85; e.dmg *= 0.90; }
+  }
   if(!isBoss){ e.nightBaseMaxHp = e.maxHp; e.nightBaseDmg = e.dmg; e.nightHpMul = 1; e.nightDmgMul = 1; e.nightLit = false; nightApplyMul(e, nightMobMul(e.x, e.y)); } // 夜晚加成（2026-10-27 实时版，取代出生点锁定）：出生先存一份「加成前底值」，再按出生位置套首档；此后由 nightRealtimeTick 每帧按当前位置重判——走进火把/路灯/篝火光晕（半径 NIGHT_LIGHT_R）加成减半（生命 ×1.10／攻击 ×1.075），走出恢复全额（×1.20／×1.15），血量按比例缩放（见 nightApplyMul）；非 Boss 怪（含精英）同口径，多光晕重叠不叠加；Boss 一律不吃（已有屏障与成长缩放）；新屋室内/虚空竞技场经 nightMobMul 的 envActive 门禁天然排除
   enemies.push(e);
   return e;
@@ -4496,7 +4550,7 @@ function updateStands(dt){
         effects.push({ type:'standslash', x: foe.x, y: foe.y, ang: Math.atan2(dy, dx), t: 0, dur: 0.2, friendly: s.friendly });
         if(s.friendly){ DMG_EL = null; damageEnemy(foe, dmgS, dx / d * 5, dy / d * 5); tryStandChainProc(s); } // 注：友方替身自 2026-10-29 替身 NPC 化起已在 updateStands 顶部转入 updateStandFriendly（NPC 式出招）、永不到达本行，本行 friendly 分支为旧斩击残留、不可达；敌方替身走 else 分支、行为未动。玩家替身目标仍由 nearestFoeFor 的 friendly 分支限定为 enemies 数组，永不锁定玩家/商人/中立目标；触发 1%、本体 50% 属性、60 秒均未动
         // 替身链（2026-10-28 用户令）：友方替身每次出手后同口径掷 1% 链召唤（tryStandChainProc，见替身段头注）——链替身属性按玩家本体 50% 现算不递减、各自 60 秒、同场上限 6；敌方替身不走此掷点、行为未动
-        else if(!shopBarProtects(foe.x, foe.y)) hurtStandOrPlayer(foe, dmgS); // 商人小结界（2026-10-29 用户令）：敌方替身的斩击同样打不进结界——目标（玩家/友方替身）在商人结界内时整段不结算（atkT 照常置位、不逐帧重触发）
+        else if(!shopBarProtects(foe.x, foe.y) && !portalBarSeparates(s.x, s.y, foe.x, foe.y)) hurtStandOrPlayer(foe, dmgS); // 传送门结界（2026-10-30）：敌方替身斩击跨侧同口径不结算 // 商人小结界（2026-10-29 用户令）：敌方替身的斩击同样打不进结界——目标（玩家/友方替身）在商人结界内时整段不结算（atkT 照常置位、不逐帧重触发）
         beep(880, 0.05, 'square', 0.02);
       }
     } else {
@@ -4513,7 +4567,7 @@ function updateStands(dt){
    【现行缺口·旧】updateStands 旧版友方替身只有一记通用近战斩击：240px 内、0.85 秒一击、伤害固定公式 26×pDmgMul()×0.5×(1＋等级×0.06)、standslash 特效——
    不分英雄（班仔/闻西/莫哈哈/鸡哥/八思/黄主任/陈哈哈打法完全相同）、不读已学技能（等级/分支/进化/连发/AK 弹射全不生效）、从不放按键技、没有投射物/持续效果，剑阵/吸附/上毒/感电等专属机制一概没有。
    【新】友方替身改走下方专属通道，逐项镜像联机 NPC 的 npcBasicAttack/npcCastSpecial/npcTickNpcFx（NPC 函数在联机模块 IIFE 作用域内、主脚本不可见，故在主脚本内同构复刻、数值逐项对齐，不改 NPC 本体一字）：
-   ①按英雄出招——普攻逐英雄镜像该英雄专属武器（班仔班仔剑气分级/吸附/剑阵计数、闻西回旋镖弹射链＋上毒、莫哈哈 AK 连发＋弹射、鸡哥烟头齐射/爆裂烟核、八思追踪星弹＋星爆、黄主任空降印章、陈哈哈链式闪电/雷暴云），按键技逐英雄镜像（班仔 Ex 光束＋圣光爆、闻西龙卷风 8 秒、莫哈哈发压德轰三代分裂链、鸡哥烟鬼隐身＋双烟雾、八思星光连发 6 秒、黄主任牛马审判、陈哈哈豪情在天落雷＋牢笼＋感电），持续段由 standTickFx 逐帧推进（节拍/数值与 NPC 段逐项相同）。
+   ①按英雄出招——普攻逐英雄镜像该英雄专属武器（班仔班仔剑气分级/吸附/剑阵计数、闻西回旋镖弹射链＋上毒、莫哈哈 AK 连发＋弹射、鸡哥烟头齐射/爆裂烟核、八思追踪星弹＋星爆、黄主任空降印章、陈哈哈链式闪电；雷爆云已于 2026-10-30 拆为独立主动技能、替身不代放），按键技逐英雄镜像（班仔 Ex 光束＋圣光爆、闻西龙卷风 8 秒、莫哈哈发压德轰三代分裂链、鸡哥烟鬼隐身＋双烟雾、八思星光连发 6 秒、黄主任牛马审判、陈哈哈豪情在天落雷＋牢笼＋感电），持续段由 standTickFx 逐帧推进（节拍/数值与 NPC 段逐项相同）。
    ②用召唤者当前已学的技能——替身不建自己的学习表：每次出手实时读召唤者本人的 P.weapons[专属武器]（等级/分支/进化/连发 bonus/AK 弹射 akRico 现读现用，召唤后玩家再升级、替身在世期间同步变强）与 P.passives（经 pDmgMul/pCdMul/pSum 进入伤害/冷却/暴击乘区）；与 NPC 的差别仅在此：NPC 是按玩家池自己学一套（npcW/npcP），替身是直接镜像召唤者本人已学的那一套——这正是本令「用当前学习的角色的技能」的口径。通用武器（GENERIC_WEAPONS）与 NPC 同口径：NPC 学入 npcW 后其出招通道也只发专属武器普攻＋按键技、通用武器不单独发射，替身同此、不另给替身一套 NPC 没有的通用武器连发。
    ③按键技使用条件与 NPC 现行口径逐项相同——释放条件：替身自己的 specCd 就绪且 280px 内有存活敌人（hostTick 对 NPC 的权威复核口径）即放、附近无怪不放；冷却：CHARACTERS 表 specCd（班仔 24／闻西 30＝总冷却、设定时经 wxSpecCdBase 扣持续 8 秒／莫哈哈 26／鸡哥 26／八思 28／黄主任 26／陈哈哈 28）为唯一数据源、替身独立计时，绝不读/写 P.specCd、不影响召唤者本人按键技；持续期间冷却冻结（闻西龙卷风/八思星光连发/鸡哥隐身＋固定烟雾存续期间 specCd 不递减、自持续结束起算，与 hostTick 对 NPC 的冻结口径相同）；班仔 Ex 与 NPC 同为瞬发、不吃本机长按蓄力加成，伤害恒走基础 195/90。
    ④与 NPC 的明示差别（不擅自改、逐项报出）：(a)伤害乘区——NPC 走 npcMul（其自学被动＋构筑层），替身走召唤者本人 pDmgMul()×0.5：这是替身既有定版「属性＝本体 50%」的延续（旧斩击同为 ×0.5），等级/被动与本体完全同源；(b)按键技冷却乘区——NPC 走 npcSpecCdMulF（其自学被动），替身走召唤者本人 doSpecial 同式（专属共鸣封顶 −25%／时之沙漏／冷却怀表／二觉 ×0.85／尿液 ×0.4／陈哈哈觉醒 specCdMul），因为替身镜像的是召唤者本人而非独立学员；普攻冷却乘区同理走 pCdMul() 并同 NPC 公式下限 0.5；(c)击杀归因——NPC 记该 NPC 本人，替身的一切伤害 DMG_SRC＝null、归因召唤者（与旧替身口径一致，牛筋/计数入玩家）；(d)替身不学 NPC 的不易死机制（无 80% 闪避/无 20% 减伤/无每秒回血），承伤仍走 hurtStandOrPlayer 旧口径，仅补与 NPC 同款的按键技防御窗（闻西龙卷风＝前 2 秒无敌＋之后减伤 70%（2026-10-29 同步改）、鸡哥隐身存续期间不受击、班仔 Ex 光束段 0.85 秒无敌窗，经 hurtStandOrPlayer 入口拦截——与 npcImmune 同口径）；(e)移动沿用替身旧口径（pSpeed×0.5×1.55 追敌、无敌时回本体身边待命），仅在自己龙卷风/隐身存续期间同 NPC/本机 ×1.3。
@@ -4656,14 +4710,7 @@ function standBasicAttack(s, tgt){ // npcBasicAttack 的替身镜像：逐英雄
   }
   if(key === 'chainvolt'){ /* 陈哈哈：链式闪电（首跳 400、逐跳 ×0.86、跳距 235/虚空乱流 300、Lv3 分叉电，与本机/NPC 普攻同公式） */
     var mulV = mul;
-    if(w.branch === 'C'){ /* 雷暴云形态：罩住首目标持续电击（持续段在 standTickFx 的区域段） */
-      s.atkT = (w.evo ? 3.4 : 4.6 - lv * 0.2) * cd;
-      standSetPose(s, tgt);
-      s.zones.push({ type:'volt', x:tgt.x, y:tgt.y, r: w.evo ? 168 : 118 + lv * 8, t:0, dur: w.evo ? 3.6 : 2.4 + lv * 0.12, tick:0, dps:(w.evo ? 44 : 15 + lv * 5.5) * mulV, chBasic: (lv >= 5 || w.evo) ? 1 : 0, chMul: mulV }); // 普攻 Lv5 感电·替身同口径（2026-10-29）：雷暴云盖章、逐跳在 standTickFx 区域段挂（读召唤者本人 chainvolt 的 lv）
-      spawnVfx('ard_volt', tgt.x, tgt.y, 130, 0.4);
-      teamAtkSfx(s, 'cage');
-      return;
-    }
+    /* 原分支 C「雷暴云」形态已拆出为独立技能 voltstorm（2026-10-30）：替身电击小子恒走下方链式传导；替身只镜像专属普攻＋按键技、不代放独立主动技能（与通用主动同口径），故召唤者的雷爆云不经替身释放 */
     s.atkT = (w.evo ? 0.95 : 1.3 - lv * 0.05) * cd;
     standSetPose(s, tgt);
     var chains = (w.evo ? 12 : 1 + lv) + (w.branch === 'A' ? 4 : 0) + (w.bonus || 0) * 2;
@@ -4922,7 +4969,7 @@ function standTickFx(s, dt){ // npcTickNpcFx 的替身镜像（updateStandFriend
     s.fxQ.splice(fi2, 1);
     if(fx.kind === 'stamp'){
       var sL = standNearest(fx, 999, fx.r + 70);
-      for(var si3 = 0; si3 < sL.length; si3++){ var es3 = sL[si3]; if(Math.hypot(es3.x - fx.x, es3.y - fx.y) > fx.r + es3.r) continue; standHit(s, es3, fx.dmg, 0, 0, key); hzConvTry(es3, (w.lv >= 5 || !!w.evo)); } // 吃苦转化掷点·替身同口径（2026-10-29 用户令，取代本轮删除的普攻眩晕）：替身黄主任普攻印命中后以召唤者 P.weapons[key]（本函数 w、替身镜像口径）的等级掷转化（普通 4%/精英 2%、Boss 不吃、被砸死者不掷，hzConvTry 内部门禁）；按键技 bigseal 不进本段、其震晕/易伤口径一字未动；完整口径见 HZ_CONV 定版注
+      for(var si3 = 0; si3 < sL.length; si3++){ var es3 = sL[si3]; if(Math.hypot(es3.x - fx.x, es3.y - fx.y) > fx.r + es3.r) continue; standHit(s, es3, fx.dmg, 0, 0, key); hzConvTry(es3, (w.lv >= 5 || !!w.evo)); } // 吃苦转化掷点·替身同口径（2026-10-29 用户令，取代本轮删除的普攻眩晕）：替身黄主任普攻印命中后以召唤者 P.weapons[key]（本函数 w、替身镜像口径）的等级掷转化（普通 10%/精英 6%、Boss 不吃、被砸死者不掷，hzConvTry 内部门禁）；按键技 bigseal 不进本段、其震晕/易伤口径一字未动；完整口径见 HZ_CONV 定版注
       effects.push({ type:'ring', x:fx.x, y:fx.y, t:0, dur:0.3, color:'255,210,62' });
       burst(fx.x, fx.y, '#ffd23e', fxN(8));
       if(fx.chain){ var nxT = null, nxD = 300 * 300; for(var ci3 = 0; ci3 < enemies.length; ci3++){ var eci = enemies[ci3]; if(eci.dead) continue; var dd3 = dist2(fx.x, fx.y, eci.x, eci.y); if(dd3 < nxD && Math.hypot(eci.x - fx.x, eci.y - fx.y) > fx.r + eci.r){ nxD = dd3; nxT = eci; } }
@@ -5113,6 +5160,11 @@ function damageEnemy(e, dmg, kx, ky){
     var ssx = P.x, ssy = P.y;
     if(DMG_SRC && typeof N !== 'undefined' && N && N.peers && N.peers[DMG_SRC] && N.peers[DMG_SRC].x !== undefined){ ssx = N.peers[DMG_SRC].x; ssy = N.peers[DMG_SRC].y; }
     if(shopBarBlocksOut(ssx, ssy, e.x, e.y)) return;
+  }
+  if(P){ // 传送门结界·双向攻击隔断（2026-10-30 用户令）：攻击源与目标被任一传送门结界分在两侧 → 整段不结算（玩家侧一切经本入口的伤害：普攻/按键技/主动/Ex/区域/落物/召唤/替身）；源位置口径与上方两道门禁相同；同侧（同内/同外）不拦——界内打界内、界外打界外照常
+    var ptsx = P.x, ptsy = P.y;
+    if(DMG_SRC && typeof N !== 'undefined' && N && N.peers && N.peers[DMG_SRC] && N.peers[DMG_SRC].x !== undefined){ ptsx = N.peers[DMG_SRC].x; ptsy = N.peers[DMG_SRC].y; }
+    if(portalBarSeparates(ptsx, ptsy, e.x, e.y)) return;
   }
   if(e.vulnT > 0) dmg *= 1.1; // 易伤（黄主任牛马审判挂上）：持续期间受到的一切伤害 +10%，来源不限（普攻/技能/持续伤害同算）；计时递减在 updateEnemies，10 秒到自动消失
   var bzVl = bzVulnLayers(e); if(bzVl > 0) dmg *= 1 + BZ_VULN_PER * bzVl; // 「剑痕」（班仔 Lv2 起剑气挂上，2026-10-29 移除轮新增、等级纠正轮改 Lv2 解锁）：受伤害 +10%/层、最多 2 层（最高 +20%），与上方易伤为独立乘区、乘算叠加（易伤＋2 层＝×1.1×1.2＝×1.32）；来源不限（同易伤口径）；两层计时递减在 updateEnemies、各自 2 秒独立到期
@@ -5744,7 +5796,7 @@ function fireProj(kind, ang, speed, dmg, color, r, opts){
     burn: !!opts.burn, burnDps: opts.burnDps || 0, poisonD: opts.poisonD || 0,
     crit: (CUR_WKEY && WEAPONS[CUR_WKEY] && WEAPONS[CUR_WKEY].crit != null) ? WEAPONS[CUR_WKEY].crit : 0.05, el: (CUR_WKEY && WEAPONS[CUR_WKEY] && WEAPONS[CUR_WKEY].el) || null, lv: (CUR_WKEY && P.weapons[CUR_WKEY]) ? P.weapons[CUR_WKEY].lv : 1,
     wkey: opts.wkey || CUR_WKEY || null, kbDist: opts.kbDist || 0, kbDone: {}, noKb: !!opts.noKb }); // 投射物携带来源技能键与专属击退位移量（破浪冲击击退用；缺省 0＝走各弹种旧击退系数）；kbDone＝本重浪已击退过的怪 id 集合（破浪冲击「每怪每重浪只击退一次」记账用，每个浪头各自一份）；noKb＝本弹无击退（2026-10-28 用户令：班仔普攻分支剑气/回旋轮与疾风剑气专用，命中结算据此把击退传 0，其余弹种缺省 false、行为不变）
-  // 影分身：额外影子弹道
+  // 影分身：额外影子弹道（残影分身·通用被动 shadow 定版：Lv1–3 一道、Lv4+ 两道、伤害×0.6、半径×0.85、弹射/分裂不继承）。2026-10-29 用户令「对所有普通攻击生效」补线：本机一切经 fireProj 出膛的普攻弹道本已在此覆盖（班仔 bzwave/闻西 boom/莫哈哈 bullet/鸡哥 cig/八思 star）；不走 fireProj 的两把普攻——黄主任印章（fallers）与陈哈哈链式闪电（瞬时传导/雷暴云）在其各自出招段同口径补线（见 stamp/chainvolt 段）；按键技/主动技能/Ex/觉醒不经此路、不扩。原定适用对象＝本机玩家（只读 P.passives）：NPC 队友走 npcProjs 独立通道、从未接此被动，本轮保持不算（NPC 可在学习池学到该被动但其普攻不产生影子弹道，与改前一致）
   if(!opts.shadow && P && P.passives.shadow && kind !== 'wave'){
     var sc = P.passives.shadow >= 4 ? 2 : 1;
     for(var si = 0; si < sc; si++)
@@ -6153,6 +6205,17 @@ function updateWeapons(dt){
           for(var st = 0; st < tgS.length; st++)
             fallers.push({ type: 'stamp', x: tgS[st].x, y: tgS[st].y, t: 0, dur: 0.1125, chain: w.branch === 'C' ? 1 : 0, // 普攻印章下落速度沿革：2026-10-26 ×2（时长 0.45→0.225）；2026-10-28 用户令「初始下落速度再翻一倍」——源码核查：印章下落为线性恒速（绘制 dropY＝fy−(1−prog)×180、prog＝t/dur），无独立初速/加速度参数，初速与全程速度共用 dur 一个参数（已按用户预授权口径处理并在交工报告报出）：dur 0.225→0.1125 秒，下落高度 180px 不变，等效速度 800→1600 px/s；伤害/间隔（冷却）/落点判定不变，按键技牛马审判 1.15 秒下落不动
               dmg: (w.evo ? 64 : 25 + lv * 9.5) * mul * earlySigMul() * sigDmgMul() * (w.branch === 'B' ? 1.7 : 1), r: (w.evo ? 80 : 56) * (w.branch === 'B' ? 1.3 : 1), evo: w.evo });
+          if(P.passives.shadow){ // 残影分身补线（2026-10-29 用户令）：黄主任普攻印章走 fallers 落物、不经 fireProj，原残影分身从未生效——在此同口径补影子印：每个主印目标各落影子印（Lv1–3 一枚、Lv4+ 两枚），伤害＝主印×0.6、半径＝主印×0.85（与 fireProj 影子弹同数值口径），落点沿玩家→目标垂向错开 ±16px（仍在影子印半径内、必砸同一目标群）；影子印 chain:0 不触发连环小印（与影子弹不继承弹射/分裂同规）、不递归再生成影子印；按键技 bigseal 不经此段、不扩
+            var scSt = P.passives.shadow >= 4 ? 2 : 1;
+            for(var stS = 0; stS < tgS.length; stS++){
+              var tsX = tgS[stS].x, tsY = tgS[stS].y, tsD = Math.hypot(tsX - P.x, tsY - P.y) || 1, ppX = -(tsY - P.y) / tsD, ppY = (tsX - P.x) / tsD;
+              for(var ssi = 0; ssi < scSt; ssi++){
+                var soF = ssi === 0 ? 16 : -16;
+                fallers.push({ type: 'stamp', x: tsX + ppX * soF, y: tsY + ppY * soF, t: 0, dur: 0.1125, chain: 0, shadow: true,
+                  dmg: (w.evo ? 64 : 25 + lv * 9.5) * mul * earlySigMul() * sigDmgMul() * (w.branch === 'B' ? 1.7 : 1) * 0.6, r: (w.evo ? 80 : 56) * (w.branch === 'B' ? 1.3 : 1) * 0.85, evo: w.evo });
+              }
+            }
+          }
           beep(180, 0.1, 'square', 0.04);
         } else P.timers[key] = 0.2;
       }
@@ -6161,18 +6224,11 @@ function updateWeapons(dt){
       var mulV = mul * earlySigMul() * sigDmgMul(); // 陈哈哈与全员共用同一前期系数 earlySigMul（定义见 pDmgMul 下方）：电击小子单体只吃首跳、前期刷怪稀疏链跳不满，是七人里最刮的一把，同幅度补强下他的击杀改善也最明显
       if(P.timers[key] <= 0){
         var firstV = nearestEnemies(1, Math.min(400, viewRange())); // 雷电身份定版：大范围传导——首跳索敌 400（陈哈哈专属为全系标杆，本条覆盖此前收紧安排）；同时不超可视范围（全局规）
-        if(firstV.length && w.branch === 'C'){ // 雷暴云：闪电凝成云团罩住敌群持续电击（形态变化，不再逐跳传导）
-          P.timers[key] = (w.evo ? 3.4 : 4.6 - lv * 0.2) * cd;
-          poseAtk('cast', 0.5);
-          zones.push({ type:'volt', x: firstV[0].x, y: firstV[0].y, r: w.evo ? 168 : 118 + lv * 8, t: 0, dur: w.evo ? 3.6 : 2.4 + lv * 0.12, dps: (w.evo ? 44 : 15 + lv * 5.5) * mulV, tick: 0, fxT: 0, fxName: 'ard_volt', col: '255,233,122', el: 'volt', chBasic: (lv >= 5 || w.evo) ? 1 : 0, chMul: mulV }); // chBasic/chMul＝普攻 Lv5 感电盖章（2026-10-29）：雷暴云逐跳命中同挂小怪感电（结算在 updateZones 的 volt 跳伤段）；通用静电场等其他 volt 区不盖此章、不挂
-          spawnVfx('ard_volt', firstV[0].x, firstV[0].y, 130, 0.4);
-          sfx('cage');
-        }
-        else if(firstV.length){
+        if(firstV.length){ // 原分支 C「雷暴云」形态已拆出为独立技能 voltstorm（2026-10-30）：电击小子恒走下方链式传导、不再凝成云团；其影子云补线随形态一并移出（残影分身对独立主动技能不代放、与静电场等主动同口径）
           P.timers[key] = (w.evo ? 0.95 : 1.3 - lv * 0.05) * cd;
           poseAtk('cast', P.timers[key]);
           var chains = (w.evo ? 12 : 1 + lv) + (w.branch === 'A' ? 4 : 0) + wBonus('chainvolt') * 2; // 雷点传导上限（2026-10-28 用户最终口径，覆盖同日「初始 3」令）：初始 2、每升一级 +1——旧公式 4＋floor(lv/2)（Lv1–Lv5＝4/5/5/6/6）→新公式 1＋lv（Lv1–Lv5＝2/3/4/5/6）；进化不套 +1 递增、按原进化口径独立值 12 不变；分支 A「超载天网」+4 与 wBonus×2 加成口径不变（A 分支下 Lv3–Lv5＝8/9/10、进化＋A＝16）；Lv3 起分叉电为链外额外一段（50% 伤害）不计入此上限、未动；传导伤害（逐跳 ×0.86 衰减）、跳距 235（虚空乱流 300）、首跳索敌 400 一字未动
-          var curV = firstV[0], hitSet = {}, dmgV = (w.evo ? 42 : 18 + lv * 6.5) * mulV;
+          var curV = firstV[0], hitSet = {}, dmgV = (w.evo ? 42 : 18 + lv * 6.5) * mulV; var dmgV0 = dmgV; // 主链初始伤害（残影分身影子电弧按此×0.6 起跳，见主链后补线段）
           var chainJumpR = curWeather === '虚空乱流' ? 300 : 235; // 虚空乱流：空间紊乱助长电弧——每跳传导距离 235→300（主链与分叉电同享）
           var linkPts = [{ x: P.x + (P.face >= 0 ? 13 : -13), y: P.y - 32 }]; // 电弧起点＝法杖杖头（陈哈哈举杖施法，电从杖尖迸发而非手心/身体）
           for(var vc = 0; vc < chains && curV; vc++){
@@ -6205,6 +6261,23 @@ function updateWeapons(dt){
           spawnVfx('boltspark', linkPts[0].x, linkPts[0].y, 80, 0.3); // 杖头迸发：13rice 放射电火花（CC0）
           spawnVfx('boltimp', firstV[0].x, firstV[0].y, 88 + lv * 13, 0.34); // 首跳命中爆点：Inguz 电光冲击（CC0），随等级放大
           sfx('volt', 0.5); // 普攻音效调小一倍（2026-10-28 用户令）：陈哈哈电击小子释放声（'volt' 合成电爆，经名单 0.7 → 再 ×0.5）；只乘本调用点——通用技能 staticfield/voltserpent 的 'volt'、按键技豪情在天均不动
+          if(P.passives.shadow){ // 残影分身补线（2026-10-29 用户令）：陈哈哈普攻链式闪电为瞬时传导、不经 fireProj，原残影分身从未生效——主链（与分叉电）结算后追加影子电弧：与 fireProj 影子弹同口径（Lv1–3 一道、Lv4+ 两道），自杖尖起跳、首跳目标＝主链首目标（已死则就近重索 400 内最近敌人、无目标不发），每跳伤害＝主链同跳伤害×0.6（起跳 dmgV0×0.6、逐跳×0.86 同衰减）、跳数上限 chains/跳距 chainJumpR/可视范围门禁与主链相同；只结算伤害——不挂 Lv5 感电（chBasicShock 不走此段）、不触发分叉电/天雷引，与影子弹不继承弹射/分裂同规；按键技豪情在天不经此段、不扩
+            var scCv = P.passives.shadow >= 4 ? 2 : 1;
+            for(var sci = 0; sci < scCv; sci++){
+              var sCur = (firstV[0] && !firstV[0].dead) ? firstV[0] : (nearestEnemies(1, Math.min(400, viewRange()))[0] || null);
+              if(!sCur) break;
+              var sHit = {}, sDmg = dmgV0 * 0.6, sPts = [{ x: P.x + (P.face >= 0 ? 13 : -13), y: P.y - 32 }];
+              for(var scj = 0; scj < chains && sCur; scj++){
+                sHit[sCur.id] = true; sPts.push({ x: sCur.x, y: sCur.y }); sCur.strikeT = 0.18;
+                damageEnemy(sCur, sDmg, 0, 0);
+                sDmg *= 0.86;
+                var sNext = null, sBest = chainJumpR * chainJumpR;
+                for(var sve = 0; sve < enemies.length; sve++){ var sev = enemies[sve]; if(sev.dead || sHit[sev.id]) continue; if(dist2(P.x, P.y, sev.x, sev.y) > viewRange() * viewRange()) continue; var svd = dist2(sCur.x, sCur.y, sev.x, sev.y); if(svd < sBest){ sBest = svd; sNext = sev; } }
+                sCur = sNext;
+              }
+              if(sPts.length > 1) effects.push({ type:'links', pts: sPts, t: 0, dur: 0.3, wdt: 0.75, col: '138,138,184' }); // 影子电弧视觉：影色（残影分身主题色 #8a8ab8）细链，与主链蓝白粗弧区分
+            }
+          }
         } else P.timers[key] = 0.15;
       }
       // 分支B「天雷引」：周期性自动落雷
@@ -6221,6 +6294,20 @@ function updateWeapons(dt){
           }
           if(skyT.length) sfx('bolt');
         }
+      }
+    }
+    if(key === 'voltstorm'){ // 雷爆云（2026-10-30 用户令：原电击小子分支 C「雷暴云」独立成技）：陈哈哈专属主动——独立计时自动凝云，罩住最近敌群持续电击；数值整表照搬原分支公式、按雷爆云自身等级 lv 计算（半径 118＋lv×8／持续 2.4＋lv×0.12 秒／dps 15＋lv×5.5／凝聚间隔 4.6−lv×0.2 秒×cd），伤害乘区与原分支同口径（mul×earlySigMul×sigDmgMul——它仍是陈哈哈的专属雷法）；云体走 zones 的 volt 区（0.5 秒一跳 dps×0.5、视觉 ard_volt，与原分支同一结算通道）；不挂普攻 Lv5 感电章（感电只属电击小子普攻本体——两者同学生效时感电只由电击小子链/其 Lv5 口径产生、雷爆云不重复盖章）；连发强化 wBonus＝多凝一朵（各罩一名最近敌人）；无进化（无 SIG_ITEM 配对、不进合成）
+      if(P.timers[key] <= 0){
+        var tgVs = nearestEnemies(1 + wBonus('voltstorm'), Math.min(480, viewRange()));
+        if(tgVs.length){
+          P.timers[key] = (4.6 - lv * 0.2) * cd;
+          poseAtk('cast', 0.5); tryStandProc('player');
+          var mulVs = mul * earlySigMul() * sigDmgMul();
+          for(var vsi2 = 0; vsi2 < tgVs.length; vsi2++)
+            zones.push({ type:'volt', x: tgVs[vsi2].x, y: tgVs[vsi2].y, r: 118 + lv * 8, t: 0, dur: 2.4 + lv * 0.12, dps: (15 + lv * 5.5) * mulVs, tick: 0, fxT: 0, fxName: 'ard_volt', col: '255,233,122', el: 'volt', srcKey: 'voltstorm' });
+          spawnVfx('ard_volt', tgVs[0].x, tgVs[0].y, 130, 0.4);
+          sfx('cage');
+        } else P.timers[key] = 0.2;
       }
     }
     if(key === 'firebolt'){
@@ -7069,18 +7156,20 @@ window.__HZ_SEAL_KB = { kb: HZ_SEAL_KB, kbElite: HZ_SEAL_KB_ELITE, kbBoss: HZ_SE
 
 /* ===== 黄主任普攻 Lv5「吃苦」转化 buff（2026-10-29 用户令·施工定版注；本地、版本 1.4 基线） =====
    buff 名（用户原话）：「吃得苦中苦 方為人上人」（局内飘字按全游戏简体口径作「吃得苦中苦 方为人上人」）。
-   ①触发：黄主任专属普攻「牛马印」升到 Lv5（进化九龙黄金玺同算，门禁与八思光阵/陈哈哈感电的 (lv>=5 || evo) 先例同式）后，普攻印章每次命中存活敌人时独立掷一次转化——普通小怪 HZ_CONV_P_NORMAL＝4%、精英 HZ_CONV_P_ELITE＝2%；主印与分支 C 连环小印同掷（同属普攻印章命中）；三路同口径——本机 updateFallers 的 stamp 段（读 P.weapons.stamp）、NPC npcTickNpcFx 的 stamp 段（读该 NPC 自己 npcW.stamp）、替身 standTickFx 的 stamp 段（读召唤者 P.weapons[key]，与替身镜像口径一致）；真人远端成员不走此三路、不覆盖（与此前各轮同缺口）。
-   ②Boss 不吃（施工裁定）：用户只给了普通 4%/精英 2% 两档、未提 Boss；且 Boss 带结界/阶段切换/招牌技能状态机，转化会与其敌对前提冲突——同此前普攻眩晕的 Boss 除外先例，hzConvTry 以 !e.boss 门禁拦截、Boss 实得 0%。
-   ③效果：转化成功即友方化 10 秒（HZ_CONV_DUR，计时在敌人主循环顶部递减、到期自动恢复敌对）；转化瞬间净化其身上的玩家方持续状态（燃烧/中毒/闻西毒/鸡哥引燃/陈哈哈感电全清）并解除其正承受的眩晕/印章击飞（另净化班仔「剑痕」两层，2026-10-29 移除轮追加）；期间索敌改为最近的敌对怪（见敌人主循环转化段）、按其原有 AI 攻击敌人：移动追击、接触伤害＝其自身 e.dmg 原值（不走 damageEnemy、不吃玩家暴击/被动/天气乘区），有技能照放——精英技能组（齐射/召唤/冲锋/重击预警圈）与物种签名状态机（sigTick）都以敌对怪为 tgt 释放，其中精英齐射弹道与精英重击/跳砸/扑击预警圈经 srcE/allySrc 标记转伤敌对怪（结算 hzAllyDamage）；远程怪的通用开火段以 tgt===P 为门禁、转化后不开通用弹道（改为近身追击＋精英/签名技能），虚空之眼凝视射线等专打玩家的少数通道不转伤敌人（边界口径、明报）。
+   ①触发：黄主任专属普攻「牛马印」升到 Lv5（进化九龙黄金玺同算，门禁与八思光阵/陈哈哈感电的 (lv>=5 || evo) 先例同式）后，普攻印章每次命中存活敌人时独立掷一次转化——普通小怪 HZ_CONV_P_NORMAL＝10%、精英 HZ_CONV_P_ELITE＝6%（2026-10-30 概率纠正，原 4%／2%，见 ⑩）；主印与分支 C 连环小印同掷（同属普攻印章命中）；三路同口径——本机 updateFallers 的 stamp 段（读 P.weapons.stamp）、NPC npcTickNpcFx 的 stamp 段（读该 NPC 自己 npcW.stamp）、替身 standTickFx 的 stamp 段（读召唤者 P.weapons[key]，与替身镜像口径一致）；真人远端成员不走此三路、不覆盖（与此前各轮同缺口）。
+   ②Boss 不吃（施工裁定）：用户只给了普通／精英两档概率（现行 10%／6%，见 ⑩）、未提 Boss；且 Boss 带结界/阶段切换/招牌技能状态机，转化会与其敌对前提冲突——同此前普攻眩晕的 Boss 除外先例，hzConvTry 以 !e.boss 门禁拦截、Boss 实得 0%。
+   ③效果：转化成功即友方化 15 秒（HZ_CONV_DUR，计时在敌人主循环顶部递减、到期直接死亡——2026-10-30 改版，见 ⑨）；转化瞬间净化其身上的玩家方持续状态（燃烧/中毒/闻西毒/鸡哥引燃/陈哈哈感电全清）并解除其正承受的眩晕/印章击飞（另净化班仔「剑痕」两层，2026-10-29 移除轮追加）；期间索敌改为最近的敌对怪（见敌人主循环转化段）、按其原有 AI 攻击敌人：移动追击、接触伤害＝其自身 e.dmg 原值（不走 damageEnemy、不吃玩家暴击/被动/天气乘区），有技能照放——精英技能组（齐射/召唤/冲锋/重击预警圈）与物种签名状态机（sigTick）都以敌对怪为 tgt 释放，其中精英齐射弹道与精英重击/跳砸/扑击预警圈经 srcE/allySrc 标记转伤敌对怪（结算 hzAllyDamage）；远程怪的通用开火段以 tgt===P 为门禁、转化后不开通用弹道（改为近身追击＋精英/签名技能），虚空之眼凝视射线等专打玩家的少数通道不转伤敌人（边界口径、明报）。
    ④互殴与死亡：敌对怪会转火攻击转化友军（索敌段：最近的转化怪比当前目标更近时改打它，接触/其技能弹道中带 srcE 且源已非转化态的仍按原通道）；转化友军被敌对怪打死＝直接死亡（hzFoeHit 直扣结算、不走 killEnemy：不计击杀数、不掉经验/掉落——用户口径「被怪物打死效果即消失」即死亡、不再变回敌人）；转化友军打死敌对怪走 killEnemy、击杀/经验/掉落归本机玩家方（DMG_SRC 恒 null 的主循环语境）。
    ⑤友伤关闭：转化期间不吃玩家方伤害——damageEnemy 顶部以 hzConvT 门禁整段不结算（普攻/技能/持续伤害同拦）；玩家武器仍可索敌到它、命中不掉血；重复命中不刷新 10 秒时长（已转化者 hzConvTry 直接返回）。
-   ⑥上限：同时最多 HZ_CONV_MAX＝10 只；第 11 只掷中时替换最早转化的那只（按 hzConvSeq 最小者，其 hzConvT 当场清零、即刻恢复敌对），新怪正常转化（施工裁定，保证 buff 持续有产出、不做静默失败）。
-   ⑦标记：转化期间头顶常驻红色「牛嗎」二字（用户原字——麼的繁体「嗎」，非「牛馬」的「馬」，不得改字）——drawEnemy 内 13px 粗体红字（HZ_CONV_LABEL_FS＝13，中等可见：与精英标记 10px、Boss 名 12px 同量级略大）、位于头顶 topY－20（血条/精英字之上）、随转化全程 10 秒常显、到期即消失。
-   ⑧不动：按键技 bigseal 的震晕（普通 1.3／精英 0.8／Boss 0.45）与易伤（+10%、10 秒）一字未动；普攻印章的土系减速（applySlow 0.8）保留（本令只删眩晕）；同轮已删：2026-10-29 刚加的本机/NPC/替身三路普攻眩晕（原 applyStunResist(e, 2) 三行）全量移除。 */
-var HZ_CONV_DUR = 10, HZ_CONV_MAX = 10, HZ_CONV_P_NORMAL = 0.04, HZ_CONV_P_ELITE = 0.02, HZ_CONV_LABEL_FS = 13; // 吃苦转化定版常量（口径见上方注）：10 秒／上限 10／普通 4%／精英 2%／头顶字 13px
+   ⑥上限（2026-10-30 改版）：已取消——同时转化数量无上限（原 HZ_CONV_MAX＝10 与「满 10 只替换最早转化者」逻辑已删除，hzConvTry 不再清任何已转化者的 hzConvT）。
+   ⑦标记：转化期间头顶常驻红色「牛嗎」二字（用户原字——麼的繁体「嗎」，非「牛馬」的「馬」，不得改字）——drawEnemy 内 13px 粗体红字（HZ_CONV_LABEL_FS＝13，中等可见：与精英标记 10px、Boss 名 12px 同量级略大）、位于头顶 topY－20（血条/精英字之上）、随转化全程 15 秒常显、到期即消失。
+   ⑧不动：按键技 bigseal 的震晕（普通 1.3／精英 0.8／Boss 0.45）与易伤（+10%、10 秒）一字未动；普攻印章的土系减速（applySlow 0.8）保留（本令只删眩晕）；同轮已删：2026-10-29 刚加的本机/NPC/替身三路普攻眩晕（原 applyStunResist(e, 2) 三行）全量移除。
+   ⑨2026-10-30 用户改版（只改吃苦本效果，其他技能/系统/数值一字未动）：(a)持续 HZ_CONV_DUR 10→15 秒；(b)15 秒内玩家队伍伤害免疫＝沿用 ⑤ 的 damageEnemy 顶部 hzConvT 门禁——本机普攻/按键技/Ex/主动/落物/区域/召唤物、NPC 的 npcHit、替身的 standHit、持续伤害（burn/poison 经 damageEnemy、感电互击经 damageEnemy）全经此唯一入口，源码核查属实、本轮未新增接线、未改门禁一行；转化瞬间已清燃烧/中毒/闻西毒/鸡哥引燃/感电（hzConvStart 净化名单），故无残留直扣 DoT 在转化后继续跳伤；(c)计时到期不再恢复敌对：敌人主循环计时段清零后当场 killEnemy 走正常死亡路径（经验/牛筋/掉落/击杀计数按原规则；归因临时置 DMG_SRC＝null 归本机玩家方，与 hzAllyDamage 致死归因同口径、结算后还原）；被敌对怪在 15 秒内打死仍走 ④ 的 hzFoeHit 直扣死亡（不走 killEnemy、不计击杀不掉落——原变形机制既有死亡口径、未动）；(d)上限取消见 ⑥。转化率（当时普通 4%/精英 2%）、Boss 不吃（hzConvTry 的 !e.boss 门禁）、触发（三路普攻印命中后掷点、Lv5/进化门禁）一字未动。
+   ⑩2026-10-30 用户概率纠正（只改吃苦转化率，其他口径一字未动）：普通小怪 HZ_CONV_P_NORMAL 0.04→0.10（10%）、精英 HZ_CONV_P_ELITE 0.02→0.06（6%）；Boss 仍不吃（hzConvTry 的 !e.boss 门禁未动、实得 0%）；持续 15 秒、15 秒内免疫、15 秒到直接死亡、上限取消、触发与 Lv5/进化门禁全部不变；牛马印 Lv5 文案同步改 10%／6%。 */
+var HZ_CONV_DUR = 15, HZ_CONV_MAX = Infinity, HZ_CONV_P_NORMAL = 0.10, HZ_CONV_P_ELITE = 0.06, HZ_CONV_LABEL_FS = 13; // 吃苦转化定版常量（口径见上方注）：15 秒（2026-10-30 由 10 改）／无上限（HZ_CONV_MAX＝Infinity 仅作探针只读标记、hzConvTry 已无任何上限判定）／普通 10%／精英 6%（2026-10-30 用户概率纠正：原 0.04／0.02 → 0.10／0.06）／头顶字 13px
 var hzConvSeq = 0; // 转化先后序号（替换最旧判定用）
 function hzConvCount(){ var n = 0; for(var i = 0; i < enemies.length; i++) if(!enemies[i].dead && (enemies[i].hzConvT || 0) > 0) n++; return n; }
-function hzConvStart(e){ // 转化登记：置 10 秒友方态＋序号；清控制衔接（眩晕/印章击飞/滞空不带进友方态）；净化玩家方持续状态（另含「剑痕」两层）；触发飘字（buff 名·简体口径）＋红环
+function hzConvStart(e){ // 转化登记：置 15 秒友方态＋序号；清控制衔接（眩晕/印章击飞/滞空不带进友方态）；净化玩家方持续状态（另含「剑痕」两层）；触发飘字（buff 名·简体口径）＋红环
   e.hzConvT = HZ_CONV_DUR; e.hzConvSeq = ++hzConvSeq;
   e.stun = 0; e.sealKbT = 0; e.smokeStun = 0; e.bzVulnT1 = 0; e.bzVulnT2 = 0; // 原同清的 e.bzPullT 已随 Lv5 逐步吸附于 2026-10-29 移除轮删除；本行另清「剑痕」两层（玩家方 debuff 净化同式、转化不带 debuff 进友方态）
   e.burnT = 0; e.burnDps = 0; e.poisonT = 0; e.poisonDps = 0; e.poisonStacks = 0; e.wxPoison = 0; e.wxPoisonT = 0; e.wxPoisonAcc = 0; e.jgIgniteT = 0; e.jgIgniteAcc = 0; e.shockOn = false;
@@ -7091,11 +7180,7 @@ function hzConvStart(e){ // 转化登记：置 10 秒友方态＋序号；清控
 function hzConvTry(e, lvOk){ // 普攻印命中后掷转化（三路同式调用）：lvOk＝该路黄主任普攻已 Lv5/进化；Boss/死者/已转化者不掷；被印砸死者不掷（调用方均在伤害结算后、!dead 门禁内，本函数再核一遍）
   if(!lvOk || !e || e.dead || e.boss || (e.hzConvT || 0) > 0) return false;
   if(Math.random() >= (e.elite ? HZ_CONV_P_ELITE : HZ_CONV_P_NORMAL)) return false;
-  if(hzConvCount() >= HZ_CONV_MAX){ // 满 10 只：替换最早转化者（其当场恢复敌对）
-    var old = null;
-    for(var i = 0; i < enemies.length; i++){ var oe = enemies[i]; if(!oe.dead && (oe.hzConvT || 0) > 0 && (old === null || (oe.hzConvSeq || 0) < (old.hzConvSeq || 0))) old = oe; }
-    if(old) old.hzConvT = 0;
-  }
+  // 上限已取消（2026-10-30 用户令）：无满额替换——掷中即转化，场上同时转化数量无上限
   hzConvStart(e);
   return true;
 }
@@ -7118,6 +7203,7 @@ function hzFoeHit(atk, def){ // 敌人互殴一击（敌人主循环接触段调
   } else hzAllyDamage(def, atk.dmg); // 转化友军打敌对怪
 }
 window.__HZ_CONV = { dur: HZ_CONV_DUR, max: HZ_CONV_MAX, pNormal: HZ_CONV_P_NORMAL, pElite: HZ_CONV_P_ELITE, labelFs: HZ_CONV_LABEL_FS, count: hzConvCount, tryConv: hzConvTry, start: hzConvStart, allyDamage: hzAllyDamage, foeHit: hzFoeHit }; // 验收探针：吃苦转化口径只读＋函数引用
+window.__VOLTSTORM = { key: 'voltstorm', def: WEAPONS.voltstorm, branches: BRANCHES.chainvolt, sigItem: SIG_ITEM.voltstorm || null, el: (WEAPONS.voltstorm && WEAPONS.voltstorm.el) || null, table: function(lv){ return { r: 118 + lv * 8, dur: 2.4 + lv * 0.12, dps: 15 + lv * 5.5, interval: 4.6 - lv * 0.2 }; }, owned: function(){ return (typeof P !== 'undefined' && P && P.weapons) ? (P.weapons.voltstorm || null) : null; }, atkCount: function(){ return (typeof P !== 'undefined' && P && P.weapons) ? attackCount() : -1; }, inGeneric: GENERIC_WEAPONS.indexOf('voltstorm') >= 0 }; // 验收探针：雷爆云独立技能口径只读（定义/分支残留/合成配对/元素/逐级表/持有与占格）
 
 /* ---------------- 落物（印章 / 鸡蛋） ---------------- */
 function updateFallers(dt){
@@ -7142,7 +7228,7 @@ function updateFallers(dt){
           if(f.ice) e.slow = Math.max(e.slow, 1.25); // 冰川尖刺：命中减速
           if(f.ice) tryFreeze(e, 0.12, 0.7); // 冰川尖刺：12% 概率冰冻 0.7 秒
           if(f.type === 'spike' && !f.ice) applySlow(e, 0.9); else if(f.type === 'stamp') applySlow(e, 0.8); else if(f.type === 'rock') applySlow(e, 0.7); // 土系身份：地刺/印章/落岩命中减速（移速×0.45，精英/Boss 递减）
-          if(f.type === 'stamp' && !e.dead) hzConvTry(e, hzLvOk); // 吃苦转化掷点（2026-10-29 用户令，取代本轮删除的普攻眩晕）：普攻印章命中存活敌人后掷转化——等级门禁 hzLvOk（本机读 P.weapons.stamp、lv>=5 或已进化）在本落物结算段敌人循环前算好；普通 4%/精英 2%、Boss 不吃（hzConvTry 内部门禁）、被砸死者不掷（!e.dead）；主印与连环小印同掷；按键技 bigseal 不进本行、其震晕/易伤口径一字未动；完整口径见 HZ_CONV 定版注
+          if(f.type === 'stamp' && !e.dead) hzConvTry(e, hzLvOk); // 吃苦转化掷点（2026-10-29 用户令，取代本轮删除的普攻眩晕）：普攻印章命中存活敌人后掷转化——等级门禁 hzLvOk（本机读 P.weapons.stamp、lv>=5 或已进化）在本落物结算段敌人循环前算好；普通 10%/精英 6%、Boss 不吃（hzConvTry 内部门禁）、被砸死者不掷（!e.dead）；主印与连环小印同掷；按键技 bigseal 不进本行、其震晕/易伤口径一字未动；完整口径见 HZ_CONV 定版注
           if(f.type === 'bigseal'){ var stunD = e.boss ? 0.45 : (e.elite ? 0.8 : 1.3); e.stun = Math.max(e.stun || 0, stunD); } // 牛马审判：砸中震晕（普通 1.3 秒、精英 0.8 秒、Boss 0.45 秒，按抗性递减）
           if(f.type === 'bigseal' && !e.dead){ e.vulnT = 10; if(e.boss || e.elite) texts.push({ x: e.x, y: e.y - e.r - 18, v: 0, txt: '易伤！受到伤害 +10%（10 秒）', t: 0, color: '#ffb02e' }); } // 牛马审判易伤（2026-10-27 用户令）：被审判砸伤但没死的怪挂易伤——10 秒内受到的一切伤害 +10%（结算在 damageEnemy）；直接被砸死的不挂（上方 !e.dead 门禁）；不叠加、再被审判命中直接刷新回 10 秒；精英/Boss 同样适用；审判本身伤害 115/范围/冷却 26 秒未动，本次命中不吃自己刚挂的易伤（先结算伤害、后挂状态）
           if(f.type === 'bigseal' && !e.dead) hzSealKbStart(e, f.x, f.y); // 牛马审判击飞（2026-10-29 用户令）：顺序在本行伤害→震晕（上方 bigseal 行）→易伤（上方一行）之后登记、仅存活者——以落点 f.x/f.y 为圆心径向外击飞（普通 420／精英 210／Boss 105、飞速 1200px/秒逐步飞行、飞行期间不能移动/攻击、眩晕计时飞行中照常递减不延长总控制，完整口径见 updateFallers 上方 HZ_SEAL_KB 定版注）；NPC/替身两路在其各自 bigseal 段同式补登记、三路同口径
@@ -7829,7 +7915,7 @@ function updateZones(dt){
       if(tl.allySrc && (tl.allySrc.hzConvT || 0) > 0){ // 吃苦转化友军的预警圈（2026-10-29 用户令）：圈源在爆发瞬间仍是转化友军 → 改爆伤圈内敌对怪（hzAllyDamage、归玩家方），不伤玩家；圈源已恢复敌对则落回下方原玩家口径
         for(var tci = 0; tci < enemies.length; tci++){ var tce = enemies[tci]; if(tce.dead || (tce.hzConvT || 0) > 0) continue; if(Math.sqrt(dist2(tce.x, tce.y, tl.x, tl.y)) < tl.r + tce.r) hzAllyDamage(tce, tl.dmg); }
       }
-      else if(Math.sqrt(dist2(P.x, P.y, tl.x, tl.y)) < tl.r && !shopBarProtects(P.x, P.y)) hurtPlayer(tl.dmg, tl.srcE || null); // 商人结界（2026-10-29 用户令）：预警圈爆发时玩家在商人结界内 → 不结算（怪物恒在界外、落点圈伤害属怪物攻击；圈视觉/爆发特效照常）；srcE＝预警圈来源 Boss（Boss 技能圈生成时标注、供 Boss 吸血结算，无标注为 null）
+      else if(Math.sqrt(dist2(P.x, P.y, tl.x, tl.y)) < tl.r && !shopBarProtects(P.x, P.y) && !portalBarSeparates(tl.x, tl.y, P.x, P.y)) hurtPlayer(tl.dmg, tl.srcE || null); // 传送门结界（2026-10-30）：预警圈爆发跨侧（圈心与玩家分在两侧）不结算；同侧照常 // 商人结界（2026-10-29 用户令）：预警圈爆发时玩家在商人结界内 → 不结算（怪物恒在界外、落点圈伤害属怪物攻击；圈视觉/爆发特效照常）；srcE＝预警圈来源 Boss（Boss 技能圈生成时标注、供 Boss 吸血结算，无标注为 null）
     }
   }
   for(var bmi = beams.length - 1; bmi >= 0; bmi--){ var bm = beams[bmi]; bm.t += dt; // 裂缝射线：预警期结束后迸发，迸发瞬间结算一次走廊伤害
@@ -7841,14 +7927,14 @@ function updateZones(dt){
     }
     if(bm.t >= bm.warn && !bm.hitDone){
       var bdx = P.x - bm.x, bdy = P.y - bm.y, bl2 = Math.cos(bm.ang) * bdx + Math.sin(bm.ang) * bdy, bp2 = Math.abs(-Math.sin(bm.ang) * bdx + Math.cos(bm.ang) * bdy);
-      if(bl2 > 0 && bl2 < bm.len && bp2 < bm.wid / 2 + pCollR() && mazeLOS(bm.x, bm.y, P.x, P.y) && !shopBarProtects(P.x, P.y)){ hurtPlayer(bm.dmg); bm.hitDone = true; } // 新屋视线门禁（2026-10-29 查修）：光束命中结算同样要过墙检——玩家躲到墙后（与束源隔墙）即不吃这一发，与触发侧 mazeLOS 同口径；劳农裂缝射线不在新屋、mazeLOS 恒通不受影响；商人结界（2026-10-29 用户令）：玩家在商人结界内时凝视射线同口径不结算（hitDone 照常置位、本束不重判）
+      if(bl2 > 0 && bl2 < bm.len && bp2 < bm.wid / 2 + pCollR() && mazeLOS(bm.x, bm.y, P.x, P.y) && !shopBarProtects(P.x, P.y) && !portalBarSeparates(bm.x, bm.y, P.x, P.y)){ hurtPlayer(bm.dmg); bm.hitDone = true; } // 传送门结界（2026-10-30）：凝视/裂缝射线源与玩家跨侧不结算（hitDone 照常置位） // 新屋视线门禁（2026-10-29 查修）：光束命中结算同样要过墙检——玩家躲到墙后（与束源隔墙）即不吃这一发，与触发侧 mazeLOS 同口径；劳农裂缝射线不在新屋、mazeLOS 恒通不受影响；商人结界（2026-10-29 用户令）：玩家在商人结界内时凝视射线同口径不结算（hitDone 照常置位、本束不重判）
     }
     if(bm.t >= bm.warn + bm.dur) beams.splice(bmi, 1);
   }
   for(var sti = storms.length - 1; sti >= 0; sti--){ var so = storms[sti]; so.t += dt; so.x += so.vx * dt; so.y += so.vy * dt; // 虚空风暴区：漂移反弹，区内持续伤害
     if(so.x < -ARENA.hw + so.r || so.x > ARENA.hw - so.r) so.vx *= -1;
     if(so.y < -ARENA.hh + so.r || so.y > ARENA.hh - so.r) so.vy *= -1;
-    so.tick -= dt; if(so.tick <= 0 && dist2(P.x, P.y, so.x, so.y) < so.r * so.r){ so.tick = 0.5; hurtPlayer(11); }
+    so.tick -= dt; if(so.tick <= 0 && dist2(P.x, P.y, so.x, so.y) < so.r * so.r){ so.tick = 0.5; if(!portalBarSeparates(so.x, so.y, P.x, P.y)) hurtPlayer(11); } // 传送门结界（2026-10-30）：虚空风暴区心与玩家跨侧不结算（回程门就在竞技场内、此点为其主要受惠点）；同侧照常
     if(so.t >= so.dur) storms.splice(sti, 1);
   }
   for(var fxi = fxAnims.length - 1; fxi >= 0; fxi--){ var fx9 = fxAnims[fxi]; fx9.t += dt; if(fx9.t >= fx9.dur) fxAnims.splice(fxi, 1); } // 帧动画特效计时（含负 t 延迟）
@@ -7924,7 +8010,7 @@ function updateZones(dt){
         if(z.tick <= 0){ damageEnemy(e, z.dps * 0.5, 0, 0); if(z.chBasic) chBasicShock(e, CH_SHOCK_BASIC_DMG * (z.chMul || 1)); } // 普攻 Lv5 感电（2026-10-29）：仅带 chBasic 盖章的陈哈哈雷暴云逐跳挂小怪感电；其余 dot/volt 场无此章不挂
       }
     }
-    if(z.type === 'moss' && dist2(P.x, P.y, z.x, z.y) < (z.r + 14) * (z.r + 14) && !shopBarProtects(P.x, P.y)) P.mossSlowT = Math.max(P.mossSlowT || 0, 2.5); // 苔痕：只黏玩家（上方敌人循环对 moss 无任何分支——对怪无效），踩上减速、离开后数秒消退；商人结界（2026-10-29 用户令）：苔痕是怪物留下的攻击效果、打不进结界——玩家在商人结界内不被黏（苔痕本体在界外、圈内无苔可踩）
+    if(z.type === 'moss' && dist2(P.x, P.y, z.x, z.y) < (z.r + 14) * (z.r + 14) && !shopBarProtects(P.x, P.y) && !portalBarSeparates(z.x, z.y, P.x, P.y)) P.mossSlowT = Math.max(P.mossSlowT || 0, 2.5); // 传送门结界（2026-10-30）：苔痕跨侧不黏；苔痕：只黏玩家（上方敌人循环对 moss 无任何分支——对怪无效），踩上减速、离开后数秒消退；商人结界（2026-10-29 用户令）：苔痕是怪物留下的攻击效果、打不进结界——玩家在商人结界内不被黏（苔痕本体在界外、圈内无苔可踩）
     if(z.tick <= 0 && z.type !== 'cloud') z.tick = 0.5; // 雷云除外：它的 tick 是落雷节拍器——旧版这一行每帧抢先把 tick 重置成 0.5，下方雷云分支永远等不到 tick<=0，落雷从未触发（用户实测「雷云不劈怪」根因）
     if(z.type === 'rain'){ // 雨幕地面反馈：涟漪（对象池）＋落点水花素材，节奏与雨丝呼应【特效加明显轮（2026-10-29）：纯视觉密度——涟漪间隔 0.07→0.04、大涟漪概率 0.3→0.45、水花概率 0.65→0.9、水花尺寸 26–44→32–56；伤害/减速 tick 在上方敌人循环内、本段不涉】
       z.ripT = (z.ripT || 0) - dt;
@@ -8349,7 +8435,7 @@ function applyShock(e, dmgVal){
    ①沿用按键技感电同一系统、不另设持续时间：同一 e.shockOn／e.shockDmg 旗、同一全局互击扫描段（update 内）——感电至死、无计时、互击后不消耗不消失；
      互击触发距离 CH_SHOCK_RANGE＝180（中心距）、每只每 CH_SHOCK_ZAP_CD＝1.0 秒至多互击一次、每次扫描每只至多参与一对、互击触发时双方各停顿 CH_SHOCK_PAUSE＝1.0 秒——全部与按键技共用常量，按键技口径一字未动。
    ②小怪定义＝普通怪：!e.boss && !e.elite && !e.streetElite——精英／Boss 一律排除（隐藏 Boss 朱德与克隆分身带 boss 旗标、街尾精英带 streetElite 旗标，均在此排除内）；普攻命中精英／Boss 不挂感电（按键技对精英／Boss 挂感电是其自有口径、不受本门禁影响）。
-   ③门禁＝电击小子（chainvolt）武器等级 lv>=5（进化 evo 时 lv 恒为 5、同算满级保留）；Lv1–Lv4 一字不挂。覆盖普攻全部命中形态：主链逐跳、Lv3 分叉电、分支 B 天雷引落雷（该落雷段只有本机路径有实现、NPC／替身本就无此段）、分支 C 雷暴云逐跳电击（三路的 zone 逐跳同走本 helper，zone 创建时以 chBasic/chMul 盖章）。
+   ③门禁＝电击小子（chainvolt）武器等级 lv>=5（进化 evo 时 lv 恒为 5、同算满级保留）；Lv1–Lv4 一字不挂。覆盖普攻全部命中形态：主链逐跳、Lv3 分叉电、分支 B 天雷引落雷（该落雷段只有本机路径有实现、NPC／替身本就无此段）、分支 C 雷暴云逐跳电击（三路的 zone 逐跳同走本 helper，zone 创建时以 chBasic/chMul 盖章）。【2026-10-30 拆分追加】分支 C 已独立成技能「雷爆云」（voltstorm）——其云区不带 chBasic 章、不挂感电（感电仍只属电击小子普攻本体口径）；本注③中雷暴云逐跳盖章一段随分支拆出失效，updateZones／npcZones／standZones 中 z.chBasic 判定保留为无害空转（再无任何创建点置该章）。
    ④互击伤害乘区（与按键技分开锁定）：普攻挂感电时锁定 e.shockDmg＝CH_SHOCK_BASIC_DMG(15)×当次普攻伤害乘区 mulV（本机＝mul×earlySigMul×sigDmgMul、NPC＝npcMul 系、替身＝standMul 系，三路同式）——为按键技基数 CH_SHOCK_DMG(30) 的一半：普攻高频＋链跳多目标，若同用 30 会让满级普攻的互击收益压过按键技专属感电，故减半锁定；互击结算本身走既有扫描段（元素雷、DMG_CRIT 0.10、双向同帧、停顿），不另开乘区。
    ⑤与按键技感电叠加／刷新：不叠加层数（同一面旗）；普攻只对「尚未感电」的小怪新挂——已感电者（不论由普攻还是按键技挂上）普攻再命中不重锁、不刷新其 shockDmg（按键技既有锁定值不被普攻的减半值覆盖）；反向按键技再命中仍按 applyShock 既有口径重锁为按键技值，本轮未改 applyShock。
    ⑥NPC／替身陈哈哈同口径同步：NPC 读其自己 npcW.chainvolt 的 lv、替身读召唤者本人 P.weapons.chainvolt 的 lv，均 lv>=5 同门禁、同 helper、同基数；真人远端成员不走此三路（房主权威结算外不另加）。 */
@@ -8413,7 +8499,7 @@ function chTwNpcPSum(p, f){ var s = 0; if(p && p.npcP) for(var k in p.npcP){ var
 function chTwNpcMul(p){ // npcMul 的主脚本同式镜像（逐项同源：开局系数／角色倍率／队伍等级双成长／巨人之力／被动 dmgP／狂暴被动／宝箱力量药剂／构筑层）；NPC 天威再 ×earlySigMul×sigDmgMul 与其普攻 mulV 同式
   var openMul = gameTime < 240 ? 0.75 + 0.25 * (gameTime / 240) : 1;
   var c = CHARACTERS[p.hero];
-  return openMul * c.dmgMul * (1 + 0.03 * Math.max(0, (p.lv || 1) - 1)) * (1 + 0.025 * Math.max(0, (p.lv || 1) - 1)) * (1 + 0.12 * ((p.npcP && p.npcP.glove) || 0)) * (1 + chTwNpcPSum(p, 'dmgP')) * ((p.npcP && p.npcP.berserk) && p.hp < p.maxHp * 0.5 ? 1 + 0.10 * p.npcP.berserk : 1) * (p.chestDmgT > 0 ? 1.25 : 1) * (1 + 0.06 * (p.buildCount || 0)); // 等级双成长改读该 NPC 自己的 p.lv（2026-10-29 联机等级各自独立轮；旧读全队共享 P.level）
+  return openMul * c.dmgMul * (1 + 0.03 * Math.max(0, (p.lv || 1) - 1)) * (1 + 0.025 * Math.max(0, (p.lv || 1) - 1)) * (1 + 0.12 * ((p.npcP && p.npcP.glove) || 0)) * (1 + chTwNpcPSum(p, 'dmgP')) * ((p.npcP && p.npcP.berserk) && p.hp < p.maxHp * 0.5 ? 1 + 0.10 * p.npcP.berserk : 1) * (p.chestDmgT > 0 ? 1.25 : 1) * (1 + 0.06 * (p.buildCount || 0)) * timeBuffMul(); // 定时全队增幅（2026-10-30）：NPC 乘区同接 timeBuffMul（npcMul 与 chTwNpcMul 镜像两处同式）；等级双成长改读该 NPC 自己的 p.lv（2026-10-29 联机等级各自独立轮；旧读全队共享 P.level）
 }
 function chTwOnKillNpc(p){ // NPC 陈哈哈计数（独立计数器、读其自己 chainvolt 等级、以该 NPC 为圆心、伤害盖其 DMG_SRC，口径注 ⑧）
   var w = p.npcW && p.npcW.chainvolt; if(!w || !(w.lv >= 5 || w.evo)) return;
@@ -8810,11 +8896,13 @@ function openChest(){
    刷新：开局 90 秒内不刷；间隔故意不均（约 100–285 秒、均值约 3 分钟），距上次出现满 300 秒保底必刷，来过后至少隔 90 秒；
    随机位置（离玩家 ≥700px，不与宝箱/新屋入口重叠），只在主地图出现（新屋/虚空战场不刷，期间计时冻结）；
    在场 60 秒，屏幕边缘金箭头指引，最后 10 秒头顶倒计时闪烁；中立 NPC：独立对象、不进敌人列表，任何索敌/伤害结算都碰不到他，无血条；
-   走近停留满 3 秒开店（战斗暂停；2026-10-28 用户令：64px 内连续停留满 3 秒才开、不满离开即计时重置，关店/新商人刷出/商人离场同样清零；联机远端由房主逐人同口径计时），关店无惩罚，消失前走回来可继续买（关店后需先走开再走近才重新开店，防贴身反复弹窗）。
+   走近停留满 1 秒开店（战斗暂停；2026-10-29 用户令改 1 秒：64px 内连续停留满 1 秒才开、不满离开即计时重置，关店/新商人刷出/商人离场同样清零；联机远端由房主逐人同口径计时；原 2026-10-28 的 3 秒口径作废），关店无惩罚，消失前走回来可继续买（关店后需先走开再走近才重新开店，防贴身反复弹窗）。
    牛筋：击杀直接到账（普通 +1 / 精英 +15 / Boss +80），HUD 顶栏常驻显示（击杀数旁黄色牛筋片）。
-   属性仅 5 项，总加成平摊到买满：生命力 +600（+6/次）、速度 +30%（+0.3%/次）、吸血 +30%（+0.3%/次）、
-   技能冷却 −8%（−0.2%/次、整局上限 40 次）、爆击机率 +30%（+0.3%/次）；起价分档，本趟内每买一次 ×1.35 涨价；
+   属性 6 项（第六项攻击力为 2026-10-29 用户令新增）：生命力 +600（+6/次）、速度 +30%（+0.3%/次）、吸血 +30%（+0.3%/次）、
+   技能冷却 −8%（−0.2%/次、整局上限 40 次）、爆击机率 +30%（+0.3%/次）、攻击力 +1000%（每次 ×1.15 乘算复利、第 18 次封顶 ×11.0）；起价分档，本趟内每买一次 ×1.35 涨价（攻击力价格例外，2026-10-30 纠正：基础价＝五维众数 55 的 2 倍＝110 牛筋、访内涨价 ×1.5、实际价格 110/165/250/370/555、合计 1450 牛筋）；
    上限两层：每趟每项限购 10 次（每次刷新重置，价格涨幅计数同步重置），整局上限技能冷却 40 次、其余四项 100 次（不重置、买满售罄）。
+   攻击力例外（2026-10-30 用户令纠正，取代新增时的次数口径）：攻击力不设每趟限购、不设总购买次数上限——唯一上限是加成 +1000% 封顶（买满后因加成已满不可再买、不是次数用完；上限值 2026-10-30 由 +100% 改为 +1000%）；价格随后按 2026-10-30 价格纠正改为基础价 ×2＝110 牛筋＋访内 ×1.5 涨价（见条目注）；牛筋/按人独立/新局重置不变；五维与其余商品的次数限制一字不动。
+   攻击力算法（2026-10-30 用户令再纠正「效果要高、换算法」，推翻 +5% 加算）：乘算复利——每购一次当前伤害 ×1.15，逐次总乘区 ×1.15／×1.3225／×1.520875／×1.74900625，第 17 次 ×10.7613、第 18 次按封顶结算为 ×11.0（原复利值 ×12.3755 被钳；上限于 2026-10-30 由 +100% 改为 +1000%）；同买 3 次对比：旧加算 ×1.15、新复利 ×1.520875。
    技能货架：每趟随机 4 件（与升级池同口径：通用攻击＋未隐藏被动＋本角色专属主武器），每件限购一次、牛筋够可全买，
    价 100–220 按档位；买下即学会/升级，照旧守攻击 8 / 被动 15 / Lv5 上限（学习上限 2026-10-29 改 8/15）。
    商品刷新（2026-10-28 用户令第 21 项）：源码确认——此前店内没有任何刷新货架的机制，货架只在新商人到访时整架重滚（等效店内刷新 0 次/趟）；
@@ -8825,7 +8913,8 @@ var SHOP_ATTRS = [
   { id:'spd',   name:'速度',     unit:'移动速度 +0.3%',     cap:'总上限 +30%',   base:35 },
   { id:'leech', name:'吸血',     unit:'吸血 +0.3%',        cap:'总上限 +30%',   base:55 },
   { id:'cdr',   name:'技能冷却', unit:'冷却缩减 +0.2%',    cap:'总上限 −8%',    base:55, capTotal:40 }, // 整局购买上限 100→40（2026-10-28 用户令第 23 项）：40 次 × 0.2% ＝ 总减冷却 −8% 封顶；其余四维无 capTotal 字段、仍走默认整局上限 100
-  { id:'crit',  name:'爆击机率', unit:'暴击率 +0.3%',      cap:'总上限 +30%',   base:45 }
+  { id:'crit',  name:'爆击机率', unit:'暴击率 +0.3%',      cap:'总上限 +30%',   base:45 },
+  { id:'atk',   name:'攻击力',   unit:'伤害乘算 ×1.15',    cap:'加成上限 +1000%', base:110, grow:1.5 } // 第六维「攻击力」（2026-10-29 用户令新增）：算法＝乘算复利（2026-10-30 用户令「效果要高、换算法」推翻原 +5% 加算）——每购一次当前伤害 ×1.15（累计加成 (1＋shopAtk)×1.15−1，见 shopApplyAttr），逐次乘区 ×1.15／×1.3225／×1.520875／×1.74900625、第 18 次封顶 ×11.0（shopAtk 钳 10.0；第 17 次 ×10.7613）；购买次数不限（2026-10-30 用户令纠正：删去原 capTotal 20 次与每趟限购 10 次——buyShopAttr/renderShop 对 atk 单独分流，唯一门禁是 shopAtk≥10.0 即加成 +1000% 已满、封顶后不可再买是因加成满、非次数用完）；基础价——源码五维基础价并不统一（生命力 40／速度 35／吸血 55／技能冷却 55／爆击机率 45），无单一「五维基础价」可沿，价格（2026-10-30 用户令纠正「攻击力的购买价格要贵一些」，取代原与五维一致口径）：基础价＝五维众数 55 的 2 倍＝110 牛筋、访内涨价 ×1.5（条目自带 grow:1.5、shopAttrPrice 对 atk 取 1.5，五维仍 ×1.35 一字不变）、取整到 5、下一趟随 visit 重置回落；实际价格表：第 1–5 次依次 110／165／250／370／555 牛筋（同趟前 5 次合计 1450；封顶共需 18 次、跨趟购买时价格随 visit 重置回落）；冲突核查：全仓此前无名为「攻击力」的商人维度或技能（仅面板泛称），不重复建项
 ];
 var SHOP_REFRESH_MAX = 1; // 商品刷新次数上限（第 21 项）：店内刷新货架 0→1 次/趟，每次新商人到访重置回满额
 var SHOP_ITEM_PRICE = 50; // 道具购买普通道具固定价（2026-10-28 用户令细化）：50 牛筋一件——源码确认：道具与技能卡价格入口不同，地图道具（DROP_ITEMS）此前没有任何商店价格入口（只有掉落/拾取 applyDropPickup），技能货架走 rollShopStock 的 100–220 随机价、五维走 shopAttrPrice，两者均不适用于道具位，故道具位自设固定价、不走随机价；新增道具购买并非统一价——「前晚的尿液」有独立价（见下行），其余仍 50（差异已按用户令报出）
@@ -8833,7 +8922,7 @@ var SHOP_URINE_PRICE = 200; // 「前晚的尿液」购买价（2026-10-28 用�
 var SHOP_ITEM_BUYS = 3; // 普通道具每刷新可买次数（2026-10-28 用户令细化）：每次刷新可买 3 次、买满等下一次刷新；「刷新」口径＝新商人到访（spawnMerchant）或店内刷新货架（refreshShopStock），联机客机每趟开店同口径重置（见快照开店段）
 var SHOP_URINE_BUYS = 1; // 「前晚的尿液」限购（2026-10-28 用户令）：每个商人到访期间限购 1 次，刷新（新商人到访/店内刷新货架，与普通道具同一刷新口径）后重置可再买；与普通道具的 3 次计数不共用入口——尿液走独立计数 urineLeft、不占普通道具 3 次，普通道具也不占尿液这 1 次
 var SHOP_ITEM_KINDS = ['drink', 'magnet', 'bomb', 'stim', 'shield', 'urine']; // 道具购买可售清单：只限地图道具池（DROP_ITEMS）内六种——回血饮料/磁石/炸弹/兴奋剂/护盾发生器/前晚的尿液，池外一律不卖；获得方式＝玩家自选（逐件明码标价自选购买，非随机抽：尿液有独立价格与限购、自选最清晰，随机抽口径不采用）
-var SHOP = { beef:0, earned:0, npc:null, nextT:120, sinceLast:0, visit:{}, totals:{}, stock:[], seq:0, refreshLeft:0, itemLeft:0, urineLeft:0, nearT:0 }; // seq：商人刷新序号（每趟 +1；联机随快照下发，客户端据此每趟只播一次「你好」）；refreshLeft：本趟剩余商品刷新次数；itemLeft：本刷新剩余普通道具可买次数；urineLeft：本趟剩余尿液可买次数（道具购买独立选项，与技能货架/五维完全分开）；nearT：本机玩家在开店距离 64px 内的连续停留计时（2026-10-28 用户令：满 3 秒才开店，离开即重置）
+var SHOP = { beef:0, earned:0, npc:null, nextT:120, sinceLast:0, visit:{}, totals:{}, stock:[], seq:0, refreshLeft:0, itemLeft:0, urineLeft:0, nearT:0 }; // seq：商人刷新序号（每趟 +1；联机随快照下发，客户端据此每趟只播一次「你好」）；refreshLeft：本趟剩余商品刷新次数；itemLeft：本刷新剩余普通道具可买次数；urineLeft：本趟剩余尿液可买次数（道具购买独立选项，与技能货架/五维完全分开）；nearT：本机玩家在开店距离 64px 内的连续停留计时（2026-10-29 用户令改 1 秒：满 1 秒才开店，离开即重置；原 2026-10-28 的 3 秒口径作废）
 var MONK_IMG = new Image(); MONK_IMG.src = 'assets/npc/merchant_monk.png'; // 场上精灵：Mystery Monk（Calciumtrice / Merry Dream Games，CC-BY 3.0）
 function shopNextDelay(first){
   if(first) return rand(95, 160); // 开局 1 分半内不刷，首访约 1.6–2.7 分钟
@@ -8844,7 +8933,7 @@ function shopReset(){
   SHOP.nextT = shopNextDelay(true); SHOP.visit = {}; SHOP.totals = {}; SHOP.stock = []; SHOP.refreshLeft = SHOP_REFRESH_MAX; SHOP.itemLeft = SHOP_ITEM_BUYS; SHOP.urineLeft = SHOP_URINE_BUYS;
   var ss = document.getElementById('shopScreen'); if(ss) ss.classList.remove('on');
 }
-function shopAttrPrice(def){ return Math.round(def.base * Math.pow(1.35, SHOP.visit[def.id] || 0) / 5) * 5; }
+function shopAttrPrice(def){ return Math.round(def.base * Math.pow(def.grow || 1.35, SHOP.visit[def.id] || 0) / 5) * 5; } // 访内涨价：默认 ×1.35^本趟已购、取整到 5（五维不变）；条目自带 grow 者从其值——攻击力 grow:1.5（2026-10-30 价格纠正：基础价 ×2＋访内 ×1.5）
 function shopSkillPool(){
   var pool = [], k, gi;
   for(gi = 0; gi < GENERIC_WEAPONS.length; gi++){
@@ -8854,6 +8943,10 @@ function shopSkillPool(){
   }
   var sig = CHARACTERS[P.charIdx].weapon; // 角色专属：只有正在玩的角色才刷得出自己的专属（主武器恒已持有，以「强化」形式上架）
   if(P.weapons[sig] && P.weapons[sig].lv < WEAPONS[sig].max) pool.push({ kind:'w', key:sig, mode:'up', sig:true });
+  if(sig === 'chainvolt'){ // 雷爆云（2026-10-30 拆分）：陈哈哈专属独立主动进商人货架——未学以「新招式」上架、已学未满级以「强化」上架（均标本角色专属、价带同专属 180 基准）；其他角色货架永不出现
+    if(P.weapons.voltstorm){ if(P.weapons.voltstorm.lv < WEAPONS.voltstorm.max) pool.push({ kind:'w', key:'voltstorm', mode:'up', sig:true }); }
+    else if(!hasCP('doomcontract')) pool.push({ kind:'w', key:'voltstorm', mode:'new', sig:true });
+  }
   var pc = Object.keys(P.passives).length;
   for(k in PASSIVES){
     if(PASSIVES[k].hidden) continue;
@@ -8889,7 +8982,7 @@ function spawnMerchant(){
   for(var bei = 0; bei < enemies.length; bei++){ var be = enemies[bei]; if(be.dead) continue; var bed = Math.hypot(be.x - x, be.y - y); if(bed < SHOP_BAR_R + be.r){ var bea = bed > 1 ? Math.atan2(be.y - y, be.x - x) : rand(0, Math.PI * 2); be.x = x + Math.cos(bea) * (SHOP_BAR_R + be.r + 30); be.y = y + Math.sin(bea) * (SHOP_BAR_R + be.r + 30); } }
   effects.push({ type:'ring', x: x, y: y, r: SHOP_BAR_R, t: 0, dur: 0.6, max: SHOP_BAR_R, color: '#ffd23e' });
   texts.push({ x: x, y: y - 118, v: 0, txt: '小结界展开——怪物不得入内', t: 0, color: '#ffd23e' });
-  SHOP.nearT = 0; // 新商人刷出：3 秒开店计时清零（2026-10-28 用户令）
+  SHOP.nearT = 0; // 新商人刷出：1 秒开店计时清零
   SHOP.seq = (SHOP.seq || 0) + 1;   // 本趟序号（联机：随快照下发客户端，每趟只播一次「你好」）
   SHOP.visit = {};                // 每趟重置：属性本趟计数与涨价计数清零
   SHOP.stock = rollShopStock();  // 本机货架：按本机玩家自己的构筑/等级上限/专属池自滚（联机时每位玩家各自一架，不共用）
@@ -8909,15 +9002,15 @@ function merchantTick(dt){
     shopBarrierTick(); // 商人小结界每帧封闭（2026-10-29 用户令）：界内怪物全数沿径向推出（含 Boss/召唤物、无豁免）；商人离场（下方 npc 置 null）后本行不再执行、结界随之消失
     n.t -= dt;
     if(n.t <= 0){
-      SHOP.npc = null; SHOP.nearT = 0; SHOP.nextT = shopNextDelay(false); // 商人离场：3 秒开店计时清零
+      SHOP.npc = null; SHOP.nearT = 0; SHOP.nextT = shopNextDelay(false); // 商人离场：1 秒开店计时清零
       texts.push({ x: P.x, y: P.y - 60, v: 0, txt: '梁鸡细佬收摊离开了', t: 0, color: '#b9bfa8' });
       return;
     }
     var dd = dist2(P.x, P.y, n.x, n.y);
     if(!SHOP.nihaoDone && dd < 110 * 110){ SHOP.nihaoDone = true; sfx('nihao'); } // 靠近触发「你好」（milo 口径）：靠得很近（110px 内，与走开重置距离同档）才播、本趟只此一次；排在 openShop 之前，同帧先问候再开店
     if(n.needLeave){ SHOP.nearT = 0; if(dd > 110 * 110) n.needLeave = false; } // needLeave 门禁（110px）不动，门禁期间不计时
-    else if(dd < 64 * 64){ SHOP.nearT += dt; if(SHOP.nearT >= 3){ SHOP.nearT = 0; openShop(); } } // 2026-10-28 用户令：开店距离 64px 内连续停留满 3 秒才开店（取代旧「进圈即开」）
-    else SHOP.nearT = 0; // 不满 3 秒离开开店距离（≥64px）→ 计时重置为 0（重置，不是暂停）
+    else if(dd < 64 * 64){ SHOP.nearT += dt; if(SHOP.nearT >= 1){ SHOP.nearT = 0; openShop(); } } // 2026-10-29 用户令改 1 秒：开店距离 64px 内连续停留满 1 秒才开店（原 2026-10-28 的满 3 秒口径作废；距离门槛 64px 不动）
+    else SHOP.nearT = 0; // 不满 1 秒离开开店距离（≥64px）→ 计时重置为 0（重置，不是暂停）
   } else {
     SHOP.sinceLast += dt; SHOP.nextT -= dt;
     if(SHOP.nextT <= 0 || SHOP.sinceLast >= 300) spawnMerchant(); // 300 秒保底必刷
@@ -8934,7 +9027,7 @@ function openShop(){
 function closeShop(){
   el('shopScreen').classList.remove('on');
   if(state === 'shop') state = 'playing';
-  SHOP.nearT = 0; // 关店：3 秒开店计时清零
+  SHOP.nearT = 0; // 关店：1 秒开店计时清零
   if(SHOP.npc) SHOP.npc.needLeave = true;
 }
 function shopApplyAttr(def){
@@ -8943,12 +9036,14 @@ function shopApplyAttr(def){
   else if(def.id === 'leech') P.shopLeech = (P.shopLeech || 0) + 0.003;
   else if(def.id === 'cdr') P.shopCdMul = Math.max(0.92, (P.shopCdMul || 1) - 0.002); // 下限 0.8→0.92 随整局上限 40 次对齐（40 × −0.2% ＝ −8%，2026-10-28 第 23 项）；每次减幅 −0.2% 不变
   else if(def.id === 'crit') P.shopCrit = (P.shopCrit || 0) + 0.003;
+  else if(def.id === 'atk') P.shopAtk = Math.min(10, (1 + (P.shopAtk || 0)) * 1.15 - 1); // 攻击力乘算复利（2026-10-30 用户令）：每次在当前累计加成上再 ×1.15——逐次总乘区 1.15／1.3225／1.520875／1.74900625，第 17 次 ×10.7613（+976%）、第 18 次原应 ×12.3755、由 Math.min 钳到 10.0＝×11.0 封顶结算（+1000%，2026-10-30 上限纠正、取代原 +100%/×2.0；唯一上限；购买次数不限，见 buyShopAttr 的 atk 分流）
 }
 function buyShopAttr(id){
   var def = null, i;
   for(i = 0; i < SHOP_ATTRS.length; i++) if(SHOP_ATTRS[i].id === id) def = SHOP_ATTRS[i];
   if(!def || state !== 'shop') return;
-  if((SHOP.totals[id] || 0) >= (def.capTotal || 100) || (SHOP.visit[id] || 0) >= 10) return; // 整局上限按维取：技能冷却 40 次（capTotal）、其余四维 100 次；本趟限购 10 次五维不变
+  if(def.id === 'atk'){ if((P.shopAtk || 0) >= 10) return; } // 攻击力（2026-10-30 用户令纠正）：不查 totals/visit 次数——不限购买次数，唯一门禁＝加成已达 +1000%（shopAtk≥10.0）；visit/totals 仍照常计数（只供价格涨幅与界面显示、不作门禁）
+  else if((SHOP.totals[id] || 0) >= (def.capTotal || 100) || (SHOP.visit[id] || 0) >= 10) return; // 其余五维不变：整局上限按维取（技能冷却 40 次 capTotal、其余四维 100 次）、本趟限购 10 次
   var price = shopAttrPrice(def);
   if(SHOP.beef < price){ beep(220, 0.09, 'square', 0.04); return; }
   SHOP.beef -= price;
@@ -9043,11 +9138,12 @@ function renderShop(){
     var row = document.createElement('div'); row.className = 'shop-attr';
     var info = document.createElement('div'); info.className = 'sa-info';
     info.innerHTML = '<div class="sa-name">' + def.name + '<span class="sa-unit">' + def.unit + ' / 次</span></div>' +
-      '<div class="sa-sub">本局已购 ' + tot + ' / ' + (def.capTotal || 100) + '（' + def.cap + '）· 本趟已购 ' + vis + ' / 10</div>';
+      '<div class="sa-sub">' + (def.id === 'atk' ? ('当前攻击力 +' + Math.round((P.shopAtk || 0) * 100) + '% / 1000%（乘区 ×' + (1 + (P.shopAtk || 0)).toFixed(2) + '）· 本局已购 ' + tot + ' 次（不限次数）· 本趟已购 ' + vis + ' 次') : ('本局已购 ' + tot + ' / ' + (def.capTotal || 100) + '（' + def.cap + '）· 本趟已购 ' + vis + ' / 10')) + '</div>'; // 攻击力行（2026-10-29 显示当前加成 +X%/100%；2026-10-30 次数纠正后不再显示次数上限、明示不限次数），其余维度行显示与改前一致
     row.appendChild(info);
     var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'shop-buy';
-    if(tot >= (def.capTotal || 100)){ btn.textContent = '售罄'; btn.disabled = true; }
-    else if(vis >= 10){ btn.textContent = '本趟已满'; btn.disabled = true; }
+    if(def.id === 'atk' && (P.shopAtk || 0) >= 10){ btn.textContent = '已达 +1000%'; btn.disabled = true; } // 攻击力（2026-10-30）：禁用态只认加成封顶、不认次数（无「售罄/本趟已满」）
+    else if(def.id !== 'atk' && tot >= (def.capTotal || 100)){ btn.textContent = '售罄'; btn.disabled = true; }
+    else if(def.id !== 'atk' && vis >= 10){ btn.textContent = '本趟已满'; btn.disabled = true; }
     else {
       btn.innerHTML = '<span class="beef-ico"></span>' + price;
       if(SHOP.beef < price){ btn.textContent = '牛筋不足 · ' + price; btn.disabled = true; }
@@ -9134,7 +9230,9 @@ document.getElementById('tabShopSkills').addEventListener('click', function(){ s
 document.getElementById('tabShopAttrs').addEventListener('click', function(){ switchShopTab('attrs'); });
 document.getElementById('tabShopItems').addEventListener('click', function(){ switchShopTab('items'); });
 window.__shop = SHOP; window.__spawnMerchant = spawnMerchant; window.__openShop = openShop; window.__closeShop = closeShop;
-window.__SHOP_BAR = { R: SHOP_BAR_R, BOSS_NEAR: SHOP_BOSS_NEAR, get: shopBarrier, protects: shopBarProtects, blocksOut: shopBarBlocksOut, crossOut: shopBarCrossOut, crossIn: shopBarCrossIn, tick: shopBarrierTick }; // 探针验收口（2026-10-29 商人结界轮）：结界半径/Boss 禁区/当前结界几何/门禁与封闭函数，只读核对用
+window.__SHOP_BAR = { R: SHOP_BAR_R, BOSS_NEAR: SHOP_BOSS_NEAR, get: shopBarrier, protects: shopBarProtects, blocksOut: shopBarBlocksOut, crossOut: shopBarCrossOut, crossIn: shopBarCrossIn, tick: shopBarrierTick };
+window.__PORTAL_BAR = { R: PORTAL_BAR_R, list: portalBarriers, separates: portalBarSeparates, segCross: portalBarSegCross };
+window.__TIME_BUFF = { stage: timeBuffStage, mul: timeBuffMul, shown: function(){ return timeBuffShown; } }; // 探针验收口（2026-10-30 定时增幅轮）：当前段位/总乘区/已播报段位，只读核对用 // 探针验收口（2026-10-30 传送门结界轮）：半径/当前结界清单/两侧判定/轨迹穿界判定，只读核对用 // 探针验收口（2026-10-29 商人结界轮）：结界半径/Boss 禁区/当前结界几何/门禁与封闭函数，只读核对用
 
 /* ---------------- 升级与觉醒 ---------------- */
 /* 【2026-10-24 按键技特效门禁（milo 定版）】释放按键技能后、其特效没结束之前不许弹升级选技能界面：
@@ -9292,6 +9390,7 @@ function buildChoices(exclude){
       key = GENERIC_WEAPONS[gi];
       if(!P.weapons[key] && !WEAPONS[key].summon && !WEAPONS[key].chestOnly) pool.push({ type:'new', key: key, weight: 2.2 * pairBoostW(key) }); // 召唤五将仅新屋宝箱授予；雷云仅主地图宝箱开出 // 新技能保留合理出现率，不被已学技能挤没；组合联动（2026-10-29）：已学其配对被动时本卡 ×2（2.2→4.4，pairBoostW）
     }
+    if(sigKey === 'chainvolt' && !P.weapons.voltstorm) pool.push({ type:'new', key:'voltstorm', weight: 2.2 }); // 雷爆云（2026-10-30 拆分）：陈哈哈专属独立主动——只对陈哈哈本人出新卡（权重同新招式 2.2、无合成配对不吃组合联动）；其他六人永不出（专属范围＝原分支范围）；学入后升级/连发卡走上方 P.weapons 通用循环、单独占主动格（attackCount 计数、不在 summon/chestOnly 排除内）
   }
   var passCount = Object.keys(P.passives).length;
   for(key in PASSIVES){
@@ -9959,6 +10058,7 @@ function update(dt){
     gems[bg3].v += gems[fi0].v; gems.splice(fi0, 1);
   }
   if(!(typeof MAZE !== 'undefined' && MAZE.active) && !(typeof STREET !== 'undefined' && STREET.active) && !bossAliveNow()) gameTime += dt; // 副本期间主线计时冻结（新屋迷宫／新街尾之影同口径）；Boss 计时暂停（2026-10-28 用户令）：场上仍有 Boss 存活时主时钟同样冻结、全部 Boss 死光才恢复（判定与范围见 bossAliveNow 下方定版注释）——本行在下方 Boss 刷出判定之前：Boss 刷出当帧 gameTime 已达排程点、次帧起冻结；Boss 死亡结算在同帧后续段完成、次帧起恢复（恢复点与冻结点至多差一帧、不跳秒不倒退）
+  timeBuffTick(); // 定时全队增幅（2026-10-30）：gameTime 推进后查段位——到达新段当帧横幅提示一次（段位判定/防重复见 timeBuffTick）
   var bi = currentBiomeIdx();
   if(bi !== lastBiome){
     lastBiome = bi;
@@ -9978,7 +10078,7 @@ function update(dt){
   }
   if(endless && !(typeof MAZE !== 'undefined' && MAZE.active) && !(typeof STREET !== 'undefined' && STREET.active)){
     if(!bossAliveNow()) endlessBossTimer += dt; // Boss 计时暂停（2026-10-28 用户令）：无尽下一只 Boss 的 150 秒计时在 Boss 在场期间不累计——冻结点保留、Boss 死光后从原值续计（不清零、不补刷），与 gameTime 冻结同口径
-    if(endlessBossTimer >= 150){
+    if(endlessBossTimer >= 150 && gameTime >= 360){ // 无尽 Boss 六分钟门（2026-10-29 用户令）：直接开启无尽模式时 Boss 在 360 秒之前不刷新——150 秒计时照常累计（不清零、不补刷），满 150 后仍须等 gameTime 到 360 才刷首只；360 秒后按原 150 秒节拍照旧。普通模式 BOSS_TIMES 时间表与联机成波（mpBossTick）不经此段、一字未动
       endlessBossTimer = 0;
       if(zhudeDue()){ spawnZhude(); bossIdx++; } // 朱德在无尽里仍只走隐藏乱入规则（未进随机池）；新增 420 秒时间门：门未开时本计时点照常走随机池，朱德顺延到 420 秒后的计时点
       else spawnEndlessBoss(); // 无尽定版：随机池召唤（BOSSES 0–5 含劳农、不含朱德），取代原按剧情顺序 spawnBoss
@@ -10175,7 +10275,8 @@ function update(dt){
       pr.x = pr.sx + (pr.tx - pr.sx) * npg; pr.y = pr.sy + (pr.ty - pr.sy) * npg;
       pr.h = Math.sin(npg * Math.PI) * (pr.big ? 130 : 95);
       if(bossBarriers.length && barrierCrossIn(prPx, prPy, pr.x, pr.y)){ pr.tx = pr.x; pr.ty = pr.y; explodeNade(pr); projectiles.splice(pi, 1); } // 结界外投掷的手雷飞入结界（2026-10-28 用户令追加）：在边界处提前引爆——爆心落在界外一侧的落点口径，界内目标由 damageEnemy 结界门禁挡下不吃伤害，子雷自爆心散开后各自再受同一跨界拦截；界内投向界内/界外投向界外不触发
-      if(shopBarCrossOut(prPx, prPy, pr.x, pr.y)){ pr.tx = pr.x; pr.ty = pr.y; explodeNade(pr); projectiles.splice(pi, 1); } // 商人小结界（2026-10-29 用户令）：界内投出的手雷飞出结界 → 在边界处提前引爆（与上方 Boss 结界飞入引爆同式、方向相反）——爆心落在界内一侧，界外目标由 damageEnemy 商人结界门禁挡下不吃伤害，子雷自爆心散开后各自再受同一跨界拦截；界外投向界外/界内、界内投向界内不触发
+      if(shopBarCrossOut(prPx, prPy, pr.x, pr.y)){ pr.tx = pr.x; pr.ty = pr.y; explodeNade(pr); projectiles.splice(pi, 1); }
+      if(portalBarSegCross(prPx, prPy, pr.x, pr.y)){ pr.tx = pr.x; pr.ty = pr.y; explodeNade(pr); projectiles.splice(pi, 1); } // 传送门结界（2026-10-30）：手雷轨迹穿过传送门结界边界 → 同 Boss/商人口径在边界引爆（双向：内→外、外→内都算穿界） // 商人小结界（2026-10-29 用户令）：界内投出的手雷飞出结界 → 在边界处提前引爆（与上方 Boss 结界飞入引爆同式、方向相反）——爆心落在界内一侧，界外目标由 damageEnemy 商人结界门禁挡下不吃伤害，子雷自爆心散开后各自再受同一跨界拦截；界外投向界外/界内、界内投向界内不触发
       continue;
     }
     if(pr.kind === 'serpent'){ // 电蛇（定版）：贴地游走——蛇头朝最近敌人转向、蛇身叠加正弦蜿蜒，轨迹点列即蛇身；不是一颗会发光的球
@@ -10293,6 +10394,7 @@ function update(dt){
       else if(pr.kind === 'wavefront'){ var wpx2 = -pr.vy, wpy2 = pr.vx, wl2 = Math.sqrt(wpx2 * wpx2 + wpy2 * wpy2) || 1, wof = rand(-1, 1) * (pr.wid || 90); particles.push({ x: pr.x + wpx2 / wl2 * wof - pr.vx * 0.03, y: pr.y + wpy2 / wl2 * wof - pr.vy * 0.03, vx: rand(-24, 24), vy: rand(-52, -14), t: 0, life: rand(0.25, 0.45), color: Math.random() < 0.55 ? '#eaf7ff' : '#aee6ff', r: rand(2, 4) }); } // 浪墙泡沫：沿整条浪线翻卷
     }
     if(bossBarriers.length && !(pr.kind === 'boom' && pr.bState === 'return') && barrierCrossIn(prPx, prPy, pr.x, pr.y)){ burst(pr.x, pr.y, '#ff8a7a', fxN(5)); effects.push({ type:'ring', x: pr.x, y: pr.y, t: 0, dur: 0.25, color: '255,110,90' }); projectiles.splice(pi, 1); continue; } // 结界外弹道打入结界（2026-10-28 用户令追加）：玩家投射物本帧由界外跨入界内 → 在边界处销毁（爆点＋红环反馈），不进下方命中结算；回旋镖返航段（boom return）除外——那是飞回界内玩家手中的回收路径、非攻击打入；界内射向界内/界外、界内向外一律不触发
+    if(!(pr.kind === 'boom' && pr.bState === 'return') && portalBarSegCross(prPx, prPy, pr.x, pr.y)){ burst(pr.x, pr.y, '#9adcff', fxN(5)); effects.push({ type:'ring', x: pr.x, y: pr.y, t: 0, dur: 0.25, color: '154,220,255' }); projectiles.splice(pi, 1); continue; } // 传送门结界（2026-10-30 用户令）：本机投射物本帧轨迹穿过任一传送门结界边界 → 边界处销毁（双向隔断：内→外、外→内、穿圆而过都算），不进命中结算；回旋镖返航回收段除外（与 Boss/商人结界同规）；同侧飞行不触发；瞬时/区域伤害另由 damageEnemy 传送门门禁兜底
     if(!(pr.kind === 'boom' && pr.bState === 'return') && shopBarCrossOut(prPx, prPy, pr.x, pr.y)){ burst(pr.x, pr.y, '#ffd76a', fxN(5)); effects.push({ type:'ring', x: pr.x, y: pr.y, t: 0, dur: 0.25, color: '255,210,62' }); projectiles.splice(pi, 1); continue; } // 商人小结界·界内弹道打不到界外（2026-10-29 用户令）：本机/NPC 投射物本帧由商人结界内跨到界外 → 在边界处销毁（金点＋金环反馈），不进下方命中结算；回旋镖返航段（boom return）除外——那是飞回玩家手中的回收路径、非攻击（与 Boss 结界口径同）；界外射向界外/界内、界内射向界内一律不触发；瞬时/区域伤害另由 damageEnemy 商人结界门禁兜底
     var hit = false;
     for(var ei = 0; ei < enemies.length; ei++){
@@ -10487,6 +10589,7 @@ function update(dt){
     ep.x += ep.vx * dt; ep.y += ep.vy * dt;
     if(typeof MAZE !== 'undefined' && MAZE.active && MAZE.walls && mazeWall(Math.floor(ep.x / (MAZE.cell || 64)), Math.floor(ep.y / (MAZE.cell || 64)))){ burst(ep.x, ep.y, ep.color || '#ff8a7a', fxN(4)); eProjectiles.splice(epi, 1); continue; } // 新屋墙体挡弹（2026-10-29 查修）：敌方直线弹道飞入墙格当场销毁（带爆点可见）——旧版弹道完全不查新屋墙体、可隔墙穿房命中玩家，是新屋莫名掉血来源之一；lob 抛物线弹已在上方 continue、不经此段
     if(bossBarriers.length && barrierCrossIn(epPx, epPy, ep.x, ep.y)){ burst(ep.x, ep.y, '#ff8a7a', fxN(4)); eProjectiles.splice(epi, 1); continue; } // 结界外怪物弹道打入结界（2026-10-28 用户令追加）：界外怪的直线弹道本帧跨入界内 → 在边界处销毁，不进下方命中玩家/召唤物结算；Boss 在界内向界内/界外发射（起点在界内）不触发，界内向外口径不改；抛物线 lob 弹已在上方 continue 走落点预警圈结算、不经此段（与橡木盾挡弹的 lob 豁免同口径）
+    if(portalBarSegCross(epPx, epPy, ep.x, ep.y)){ burst(ep.x, ep.y, '#9adcff', fxN(4)); eProjectiles.splice(epi, 1); continue; } // 传送门结界（2026-10-30 用户令）：敌方直线弹道本帧轨迹穿过任一传送门结界边界 → 边界处销毁（双向），不进命中结算；lob 抛物线弹走落点预警圈结算、不经此段（预警圈爆发在 teles 段另有传送门门禁）
     if(shopBarCrossIn(epPx, epPy, ep.x, ep.y)){ burst(ep.x, ep.y, '#ffd76a', fxN(4)); eProjectiles.splice(epi, 1); continue; } // 商人小结界（2026-10-29 用户令）：界外怪的直线弹道本帧跨入商人结界 → 在边界处销毁，不进下方命中玩家/召唤物结算（怪物恒在界外、无「界内发射」情形）；抛物线 lob 弹已在上方 continue 走落点预警圈结算、不经此段（预警圈爆发在 updateZones 的 teles 段另有商人结界门禁）
     if(particles.length < 700 && Math.random() < 0.4)
       particles.push({ x: ep.x, y: ep.y, vx: 0, vy: 0, t: 0, life: 0.18, color: ep.color, r: 1.8 });
@@ -10557,7 +10660,7 @@ function update(dt){
     if(e.vulnT > 0) e.vulnT -= dt; // 易伤计时（牛马审判）：10 秒到即消失，不叠加（重挂只是刷新到 10，见 updateFallers bigseal 段）
     if((e.bzVulnT1 || 0) > 0){ e.bzVulnT1 -= dt; if(e.bzVulnT1 < 1e-9) e.bzVulnT1 = 0; } // 「剑痕」层 1 计时（班仔 Lv2 起剑气）：独立 2 秒到期（与层 2 互不刷新）；浮点尘清零同 bsAirTick 口径
     if((e.bzVulnT2 || 0) > 0){ e.bzVulnT2 -= dt; if(e.bzVulnT2 < 1e-9) e.bzVulnT2 = 0; } // 「剑痕」层 2 计时：同层 1、各自独立
-    if(e.hzConvT > 0){ e.hzConvT -= dt; if(e.hzConvT < 1e-9) e.hzConvT = 0; } // 吃苦转化计时（2026-10-29 用户令）：10 秒到即恢复敌对（hzConvT 清零后下方索敌/友伤门禁自动失效）；位于 stun/吸附/顶落跳段之前——转化中被控住也照常走完 10 秒；浮点尘清零同 bsAirTick 口径
+    if(e.hzConvT > 0){ e.hzConvT -= dt; if(e.hzConvT < 1e-9){ e.hzConvT = 0; var hzPrevSrc = DMG_SRC; DMG_SRC = null; killEnemy(e); DMG_SRC = hzPrevSrc; continue; } } // 吃苦转化计时（2026-10-30 改版，取代 2026-10-29「10 秒到恢复敌对」口径）：15 秒到不恢复敌对、当场直接死亡——走 killEnemy 正常死亡路径（经验/牛筋/掉落/击杀计数按原规则；归因临时置 null 归本机玩家方、与 hzAllyDamage 致死同口径、结算后还原）；continue 跳过本帧余下处理（尸体由循环顶部下帧移除）；位于 stun/吸附/顶落跳段之前——转化中被控住也照常走完 15 秒；被敌对怪在到期前打死仍走 hzFoeHit 直扣死亡（不走 killEnemy，原口径未动）；浮点尘清零同 bsAirTick 口径
     if(e.basiSlowT > 0) e.basiSlowT -= dt; // 八思按键技减速计时：5 秒到即消失，命中刷新回 5（见 updateSkills 星光齐射段）
     if(e.shockZapCd > 0) e.shockZapCd -= dt; // 感电互击冷却（陈哈哈）：感电本身无计时、至死不消（e.shockOn 不在此递减），这里只递减互击的 1.0 秒重复间隔
     if(e.jgIgniteBossCd > 0) e.jgIgniteBossCd = Math.max(0, e.jgIgniteBossCd - dt); // 鸡哥引燃 Boss 冷却递减（2026-10-29 Boss 改版）：触发起算 20 秒、在此逐帧递减（位于 stun 段之前、Boss 被晕/锁定时同样走完冷却，口径与引燃结算同序）
@@ -10795,7 +10898,8 @@ function update(dt){
     var prr = e.r + (tgt === P ? pCollR() : tgt.r);
     var barBlockContact = !!(bossBarriers.length && tgt && tgt.x !== undefined && barrierBlocksIn(e.x, e.y, tgt.x, tgt.y)); // 结界外怪物接触攻击不能打入（2026-10-28 用户令追加）：攻击者（怪）在界外、被攻击者（玩家/替身）在界内 → 本次接触伤害整段不结算（atkCd 照常置位、不逐帧重触发）；界内怪打界内/界外者不拦
     if(!barBlockContact && typeof MAZE !== 'undefined' && MAZE.active && tgt && tgt.x !== undefined && !mazeLOS(e.x, e.y, tgt.x, tgt.y)) barBlockContact = true; // 新屋隔墙接触不结算（2026-10-29 查修）：旧版接触只看中心距，怪与玩家隔一面墙角斜贴（对角墙角两侧中心距可小于接触半径）时能隔墙打中——视线被墙挡住的接触整段不结算，与结界口径同式并入 barBlockContact；同房/同走廊视线直通时行为不变
-    if(!barBlockContact && tgt && tgt.x !== undefined && shopBarProtects(tgt.x, tgt.y)) barBlockContact = true; // 商人小结界（2026-10-29 用户令）：被攻击者（本机玩家/替身）在商人结界内 → 怪物接触伤害整段不结算（atkCd 照常置位）；怪物恒在界外（结界每帧封闭），故只判目标点；联机队友/NPC 的接触伤害在 hostTick 另有同口径门禁
+    if(!barBlockContact && tgt && tgt.x !== undefined && shopBarProtects(tgt.x, tgt.y)) barBlockContact = true;
+    if(!barBlockContact && tgt && tgt.x !== undefined && portalBarSeparates(e.x, e.y, tgt.x, tgt.y)) barBlockContact = true; // 传送门结界（2026-10-30 用户令）：怪与被攻击者被传送门结界分在两侧 → 接触伤害不结算；同侧不拦（判定源/目标两侧、与商人结界只判目标点有别——本结界不逐帧封闭、怪可站在界内） // 商人小结界（2026-10-29 用户令）：被攻击者（本机玩家/替身）在商人结界内 → 怪物接触伤害整段不结算（atkCd 照常置位）；怪物恒在界外（结界每帧封闭），故只判目标点；联机队友/NPC 的接触伤害在 hostTick 另有同口径门禁
     if(d2 < prr && e.atkCd <= 0 && !e.noContact){ // noContact：跳砸/俯冲/闪现隐身期间不结算接触伤害（伤害走各自的落点/现身结算）
       if(tgtIsEnemy){ // 敌人互殴（吃苦转化，2026-10-29 用户令）：目标是另一只敌人（转化友军打敌对怪／敌对怪打转化友军）——接触间隔与下方打玩家口径同值，伤害经 hzFoeHit 按攻击者自身 dmg 直结算（不走 hurtPlayer/hurtStandOrPlayer：对方不是玩家/替身）；小螃蟹双钳的第二钳走 sigTick 的玩家向结算、互殴时不启用（单击口径，明报）
         e.atkCd = e.streetElite ? 0.45 : ((e.boss || e.elite) ? 0.65 : (e.ranged ? 0.80 : 0.55));
@@ -12811,7 +12915,7 @@ function drawEnemy(e, sx, sy){
     ctx.fillStyle = '#e8483f'; ctx.fillRect(sx - e.r, topY - 8, e.r * 2 * clamp(e.hp / e.maxHp, 0, 1), 4);
   }
   if(e.elite && !e.boss){ ctx.font = '900 10px sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#ffd23e'; ctx.fillText('精英', sx, topY - 12); }
-  if((e.hzConvT || 0) > 0){ ctx.font = '900 ' + HZ_CONV_LABEL_FS + 'px sans-serif'; ctx.textAlign = 'center'; ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,.55)'; ctx.strokeText('牛嗎', sx, topY - 20); ctx.fillStyle = '#ff3b30'; ctx.fillText('牛嗎', sx, topY - 20); } // 吃苦转化标记（2026-10-29 用户令）：转化期间头顶常驻红色「牛嗎」二字（用户原字——嗎、非馬，不得改字）——13px 粗体（HZ_CONV_LABEL_FS，中等可见：略大于精英字 10px/Boss 名 12px）、头顶 topY－20（血条与精英字上方）、黑描边保可读；随转化全程 10 秒常显、hzConvT 到期清零即消失
+  if((e.hzConvT || 0) > 0){ ctx.font = '900 ' + HZ_CONV_LABEL_FS + 'px sans-serif'; ctx.textAlign = 'center'; ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,.55)'; ctx.strokeText('牛嗎', sx, topY - 20); ctx.fillStyle = '#ff3b30'; ctx.fillText('牛嗎', sx, topY - 20); } // 吃苦转化标记（2026-10-29 用户令）：转化期间头顶常驻红色「牛嗎」二字（用户原字——嗎、非馬，不得改字）——13px 粗体（HZ_CONV_LABEL_FS，中等可见：略大于精英字 10px/Boss 名 12px）、头顶 topY－20（血条与精英字上方）、黑描边保可读；随转化全程 15 秒常显、hzConvT 到期清零即消失
   if(e.strikeT > 0){
     e.strikeT -= 0.016;
     ctx.fillStyle = 'rgba(230,245,255,.95)';
@@ -13735,6 +13839,21 @@ function draw(){
       ctx.restore();
     }
   }
+  var PBD = (typeof portalBarriers === 'function') ? portalBarriers() : []; // 传送门结界光幕（2026-10-30 用户令）：淡蓝——与商人结界金色、Boss 结界红色分色；圆心/半径与判定同源（portalBarriers：各传送门位置＋PORTAL_BAR_R 150），门消失当帧消失
+  for(var pbi = 0; pbi < PBD.length; pbi++){ var PB = PBD[pbi], pbx = PB.x + ox, pby = PB.y + oy;
+    if(pbx > vx0 - PB.r - 40 && pbx < vx1 + PB.r + 40 && pby > vy0 - PB.r - 40 && pby < vy1 + PB.r + 40){
+      ctx.save();
+      ctx.globalAlpha = 0.045 + 0.015 * Math.sin(gameTime * 2.2 + pbi); ctx.fillStyle = '#9adcff';
+      ctx.beginPath(); ctx.arc(pbx, pby, PB.r, 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = 0.28 + 0.09 * Math.sin(gameTime * 3.1 + pbi); ctx.strokeStyle = '#9adcff'; ctx.lineWidth = 6;
+      ctx.beginPath(); ctx.arc(pbx, pby, PB.r, 0, Math.PI * 2); ctx.stroke();
+      ctx.globalAlpha = 0.75; ctx.strokeStyle = '#e8f7ff'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(pbx, pby, PB.r, 0, Math.PI * 2); ctx.stroke();
+      ctx.globalAlpha = 0.5; ctx.strokeStyle = '#ffd23e'; ctx.lineWidth = 3;
+      for(var par = 0; par < 4; par++){ var pa0 = gameTime * 0.35 + par * Math.PI / 2 + pbi; ctx.beginPath(); ctx.arc(pbx, pby, PB.r, pa0, pa0 + 0.4); ctx.stroke(); }
+      ctx.restore();
+    }
+  }
   if(SHOP.npc && !(typeof MAZE !== 'undefined' && MAZE.active) && !voidArena){ // 梁鸡细佬（中立 NPC：只绘制——不进敌人列表、无血条、任何技能都锁定不到他）
     var mn = SHOP.npc, mx2 = mn.x + ox, my2 = mn.y + oy;
     if(mx2 > vx0 - 120 && mx2 < vx1 + 120 && my2 > vy0 - 170 && my2 < vy1 + 120){
@@ -13753,7 +13872,7 @@ function draw(){
       ctx.fillText('梁鸡细佬 · 神秘商店', mx2, my2 - 94);
       if(mn.t <= 10){ // 最后 10 秒：头顶倒计时大字闪烁催客
         if(Math.floor(gameTime * 2.5) % 2 === 0){ ctx.font = '900 21px sans-serif'; ctx.fillStyle = '#ff5a4e'; ctx.fillText(Math.ceil(mn.t), mx2, my2 - 106); }
-      } else { ctx.font = '11px sans-serif'; ctx.fillStyle = '#d8cba0'; ctx.fillText(SHOP.nearT > 0 ? ('开店倒计时 ' + Math.max(0, 3 - SHOP.nearT).toFixed(1) + ' 秒 · 站在圈内别走开') : ('剩 ' + Math.ceil(mn.t) + ' 秒 · 走近停留 3 秒开店'), mx2, my2 + 32); } // 3 秒计时期间显示剩余秒数（2026-10-28 用户令）
+      } else { ctx.font = '11px sans-serif'; ctx.fillStyle = '#d8cba0'; ctx.fillText(SHOP.nearT > 0 ? ('开店倒计时 ' + Math.max(0, 1 - SHOP.nearT).toFixed(1) + ' 秒 · 站在圈内别走开') : ('剩 ' + Math.ceil(mn.t) + ' 秒 · 走近停留 1 秒开店'), mx2, my2 + 32); } // 1 秒计时期间显示剩余秒数（2026-10-29 用户令改 1 秒）
     }
   }
   if(voidPortal){ // 虚空裂缝传送门（Portals 图集紫色改版＋Cosmic 涡旋，CC0）：玩家踏入即传送虚空裂缝竞技场决战劳农
@@ -15407,7 +15526,7 @@ function showBanner(title, sub){
 /* ---------------- 技能像素图标（程式生成，原创像素画） ---------------- */
 var ICON_COLORS = { weiye:'#ffb02e', undeadwar:'#b8c4ce', thundercloud:'#8a9ab8', frostpuppet:'#aee6ff', icelance:'#7ad7f0', hellhound:'#ff8a5a', emberring:'#ffb02e', voltspirit:'#ffe97a', skystrike:'#c99af2', windfalcon:'#7af0d8', vacuumblade:'#4db8ff', lightservant:'#fff6c8', corona:'#ffd76a', oldtreant:'#7ac74f', vinegrip:'#5aa84a', rockgolem:'#c8b090', quake:'#d8a860', waterelemental:'#4db2e8', tidalwave:'#3a9ad8', critshard:'#ffd76a', soulmirror:'#ff9ad5', galephantom:'#9ae8c8', ironcaltrop:'#c8ccd4', swiftarrow:'#8ad7f0', giantarrow:'#f0a85a', timesand:'#e8d88a', poisongland:'#9ae86a', dragonsigil:'#ff8a5a', firstsigil:'#ffe97a', icebreaker:'#aee6ff', farsigil:'#8ab8f0', nearsigil:'#f08a6a', gemheal:'#8ae8c8', killshield:'#6ac8e8', xpkill:'#a8e063', windrush:'#7af0d8', movewill:'#d8b46a', stillheart:'#b49a6a', laststand:'#e86a6a', huntergait:'#8ae8a8', specresonance:'#c99af2', slowfield:'#7a9ae8', shredmark:'#f0e68a', critsiphon:'#e84a7a', shieldweb:'#8ad7f0', burnheart:'#ff7a3e', boomheart:'#ffb02e', overloadloop:'#b48ae8', bedrock:'#a89878',
   currybat:'#e8a83e', boomerang:'#7ac74f', cigshot:'#d8d4cc',
-  octoshot:'#57a8e8', stamp:'#e8483f', chainvolt:'#7ad7f0', firebolt:'#f0782e',
+  octoshot:'#57a8e8', stamp:'#e8483f', chainvolt:'#7ad7f0', voltstorm:'#ffe97a', firebolt:'#f0782e',
   leafblade:'#69b84a', lightning:'#e8c832', frostnova:'#57c7e8', stardart:'#e88ec8',
   flameaura:'#e8563a',
   moonwheel:'#ffd76a', fireball:'#ff5a2e', frostcone:'#aee6ff', poisonspray:'#7ed321',
@@ -15590,6 +15709,8 @@ function iconCanvas(id, variant){
   } else if(id === 'waterelemental'){ pxr(g, 7, 2, 3, 4, lt); pxr(g, 5, 5, 6, 6, md); pxr(g, 3, 7, 2, 4, md); pxr(g, 11, 7, 2, 4, md); pxr(g, 6, 8, 1, 1, '#ffffff'); pxr(g, 9, 8, 1, 1, '#ffffff'); pxr(g, 6, 11, 4, 3, dk);
 
   } else if(id === 'undeadwar'){ pxr(g, 6, 2, 4, 4, '#dfe6ea'); pxr(g, 5, 6, 6, 6, md); pxr(g, 6, 4, 1, 1, '#20242c'); pxr(g, 9, 4, 1, 1, '#20242c'); pxr(g, 11, 3, 2, 8, '#c8d2da'); pxr(g, 3, 7, 2, 6, '#5a2a3a');
+  } else if(id === 'voltstorm'){ pxr(g, 3, 4, 10, 4, '#5a6a8a'); pxr(g, 5, 2, 6, 3, '#7186a8'); pxr(g, 4, 8, 8, 2, '#46536e'); bolt(g); // 雷爆云：蓝灰爆云＋黄色落雷（与宝箱雷云的暗灰云区分：云体更亮、带电芒）
+    pxr(g, 2, 5, 1, 1, '#fff6c8'); pxr(g, 13, 6, 1, 1, '#fff6c8');
   } else if(id === 'thundercloud'){ pxr(g, 3, 4, 10, 4, '#3c4454'); pxr(g, 5, 2, 6, 3, '#4c586c'); pxr(g, 4, 8, 8, 2, dk); bolt(g);
   } else if(id === 'gemheal'){ pxr(g, 7, 3, 3, 5, md); pxr(g, 5, 7, 6, 5, md); pxr(g, 6, 12, 4, 2, dk); pxr(g, 7, 8, 2, 2, '#ffffff');
   } else if(id === 'waterbolt'){ // 水弹连珠：三颗追踪水弹
@@ -15912,6 +16033,7 @@ function openPause(){
   if(!netPanel){ pausedFrom = 'playing'; state = 'paused'; }
   el('pauseStats').textContent = '存活 ' + fmtTime(gameTime) + ' · Lv ' + P.level + ' · 击杀 ' + kills + ' 只怪物 · 最高连杀 ' + comboBest + ' · 暴击率 ' + Math.round(pCritRate(null) * 100) + '% · 暴击伤害 ' + Math.round(pCritDmg() * 100) + '% · 难度 ' + DIFF_DEF[DIFF].name; // 属性面板：暴击两项明示＋本局难度
   /* 暂停画面「攻击技能 N / 10」计数条已删除（2026-10-29 用户令）：该条（含其下攻击/被动/宝箱被动清单）纯为显示、无任何计数作用——学习上限判定走 attackCount() 与被动数、与本条无关，删除不影响任何机制；技能清单改由暂停菜单「已学技能」与局内「属性」面板（已并入已学技能段）查看 */
+  syncAutoLearnBtns(); // 暂停菜单「升级自动打开学习页」钮开菜单即按当前共用状态刷新文案（与设置钮同一开关，见 syncAutoLearnBtns 注）
   el('pauseScreen').classList.add('on');
   if(netPanel) panelGuardSet('pause', true); // 联机菜单护盾：置位并上报房主（单人路径 netPanel=false 不置位、行为与旧版一字不变）
   beep(440, 0.08, 'square', 0.04);
@@ -16495,46 +16617,38 @@ el('btnTitleStart').addEventListener('click', function(){
   el('titleScreen').classList.remove('on');
   el('entryScreen').classList.add('on'); // 开始后先分流：单人走原流程 / 联机进大厅
 });
-el('btnTitleSettings').addEventListener('click', function(){ syncSfxBtns(); syncBuzzBtns(); syncAutoLearnBtns(); syncBtnLayoutUI(); el('settingsScreen').classList.add('on'); if(state === 'playing') panelGuardSet('settings', true); }); // 设置面板同口径（面板护盾）：若在局内打开设置，期间无敌不被索敌、世界照常跑
-/* ---------------- 按键自定义（2026-10-28 用户令：设置里调游戏内按键图标位置和大小） ----------------
-   对象：右下按键区（特殊技能键＋闪避键，作为一个整体调）。大小＝两键等比缩放 80%–140%；
-   左右/上下＝整区自默认位往屏幕内侧推的距离 0–120px（特殊键 right 12+x、bottom＝23vh−半键高+y（2026-10-28 再移位后的右下锚点）；
-   闪避键 right 按 12+10 间隔＋特殊键宽 64×缩放＋x 联动、bottom 17+y，与默认布局的相对关系恒定）。
-   生效：改 CSS 变量（--btnS/--spR/--spB/--dgR/--dgB）→ 局内即时生效（横屏安全区规则同走变量）；
-   保存：localStorage klf_btn_layout_v1（与本页既有 klf_* 持久化同规，try/catch 包裹、不可用时只当次生效）；
-   默认：{s:1,x:0,y:0} 与旧版写死值逐一相同——没改过设置的玩家，按键位置/大小与从前一模一样。 */
+el('btnTitleSettings').addEventListener('click', function(){ syncSfxBtns(); syncBuzzBtns(); syncAutoLearnBtns(); el('settingsScreen').classList.add('on'); if(state === 'playing') panelGuardSet('settings', true); }); // 设置面板同口径（面板护盾）：若在局内打开设置，期间无敌不被索敌、世界照常跑
+/* ---------------- 按键自定义（旧滑杆系统）已删除（2026-10-29 用户删除令：设置页整块删＋旧数据作废） ----------------
+   设置页「按键自定义（特殊技能 / 闪避）」整块（三滑杆＋恢复默认按键钮＋说明文字）已从设置页删除（见 settingsScreen 墓碑注）；
+   旧存档键 klf_btn_layout_v1（＋备份档 klf_btn_layout_v1_bak）不再读取、并在下方启动时主动移除——此前经滑杆存下的
+   特殊/闪避键大小与位置偏移自此不再影响局内按键，不会出现新旧两套位置叠加或旧值把 HUD 拖动顶回去的情况。
+   特殊/闪避键此后只走 HUD 布局系统（HUD_DEFS 的 dodge/special：位置/大小/长度由 klf_hud_layout_v1 决定）。
+   下方 btnLayoutApply 仅以默认值一次性写 CSS 变量（--btnS 1／--spR 12px／--spB calc(23vh - 32px)／--dgR 86px／--dgB 17px，
+   与 :root 默认逐值相同），保证两键基础几何与旧默认一模一样；HUD 编辑页自身的「恢复默认」是另一处、不在此删除范围、未动。 */
 var BTN_LAYOUT = { s: 1, x: 0, y: 0 };
-try{ var blRaw = localStorage.getItem('klf_btn_layout_v1'); if(!blRaw){ try{ blRaw = localStorage.getItem('klf_btn_layout_v1_bak'); }catch(e2){} } if(blRaw){ var blObj = JSON.parse(blRaw); if(blObj){ if(+blObj.s >= 0.8 && +blObj.s <= 1.4) BTN_LAYOUT.s = +blObj.s; if(+blObj.x >= 0 && +blObj.x <= 120) BTN_LAYOUT.x = +blObj.x; if(+blObj.y >= 0 && +blObj.y <= 120) BTN_LAYOUT.y = +blObj.y; } } }catch(e){} // 主档缺失时从备份档恢复（永久保存轮，与 HUD 布局同口径）
+try{ localStorage.removeItem('klf_btn_layout_v1'); }catch(e){}
+try{ localStorage.removeItem('klf_btn_layout_v1_bak'); }catch(e){}
 function btnLayoutApply(){
   var r = document.documentElement.style;
-  r.setProperty('--btnS', BTN_LAYOUT.s);
-  r.setProperty('--spR', (12 + BTN_LAYOUT.x) + 'px');
-  r.setProperty('--spB', 'calc(23vh - ' + Math.round(32 * BTN_LAYOUT.s) + 'px + ' + BTN_LAYOUT.y + 'px)'); // 特殊技能键再移位（2026-10-28 12:05 用户截图手绘箭头令，取代同日 40vh 右侧中部锚点）：默认锚点改为右下方——下距＝23vh−半键高，键中心落在竖屏高度约 77% 处（箭头尖端所指的七成五至八成带、闪避键右侧、底部栏上方，right 仍 12+x、与 ¥ 按钮同列在其上方）；y 滑杆为自新锚点上推的微调量；闪避键 --dgB 不动、仍在右下；横屏矮屏由横屏媒体规则把特殊键压回右下角旧位（避连杀区）
-  r.setProperty('--dgR', (22 + BTN_LAYOUT.x + Math.round(64 * BTN_LAYOUT.s)) + 'px');
-  r.setProperty('--dgB', (17 + BTN_LAYOUT.y) + 'px');
+  r.setProperty('--btnS', 1);
+  r.setProperty('--spR', '12px');
+  r.setProperty('--spB', 'calc(23vh - 32px)');
+  r.setProperty('--dgR', '86px');
+  r.setProperty('--dgB', '17px');
 }
-function btnLayoutSave(){ var bs = null; try{ bs = JSON.stringify(BTN_LAYOUT); }catch(e){ return; } try{ localStorage.setItem('klf_btn_layout_v1', bs); }catch(e){} try{ localStorage.setItem('klf_btn_layout_v1_bak', bs); }catch(e){} try{ if(localStorage.getItem('klf_btn_layout_v1') !== bs) localStorage.setItem('klf_btn_layout_v1', bs); }catch(e){} } // 主档＋备份档双写＋回读校验（永久保存轮）
-function syncBtnLayoutUI(){
-  var sI = el('setBtnSize'), xI = el('setBtnX'), yI = el('setBtnY'); if(!sI || !xI || !yI) return;
-  sI.value = Math.round(BTN_LAYOUT.s * 100); xI.value = BTN_LAYOUT.x; yI.value = BTN_LAYOUT.y;
-  el('setBtnSizeVal').textContent = Math.round(BTN_LAYOUT.s * 100) + '%';
-  el('setBtnXVal').textContent = BTN_LAYOUT.x + 'px';
-  el('setBtnYVal').textContent = BTN_LAYOUT.y + 'px';
-}
-btnLayoutApply(); // 启动即按已存设置摆位（无存档时即默认值＝旧布局）
+btnLayoutApply(); // 以默认值摆位（与 :root 默认逐值相同）；旧滑杆存档已在上方移除、不再读取
 syncAutoLearnBtns(); // 启动即按已存「升级自动打开学习页」开关刷新设置钮文案（无存档即默认关、与静态文案一致）
-(function(){
-  var sI = el('setBtnSize'), xI = el('setBtnX'), yI = el('setBtnY'), rst = el('btnBtnLayoutReset');
-  if(sI) sI.addEventListener('input', function(){ BTN_LAYOUT.s = (+sI.value || 100) / 100; btnLayoutApply(); btnLayoutSave(); syncBtnLayoutUI(); });
-  if(xI) xI.addEventListener('input', function(){ BTN_LAYOUT.x = +xI.value || 0; btnLayoutApply(); btnLayoutSave(); syncBtnLayoutUI(); });
-  if(yI) yI.addEventListener('input', function(){ BTN_LAYOUT.y = +yI.value || 0; btnLayoutApply(); btnLayoutSave(); syncBtnLayoutUI(); });
-  if(rst) rst.addEventListener('click', function(){ BTN_LAYOUT = { s: 1, x: 0, y: 0 }; btnLayoutApply(); btnLayoutSave(); syncBtnLayoutUI(); });
-})();
 /* ---------------- HUD 布局编辑页（2026-10-29 用户令重做：王者荣耀式全屏编辑页，取代旧「暂停工具条 －/＋ 步进缩放」） ----------------
    对象：血条/护盾行（#vitals）、计时（#timerChip）、Boss 血条（#bossBar）、闪避键（#btnDodge）、按键技能键（#btnSpecial）、
    按键技能状态显示（#cdSpecial，2026-10-29 状态显示可调轮新增）、
    可学习按钮（#btnLearn）、属性按钮（#btnStatsHud，2026-10-29 并入轮新增）、队友血条面板（#netTeam）、摇杆（#stickPreview 预览盘）。
-   机制：每元素存 {x,y 位移 px, s 缩放 0.6–1.6}，经 transform 叠加在元素原 CSS 布局之上（base＝元素原有 transform，
+   全图标可拖轮（2026-10-29 用户令「图片上面的所有东西都可以移动任意位置」，含其后追加点名）：再登记——经验条（#xpTop，用户点名）、
+   地图·天气名字（#biomeTag，文案＝「地图名 · 天气名」如「翠绿草原 · 夜晚」，用户点名、截图中此前无虚线框）、顶栏等级片（#lvChip）、
+   击杀片（#killChip）、牛筋片（#beefChip，金币图标＋数字、即用户截图顶部中央被编辑页标题半遮的「154」小 pill）、形态片（#stageChip）、
+   暂停键（#btnPause）、连杀（#comboHud）、班仔剑阵状态片（#bzArrayHud）、联机连接状态（#netConn）、彩蛋钮（#egg648，¥)。
+   至此局内可见 DOM 显示片全部登记；未登记者仅余：#skillBar（常驻 display:none、局内不可见）、#banner/#secretBanner（瞬时播报、
+   其显隐动画自带 transform、与布局 transform 冲突）、#endingSkip（结局演出跳过钮、非 HUD）、摇杆实盘 #stickBase/#stickKnob（跟手动态件、由 joy 预览盘代表）。
+   机制：每元素存 {x,y 位移 px, s 整体缩放 0.3–3.0, w 长度（横向）倍率 0.25–4（仅长条类、经右缘青色长度手柄 #hudHandleW 单独拉长/缩短，2026-10-29 大小长度自由轮新增——s 旧范围 0.6–1.6 同轮放宽，极值仅作防看不见/防极端溢出的兜底）}，经 transform 叠加在元素原 CSS 布局之上（base＝元素原有 transform，
    如 Boss 条/可学习钮的 translateX(-50%)，逐项写在 HUD_DEFS 里），不改任何既有定位规则、尺寸变量（--btnS 等旧按键自定义并存、互不覆盖）与功能。
    保存：localStorage klf_hud_layout_v1 ＝ {p:{竖屏}, l:{横屏}}，两套互不覆盖；启动即按当前方向摆位（下次进局沿用），旋转/改向时自动切换重摆。
    永久保存口径（2026-10-29 永久保存轮）：hudSave 主档＋备份档 klf_hud_layout_v1_bak 双写并回读校验；启动加载逐字段独立校验、主档缺失/损坏时从备份恢复回写，
@@ -16545,21 +16659,35 @@ syncAutoLearnBtns(); // 启动即按已存「升级自动打开学习页」开�
    退出：「保存」＝hudSave 落盘并回来源页（暂停菜单或设置页）；「取消」＝还原进入前整份 HUDL 快照并写回落盘（覆盖编辑期间的自动落盘）；「恢复默认」＝清空当前方向布局回默认位并即时落盘（另一方向不受影响，随后取消仍可全量还原）。
    防误操作：编辑中本段在 window 捕获阶段拦截 touchstart/touchmove/mousedown/click/keydown（编辑页顶/底栏与手柄自身除外）——
    摇杆认领、技能键、班仔瞄准、键盘移动全部不响应，不会误触技能或走位；单人保持真暂停、联机保持菜单护盾（开菜单者无敌），战斗逻辑一字不动。
-   拖动/拖角缩放：pointerdown 命中 [data-hud] 起拖移位（钳制 ±600px），pointermove 实时改位移；选中元素右下角出金色手柄 #hudHandle，
+   拖动/拖角缩放：pointerdown 命中 [data-hud] 起拖移位（钳制 ±4000px，2026-10-29 全图标轮由 ±600 放宽——任意位置无禁区、Boss 条可拖至屏幕最顶，见 hudParseLayout 注），pointermove 实时改位移；选中元素右下角出金色手柄 #hudHandle，
    拖手柄按「指针到元素中心距离 / 起拖距离」比例缩放（0.6–1.6），与王者荣耀拖角缩放同口径；顶栏实时显示选中元素与尺寸百分比（只读、无 －/＋ 按钮）。
    摇杆：本游戏摇杆为全屏浮动式（按下处即原点）；调摇杆大小＝缩放摇杆盘/钮与最大拖距（joyClaim/joyTrack 读 __HUD_JOY.s）；
    拖动预览盘＝设「锚点」：之后在锚点 170px 内按下、摇杆原点固定在锚点（固定摇杆手感），锚点外仍浮动；恢复默认即取消锚点回纯浮动。 */
 var HUD_DEFS = [
-  { key:'vitals', id:'vitals', name:'血条 · 护盾', base:'' },
-  { key:'timer', id:'timerChip', name:'计时', base:'' },
-  { key:'boss', id:'bossBar', name:'Boss 血条', base:'translateX(-50%)' },
+  { key:'vitals', id:'vitals', name:'血条 · 护盾', base:'', bar:true }, /* bar:true＝长条类：另有长度手柄可单独横向拉长/缩短（w 倍率，大小长度自由轮） */
+  { key:'timer', id:'timerChip', name:'计时', base:'', bar:true },
+  { key:'boss', id:'bossBar', name:'Boss 血条', base:'translateX(-50%)', bar:true },
   { key:'dodge', id:'btnDodge', name:'闪避键', base:'' },
   { key:'special', id:'btnSpecial', name:'按键技能键', base:'' },
   { key:'specstat', id:'cdSpecial', name:'按键技能状态显示', base:'' }, /* 2026-10-29 按键技能状态显示可调轮新增：状态片 #cdSpecial（冷却/持续/就绪三态由 updateHud 写文本与 .ready/.active 类，判定逻辑一字未动）登记为可拖动移位/拖角缩放的布局元素、随 klf_hud_layout_v1 同档保存；无存档条目时 hudApplyOne 不写 transform，状态片仍在 #cdHud 列内原位（右列首片）、原字号/内边距，默认位置与尺寸与改前逐值一致；独立闪避状态片 #cdDodge 已于 2026-10-29 后续轮（闪避状态并入按键轮）删除、状态改在闪避按键 #btnDodge 键内显示，#cdHud 列内现仅余本片 */
   { key:'learn', id:'btnLearn', name:'可学习按钮', base:'translateX(-50%)' },
   { key:'stats', id:'btnStatsHud', name:'属性按钮', base:'' }, /* 2026-10-29 已学技能并入属性轮新增：合并后的属性钮登记为可拖动/缩放的布局元素（用户令「这个按钮也可以调整位置」）；旧独立已学技能钮从未登记布局、本轮随按钮一并取消、无对应元素需处理 */
   { key:'team', id:'netTeam', name:'队友血条面板', base:'' },
-  { key:'joy', id:'stickPreview', name:'摇杆', base:'' }
+  { key:'joy', id:'stickPreview', name:'摇杆', base:'' },
+  /* ---- 全图标可拖轮（2026-10-29）新增登记：以下 11 项此前未登记、编辑态无选框不可拖；现与上方各项共用同一拖动/拖角缩放/存档机器，
+     无存档条目时 hudApplyOne 不写 transform、默认位置与尺寸逐值不变。各元素均无自有 transform（base 皆空），
+     唯一例外是连杀入场动画 comboPop 写在子元素 #comboNum 上、不碰本容器 transform。 ---- */
+  { key:'xp', id:'xpTop', name:'经验条', base:'', bar:true }, /* 用户点名必含：屏幕最上方经验条（#xpTrack/#xpFill 填充逻辑未动，仅容器接布局 transform）；长条类、可单独拉长/缩短 */
+  { key:'biome', id:'biomeTag', name:'地图 · 天气名字', base:'' }, /* 用户点名必含：文案由 updateHud 写「地图名 · 天气名」（如「翠绿草原 · 夜晚」），此前截图中无虚线框、本轮补上 */
+  { key:'lv', id:'lvChip', name:'等级', base:'' },
+  { key:'kill', id:'killChip', name:'击杀数', base:'' },
+  { key:'beef', id:'beefChip', name:'牛筋', base:'' }, /* 金币图标＋数字，即用户截图顶部中央被编辑页标题半遮的「154」小 pill（源码核对：#beefChip 内 .beef-ico 金币＋#beefNum 数字） */
+  { key:'stage', id:'stageChip', name:'形态', base:'' },
+  { key:'pause', id:'btnPause', name:'暂停键', base:'' },
+  { key:'combo', id:'comboHud', name:'连杀', base:'', bar:true }, /* 编辑态强制 opacity:1 点亮（见 CSS），非编辑态仍按击杀点亮/断连隐藏；含连杀条、列长条类 */
+  { key:'bzarray', id:'bzArrayHud', name:'剑阵状态', base:'' }, /* 编辑态强制 display:block 点亮（见 CSS），非编辑态仍仅班仔剑气 Lv5 时点亮 */
+  { key:'netconn', id:'netConn', name:'联机连接状态', base:'' }, /* 编辑态强制 display:block 点亮、无文案时 hud-ph 占位（见 hudEditEnter），非编辑态仍仅联机时显示 */
+  { key:'egg', id:'egg648', name:'彩蛋按钮', base:'' } /* ¥ 彩蛋钮：局内右下角常显小钮（用户截图右下角可见），点击开彩蛋弹窗的功能未动 */
 ];
 var HUDL = { p:{}, l:{} };
 function hudParseLayout(raw){ // 逐字段独立校验：某一字段缺失/非法只回退该字段（坐标缺→0、缩放越界→1），不再整条丢弃（旧版要求 x、y 同时合法才保留整条，单字段损坏即整键回默认＝「每次启动都要重新调整」的根因之一）
@@ -16572,9 +16700,10 @@ function hudParseLayout(raw){ // 逐字段独立校验：某一字段缺失/非�
     for(var hk in obj[o]){
       var he = obj[o][hk]; if(!he || typeof he !== 'object') continue;
       out[o][hk] = {
-        x: isFinite(+he.x) ? Math.max(-600, Math.min(600, +he.x)) : 0,
-        y: isFinite(+he.y) ? Math.max(-600, Math.min(600, +he.y)) : 0,
-        s: (+he.s >= 0.6 && +he.s <= 1.6) ? +he.s : 1
+        x: isFinite(+he.x) ? Math.max(-4000, Math.min(4000, +he.x)) : 0, /* 位移钳制 2026-10-29 全图标轮由 ±600 放宽至 ±4000：旧 ±600 下竖屏底部（bottom:108）的 Boss 条拖到屏幕最顶部需约 −700px、会被钳回中部，违「任意位置、无区域禁区」令（用户验收例：Boss 血条移到最顶）；±4000 覆盖任何现实屏幕全程拖动、仅作损坏数据兜底，旧存档 ±600 内数值解析结果逐值不变 */
+        y: isFinite(+he.y) ? Math.max(-4000, Math.min(4000, +he.y)) : 0,
+        s: (+he.s >= 0.3 && +he.s <= 3) ? +he.s : 1, /* 缩放范围 2026-10-29 大小长度自由轮由 0.6–1.6 放宽至 0.3–3.0：旧范围被用户斥为「冒充自由」；0.3 下限保元素仍可见可抓、3.0 上限防极端溢出，仅作极值兜底、常用区间全自由；旧存档 0.6–1.6 内数值解析逐值不变 */
+        w: (+he.w >= 0.25 && +he.w <= 4) ? +he.w : 1 /* 长度（横向）倍率（大小长度自由轮新增字段）：长条类单独拉长/缩短用，0.25–4 极值兜底同 s 口径；旧存档无 w 字段→1＝原长、默认不变 */
       };
     }
   });
@@ -16595,7 +16724,7 @@ function hudDefByKey(key){ for(var i = 0; i < HUD_DEFS.length; i++) if(HUD_DEFS[
 function hudApplyOne(def){
   var elm = el(def.id); if(!elm) return;
   var e = hudEntry(def.key), t = def.base || '';
-  if(e){ if(e.x || e.y) t += (t ? ' ' : '') + 'translate(' + Math.round(e.x) + 'px,' + Math.round(e.y) + 'px)'; if(e.s && e.s !== 1) t += (t ? ' ' : '') + 'scale(' + e.s + ')'; }
+  if(e){ if(e.x || e.y) t += (t ? ' ' : '') + 'translate(' + Math.round(e.x) + 'px,' + Math.round(e.y) + 'px)'; if(e.s && e.s !== 1) t += (t ? ' ' : '') + 'scale(' + e.s + ')'; if(e.w && e.w !== 1) t += (t ? ' ' : '') + 'scaleX(' + e.w + ')'; } /* scaleX(w)＝长度倍率叠加在整体缩放之上（横向总倍率 s×w、纵向 s），长条单独拉长/缩短走此字段；无条目或 w=1 时不写、默认长度不变 */
   if(t) elm.style.transform = t; else elm.style.removeProperty('transform');
   if(def.key === 'learn'){ if(e) elm.style.setProperty('animation', 'none'); else elm.style.removeProperty('animation'); } // 有自定义位移时停掉脉冲动画（其关键帧写死 translateX(-50%)、会覆盖位移），回默认位即恢复脉冲
 }
@@ -16617,21 +16746,22 @@ function hudSave(){ // 落盘口径（永久保存轮）：主档＋备份档双
 for(var hdi = 0; hdi < HUD_DEFS.length; hdi++){ var hdEl = el(HUD_DEFS[hdi].id); if(hdEl) hdEl.setAttribute('data-hud', HUD_DEFS[hdi].key); }
 hudApply(); // 启动即按已存布局摆位（无存档即默认布局，与旧版一致）
 window.addEventListener('resize', function(){ hudApply(); if(hudEditOn){ hudEditRefreshBar(); } }); // 改向自动切换竖/横屏布局；同向尺寸变化时摇杆锚点纵坐标随屏高重算
-var hudEditOn = false, hudSel = null, hudDrag = null, hudResize = null, hudSnapshot = null, hudEditFrom = null, hudHidTitle = false, hudForcedHud = false;
-function hudHandleSync(){ // 手柄贴选中元素右下角（getBoundingClientRect 已含位移/缩放后的实际框）；无选中即隐藏
-  var hd = el('hudHandle'); if(!hd) return;
-  if(!hudEditOn || !hudSel){ hd.classList.remove('on'); return; }
-  var def = hudDefByKey(hudSel), elm = def ? el(def.id) : null; if(!elm){ hd.classList.remove('on'); return; }
+var hudEditOn = false, hudSel = null, hudDrag = null, hudResize = null, hudResizeW = null, hudSnapshot = null, hudEditFrom = null, hudHidTitle = false, hudForcedHud = false;
+function hudHandleSync(){ // 手柄贴选中元素右下角（getBoundingClientRect 已含位移/缩放后的实际框）；无选中即隐藏。长度手柄（#hudHandleW）贴右缘中点、仅长条类（def.bar）显示
+  var hd = el('hudHandle'), hw = el('hudHandleW'); if(!hd) return;
+  if(!hudEditOn || !hudSel){ hd.classList.remove('on'); if(hw) hw.classList.remove('on'); return; }
+  var def = hudDefByKey(hudSel), elm = def ? el(def.id) : null; if(!elm){ hd.classList.remove('on'); if(hw) hw.classList.remove('on'); return; }
   var r = elm.getBoundingClientRect();
-  if(!r.width && !r.height){ hd.classList.remove('on'); return; }
+  if(!r.width && !r.height){ hd.classList.remove('on'); if(hw) hw.classList.remove('on'); return; }
   hd.style.left = Math.round(r.right) + 'px'; hd.style.top = Math.round(r.bottom) + 'px';
   hd.classList.add('on');
+  if(hw){ if(def && def.bar){ hw.style.left = Math.round(r.right) + 'px'; hw.style.top = Math.round(r.top + r.height / 2) + 'px'; hw.classList.add('on'); } else hw.classList.remove('on'); }
 }
 function hudEditRefreshBar(){
   var nm = el('hebName'), sv = el('hebSizeVal'); if(!nm || !sv) return;
   var def = hudSel ? hudDefByKey(hudSel) : null, e = hudSel ? hudEntry(hudSel) : null;
   nm.textContent = (hudOrient() === 'l' ? '横屏 · ' : '竖屏 · ') + (def ? def.name : '未选择');
-  sv.textContent = Math.round(((e && e.s) || 1) * 100) + '%';
+  sv.textContent = Math.round(((e && e.s) || 1) * 100) + '%' + ((e && e.w && e.w !== 1) ? ' · 长 ' + Math.round(e.w * 100) + '%' : ''); // 顶栏只读显示：整体大小 %，长条另调过长度时并列显示长度 %（大小长度自由轮）
   for(var i = 0; i < HUD_DEFS.length; i++){ var elm = el(HUD_DEFS[i].id); if(elm) elm.classList.toggle('hud-sel', HUD_DEFS[i].key === hudSel); }
   hudHandleSync();
 }
@@ -16641,7 +16771,7 @@ function hudEditEnter(from){
   if(from === 'pause' && state !== 'playing' && state !== 'paused') return;
   hudSnapshot = JSON.parse(JSON.stringify(HUDL || { p:{}, l:{} })); // 整份快照：取消即全量还原（含编辑中途旋转切换方向的改动）
   hudEditFrom = from; hudHidTitle = false; hudForcedHud = false;
-  hudEditOn = true; hudSel = null; hudDrag = null; hudResize = null;
+  hudEditOn = true; hudSel = null; hudDrag = null; hudResize = null; hudResizeW = null;
   var inRun = (state === 'playing' || state === 'paused');
   if(from === 'pause'){ el('pauseScreen').classList.remove('on'); }
   else { // 局外设置入口：藏起设置页（及其下标题页），编辑完原样还原回设置页
@@ -16656,15 +16786,17 @@ function hudEditEnter(from){
   }
   document.body.classList.add('hud-edit');
   var nt = el('netTeam'); if(nt && !nt.textContent.trim()) nt.classList.add('hud-ph'); // 单人/无队友时面板为空：给占位标签以便拖动摆位
+  var nc = el('netConn'); if(nc && !nc.textContent.trim()) nc.classList.add('hud-ph'); // 单人/未联机时连接状态为空：同口径给占位标签以便拖动摆位（全图标轮新增）
   if(typeof joyReset === 'function') joyReset();
   hudApply(); hudEditRefreshBar();
 }
 function hudEditExit(save){
   if(!hudEditOn) return;
   if(save) hudSave(); else { HUDL = hudSnapshot || { p:{}, l:{} }; hudSave(); } // 取消＝还原快照并写回落盘：覆盖编辑期间手势结束的自动落盘，最终仍以进入前布局为准（语义不变）
-  hudEditOn = false; hudDrag = null; hudResize = null; hudSel = null;
+  hudEditOn = false; hudDrag = null; hudResize = null; hudResizeW = null; hudSel = null;
   document.body.classList.remove('hud-edit'); document.body.classList.remove('sim');
   var nt = el('netTeam'); if(nt) nt.classList.remove('hud-ph');
+  var nc = el('netConn'); if(nc) nc.classList.remove('hud-ph');
   hudApply();
   if(hudEditFrom === 'settings'){ // 回局外设置页：标题页/强制点亮的 HUD 按进入前状态还原
     if(hudForcedHud){ var hudEl = el('hud'), tui = el('touchUI'); if(hudEl) hudEl.classList.remove('on'); if(tui) tui.classList.remove('on'); }
@@ -16681,7 +16813,7 @@ el('btnHudEditSet').addEventListener('click', function(){ hudEditEnter('settings
 el('hebDone').addEventListener('click', function(){ hudEditExit(true); });
 el('hebCancel').addEventListener('click', function(){ hudEditExit(false); });
 el('hebReset').addEventListener('click', function(){ if(!hudEditOn) return; HUDL[hudOrient()] = {}; hudSel = null; hudApply(); hudSave(); hudEditRefreshBar(); }); // 只清当前方向并即时落盘，另一方向布局不动；随后点「取消」仍可经快照写回全量还原
-function hudEditChrome(t){ return !!(t && t.closest && (t.closest('#hudEditBar') || t.closest('#hudEditTop') || t.closest('#hudHandle'))); }
+function hudEditChrome(t){ return !!(t && t.closest && (t.closest('#hudEditBar') || t.closest('#hudEditTop') || t.closest('#hudHandle') || t.closest('#hudHandleW'))); }
 function hudEditBlock(ev){ // 编辑页输入总闸（编辑页顶/底栏与手柄自身放行）：捕获阶段拦下，游戏侧监听（window/元素级）一律收不到
   if(!hudEditOn) return;
   var t = ev.target;
@@ -16705,7 +16837,14 @@ window.addEventListener('pointerdown', function(ev){
     var rH = elmH.getBoundingClientRect(), eH = hudEntry(hudSel) || { x: 0, y: 0, s: 1 };
     var cxH = rH.left + rH.width / 2, cyH = rH.top + rH.height / 2;
     hudResize = { key: hudSel, cx: cxH, cy: cyH, d0: Math.max(12, Math.hypot(ev.clientX - cxH, ev.clientY - cyH)), s0: eH.s || 1 };
-    hudDrag = null;
+    hudDrag = null; hudResizeW = null;
+    return;
+  }
+  if(t && t.closest && t.closest('#hudHandleW') && hudSel){ // 拖长度手柄起拖（仅长条类有此手柄）：记起拖时元素渲染宽与 w，move 时按目标渲染宽比例改 w（大小长度自由轮）
+    var defW = hudDefByKey(hudSel), elmW = defW ? el(defW.id) : null; if(!elmW) return;
+    var rW = elmW.getBoundingClientRect(), eW = hudEntry(hudSel) || { x: 0, y: 0, s: 1 };
+    hudResizeW = { key: hudSel, sx: ev.clientX, w0: eW.w || 1, rw: Math.max(8, rW.width) };
+    hudDrag = null; hudResize = null;
     return;
   }
   var hel = (t && t.closest) ? t.closest('[data-hud]') : null;
@@ -16719,27 +16858,36 @@ window.addEventListener('pointerdown', function(ev){
 }, true);
 window.addEventListener('pointermove', function(ev){
   if(!hudEditOn) return;
-  if(hudResize){ // 拖角缩放：s ＝ 起拖缩放 × 当前距离/起拖距离，钳制 0.6–1.6
+  if(hudResize){ // 拖角缩放：s ＝ 起拖缩放 × 当前距离/起拖距离，钳制 0.3–3.0（大小长度自由轮放宽，极值仅兜底、与 hudParseLayout 同口径）
     var e2 = hudEntry(hudResize.key) || { x: 0, y: 0, s: 1 };
     var dNow = Math.hypot(ev.clientX - hudResize.cx, ev.clientY - hudResize.cy);
-    e2.s = Math.round(Math.max(0.6, Math.min(1.6, hudResize.s0 * dNow / hudResize.d0)) * 100) / 100;
+    e2.s = Math.round(Math.max(0.3, Math.min(3, hudResize.s0 * dNow / hudResize.d0)) * 100) / 100;
     hudSetEntry(hudResize.key, e2);
     var def2 = hudDefByKey(hudResize.key); if(def2) hudApplyOne(def2);
     if(hudResize.key === 'joy') hudApply();
     hudEditRefreshBar();
     return;
   }
+  if(hudResizeW){ // 拖长度手柄：目标渲染宽＝起拖渲染宽＋水平位移，w ＝ 起拖 w × 目标宽/起拖宽，钳制 0.25–4（极值兜底同 hudParseLayout 口径）；只改横向长度、纵向与整体大小不动
+    var e3 = hudEntry(hudResizeW.key) || { x: 0, y: 0, s: 1 };
+    var tw = Math.max(8, hudResizeW.rw + (ev.clientX - hudResizeW.sx));
+    e3.w = Math.round(Math.max(0.25, Math.min(4, hudResizeW.w0 * tw / hudResizeW.rw)) * 100) / 100;
+    hudSetEntry(hudResizeW.key, e3);
+    var def3 = hudDefByKey(hudResizeW.key); if(def3) hudApplyOne(def3);
+    hudEditRefreshBar();
+    return;
+  }
   if(!hudDrag) return;
   var e = hudEntry(hudDrag.key) || { x: 0, y: 0, s: 1 };
-  e.x = Math.max(-600, Math.min(600, hudDrag.ox + (ev.clientX - hudDrag.sx)));
-  e.y = Math.max(-600, Math.min(600, hudDrag.oy + (ev.clientY - hudDrag.sy)));
+  e.x = Math.max(-4000, Math.min(4000, hudDrag.ox + (ev.clientX - hudDrag.sx))); // 钳制与 hudParseLayout 同步放宽至 ±4000（2026-10-29 全图标轮）：任意位置含最顶/最底/最边缘、无区域禁区，Boss 条可由底部拖至屏幕最顶部
+  e.y = Math.max(-4000, Math.min(4000, hudDrag.oy + (ev.clientY - hudDrag.sy)));
   hudSetEntry(hudDrag.key, e);
   var def = hudDefByKey(hudDrag.key); if(def) hudApplyOne(def);
   if(hudDrag.key === 'joy') hudApply();
   hudHandleSync();
 }, true);
-window.addEventListener('pointerup', function(){ var had = !!(hudDrag || hudResize); hudDrag = null; hudResize = null; if(hudEditOn && had) hudSave(); }, true); // 手势结束即落盘（永久保存轮）：旧版改动只在点「保存」时才写存储，编辑中途被打断（切后台被杀/页面重载/误触退出）整轮调整全丢；现每次拖动/缩放一松手就存，「保存」仍落盘、「取消」仍经快照写回还原
-window.addEventListener('pointercancel', function(){ var had = !!(hudDrag || hudResize); hudDrag = null; hudResize = null; if(hudEditOn && had) hudSave(); }, true);
+window.addEventListener('pointerup', function(){ var had = !!(hudDrag || hudResize || hudResizeW); hudDrag = null; hudResize = null; hudResizeW = null; if(hudEditOn && had) hudSave(); }, true); // 手势结束即落盘（永久保存轮）：旧版改动只在点「保存」时才写存储，编辑中途被打断（切后台被杀/页面重载/误触退出）整轮调整全丢；现每次拖动/缩放/拉长一松手就存，「保存」仍落盘、「取消」仍经快照写回还原
+window.addEventListener('pointercancel', function(){ var had = !!(hudDrag || hudResize || hudResizeW); hudDrag = null; hudResize = null; hudResizeW = null; if(hudEditOn && had) hudSave(); }, true);
 // 版本号渲染（单一来源 GAME_VERSION）：标题页与暂停菜单共用 .gameVerVal 占位，脚本启动时统一写入
 (function(){ var vs = document.querySelectorAll('.gameVerVal'); for(var vi = 0; vi < vs.length; vi++) vs[vi].textContent = GAME_VERSION; })();
 // 选角页「返回」：回标题页（开始页）；再从标题页重进选角走原流程（开始→单人→[世界观]→选角），不改状态机、不报错（2026-10-26 用户令：选角页只加返回，不加设置入口）
@@ -16752,6 +16900,7 @@ el('btnSettingsBack').addEventListener('click', function(){ el('settingsScreen')
 el('btnSfxSet').addEventListener('click', toggleSfx);
 el('btnBuzzSet').addEventListener('click', toggleBuzz);
 el('btnAutoLearnSet').addEventListener('click', toggleAutoLearn);
+el('btnAutoLearnPause').addEventListener('click', toggleAutoLearn); // 暂停菜单同名开关：与设置钮共用 toggleAutoLearn（同一状态/同一存档键），见 syncAutoLearnBtns 注
 /* ---------------- 图鉴（全部条目由游戏数据实时生成：改数值图鉴自动同步，不另存一份会过期的数值文案） ---------------- */
 var MON_LORE = { // 主要物种来历文案（介绍性文字；一切数值仍读数据）
   slime:'异世界的积水洼被虚空黏液污染，凝成了这种最常见的虚空生物。',
@@ -16891,6 +17040,7 @@ function renderCodexSkills(body){
   var nt2 = document.createElement('div'); nt2.className = 'cx-dim'; nt2.textContent = '学习上限：攻击 ' + MAX_ATK_LEARN + ' / 被动 ' + MAX_PAS_LEARN + '（按不同技能计数）；已学技能的升级/进化/分支不受上限影响。宝箱系不占上限：召唤五将出自「班仔的新屋」宝箱、雷云出自主地图宝箱。数值口径：普通难度基准。'; body.appendChild(nt2);
   sec('专 属 普 攻');
   CHARACTERS.forEach(function(ch){ var h = codexWeaponHtml(ch.weapon, ch.name + ' 专属普攻'); if(h) body.appendChild(codexEntry(iconCanvas(ch.weapon, ''), h)); });
+  (function(){ var h = codexWeaponHtml('voltstorm', '陈哈哈 专属主动 · 原电击小子分支「雷暴云」已独立成技（2026-10-30）——单独占主动格、仅陈哈哈可学'); if(h) body.appendChild(codexEntry(iconCanvas('voltstorm', ''), h)); })();
   sec('按 键 专 属 技 能');
   CHARACTERS.forEach(function(ch, ci9){
     var h = '<h4>' + ch.specName + '<span class="el-chip" style="background:#ffd23e">专属</span><span class="cx-dim">' + ch.name + '</span></h4>';
@@ -17091,7 +17241,7 @@ function renderLearned(targetBody){ // targetBody 可选（2026-10-29 已学技�
   if(!keys.length) body.insertAdjacentHTML('beforeend', '<div class="ld-sub">尚未学习攻击技能</div>');
   keys.forEach(function(k){
     var w = P.weapons[k], def = WEAPONS[k], el2 = EL_OF[k];
-    var tags = (k === ch.weapon ? '<span class="ld-tag" style="background:#ffd23e;color:#241a02">专属</span>' : '') + (el2 && ELEMENTS[el2] ? '<span class="ld-tag" style="background:' + ELEMENTS[el2].color + '">' + ELEMENTS[el2].name + '</span>' : '') + (w.branch && BRANCHES[k] && BRANCHES[k][w.branch] ? '<span class="ld-tag" style="background:#7a5af0">分支·' + BRANCHES[k][w.branch].name + '</span>' : '');
+    var tags = ((k === ch.weapon || def.onlyHero === ch.weapon) ? '<span class="ld-tag" style="background:#ffd23e;color:#241a02">专属</span>' : '') + (el2 && ELEMENTS[el2] ? '<span class="ld-tag" style="background:' + ELEMENTS[el2].color + '">' + ELEMENTS[el2].name + '</span>' : '') + (w.branch && BRANCHES[k] && BRANCHES[k][w.branch] ? '<span class="ld-tag" style="background:#7a5af0">分支·' + BRANCHES[k][w.branch].name + '</span>' : ''); // 专属标（2026-10-30 追加 onlyHero 分支）：英雄专属独立技能（如雷爆云 onlyHero＝chainvolt）同打「专属」标；电击小子已无分支 C、其行不再出现「分支·雷暴云」标
     var sub = 'Lv' + w.lv + '/' + def.max + (w.evo ? ' · 已进化「' + def.evoName + '」' : '');
     var rl = ldRecipeLine(k); if(rl && !w.evo) sub += '<br>' + rl;
     body.appendChild(ldRow(k, w.evo ? 'evo' : '', '<b>' + (w.evo ? def.evoName : def.name) + '</b> ' + tags, sub));
@@ -17141,6 +17291,8 @@ function renderStats(){
   row('角色', ch.name + ' · Lv ' + P.level + ' · 存活 ' + fmtTime(gameTime) + ' · 击杀 ' + kills + ' 只');
   row('生命', Math.ceil(P.hp) + ' / ' + P.maxHp);
   row('伤害倍率', Math.round(pDmgMul() * 100) + '%');
+  row('攻击力', '+' + Math.round((P.shopAtk || 0) * 100) + '%（商人「攻击力」购买加成 · 上限 +1000%）');
+  row('全队增幅', timeBuffStage() > 0 ? ('+' + Math.round((timeBuffMul() - 1) * 100) + '%（局时 ' + (timeBuffStage() * 10) + ' 分钟段 · 替换式 · 持续到本局结束）') : '未触发（局时满 10 分钟起、每 10 分钟翻倍）'); // 定时全队增幅（2026-10-30）：与攻击力行分开显示、口径不混 // 攻击力行（2026-10-29 用户令）：只显商人攻击力这一项的当前加成（与伤害倍率总乘区行分开，口径不混）
   row('移动速度', Math.round(pSpeed()) + ' px/秒（基础 ' + Math.round(P.baseSpeed) + ' · 加成封顶 +100%）'); // 显示走 pSpeed()＝封顶后数值（2026-10-28 用户令）
   row('攻击速度', '×' + Math.min(2, 1 / pCdMul()).toFixed(2) + '（+' + Math.round((Math.min(2, 1 / pCdMul()) - 1) * 100) + '% · 攻击间隔乘数 ×' + Math.max(0.5, pCdMul()).toFixed(2) + ' · 加成封顶 +100%）'); // 攻击速度（2026-10-28 用户令新增行）：本作攻速＝攻击间隔乘数（pCdMul）的倒数，显示为倍率＋加成百分比、按封顶后数值（倍率最高 ×2、间隔乘数最低 ×0.5，与 updateWeapons 封顶点同口径）；计入当前全部加成（被动/商人/道具实况）
   row('暴击率', Math.round(pCritRate(null) * 100) + '%（上限 100%）'); // 显示走 pCritRate＝封顶后数值（2026-10-28 用户令）
@@ -17789,6 +17941,7 @@ function hostOnMsg(slot,m){
   else if(m.t==='shopbuy'){ var p7=N.peers[slot.peerId]; if(p7){ /* 客户端商人购买效果：只落购买者本人 */
     if(m.kind==='attr' && m.id==='hp'){ p7.maxHp+=6; p7.hp=Math.min(p7.maxHp,p7.hp+6); }
     else if(m.kind==='attr' && m.id==='spd'){ p7.shopSpd=(p7.shopSpd||0)+0.003; }
+    else if(m.kind==='attr' && m.id==='atk'){ p7.shopAtk=Math.min(10,(1+(p7.shopAtk||0))*1.15-1); } // 攻击力（2026-10-29；算法 2026-10-30 改乘算复利、与本机 shopApplyAttr 同式）：只记购买者本人；远端成员的实际伤害由其本机 pDmgMul 的 shopAtk 因子结算（其本机 shopApplyAttr 已同步生效），房主抽象结算不读此字段、与 leech/cdr/crit 房主侧未记账的既有边界一致
     else if(m.kind==='skill'){ p7.buildCount=(p7.buildCount||0)+1; }
   } }
   else if(m.t==='chestreward'){ var p8=N.peers[slot.peerId]; if(p8){ /* 客户端开主地图宝箱的即时奖励：只落开启人本人（房主权威记账/血量/伤害加成计时） */
@@ -17908,7 +18061,7 @@ function npcAtkCount(p){ var n=0; for(var k in p.npcW){ var d=WEAPONS[k]; if(d &
 function npcMul(p){ // 与 pDmgMul 对齐的 NPC 伤害乘区（只取对 NPC 有意义的同名字段：开局系数/角色倍率/队伍等级双成长/巨人之力/狂怒核心/被动 dmgP/宝箱力量药剂/构筑层）
   var openMul = gameTime < 240 ? 0.75 + 0.25 * (gameTime / 240) : 1;
   var c = CHARACTERS[p.hero];
-  return openMul * c.dmgMul * (1 + 0.03 * Math.max(0, (p.lv || 1) - 1)) * (1 + 0.025 * Math.max(0, (p.lv || 1) - 1)) * (1 + 0.12 * (p.npcP.glove || 0)) * (1 + npcPSum(p, 'dmgP')) * (p.npcP.berserk && p.hp < p.maxHp * 0.5 ? 1 + 0.10 * p.npcP.berserk : 1) * (p.chestDmgT > 0 ? 1.25 : 1) * (1 + 0.06 * (p.buildCount || 0)); // 等级双成长改读该 NPC 自己的 p.lv（2026-10-29 联机等级各自独立轮；旧读全队共享 P.level）
+  return openMul * c.dmgMul * (1 + 0.03 * Math.max(0, (p.lv || 1) - 1)) * (1 + 0.025 * Math.max(0, (p.lv || 1) - 1)) * (1 + 0.12 * (p.npcP.glove || 0)) * (1 + npcPSum(p, 'dmgP')) * (p.npcP.berserk && p.hp < p.maxHp * 0.5 ? 1 + 0.10 * p.npcP.berserk : 1) * (p.chestDmgT > 0 ? 1.25 : 1) * (1 + 0.06 * (p.buildCount || 0)) * timeBuffMul(); // 定时全队增幅（2026-10-30）：NPC 乘区同接 timeBuffMul（npcMul 与 chTwNpcMul 镜像两处同式）；等级双成长改读该 NPC 自己的 p.lv（2026-10-29 联机等级各自独立轮；旧读全队共享 P.level）
 }
 function npcCdMulF(p){ return Math.max(0.5, Math.pow(0.93, p.npcP.rune || 0) * Math.pow(0.94, p.npcP.hourglass || 0) * Math.pow(0.97, p.npcP.windheart || 0) * Math.max(0.7, 1 - npcPSum(p, 'cdP'))); } // 与 updateWeapons 的 cd 派生同口径：pCdMul 的 NPC 版（下限 0.5＝攻速封顶 +100%）
 function npcSpecCdMulF(p){ return (1 - Math.min(0.25, npcPSum(p, 'specCdV'))) * Math.pow(0.94, p.npcP.hourglass || 0) * Math.pow(0.92, p.npcP.pocketwatch || 0); } // 与 doSpecial 的按键技冷却乘区同口径（专属共鸣封顶 −25%/时之沙漏/冷却怀表）
@@ -17942,6 +18095,7 @@ function npcLearnPool(p){
       key = GENERIC_WEAPONS[gi];
       if(!p.npcW[key] && !WEAPONS[key].summon && !WEAPONS[key].chestOnly) pool.push({ type:'new', key:key, weight:2.2 * npcPairBoostW(p, key) }); // 组合联动（2026-10-29）：同本机
     }
+    if(sigKey === 'chainvolt' && !p.npcW.voltstorm) pool.push({ type:'new', key:'voltstorm', weight:2.2 }); // 雷爆云（2026-10-30 拆分）：只 NPC 陈哈哈可学（与本机 buildChoices 同口径、权重 2.2）；学入后升级/连发走上方 npcW 通用循环
   }
   var pasCount = Object.keys(p.npcP).length;
   for(key in PASSIVES){
@@ -18120,14 +18274,7 @@ function npcBasicAttack(p, tgt, c){
   }
   if(key === 'chainvolt'){ /* 陈哈哈：链式闪电（首跳 400、逐跳 ×0.86、跳距 235/虚空乱流 300、Lv3 分叉电，与本机普攻同公式） */
     var mulV = mul;
-    if(w.branch === 'C'){ /* 雷暴云形态：罩住首目标持续电击 */
-      p.atkCd = (w.evo ? 3.4 : 4.6 - lv * 0.2) * cd;
-      npcSetPose(p, tgt);
-      p.npcZones.push({ type:'volt', x:tgt.x, y:tgt.y, r: w.evo ? 168 : 118 + lv * 8, t:0, dur: w.evo ? 3.6 : 2.4 + lv * 0.12, tick:0, dps:(w.evo ? 44 : 15 + lv * 5.5) * mulV, chBasic: (lv >= 5 || w.evo) ? 1 : 0, chMul: mulV }); // 普攻 Lv5 感电·NPC 同口径（2026-10-29）：雷暴云盖章、逐跳在 npcTickNpcFx 区域段挂（读 NPC 自己 chainvolt 的 lv）
-      spawnVfx('ard_volt', tgt.x, tgt.y, 130, 0.4);
-      teamAtkSfx(p, 'cage'); // NPC 队友攻击通道：实际 1.0→0.35（旧 0.5；此为陈哈哈普攻雷暴云形态、非按键技）
-      return;
-    }
+    /* 原分支 C「雷暴云」形态已拆出为独立技能 voltstorm（2026-10-30）：NPC 电击小子恒走下方链式传导；NPC 的雷爆云独立凝云在 npcTickNpcFx 专段（读该 NPC 自己 npcW.voltstorm） */
     p.atkCd = (w.evo ? 0.95 : 1.3 - lv * 0.05) * cd;
     npcSetPose(p, tgt);
     var chains = (w.evo ? 12 : 1 + lv) + (w.branch === 'A' ? 4 : 0) + (w.bonus || 0) * 2;
@@ -18375,7 +18522,22 @@ function npcTickNpcFx(p, dt){ // NPC 持续段总推进（hostTick 内、存活�
       }
     }
   }
-  /* 持续区域（雷暴云）：0.25 秒结算一跳 dps×0.25（本机 zones 的逐跳口径在此按等值节拍折算，总量与 dur×dps 一致） */
+  /* 雷爆云独立凝云（2026-10-30 拆分，NPC 同口径）：该 NPC 陈哈哈学有 voltstorm 时独立计时凝云——数值整表照搬原分支公式、按其自己 npcW.voltstorm 的等级计算（半径 118＋lv×8／持续 2.4＋lv×0.12／dps 15＋lv×5.5，乘区＝npcMul×earlySigMul×sigDmgMul 与其电击小子普攻同式；间隔 (4.6−lv×0.2)×npcCdMulF），云入 npcZones 走下方区域段结算；不挂感电章（与本机 voltstorm 同口径） */
+  if(key === 'chainvolt' && p.npcW.voltstorm){
+    var vw2 = p.npcW.voltstorm, vlv2 = vw2.lv;
+    p.npcVoltT = (p.npcVoltT || 0) - dt;
+    if(p.npcVoltT <= 0){
+      var vtg2 = npcNearest(p, 1 + (vw2.bonus || 0), 480);
+      if(vtg2.length){
+        p.npcVoltT = (4.6 - vlv2 * 0.2) * npcCdMulF(p);
+        for(var vzi = 0; vzi < vtg2.length; vzi++)
+          p.npcZones.push({ type:'volt', x:vtg2[vzi].x, y:vtg2[vzi].y, r: 118 + vlv2 * 8, t:0, dur: 2.4 + vlv2 * 0.12, tick:0, dps:(15 + vlv2 * 5.5) * mul * earlySigMul() * sigDmgMul(), srcKey: 'voltstorm' });
+        spawnVfx('ard_volt', vtg2[0].x, vtg2[0].y, 130, 0.4);
+        teamAtkSfx(p, 'cage');
+      } else p.npcVoltT = 0.2;
+    }
+  }
+  /* 持续区域（雷爆云）：0.25 秒结算一跳 dps×0.25（本机 zones 的逐跳口径在此按等值节拍折算，总量与 dur×dps 一致） */
   for(var zi = p.npcZones.length - 1; zi >= 0; zi--){ var zn = p.npcZones[zi];
     zn.t += dt; zn.tick -= dt;
     if(Math.random() < 0.4) particles.push({ x:zn.x + rand(-zn.r, zn.r) * 0.7, y:zn.y + rand(-zn.r, zn.r) * 0.7, vx:0, vy:-26, t:0, life:0.4, color:'rgba(140,215,255,.6)', r:rand(6, 12) });
@@ -18392,7 +18554,7 @@ function npcTickNpcFx(p, dt){ // NPC 持续段总推进（hostTick 内、存活�
     p.npcFx.splice(fi2, 1);
     if(fx.kind === 'stamp'){
       var sL = npcNearest(fx, 999, fx.r + 70);
-      for(var si3 = 0; si3 < sL.length; si3++){ var es3 = sL[si3]; if(Math.hypot(es3.x - fx.x, es3.y - fx.y) > fx.r + es3.r) continue; npcHit(p, es3, fx.dmg, 0, 0, key); hzConvTry(es3, !!(p.npcW && p.npcW.stamp && (p.npcW.stamp.lv >= 5 || p.npcW.stamp.evo))); } // 吃苦转化掷点·NPC 同口径（2026-10-29 用户令，取代本轮删除的普攻眩晕）：NPC 黄主任普攻印命中后以该 NPC 自己 npcW.stamp 的等级掷转化（普通 4%/精英 2%、Boss 不吃、被砸死者不掷，hzConvTry 内部门禁）；按键技 bigseal 不进本段、其震晕/易伤口径一字未动；完整口径见 HZ_CONV 定版注
+      for(var si3 = 0; si3 < sL.length; si3++){ var es3 = sL[si3]; if(Math.hypot(es3.x - fx.x, es3.y - fx.y) > fx.r + es3.r) continue; npcHit(p, es3, fx.dmg, 0, 0, key); hzConvTry(es3, !!(p.npcW && p.npcW.stamp && (p.npcW.stamp.lv >= 5 || p.npcW.stamp.evo))); } // 吃苦转化掷点·NPC 同口径（2026-10-29 用户令，取代本轮删除的普攻眩晕）：NPC 黄主任普攻印命中后以该 NPC 自己 npcW.stamp 的等级掷转化（普通 10%/精英 6%、Boss 不吃、被砸死者不掷，hzConvTry 内部门禁）；按键技 bigseal 不进本段、其震晕/易伤口径一字未动；完整口径见 HZ_CONV 定版注
       effects.push({ type:'ring', x:fx.x, y:fx.y, t:0, dur:0.3, color:'255,210,62' });
       burst(fx.x, fx.y, '#ffd23e', fxN(8));
       if(fx.chain){ var nxT = null, nxD = 300 * 300; for(var ci3 = 0; ci3 < enemies.length; ci3++){ var eci = enemies[ci3]; if(eci.dead) continue; var dd3 = dist2(fx.x, fx.y, eci.x, eci.y); if(dd3 < nxD && Math.hypot(eci.x - fx.x, eci.y - fx.y) > fx.r + eci.r){ nxD = dd3; nxT = eci; } }
@@ -19128,7 +19290,7 @@ function hostTick(dt){
        else {
         p.atkCd=0.55;
         var lvlMul=(1+0.03*Math.max(0,(p.lv||1)-1))*(1+0.025*Math.max(0,(p.lv||1)-1)); // 与本机 pDmgMul 同口径【2026-10-29 平衡轮同步】：基础每级 +3.0% × 升级伤害加成每级 +2.5%——等级改读该成员自己的 p.lv（2026-10-29 联机等级各自独立轮；旧为全队共享等级、远端成员同享房主等级）
-        var dmg=16*c.dmgMul*lvlMul*earlySigMul() * sigDmgMul()*(1+0.06*(p.buildCount||0))*(p.chestDmgT>0?1.25:1); // 宝箱力量药剂：该成员本人伤害 +25%（存续中）
+        var dmg=16*c.dmgMul*lvlMul*earlySigMul() * sigDmgMul()*(1+0.06*(p.buildCount||0))*(p.chestDmgT>0?1.25:1)*timeBuffMul(); // 定时全队增幅（2026-10-30）：真人远端成员普攻同接 timeBuffMul（全队口径） // 宝箱力量药剂：该成员本人伤害 +25%（存续中）
         DMG_CRIT=0.05; DMG_EL=EL_OF[c.weapon]||0;
         var kb=Math.atan2(tgt.y-p.y,tgt.x-p.x);
         DMG_SRC=p.id; /* 归因：这一下的击杀牛筋/计数记到该成员名下（killEnemy 同步结算，结算后立即清） */
@@ -19149,7 +19311,7 @@ function hostTick(dt){
       cliSpecFx({id:p.id,h:p.hero,x:Math.round(p.x),y:Math.round(p.y),fa:+p.faceAng.toFixed(2),tx:(p.hero===2||p.hero===5)?Math.round(p.x+Math.cos(p.faceAng)*(p.hero===2?200:130)):null,ty:(p.hero===2||p.hero===5)?Math.round(p.y+Math.sin(p.faceAng)*(p.hero===2?200:130)):null}); /* 【队友特效与玩家一致轮】房主屏同步复刻：旧版 specFxPush 只供客机——房主屏自己只剩下方金环＋技能名，看不到队友按键技本体。本行在房主本屏按同一事件调 cliSpecFx（与客机逐字同清单：班仔光束/鸡哥烟雾爆开/莫哈哈子母雷延迟爆链登记/黄主任落点预警＋落爆登记/陈哈哈雷笼落雷/闻西·八思起势环），延迟爆点由 hostTick 末尾 cliFxPend 推进段同式触发；落点与 specFxPush 同一近似口径（简化结算无真实落点状态）；进行时（龙卷风本体/隐身压淡）另由 drawRemote 按 sd 绘制、旋流/星光/烟雾粒子由下方 specVisT 进行时补播段续播。纯视觉、下方伤害结算一字未动 */
       if(p.hero===3){ p._visSmokeX=p.x; p._visSmokeY=p.y; } /* 鸡哥固定烟雾锚点（房主屏进行时补播用、与 cliSpecFx 客机锚点同口径） */
       var sr=(p.hero===6)?340:200;
-      var sd=90*c.dmgMul*(1+0.03*Math.max(0,(p.lv||1)-1))*(1+0.06*(p.buildCount||0))*(p.chestDmgT>0?1.25:1); // 基础等级段与 pDmgMul 首段同口径【2026-10-29 平衡轮同步 +2.5%→+3.0%/级；本简化结算历来只吃首段、不另加第二段，避免另乘一遍】；等级改读该成员自己的 p.lv（2026-10-29 联机等级各自独立轮）；宝箱力量药剂：同吃 +25%
+      var sd=90*c.dmgMul*(1+0.03*Math.max(0,(p.lv||1)-1))*(1+0.06*(p.buildCount||0))*(p.chestDmgT>0?1.25:1)*timeBuffMul(); // 定时全队增幅（2026-10-30）：真人远端成员按键技同接 timeBuffMul // 基础等级段与 pDmgMul 首段同口径【2026-10-29 平衡轮同步 +2.5%→+3.0%/级；本简化结算历来只吃首段、不另加第二段，避免另乘一遍】；等级改读该成员自己的 p.lv（2026-10-29 联机等级各自独立轮）；宝箱力量药剂：同吃 +25%
       DMG_CRIT=0.05; DMG_EL=EL_OF[c.weapon]||0;
       var hit=0;
       DMG_SRC=p.id;
@@ -19173,12 +19335,13 @@ function hostTick(dt){
       for(var ek=0;ek<enemies.length;ek++){ var e3=enemies[ek];
         if(Math.abs(e3.x-p.x)<e3.r+p.r+2 && Math.abs(e3.y-p.y)<e3.r+p.r+2){ hd=Math.max(hd,e3.dmg||8); hdE=e3; break; }
       }
+      if(hd>0 && hdE && portalBarSeparates(hdE.x, hdE.y, p.x, p.y)) hd = 0; // 传送门结界（2026-10-30）：接触来源怪与成员跨侧 → 本次接触不结算（在闪避掷骰之前清零、不耗闪避/不受击冷却）；同侧照常
       if(hd>0){ if(p.isNpc && Math.random()<0.80){ texts.push({x:p.x,y:p.y-44,v:0,txt:'闪避！',t:0,color:'#8ad7ff'}); p.hurtCd=0.65; } /* NPC 不易死机制③：伤害闪避 80%（用户定版）——每次接触伤害判定有 80% 概率整次闪避（飘字「闪避！」，该次不掉血）；未闪避才走减伤结算；飘字旧 {k:'text'} 死格式已改 texts（见普攻处根因注） */ else { if(p.isNpc) hd=Math.max(1,Math.round(hd*0.8*(npcWxPhase===2?WX_TORNADO_DR_MUL:1)*(1-Math.min(0.45,npcPSum(p,'armorP'))))); /* NPC 不易死机制②：承伤减免 20%；闻西龙卷风减伤段（2026-10-29）再乘 ×0.30（减伤 70%、与本机同口径，叠在 20% 减免之外独立一区）；【NPC 按玩家池学习追加（2026-10-28）】其自有被动减伤（armorP 字段、与玩家同封顶 45%）再乘一区 */ p.hp-=hd; if(hdE && hdE.boss && typeof bossLeechHeal==='function') bossLeechHeal(hdE, hd); /* Boss 吸血：按成员实际掉血结算（10 人档起、见 bossLeechHeal 注） */ p.hurtT=0.3; p.hurtCd=0.65; texts.push({x:p.x,y:p.y-44,v:0,txt:'-'+Math.round(hd),t:0,color:'#ff9a8a'}); } }
     }
     for(var pi=eProjectiles.length-1;pi>=0;pi--){ var pr=eProjectiles[pi];
       if(Math.hypot(pr.x-p.x,pr.y-p.y)<p.r+pr.r+2){
         eProjectiles.splice(pi,1);
-        if(!shopBarProtects(p.x, p.y) && p.invuln<=0 && p.dodgeT<=0 && !p.learnOpen && !p.panelGuard && !(p.learnStealthT > 0) && !npcImmune){ if(p.isNpc && Math.random()<0.80){ texts.push({x:p.x,y:p.y-44,v:0,txt:'闪避！',t:0,color:'#8ad7ff'}); } /* NPC 伤害闪避 80%（弹道同口径，闪避时弹道照常消耗、不掉血）；飘字旧 {k:'text'} 死格式已改 texts（见普攻处根因注） */ else { var pd2=p.isNpc?Math.max(1,Math.round((pr.dmg||8)*0.8*(npcWxPhase===2?WX_TORNADO_DR_MUL:1)*(1-Math.min(0.45,npcPSum(p,'armorP'))))):(pr.dmg||8); /* NPC 承伤减免 20%（弹道同口径）＋闻西龙卷风减伤段 ×0.30（2026-10-29、同接触段口径）＋其自有被动减伤 armorP（同接触段口径） */ p.hp-=pd2; if(pr.srcE && pr.srcE.boss && typeof bossLeechHeal==='function') bossLeechHeal(pr.srcE, pd2); /* Boss 吸血：弹道来源 Boss 按实际掉血结算（同接触段口径） */ p.hurtT=0.3; texts.push({x:p.x,y:p.y-44,v:0,txt:'-'+Math.round(pd2),t:0,color:'#ff9a8a'}); } } // learnOpen/panelGuard 成员不吃弹道伤害（面板打开期间无敌）；商人小结界（2026-10-29 用户令）：成员在商人结界内不吃界外弹道伤害（弹体照常消耗；房主侧 eProjectiles 主循环另有跨界销毁、二者同向不冲突）
+        if(!shopBarProtects(p.x, p.y) && !portalBarSeparates(pr.srcE ? pr.srcE.x : pr.x, pr.srcE ? pr.srcE.y : pr.y, p.x, p.y) && p.invuln<=0 && p.dodgeT<=0 && !p.learnOpen && !p.panelGuard && !(p.learnStealthT > 0) && !npcImmune){ if(p.isNpc && Math.random()<0.80){ texts.push({x:p.x,y:p.y-44,v:0,txt:'闪避！',t:0,color:'#8ad7ff'}); } /* NPC 伤害闪避 80%（弹道同口径，闪避时弹道照常消耗、不掉血）；飘字旧 {k:'text'} 死格式已改 texts（见普攻处根因注） */ else { var pd2=p.isNpc?Math.max(1,Math.round((pr.dmg||8)*0.8*(npcWxPhase===2?WX_TORNADO_DR_MUL:1)*(1-Math.min(0.45,npcPSum(p,'armorP'))))):(pr.dmg||8); /* NPC 承伤减免 20%（弹道同口径）＋闻西龙卷风减伤段 ×0.30（2026-10-29、同接触段口径）＋其自有被动减伤 armorP（同接触段口径） */ p.hp-=pd2; if(pr.srcE && pr.srcE.boss && typeof bossLeechHeal==='function') bossLeechHeal(pr.srcE, pd2); /* Boss 吸血：弹道来源 Boss 按实际掉血结算（同接触段口径） */ p.hurtT=0.3; texts.push({x:p.x,y:p.y-44,v:0,txt:'-'+Math.round(pd2),t:0,color:'#ff9a8a'}); } } // learnOpen/panelGuard 成员不吃弹道伤害（面板打开期间无敌）；商人小结界（2026-10-29 用户令）：成员在商人结界内不吃界外弹道伤害（弹体照常消耗；房主侧 eProjectiles 主循环另有跨界销毁、二者同向不冲突）；传送门结界（2026-10-30）：敌方弹道来源（srcE 优先、无则弹体位置）与成员跨侧 → 同口径不掉血（弹体照常消耗、与房主侧跨界销毁同向）
       }
     }
     /* 拾取（2026-10-29 联机等级各自独立轮改版）：纯经验宝石按人独立——该成员已拾过的（tk 含其 id）整段跳过、对他而言这颗已不存在；未拾过的拾到只记其本人 tk、经验只入其本人 gainXpPeer，全体都拾过才 splice 移除。回血/狂怒/道具仍为共享世界物件（拾到即全员消失、既有 splice 与个人生效口径不变）；其中磁石效果按人独立——不再置全局 magnetVac（旧版会把全图宝石吸向房主一人），改为拾取后 peerMagnetCollect 只收该成员自己未拾的那一份（见该函数注，循环后统一结算避开迭代中改数组） */
@@ -19204,7 +19367,7 @@ function hostTick(dt){
     if(p.hp<=0 && !p.downed && !p.dead) downPeer(p);
   }
   /* 梁鸡细佬：远端成员走近摊位 → 只通知该成员本机开店（其货架由其本机按自身构筑自滚、购买只扣其本人钱包）；离开 110 外才允许再次触发，同一次停留内关店不会被重复弹窗。
-     3 秒口径（2026-10-28 用户令，与单人/房主 merchantTick 同步）：房主对每名真人远端成员单独计 shopNearT——64px 内连续停留满 3 秒才发 shopopen，离开 64px 该成员计时重置；NPC 队友不走开店逻辑、跳过；客户端收到通知直接开店、不再另计 */
+     1 秒口径（2026-10-29 用户令改 1 秒，与单人/房主 merchantTick 同步）：房主对每名真人远端成员单独计 shopNearT——64px 内连续停留满 1 秒才发 shopopen，离开 64px 该成员计时重置；NPC 队友不走开店逻辑、跳过；客户端收到通知直接开店、不再另计 */
   if(typeof SHOP!=='undefined' && SHOP.npc){
     for(var sid2 in N.peers){ var sp2=N.peers[sid2];
       if(sp2.isNpc){ sp2.shopNearT=0; continue; }
@@ -19212,7 +19375,7 @@ function hostTick(dt){
       if(dd2>110){ sp2.shopAway=false; sp2.shopNearT=0; }
       else if(dd2<64 && !sp2.shopAway && !sp2.downed && !sp2.dead){
         sp2.shopNearT=(sp2.shopNearT||0)+dt;
-        if(sp2.shopNearT>=3){
+        if(sp2.shopNearT>=1){
           sp2.shopAway=true; sp2.shopNearT=0;
           for(var sli=0;sli<N.slots.length;sli++) if(N.slots[sli].peerId===sid2) send(N.slots[sli].dc,{t:'shopopen',seq:SHOP.seq||0});
         }
