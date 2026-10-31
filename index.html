@@ -2275,6 +2275,16 @@ function musicTrack(name){
   bgmPlay(); // game／void／house 等一切局内场景：同一首全局 BGM 续播、不换曲
 }
 function startBgm(){ bgmPlay(); }
+/* BGM 手势续播（2026-11-01 用户实报「背景音乐没有」修复）：诊断——startGame→startBgm→bgmPlay 起播链本身在位，
+   但两处会让它静默失效：①联机 beginClient/beginHostGame 经网络消息回调调 startGame、不在用户手势内，a.play() 必被
+   浏览器自动播放策略拒绝（wantPlay 已置 true、只差一次手势续播）；②既有续播点只有 audioUnlock 内的顺带一行、与
+   sfxInit/sfxLoadSamples 同在一个 try 块里，那两步任一抛错（如音频上下文创建失败）续播行就被跳过。现设独立续播点：
+   自成 try、只管 BGM——wantPlay 为真且元素处于暂停时，任意 pointerdown/touchstart/click 手势都立即 bgmPlay() 续播；
+   标题页 wantPlay＝false（stopBgm 已清）、不触发，标题无 BGM 的设计不动；音量 0 时 bgmPlay 自行静音处理、不强播。 */
+function bgmGestureResume(){ try{ if(BGM.wantPlay && BGM.a && BGM.a.paused && VOL.music > 0) bgmPlay(); }catch(e){} }
+document.addEventListener('pointerdown', bgmGestureResume, true);
+document.addEventListener('touchstart', bgmGestureResume, { capture: true, passive: true });
+document.addEventListener('click', bgmGestureResume, true);
 function stopBgm(){
   BGM.wantPlay = false; BGM.playing = false;
   try{ droneStop(); }catch(e){}
@@ -2308,7 +2318,7 @@ function openVolumeScreen(){
 }
 window.__VOL = function(){
   var pb = el('btnVolPause');
-  return { music: VOL.music, sfx: VOL.sfx, atk40Migrated: (typeof VOL_ATK40_MIGRATED !== 'undefined') ? VOL_ATK40_MIGRATED : null, atk30Migrated: (typeof VOL_ATK30_MIGRATED !== 'undefined') ? VOL_ATK30_MIGRATED : null, sfxOn: (typeof SFX !== 'undefined') ? SFX.on : null, sfxGain: (typeof SFX !== 'undefined' && SFX.gain) ? SFX.gain.gain.value : null, voiceGain: (typeof SFX !== 'undefined' && SFX.voiceGain) ? SFX.voiceGain.gain.value : null, voiceGainVal: (typeof VOICE_GAIN_VAL !== 'undefined') ? VOICE_GAIN_VAL : null, bgmSrc: BGM.a ? BGM.a.src : null, bgmPlaying: !!(BGM.a && !BGM.a.paused), bgmVol: BGM.a ? BGM.a.volume : null, bgmLoop: BGM.a ? BGM.a.loop : null, wantPlay: BGM.wantPlay, pauseBtnText: pb ? pb.textContent : null, oldSfxPauseBtn: !!el('btnSfxPause'), volScreen: !!el('volumeScreen') };
+  return { music: VOL.music, sfx: VOL.sfx, atk40Migrated: (typeof VOL_ATK40_MIGRATED !== 'undefined') ? VOL_ATK40_MIGRATED : null, atk30Migrated: (typeof VOL_ATK30_MIGRATED !== 'undefined') ? VOL_ATK30_MIGRATED : null, sfxOn: (typeof SFX !== 'undefined') ? SFX.on : null, sfxGain: (typeof SFX !== 'undefined' && SFX.gain) ? SFX.gain.gain.value : null, voiceGain: (typeof SFX !== 'undefined' && SFX.voiceGain) ? SFX.voiceGain.gain.value : null, voiceGainVal: (typeof VOICE_GAIN_VAL !== 'undefined') ? VOICE_GAIN_VAL : null, bgmSrc: BGM.a ? BGM.a.src : null, bgmPlaying: !!(BGM.a && !BGM.a.paused), bgmPaused: BGM.a ? BGM.a.paused : null, bgmVol: BGM.a ? BGM.a.volume : null, bgmLoop: BGM.a ? BGM.a.loop : null, bgmTime: BGM.a ? +BGM.a.currentTime.toFixed(2) : null, bgmReady: BGM.a ? BGM.a.readyState : null, bgmErr: (BGM.a && BGM.a.error) ? BGM.a.error.code : null, wantPlay: BGM.wantPlay, pauseBtnText: pb ? pb.textContent : null, oldSfxPauseBtn: !!el('btnSfxPause'), volScreen: !!el('volumeScreen') };
 };
 /* ---------------- 角色资料（造型 + 数值 + 专属技能） ---------------- */
 var CHARACTERS = [
@@ -2347,7 +2357,7 @@ var CHARACTERS = [
     role:'街头雷法 · 电击小子', hp:102, speed:227, dmgMul:1.04, critDmg:2.0,
     skin:'#f7d7a8', hair:'#14100c', hairStyle:'cap', outfit:'#1d1d22', outfit2:'#101014', cape:null, bodyW:0.98,
     awk:{ type:'spec', name:'电死算戳数', desc:'特殊技能冷却 -30%' } },
-  { name:'光明朱德', forms:['光明朱德','冰痕光明朱德','极冰光明朱德'],
+  { name:'光明朱德', forms:['光明朱德','不不不 我不是那个人','新街尾饼王'], // 一觉/二觉名（2026-11-01 用户令改名：原「冰痕光明朱德」→「不不不 我不是那个人」、「极冰光明朱德」→「新街尾饼王」）；选角卡/觉醒提示/图鉴觉醒行/形态名均读 forms、本表为唯一数据源、无其他写死处
     weapon:'mungcake', specName:'我在福建很想你', specCd:31, // 按键技（用户 2026-10-31 定版＋技能实装轮接入）：长按满 0.5 秒触发（20:32 改定、原 16:26 的 2 秒防误触作废）→冲撞状态 13 秒（移速 +100%/撞飞/撞击冰爆＝普攻冰爆 ×5/减伤 70%/脚下战斗冰面/冰雹跟随本体）／冷却 18 秒、持续期间不进冷却自结束起算；表值 31＝持续 13＋净冷却 18（doSpecial 经 wxSpecCdBase 扣持续、specCdHeldByDuration 冻结递减，与闻西同式）；建模轮占位短冲与占位 specCd 24 已删除
     role:'冰上滑行 · 冷齿绿豆饼', hp:106, speed:228, dmgMul:1.0, critDmg:1.5, // 基础属性为施工取值（沿用建模轮暂定：取七人区间中位 hp 94–224／speed 196–234；伤害数值经用户 2026-10-31 授权助理安排、非用户定版）；critDmg 1.5 与六人同口径（陈哈哈 2.0 为其专属例外）
     skin:'#ffd9b8', hair:'#2a2a30', hairStyle:'hood', outfit:'#3a76d6', outfit2:'#2e7d46', cape:null, bodyW:0.9,
@@ -7672,13 +7682,55 @@ function gmColdApply(e){ // 附一层感冒（绿豆饼冰爆/冰刺、按键技
 }
 var gmIcePatches = []; // 拖尾冰面落点池（纯特效）：{x, y, t 剩余停留}；新局 resetGame 清空
 var gmIceZones = [];   // Lv5 战斗冰面池：{x, y, r, t 剩余存续}；新局 resetGame 清空
-var GM_ICE_IMG = new Image(); GM_ICE_IMG.src = 'assets/fx/guangming_ice_patch.png'; // 冰面块 v2（用户 2026-10-31 定版）
-function gmIcePatchDraw(dx, dy, dw, dh){ // 冰面块单块绘制（调用方已设 globalAlpha、口径与 v2 原图各层一致）：原图已加载→原图；未加载→兜底扁椭圆（2026-10-31 20:39 用户问「冰面怎么没见到」补兜底——根因：三层绘制旧版全以图片就绪为门，托管仓库缺 guangming_ice_patch.png 时三层全不画；兜底只在 naturalWidth＝0 时生效、与原图同尺寸盒（斜俯视扁椭圆、高宽比同调用盒）、半透明冰蓝＋浅芯，图片一加载完成立即自动恢复 v2 原图；v2 素材本身、存续与效果口径一字未动）
-  if(GM_ICE_IMG.complete && GM_ICE_IMG.naturalWidth){ ctx.drawImage(GM_ICE_IMG, dx, dy, dw, dh); return; }
-  ctx.save(); ctx.translate(dx + dw / 2, dy + dh / 2); ctx.scale(1, dh / dw);
-  ctx.fillStyle = 'rgba(148,214,246,0.55)'; ctx.beginPath(); ctx.arc(0, 0, dw / 2, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = 'rgba(216,246,255,0.45)'; ctx.beginPath(); ctx.arc(0, 0, dw * 0.30, 0, Math.PI * 2); ctx.fill();
-  ctx.restore();
+var GM_ICE_IMG = new Image(); GM_ICE_IMG.src = 'assets/fx/guangming_ice_patch.png'; // 冰面块 v2 纹理（2026-11-01 起作冰面精灵的底纹来源，见下）
+/* 冰面做真（2026-11-01 用户实报「冰面特效太假」）：旧版三层统一画法＝把矩形纹理图（或未加载时的兜底扁椭圆）整盒拉伸，
+   屏上就是一块光滑扁平的半透明蓝椭圆。现三层统一改走程序预渲染冰面精灵（4 个变体、256×128 离线画布、按落点位置哈希选变体、
+   同一落点恒同变体不闪烁）：不规则锯齿冰块轮廓（14 顶点半径抖动）、深浅不一的半透明色块（深蓝沉底斑＋亮面冰片）、
+   自中心向外的折线冰裂纹＋细碎裂纹、霜边（浅白描边＋边缘白色霜点）、白色高光条。底纹：GM_ICE_IMG 已加载时取其冰纹部分
+   （原图上部冰纹区）铺底再叠程序裂纹/霜边/高光；未加载时以蓝调渐变＋色块为底——两条路都是冰面质感、无扁椭圆。
+   三层绘制盒/透明度/存续（拖尾 1 秒、战斗冰面 10 秒）/效果口径（己方 +30%、怪物 −20%、离开失效）一字未动，只改表现。 */
+var GM_ICE_SPRITES = null;
+GM_ICE_IMG.onload = function(){ GM_ICE_SPRITES = null; }; // 纹理晚到时作废已建精灵、下次绘制按带纹理版重建
+function gmIceMakeSprite(variant){
+  var W = 256, H = 128, c = document.createElement('canvas'); c.width = W; c.height = H;
+  var g = c.getContext('2d');
+  var seed = 90210 + variant * 613;
+  function rnd(){ seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; } // 定种子 LCG：同变体每次重建结果一致
+  var cx = W / 2, cy = H / 2, pts = [], NP = 14;
+  for(var i = 0; i < NP; i++){ var a = (i / NP) * Math.PI * 2, rr = 0.76 + rnd() * 0.24; pts.push({ x: cx + Math.cos(a) * W * 0.48 * rr, y: cy + Math.sin(a) * H * 0.46 * rr }); }
+  function outline(){ g.beginPath(); g.moveTo(pts[0].x, pts[0].y); for(var j = 1; j < pts.length; j++) g.lineTo(pts[j].x, pts[j].y); g.closePath(); }
+  function blob(x, y, rx, ry){ g.beginPath(); g.save(); g.translate(x, y); g.scale(1, ry / rx); g.arc(0, 0, rx, 0, Math.PI * 2); g.restore(); g.fill(); }
+  outline();
+  var grd = g.createLinearGradient(0, H * 0.08, 0, H * 0.95);
+  grd.addColorStop(0, 'rgba(198,240,253,0.96)'); grd.addColorStop(0.45, 'rgba(128,205,242,0.94)'); grd.addColorStop(1, 'rgba(70,152,210,0.96)');
+  g.fillStyle = grd; g.fill();
+  g.save(); outline(); g.clip();
+  if(GM_ICE_IMG.complete && GM_ICE_IMG.naturalWidth){ g.globalAlpha = 0.55; g.drawImage(GM_ICE_IMG, 0, 0, GM_ICE_IMG.naturalWidth, Math.floor(GM_ICE_IMG.naturalHeight * 0.68), 0, 0, W, H); g.globalAlpha = 1; } // v2 原图上部冰纹作底纹（下部纯色带不用）
+  for(var d = 0; d < 7; d++){ g.fillStyle = 'rgba(36,106,176,' + (0.10 + rnd() * 0.15).toFixed(2) + ')'; blob(cx + (rnd() - 0.5) * W * 0.7, cy + (rnd() - 0.5) * H * 0.6, 18 + rnd() * 46, 8 + rnd() * 18); } // 深色沉底斑（深浅不一）
+  for(var f = 0; f < 8; f++){ g.fillStyle = 'rgba(232,251,255,' + (0.10 + rnd() * 0.16).toFixed(2) + ')'; blob(cx + (rnd() - 0.5) * W * 0.75, cy + (rnd() - 0.5) * H * 0.6, 14 + rnd() * 40, 6 + rnd() * 14); } // 亮面冰片
+  g.strokeStyle = 'rgba(242,253,255,0.55)'; g.lineWidth = 1.4; // 主冰裂纹：自近中心向外折线
+  for(var k = 0; k < 6; k++){
+    var a0 = rnd() * Math.PI * 2, px = cx + Math.cos(a0) * W * 0.07, py = cy + Math.sin(a0) * H * 0.07, ang = a0, seg = 3 + Math.floor(rnd() * 3);
+    g.beginPath(); g.moveTo(px, py);
+    for(var s = 0; s < seg; s++){ ang += (rnd() - 0.5) * 0.9; var len = 14 + rnd() * 26; px += Math.cos(ang) * len; py += Math.sin(ang) * len * 0.55; g.lineTo(px, py); }
+    g.stroke();
+  }
+  g.strokeStyle = 'rgba(205,242,255,0.35)'; g.lineWidth = 0.8; // 细碎裂纹
+  for(var k2 = 0; k2 < 10; k2++){ var bx = cx + (rnd() - 0.5) * W * 0.8, by = cy + (rnd() - 0.5) * H * 0.7, ba = rnd() * Math.PI * 2, bl = 6 + rnd() * 14; g.beginPath(); g.moveTo(bx, by); g.lineTo(bx + Math.cos(ba) * bl, by + Math.sin(ba) * bl * 0.55); g.stroke(); }
+  for(var hs = 0; hs < 3; hs++){ g.fillStyle = 'rgba(255,255,255,' + (0.20 + rnd() * 0.18).toFixed(2) + ')'; blob(cx + (rnd() - 0.5) * W * 0.55, cy + (rnd() - 0.5) * H * 0.5, 16 + rnd() * 22, 3 + rnd() * 3); } // 高光条
+  g.restore();
+  outline(); g.strokeStyle = 'rgba(236,250,255,0.85)'; g.lineWidth = 3; g.stroke(); // 霜边
+  outline(); g.strokeStyle = 'rgba(158,219,249,0.5)'; g.lineWidth = 1.2; g.stroke();
+  for(var sp = 0; sp < 42; sp++){ var pa = rnd() * Math.PI * 2; g.fillStyle = 'rgba(255,255,255,' + (0.25 + rnd() * 0.5).toFixed(2) + ')'; g.fillRect(cx + Math.cos(pa) * W * 0.47 * (0.80 + rnd() * 0.18), cy + Math.sin(pa) * H * 0.45 * (0.80 + rnd() * 0.18), 1.7, 1.7); } // 边缘霜点
+  return c;
+}
+function gmIceSpriteFor(dx, dy){
+  if(!GM_ICE_SPRITES){ GM_ICE_SPRITES = [gmIceMakeSprite(0), gmIceMakeSprite(1), gmIceMakeSprite(2), gmIceMakeSprite(3)]; }
+  var hx = Math.sin(Math.round(dx / 240) * 127.1 + Math.round(dy / 240) * 311.7) * 43758.5453;
+  return GM_ICE_SPRITES[Math.abs(Math.floor((hx - Math.floor(hx)) * 4)) % 4];
+}
+function gmIcePatchDraw(dx, dy, dw, dh){ // 冰面块单块绘制（调用方已设 globalAlpha、三层同口径）：程序冰面精灵（不规则轮廓＋裂纹＋霜边＋高光），图片未加载时同为冰面质感、无扁椭圆兜底
+  ctx.drawImage(gmIceSpriteFor(dx, dy), dx, dy, dw, dh);
 }
 var MUNGCAKE_IMG = new Image(); MUNGCAKE_IMG.src = 'assets/fx/mungcake.png'; // 绿豆饼弹体（圆饼像素图、随弹自转绘制）
 function gmIceOn(){ return typeof P !== 'undefined' && !!P && P.charIdx === 7; }
@@ -10877,13 +10929,13 @@ function chBasicShock(e, dmgVal){ if(!chShockSmall(e) || e.shockOn) return; appl
    ①触发：电击小子（chainvolt）升到 Lv5（进化同算）后，该陈哈哈每累计击杀 CH_TW_NEED＝10 名敌人，立即从天劈下一道巨大的黄金雷电；触发后计数清零重新累计、无额外冷却（攒满 10 杀即放）。Lv1–Lv4 不计数、不触发；普攻 Lv5 小怪感电口径一字未动、按键技豪情在天口径一字未动。
    ②落点＝附近随机、不锁敌（用户定版）：以触发者本人（本机＝P／NPC＝该 NPC）为圆心、CH_TW_NEAR_R＝320 内按面积均匀随机取一点（角度随机、距离＝320×√随机数），绝不锁定或吸附任何敌人——附近没怪照样劈（空劈只有视觉与空散开）。落点经 nudgeLand 校正；新屋内落点在墙格内则重掷（至多 8 次、仍在墙内则落回触发者脚下）；虚空竞技场内落点钳制在场内。
    ③散开必发、不以命中为条件（用户定版）：落雷落地瞬间无论直击圈内有没有敌人，都必以落点为圆心散开——散开形态＝放射电弧：自落点向散开圈内每名敌人各拉一道金色电弧（effects 'links'）＋一圈扩至散开半径的金色冲击环（novas，纯视觉）。判定分两圈、不叠伤：直击圈 CH_TW_STRIKE_R＝120 内的敌人吃直击伤害；仅在散开圈 CH_TW_SPREAD_R＝250 内（直击圈外）的敌人吃散开伤害；同一敌人一次天威至多吃一段（直击优先）；两圈皆空时散开照常以冲击环形式发生（无目标可拉弧）。
-   ④伤害：基数＝电击小子普攻首跳基数（chTwBase：Lv5＝18＋5×6.5＝50.5、进化 42）×当刻普攻乘区 mulV（本机＝pDmgMul×earlySigMul×sigDmgMul；NPC＝其 npcMul 同式镜像×earlySigMul×sigDmgMul，见 chTwNpcMul）——直击＝基数×CH_TW_STRIKE_MUL＝3.0、散开＝基数×CH_TW_SPREAD_MUL＝1.2（Lv5 本机开局后段 mulV≈2 量级时直击约 300、散开约 120，与「巨大黄金雷电」的份量相配、每 10 杀一次不破节奏）；元素记雷（DMG_EL='volt'、吃虚空乱流等雷加成）、暴击章 0.10（陈哈哈电击小子基础暴击、与普攻同章；NPC 走 npcHit 同式被动暴击加成）；命中者 strikeT／jitter 表现与既有落雷同口径；天威不挂感电（感电只属普攻 Lv5 与按键技既有口径）、不眩晕、不击退。
+   ④伤害：基数＝电击小子普攻首跳基数（chTwBase：Lv5＝18＋5×6.5＝50.5、进化 42）×当刻普攻乘区 mulV（本机＝pDmgMul×earlySigMul×sigDmgMul；NPC＝其 npcMul 同式镜像×earlySigMul×sigDmgMul，见 chTwNpcMul）——直击＝基数×CH_TW_STRIKE_MUL、散开＝基数×CH_TW_SPREAD_MUL＝1.2。【2026-11-01 用户令改版】直击倍率 3.0→5.0：天威直击伤害＝当前实时普通攻击伤害×5——「基数×当刻乘区 mulV」即当刻普攻首跳实伤，直击再 ×5。算例：Lv5（基数 50.5）、mulV＝2 时普攻首跳实伤＝101、直击＝101×5＝505、散开仍＝101×1.2≈121（散开倍率未动）；触发（每 10 杀）／落点（320 内随机不锁敌）／直击圈 120／散开圈 250／散开必发／防自触发结算旗／暴击章／NPC 镜像口径均未动；元素记雷（DMG_EL='volt'、吃虚空乱流等雷加成）、暴击章 0.10（陈哈哈电击小子基础暴击、与普攻同章；NPC 走 npcHit 同式被动暴击加成）；命中者 strikeT／jitter 表现与既有落雷同口径；天威不挂感电（感电只属普攻 Lv5 与按键技既有口径）、不眩晕、不击退。
    ⑤计数范围（施工定版）：只计「归属该陈哈哈本人」的击杀——killEnemy 末尾 chTwOnKill 按击杀归因 DMG_SRC 分流：DMG_SRC＝null（本机玩家：其普攻／按键技／通用武器／图腾与区域／召唤物，以及替身的一切击杀——替身归因恒为召唤者本人，见替身段头注 ④c）计入本机陈哈哈；DMG_SRC＝某 NPC 的 id 且该 peer 为 NPC 陈哈哈时计入该 NPC 自己。明确排除：朱德克隆分身（killEnemy 开头提前返回、不经计数行）；天威自身造成的击杀不计数（CH_TW_SETTLING 结算旗，含天威结算内嵌套的连锁爆核等击杀——防天威连环自触发）；其他英雄与真人远端成员的击杀不计（真人远端成员不走本系统、与感电轮口径一致；其本人在自己单机/房主本机以陈哈哈身份游玩时以本机口径照常生效）；结界清场等不经 killEnemy 的静默移除不计数。
    ⑥友军：结算只遍历 enemies——不伤玩家本人、联机真人队友、NPC 队友、己方召唤物与替身（与 AK Lv5 爆炸同口径）。
    ⑦场景：主地图／新屋／新街尾之影／虚空竞技场／Boss 结界内外均可触发（计数与场景无关）；伤害仍走 damageEnemy 统一入口，既有结界门禁（Boss 结界外打不进、商人小结界内打不出）对天威同样生效——落点视觉照常、被门禁挡下的那一段不结算，与全游戏其他伤害同口径。
    ⑧NPC／替身同步口径（明确）：NPC 陈哈哈同步——独立计数器（peer.npcChTwKillN）、读其自己 npcW.chainvolt 的等级、落点以该 NPC 为圆心、伤害在主脚本以同式镜像乘区结算并盖 DMG_SRC＝该 NPC（其天威击杀的牛筋/计数归该 NPC）；替身陈哈哈不设独立计数器——其击杀按既有归因并入召唤者本人的计数、天威以召唤者为圆心、伤害走召唤者乘区（与替身「属性与归因同源召唤者」的既有定版一致）。客机屏无天威专用同步事件（与 NPC 普攻投射物同缺口口径、非本轮新增）。
    ⑨文案：技能名「天威」——图鉴／升级卡／已学技能面板同源读 WEAPONS.chainvolt 的 Lv5 描述与进化描述（已写入「天威」全口径）；局内触发时落点上方飘金字「天威！」；本机触发另有落雷音效与震屏（NPC 触发在 800px 外不震屏不放声、防百人房噪声）。 */
-var CH_TW_NEED = 10, CH_TW_NEAR_R = 320, CH_TW_STRIKE_R = 120, CH_TW_SPREAD_R = 250, CH_TW_STRIKE_MUL = 3.0, CH_TW_SPREAD_MUL = 1.2; // 天威定版常量（口径见上方注）
+var CH_TW_NEED = 10, CH_TW_NEAR_R = 320, CH_TW_STRIKE_R = 120, CH_TW_SPREAD_R = 250, CH_TW_STRIKE_MUL = 5.0, CH_TW_SPREAD_MUL = 1.2; // 天威定版常量（口径见上方注；直击倍率 2026-11-01 用户令 3.0→5.0＝当前实时普攻伤害×5，散开 1.2 不动）
 var CH_TW_SETTLING = 0; // 天威结算中旗（>0 时天威造成的击杀不计数，防自触发连环；伤害结算全同步、简单计数器足够）
 function chTwBase(lv, evo){ return evo ? 42 : 18 + lv * 6.5; } // 天威伤害基数＝电击小子普攻首跳基数（三路普攻 dmgV 首跳同式）
 function chTwLanding(cx, cy){ // 落点：圆心附近面积均匀随机（不锁敌）；新屋墙格重掷、虚空场内钳制（口径注 ②）
@@ -14212,6 +14264,10 @@ function bzqSprite(dir, frame){ // 'qq:act:idx' 取帧：未就绪就近借同�
     if(idx - r >= 0){ sc = bzqCanvasFor(act, dir, idx - r); if(sc) return sc; }
     if(idx + r < n){ sc = bzqCanvasFor(act, dir, idx + r); if(sc) return sc; }
   }
+  if(act !== 'idle'){ // 与六人 sixqSpriteFor 同规兜底（2026-11-01 移动消失修复）：本动作一帧未就绪时借待机帧、绝不落透明占位
+    var ni = bzqCountFor('idle', dir);
+    for(var r2 = 0; r2 < ni; r2++){ sc = bzqCanvasFor('idle', dir, r2); if(sc) return sc; }
+  }
   return null;
 }
 function bzqWalkIdx(pDir, wp){ // 走路帧号：真实位移相位驱动（与 bzSeqPick 移动分支同公式、步幅换 BZQ 标定）
@@ -14705,7 +14761,7 @@ function sixqCanvasFor(pfx, act, dir, idx){
   }
   return null;
 }
-function sixqSpriteFor(pfx, act, dir, idx){
+function sixqBorrow(pfx, act, dir, idx){ // 同英雄同动作同方向就近借帧（目标帧→±8 帧→第 0 帧）；该(动作,方向)一帧未就绪时返回 null
   var meta = SIXQ_META[pfx]; if(!meta || !meta.acts[act]) return null;
   var cnt = sixqCountFor(pfx, act);
   idx = Math.max(0, Math.min(cnt - 1, idx));
@@ -14716,6 +14772,21 @@ function sixqSpriteFor(pfx, act, dir, idx){
     if(idx + r < cnt){ sc = sixqCanvasFor(pfx, act, dir, idx + r); if(sc) return sc; }
   }
   return sixqCanvasFor(pfx, act, dir, 0);
+}
+function sixqSpriteFor(pfx, act, dir, idx){
+  var sc = sixqBorrow(pfx, act, dir, idx);
+  if(sc) return sc;
+  /* 移动时模型消失修复（2026-11-01 用户实报「其它角色移动时模型会消失／朱德模型不见」）：旧版同动作一帧未就绪即返回 null、
+     getCharSprite 一路落到透明占位 HERO_BLANK——走路/奔跑帧走延后队列（6 张/90ms）、开局只优先所选英雄，队友/NPC 与
+     登记顺序排最后的光明朱德（gm）在慢网下移动时整段动作帧未到、本体画透明。现同动作借帧落空后改按同英雄待机帧兜底
+     （同方向就近借→下向待机），待机帧脚本期立即加载、恒先于动作帧就绪，故移动/攻击/闪避帧未到时画待机帧、绝不画透明；
+     绝不回退旧模型帧（「角色旧版不留回退通道」定版不变）；帧文件/动作/数值未动。 */
+  if(act !== 'idle'){
+    sc = sixqBorrow(pfx, 'idle', dir, Math.min(idx, 49));
+    if(sc) return sc;
+    if(dir !== 'down'){ sc = sixqBorrow(pfx, 'idle', 'down', 0); if(sc) return sc; }
+  }
+  return null;
 }
 function sixqSprite(pfx, dir, frame){ // Q版取帧入口：'q7:动作:帧号' 直取；'s6:帧号'→Q攻击帧；数字帧映射（与 fsqSprite 同表＋受击/按键技借帧，与成人版封堵同口径）
   if(!pfx || pfx === 'bz' || !SIXQ_META[pfx]) return null;
@@ -14856,11 +14927,13 @@ function getCharSprite(ci, stage, dir, frame){
        一闪旧模型。现按「角色旧版不留回退通道」定版收紧尾闸：六人（ci>0）新模型帧未就绪时只回透明
        占位，任何帧（按键技/普攻/受击/立绘）都不再回退旧模型；新帧就绪后所有调用点自动恢复新模型。
        班仔（ci=0）走 BZSEQ 专属通道、不经此闸，未动。 */
+    var idleTail = sixqSpriteFor(pfxR, 'idle', dir, 0); if(idleTail) return idleTail; // 尾闸兜底（2026-11-01 移动消失修复）：sixqSprite 未映射的帧型（如未知姿势串）在此再借同英雄待机帧，仍落空才回透明占位
     if(!HERO_BLANK){ HERO_BLANK = document.createElement('canvas'); HERO_BLANK.width = 36; HERO_BLANK.height = 54; }
     return HERO_BLANK;
   }
   var hc = hero3dCanvas(ci, stage, dir, frame);
   if(hc) return hc;
+  if(ci === 0){ var bzIdleTail = bzqSprite(dir, 'qq:idle:0'); if(bzIdleTail) return bzIdleTail; } // 班仔同规尾闸（2026-11-01）：BZQ 待机帧兜底、绝不轻易落透明
   if(!HERO_BLANK){ HERO_BLANK = document.createElement('canvas'); HERO_BLANK.width = 36; HERO_BLANK.height = 54; }
   return HERO_BLANK; // 帧未载入的瞬间：透明占位（预下载已把帧备齐，实机流程中不可见）
 }
@@ -19784,6 +19857,48 @@ function klfHeroPriorityLoad(){
     }
     var sks = SPEC_SFX_KEYS[ci] || [];
     for(var s2 = 0; s2 < sks.length; s2++) if(AC && !SFX_BUF[sks[s2]]) sfxLoadOne(sks[s2]); // 按键技专属采样立即单独取解码，不等并发洪泛轮到
+    /* 在场队友/NPC 帧优先（2026-11-01 移动消失修复扩展）：旧版只优先所选英雄——队友/NPC 的走路帧在全局延后队列里
+       排到才发出请求，移动时本体只能画透明（修复后先借待机帧、帧到自动恢复）。现把在场全部成员（联机 N.members／
+       N.npcs／N.peers 的 hero、含房主侧 NPC）的待机＋走路帧一并插队发出；光明朱德（ci 7）在 SIXQ_META 登记顺序排最后、
+       帧最易饿死——在场有朱德时其全部动作帧最先插队（排在其他队友之前、所选英雄本人仍为最先）。单人无队友时 present
+       只有本人、本段无新增请求。只改加载顺序，帧文件/动作/数值未动。 */
+    var present = {}; present[ci] = 1;
+    try{
+      if(typeof N !== 'undefined' && N){
+        var lists = [N.members, N.npcs];
+        for(var li = 0; li < lists.length; li++){ var L = lists[li]; if(L) for(var lj = 0; lj < L.length; lj++){ if(L[lj] && typeof L[lj].hero === 'number') present[L[lj].hero] = 1; } }
+        if(N.peers) for(var pk in N.peers){ var pv = N.peers[pk]; if(pv && typeof pv.hero === 'number') present[pv.hero] = 1; }
+      }
+    }catch(e3){}
+    var order = Object.keys(present).map(function(k){ return parseInt(k, 10); }).sort(function(a, b){ return (b === 7 ? 1 : 0) - (a === 7 ? 1 : 0); }); // 朱德排最前
+    for(var oi = 0; oi < order.length; oi++){
+      var hci = order[oi]; if(hci === ci) continue; // 所选英雄已在上方全量优先
+      var hpfx = HERO3D_PFX[hci];
+      if(hci === 0){
+        ['idle', 'walk'].forEach(function(act){
+          ['down', 'side', 'up'].forEach(function(d){
+            var n2 = bzqCountFor(act, d);
+            for(var i2 = 0; i2 < n2; i2++){
+              var key2 = 'bzq2|' + act + '|' + d + '|' + i2, im2 = BZQ_IMGS[key2];
+              if(im2 && !im2.src) hero3dStartLoad(im2, 'assets/player/banzai_q/' + act + '_' + d + '_' + bzSeqPad2(i2) + '.png', key2, null);
+            }
+          });
+        });
+      } else if(hpfx && SIXQ_META[hpfx]){
+        var hmeta = SIXQ_META[hpfx];
+        var hacts = (hci === 7) ? Object.keys(hmeta.acts) : ['idle', 'walk']; // 朱德全动作优先（解排队饥饿）；其余队友待机＋走路
+        hacts.forEach(function(act){
+          if(!hmeta.acts[act]) return;
+          var cnt2 = sixqCountFor(hpfx, act);
+          ['down', 'side', 'up'].forEach(function(d){
+            for(var i3 = 0; i3 < cnt2; i3++){
+              var key3 = 'q7|' + hpfx + '|' + act + '|' + d + '|' + i3, im3 = SIXQ_IMGS[key3];
+              if(im3 && !im3.src) hero3dStartLoad(im3, 'assets/player/' + SIXQ_DIR[hpfx] + '/' + act + '_' + d + '_' + bzSeqPad2(i3) + '.png', key3, (act === 'idle' && d === 'down') ? queueHeroPortraitRefresh : null);
+            }
+          });
+        });
+      }
+    }
   }catch(e){}
 }
 function startGame(){
