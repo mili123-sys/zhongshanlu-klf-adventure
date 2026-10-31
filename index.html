@@ -2348,7 +2348,7 @@ var CHARACTERS = [
     skin:'#f7d7a8', hair:'#14100c', hairStyle:'cap', outfit:'#1d1d22', outfit2:'#101014', cape:null, bodyW:0.98,
     awk:{ type:'spec', name:'电死算戳数', desc:'特殊技能冷却 -30%' } },
   { name:'光明朱德', forms:['光明朱德','冰痕光明朱德','极冰光明朱德'],
-    weapon:'mungcake', specName:'我在福建很想你', specCd:31, // 按键技（用户 2026-10-31 定版＋技能实装轮接入）：长按满 2 秒触发（16:26 补令防误触）→冲撞状态 13 秒（移速 +100%/撞飞/撞击冰爆＝普攻冰爆 ×5/减伤 70%/脚下战斗冰面/冰雹跟随本体）／冷却 18 秒、持续期间不进冷却自结束起算；表值 31＝持续 13＋净冷却 18（doSpecial 经 wxSpecCdBase 扣持续、specCdHeldByDuration 冻结递减，与闻西同式）；建模轮占位短冲与占位 specCd 24 已删除
+    weapon:'mungcake', specName:'我在福建很想你', specCd:31, // 按键技（用户 2026-10-31 定版＋技能实装轮接入）：长按满 0.5 秒触发（20:32 改定、原 16:26 的 2 秒防误触作废）→冲撞状态 13 秒（移速 +100%/撞飞/撞击冰爆＝普攻冰爆 ×5/减伤 70%/脚下战斗冰面/冰雹跟随本体）／冷却 18 秒、持续期间不进冷却自结束起算；表值 31＝持续 13＋净冷却 18（doSpecial 经 wxSpecCdBase 扣持续、specCdHeldByDuration 冻结递减，与闻西同式）；建模轮占位短冲与占位 specCd 24 已删除
     role:'冰上滑行 · 冷齿绿豆饼', hp:106, speed:228, dmgMul:1.0, critDmg:1.5, // 基础属性为施工取值（沿用建模轮暂定：取七人区间中位 hp 94–224／speed 196–234；伤害数值经用户 2026-10-31 授权助理安排、非用户定版）；critDmg 1.5 与六人同口径（陈哈哈 2.0 为其专属例外）
     skin:'#ffd9b8', hair:'#2a2a30', hairStyle:'hood', outfit:'#3a76d6', outfit2:'#2e7d46', cape:null, bodyW:0.9,
     awk:{ type:'spd', name:'溜冰魂觉醒', desc:'移动速度 +12%' } } // 觉醒被动为建模轮结构占位（与闻西 spd 型同式），未由用户定版
@@ -4569,7 +4569,7 @@ function newPlayer(ci){
     face:1, faceAng:0, faceLockT:0, walkPhase:0, invuln:0,
     specCd:0, dodgeCd:0, dodgeRe:[0,0], dodgeT:0, dodgeDx:1, dodgeDy:0, tornadoT:0, tornadoTick:0, tornadoPoisonT:0, tornadoCastId:0, starT:0, starTick:0, starMul:1, starSMul:1, paperT:0, orbitAngle:0, oakAngle:0, oakFxT:0, shield:0, shieldT:0,
     smokeT:0, smokeTick:0, smokeX:0, smokeY:0, swingSide:1, jgPuffT:0, jgTrailX:null, jgTrailY:null, // 梁鸡一觉被动烟雾拖尾（2026-10-31）：落烟节拍计时／上一帧位置（位移判定）；新局随 P 重建清零，落点池 jgPuffs 在 resetGame 清空
-    gmRushT:0, gmRushDx:1, gmRushDy:0, gmHailT:0, gmZoneT:0, gmVelX:0, gmVelY:0, gmIceT:0, gmTrailX:null, gmTrailY:null, // 光明朱德（2026-10-31 建模轮＋技能实装轮）：按键技冲撞剩余秒／冲撞方向、冰雹与脚下战斗冰面生成节拍、冰面滑溜惯性速度、冰面拖尾落冰节拍计时／上一帧位置；建模轮占位短冲字段 gmDash* 已删；新局随 P 重建清零，冰面池 gmIcePatches/gmIceZones 在 resetGame 清空
+    gmRushT:0, gmEndBoostT:0, gmRushDx:1, gmRushDy:0, gmHailT:0, gmZoneT:0, gmVelX:0, gmVelY:0, gmIceT:0, gmTrailX:null, gmTrailY:null, // 光明朱德（2026-10-31 建模轮＋技能实装轮）：按键技冲撞剩余秒／冲撞方向、冰雹与脚下战斗冰面生成节拍、冰面滑溜惯性速度、冰面拖尾落冰节拍计时／上一帧位置；建模轮占位短冲字段 gmDash* 已删；新局随 P 重建清零，冰面池 gmIcePatches/gmIceZones 在 resetGame 清空
     invisT:0, invisX:0, invisY:0, invisTrailT:0, invisDmgTick:0, invisHealAcc:0, invisHealTxtT:0, invisHealShown:0, learnStealthT:0, lsX:0, lsY:0, // learnStealthT＝离开学习页后的隐身剩余秒数（2026-10-28 用户令：关页起 3 秒、归零即恢复可见与受击）；lsX/lsY＝关页瞬间位置（隐身期间怪物索敌/瞄准只扑此点，与鸡哥 invisX/invisY 同机制）；整局重置随 P 重建清零
     rageT:0, stimT:0, urineT:0, chestDmgT:0, shieldUp:false, shieldCd:3, holyFlashT:0, poseUntil:0,
     bonusDmg:0, bonusSpd:0, xpMul:1, bonusCdMul:1, bonusMagMul:1, specCdMul:1, regenBonus:0, regenAcc:0,
@@ -4590,7 +4590,7 @@ function newPlayer(ci){
 function hunterBonus(){ if(!P.passives || !P.passives.huntergait) return 0; for(var hi = 0; hi < enemies.length; hi++){ var he = enemies[hi]; if(!he.dead && dist2(P.x, P.y, he.x, he.y) < 78400) return 0.05 * P.passives.huntergait; } return 0; } // 猎手步态：280px 内有敌人时移速加成
 function dollFormOn(){ return !!(P && P.dollPartner && (P.dollFormT || 0) > 0); } // 充气小伙伴变身中判定（2026-10-28 改版唯一入口）：持有被动且变身计时未尽；体型/移速/碰撞/震荡一律只认此判定，不再认常驻 dollPartner
 function pCollR(){ return dollFormOn() ? Math.round(P.r * 3) : P.r; } // 充气小伙伴碰撞半径（改版）：随体型 ×3 同步放大——基础 r 17 → 51（直径 102＜新屋门洞 128，仍可通行）；旧 ×10 口径（视觉 r 170、碰撞封顶 56）随改版废除
-function pSpeed(){ var v = P.baseSpeed * (1 + hunterBonus()) * (P.windrushT > 0 ? 1 + 0.06 * (P.passives.windrush || 0) : 1) * (1 + 0.08 * (P.passives.boots || 0)) * (1 + 0.04 * (P.passives.windheart || 0)) * (1 + P.bonusSpd) * (P.stage === 2 ? 1.05 : 1) * (hasCP('rageblood') && P.hp < P.maxHp * 0.4 ? 1.15 : 1) * (hasCP('windcontract') ? 1.6 : 1) * (1 + pSum('spdP')) * (dollFormOn() ? 0.3 : 1) * (P.stimT > 0 ? 1.25 : 1) * ((P.charIdx === 1 && P.tornadoT > 0) ? 1.3 : 1) * ((P.charIdx === 3 && P.invisT > 0) ? 1.3 : 1) * (gmOnIceZone(P.x, P.y) ? 1.3 : 1); return Math.min(v, P.baseSpeed * 2); } // 光明朱德 Lv5 战斗冰面（2026-10-31 建模轮，用户定版）：站在战斗冰面内移速 ×1.3（朱德与队友同吃——本机玩家不论英雄、身处任一战斗冰面即生效，离开即失效）；仍受末尾 2 倍总封顶 // 移速加成封顶 +100%（2026-10-28 用户令）：全部移速乘区照旧连乘、最终速度截断为基础移速的 2 倍（超出部分不生效）；减速类乘区（充气小伙伴 ×0.3 等）使 v 低于上限、不受封顶影响；属性面板移速显示走本函数、即封顶后数值；七人同口径。// 充气小伙伴：移速 −70%；兴奋剂（地图道具）：移速 +25%；闻西龙卷风加速（2026-10-27 用户令）：仅闻西、仅按键技「龙卷风吹毁停车场」存续期间（tornadoT>0，与防御窗同一条件）移速 ×1.3（+30%），tornadoT 归零即失效、不残留不常驻；龙卷风伤害/范围/8 秒时长未动（防御窗 2026-10-29 改为前 2 秒无敌＋之后减伤 70%、移速条件不变）；鸡哥隐身加速（2026-10-27 用户令）：仅鸡哥、仅隐身存续期间（invisT>0，含站在固定烟雾区内计时暂停的时段）移速 ×1.3（+30%），invisT 归零即失效、不残留不常驻
+function pSpeed(){ var v = P.baseSpeed * (1 + hunterBonus()) * (P.windrushT > 0 ? 1 + 0.06 * (P.passives.windrush || 0) : 1) * (1 + 0.08 * (P.passives.boots || 0)) * (1 + 0.04 * (P.passives.windheart || 0)) * (1 + P.bonusSpd) * (P.stage === 2 ? 1.05 : 1) * (hasCP('rageblood') && P.hp < P.maxHp * 0.4 ? 1.15 : 1) * (hasCP('windcontract') ? 1.6 : 1) * (1 + pSum('spdP')) * (dollFormOn() ? 0.3 : 1) * (P.stimT > 0 ? 1.25 : 1) * ((P.charIdx === 1 && P.tornadoT > 0) ? 1.3 : 1) * ((P.charIdx === 3 && P.invisT > 0) ? 1.3 : 1) * (gmOnIceZone(P.x, P.y) ? 1.3 : 1) * ((P.charIdx === 7 && (P.gmEndBoostT || 0) > 0) ? 1.5 : 1); return Math.min(v, P.baseSpeed * 2); } // 光明朱德按键技结束奖励移速（2026-10-31 20:40 用户追加）：结束（到期/中断）后 2 秒内 ×1.5、gmEndBoostT 归零即失效、仍受末尾 2 倍总封顶 // 光明朱德 Lv5 战斗冰面（2026-10-31 建模轮，用户定版）：站在战斗冰面内移速 ×1.3（朱德与队友同吃——本机玩家不论英雄、身处任一战斗冰面即生效，离开即失效）；仍受末尾 2 倍总封顶 // 移速加成封顶 +100%（2026-10-28 用户令）：全部移速乘区照旧连乘、最终速度截断为基础移速的 2 倍（超出部分不生效）；减速类乘区（充气小伙伴 ×0.3 等）使 v 低于上限、不受封顶影响；属性面板移速显示走本函数、即封顶后数值；七人同口径。// 充气小伙伴：移速 −70%；兴奋剂（地图道具）：移速 +25%；闻西龙卷风加速（2026-10-27 用户令）：仅闻西、仅按键技「龙卷风吹毁停车场」存续期间（tornadoT>0，与防御窗同一条件）移速 ×1.3（+30%），tornadoT 归零即失效、不残留不常驻；龙卷风伤害/范围/8 秒时长未动（防御窗 2026-10-29 改为前 2 秒无敌＋之后减伤 70%、移速条件不变）；鸡哥隐身加速（2026-10-27 用户令）：仅鸡哥、仅隐身存续期间（invisT>0，含站在固定烟雾区内计时暂停的时段）移速 ×1.3（+30%），invisT 归零即失效、不残留不常驻
 function pSum(f){ var s = 0; for(var k in P.passives){ var d = PASSIVES[k]; if(d && d[f]) s += d[f] * P.passives[k]; } return s; } // 元素被动通用数值字段求和（dmgP/armorP/spdP/critP/cdP/xpP/pickP/regenV）
 /* ===== 属性身份机制（最终定版）=====
    火=燃烧（命中点燃，持续掉血，计入火系带宽）；冰=概率冰冻定身（内置冷却防连冻，精英只冻 40%、Boss 免疫定身只减速）；
@@ -7600,7 +7600,7 @@ function visBasicFx(hero, x, y, ang, tgt, own){ /* 远端成员普攻的本机�
    叠新层刷新 8 秒、满 6 层后不再刷新、到期层数清零且冻血条恢复；一层起减速 50% 持续到感冒结束；
    冻血条总量二层 10%／三层 20%／四层 30%／五层 40%／六层 50%（血条右段变蓝、表面血量不变、条长不变、
    死亡按有效血量＝上限−冻住段判定、冻住段无需打掉）；冰封＝每叠新的一层掷 1%（每层只掷一次、满层不再掷）、
-   冻住不能动 5 秒，与冻血条为两种独立效果；按键技须长按满 2 秒才触发（16:26 补令：防误触、未满 2 秒
+   冻住不能动 5 秒，与冻血条为两种独立效果；按键技须长按满 0.5 秒才触发（2026-10-31 20:32 改定、取代 16:26 的 2 秒防误触口径：未满 0.5 秒
    松手不触发不进冷却）、触发后长按选向（按键当摇杆拖动改向）／松手中断、冲撞速度
    +100%、撞敌不停并撞飞、撞怪瞬间小范围冰爆（不出冰刺）＝普攻冰爆伤害 ×5、期间脚下战斗冰面、持续 13 秒、
    冷却 18 秒且持续期间不计冷却（自结束起算）、期间减伤 70% 且不被怪物打断；按键技期间四周半径 320 内
@@ -7610,9 +7610,9 @@ function visBasicFx(hero, x, y, ang, tgt, own){ /* 远端成员普攻的本机�
    本轮全数删除、由长按冲撞状态（P.gmRushT＋GM_AIM 输入层）取代，无残留。
    【施工取值（伤害数值经用户 2026-10-31 授权助理安排、非用户定版，逐项列明）】基础属性 hp 106／speed 228／
    dmgMul 1.0／critDmg 1.5（沿用建模轮暂定）；绿豆饼单饼伤害 14＋lv×5（沿用建模轮）、飞速 Lv1 500／Lv2 起 640
-   （沿用建模轮）、爆炸半径 74／Lv4 大饼 96（沿用建模轮）、冰爆冰刺伤害＝冰爆 ×0.6（沿用建模轮）、冰刺 8 根／圈、
-   冰刺飞速 430、普攻齐射间隔系数 1.15（均沿用建模轮）；撞击冰爆半径 88、撞飞位移 46px（Boss ×0.25 同击退口径）、
-   逐怪撞击再触发冷却 0.35 秒；冰雹间隔 0.09 秒（约 11 根/秒、13 秒约 144 根）、单根半径 26、下落时长 0.38 秒、
+   （沿用建模轮）、爆炸半径 74／Lv4 大饼 96（沿用建模轮）、冰爆冰刺伤害＝冰爆 ×0.6（沿用建模轮）、冰刺 16 根／圈（2026-10-31 20:36 用户令加倍、原 8 根）、
+   冰刺飞速 430、冰刺寿命 1.8 秒（20:36 令远程化、原 0.55 秒、射程约 774px≈原 3.3 倍）、冰刺 r 普通 8／Lv4 大冰刺 11（20:36 令加粗、原 6／8）、普攻齐射间隔系数 1.15（沿用建模轮）；撞击冰爆半径 54（补丁轮收小、原 88）、撞飞位移 184px（20:42 令飞远、原 46 的 ×4；Boss ×0.25＝46px 同击退口径）、
+   逐怪撞击再触发冷却 0.35 秒；冰雹间隔 0.045 秒（约 22 根/秒、13 秒约 289 根；2026-10-31 20:34 加密、原 0.09 秒约 11 根/秒）、单根半径 26、下落时长 0.38 秒、
    单根伤害＝单饼伤害 ×0.5；冰封抗性折算（精英 ×0.6／Boss ×0.35、同 applyStunResist 口径，用户只定普通怪足额 5 秒）；
    冲撞脚下战斗冰面半径 74、每 0.5 秒落一块（池上限 44 块、超限移除最旧）；冰面滑溜＝速度以 3.2/秒速率趋近
    目标速度（起步/转向/松杆滑行同式惯性）；冲撞速度＝pSpeed()×2 再受基础移速 2 倍总封顶（移速封顶为既有用户令）。
@@ -7631,11 +7631,12 @@ function visBasicFx(hero, x, y, ang, tgt, own){ /* 远端成员普攻的本机�
    ⑤剧情人数改八人：开场漫画第一/二格文本、结局字幕 END_CAPS[0]、胜利结算文案、标题页故事简介、世界观全文、劳农图鉴剧情条目中的「七人/七个人」统一改「八人/八个人」（全文件「七个人」已清零），仍不出现角色名；其余文案（数值口径注释里的「七人同口径」等非剧情表述）未动；结局亮相/漫画格的精灵列位属画面构成、未动。
    ⑥冰封特效【已核对、无改动】：gmFreezeApply 的裹身视觉走既有 frostT 绘制层（drawEnemy 冰块裹身段、与 tryFreeze 通用冰冻同一绘制），未新增任何特效素材/绘制。
    ⑦撞击冰爆范围收小（16:56 补令）：GM_SPEC_BOOM_R 88→54（小于普攻冰爆 74、「小小的」口径），伤害 ×5/不出冰刺/逐怪 0.35 秒再触发未动。
-   ⑧按键技期间停发普攻（16:57 澄清）：updateWeapons 绿豆饼块在 gmRushT>0 时压计时器不发射，技能结束（13 秒打满或松手中断）后第一帧恢复；仅本机专属普攻、通用武器未动。 */
+   ⑧按键技期间停发普攻（16:57 澄清）：updateWeapons 绿豆饼块在 gmRushT>0 时压计时器不发射，技能结束（13 秒打满或松手中断）后第一帧恢复；仅本机专属普攻、通用武器未动。
+   ⑨按键技结束奖励（20:40 追加）：gmRushFinish 只由两条真结束路调用（gmSpecTick 13 秒到期／gmAimEnd 已触发后松手中断、调用点均保证冲撞曾触发；未满 0.5 秒无声取消不经此路、不给）——无敌走既有 P.invuln 通道 Math.max 顶 2 秒（hurtPlayer 现行拦截口径、drainHit 按既有无敌规则，不另设通道）；移速经新增 P.gmEndBoostT 2 秒计时、pSpeed 乘区 ×1.5（到点即失效、仍受基础移速 2 倍总封顶——冲撞刚结束时若同时站战斗冰面 ×1.3 叠乘 1.95 不触顶、再叠其他乘区超 2 倍部分按封顶截断）；减伤 70%/持续 13 秒/冷却 18 秒后置/冰雹/冰面口径未动。 */
 var GM_ICE_DUR = 1.0, GM_ICE_GAP = 0.12, GM_ICE_ZONE_DUR = 10; // 拖尾停留 1 秒（用户定版）／移动落冰间隔（与梁鸡落烟同节拍）／战斗冰面存续 10 秒（用户 Lv5 定版）
 var GM_SPEC_DUR = 13, GM_SPEC_CD_NET = 18; // 按键技持续 13 秒／冷却 18 秒（用户定版）：CHARACTERS 表 specCd 存总和 31、doSpecial 经 wxSpecCdBase 扣持续 13 得净冷却 18，持续期间由 specCdHeldByDuration 冻结递减——与闻西同式
-var GM_SPEC_BOOM_R = 54, GM_SPEC_HIT_CD = 0.35, GM_SPEC_KB = 46; // 撞击冰爆半径（2026-10-31 16:56 用户补令「小小的就行」：由 88 收小为 54、小于普攻冰爆 74，伤害 ×5 不变）／逐怪再触发间隔／撞飞位移（施工取值，见 GM_SPEC 定版注）
-var GM_HAIL_R = 320, GM_HAIL_GAP = 0.09, GM_HAIL_DMG_MUL = 0.5, GM_HAIL_FREEZE_CH = 0.001; // 冰雹范围半径 320（用户定版：与剑阵同大）／间隔·单根伤害倍率（施工取值）／命中 0.1% 冰封（用户定版）
+var GM_SPEC_BOOM_R = 54, GM_SPEC_HIT_CD = 0.35, GM_SPEC_KB = 184; // 撞击冰爆半径（2026-10-31 16:56 用户补令「小小的就行」：由 88 收小为 54、小于普攻冰爆 74，伤害 ×5 不变）／逐怪再触发间隔／撞飞位移 184px（2026-10-31 20:42 用户令「撞到的怪物可以飞很远」：由 46 大幅提高为 ×4、普通与精英一撞即飞远；Boss 仍 ×0.25 折算＝46px、用户未令改）
+var GM_HAIL_R = 320, GM_HAIL_GAP = 0.045, GM_HAIL_DMG_MUL = 0.5, GM_HAIL_FREEZE_CH = 0.001; // 冰雹范围半径 320（用户定版：与剑阵同大）／间隔 0.045 秒（2026-10-31 20:34 用户令加密：原 0.09 秒约 11 根/秒→现约 22 根/秒、密度翻倍；单根伤害倍率不变、故单位时间冰雹总伤害同步约 ×2，半径/跟随/直落/感冒/0.1% 冰封一字未动）／命中 0.1% 冰封（用户定版）
 var GM_COLD_MAX = 6, GM_COLD_DUR = 8, GM_COLD_FREEZE_CH = 0.01, GM_FREEZE_DUR = 5; // 感冒上限 6 层／持续 8 秒／叠新层 1% 冰封／冰封 5 秒（全为用户定版）
 var GM_ZONE_GAP = 0.5, GM_ZONE_R = 74, GM_ZONE_CAP = 44, GM_SLIP_RATE = 3.2; // 冲撞落战斗冰面节拍/半径/池上限／冰面滑溜趋近速率（施工取值）
 function gmColdFrac(layers){ return layers >= 2 ? (layers - 1) * 0.1 : 0; } // 冻血条总量（用户定版）：二层 10%、三层 20%、四层 30%、五层 40%、六层 50%
@@ -7672,6 +7673,13 @@ function gmColdApply(e){ // 附一层感冒（绿豆饼冰爆/冰刺、按键技
 var gmIcePatches = []; // 拖尾冰面落点池（纯特效）：{x, y, t 剩余停留}；新局 resetGame 清空
 var gmIceZones = [];   // Lv5 战斗冰面池：{x, y, r, t 剩余存续}；新局 resetGame 清空
 var GM_ICE_IMG = new Image(); GM_ICE_IMG.src = 'assets/fx/guangming_ice_patch.png'; // 冰面块 v2（用户 2026-10-31 定版）
+function gmIcePatchDraw(dx, dy, dw, dh){ // 冰面块单块绘制（调用方已设 globalAlpha、口径与 v2 原图各层一致）：原图已加载→原图；未加载→兜底扁椭圆（2026-10-31 20:39 用户问「冰面怎么没见到」补兜底——根因：三层绘制旧版全以图片就绪为门，托管仓库缺 guangming_ice_patch.png 时三层全不画；兜底只在 naturalWidth＝0 时生效、与原图同尺寸盒（斜俯视扁椭圆、高宽比同调用盒）、半透明冰蓝＋浅芯，图片一加载完成立即自动恢复 v2 原图；v2 素材本身、存续与效果口径一字未动）
+  if(GM_ICE_IMG.complete && GM_ICE_IMG.naturalWidth){ ctx.drawImage(GM_ICE_IMG, dx, dy, dw, dh); return; }
+  ctx.save(); ctx.translate(dx + dw / 2, dy + dh / 2); ctx.scale(1, dh / dw);
+  ctx.fillStyle = 'rgba(148,214,246,0.55)'; ctx.beginPath(); ctx.arc(0, 0, dw / 2, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = 'rgba(216,246,255,0.45)'; ctx.beginPath(); ctx.arc(0, 0, dw * 0.30, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+}
 var MUNGCAKE_IMG = new Image(); MUNGCAKE_IMG.src = 'assets/fx/mungcake.png'; // 绿豆饼弹体（圆饼像素图、随弹自转绘制）
 function gmIceOn(){ return typeof P !== 'undefined' && !!P && P.charIdx === 7; }
 function gmOnIceZone(x, y){ for(var i = 0; i < gmIceZones.length; i++){ var zn = gmIceZones[i]; if(dist2(zn.x, zn.y, x, y) < zn.r * zn.r) return true; } return false; }
@@ -7704,10 +7712,10 @@ function gmBoomAt(x, y, R, dmg, o){ // 冰爆结算共用（绿豆饼命中冰�
     }
   }
   if(o.spikes){
-    var nSp = 8, bigSp = !!o.bigSpike; // 冰刺一圈 8 根（Lv4 起随饼变大）
+    var nSp = 16, bigSp = !!o.bigSpike; // 冰刺一圈 16 根（2026-10-31 20:36 用户令加倍、原 8 根；Lv4 起随饼变大）
     for(var si = 0; si < nSp; si++){
       var sa = si / nSp * Math.PI * 2 + (o.ph || 0);
-      projectiles.push({ kind:'gspike', x: x, y: y, vx: Math.cos(sa) * 430, vy: Math.sin(sa) * 430, dmg: dmg * 0.6, color:'#aee6ff', r: bigSp ? 8 : 6, t: 0, life: 0.55, chain: 0, chainIdx: 0, wid: 0, ph: sa, phase: 0, hx: 0, hy: 0, trail: null,
+      projectiles.push({ kind:'gspike', x: x, y: y, vx: Math.cos(sa) * 430, vy: Math.sin(sa) * 430, dmg: dmg * 0.6, color:'#aee6ff', r: bigSp ? 11 : 8, t: 0, life: 1.8, chain: 0, chainIdx: 0, wid: 0, ph: sa, phase: 0, hx: 0, hy: 0, trail: null, // r 加粗（20:36 令）：普通 6→8、Lv4 大冰刺 8→11（同为约 ×1.33、绘制长宽经 gspL＝r×4＋10 随 r 放大）；life 0.55→1.8 秒（20:36 令远程化：速度 430 不变、射程 430×1.8≈774px、约原 236px 的 3.3 倍、仍寿命到点耗尽）
         pierce: o.spikeP || 0, pdec: 0, homing: false, target: null, hitCd: {}, boom: false, shadow: true, boomR: 0, burstR: 0, turnR: 0, burstFull: false, dotT: 0, dotDps: 0,
         rico: 0, bossMul: 0, split: 0, frost: true, seed: false, lastHit: 0, spr: null, shieldPct: 0, bounces: 0, bounceR: 0, bDecay: 0.82, bState: '', bSpeed: 0, bVisited: null, turnR2: 0,
         burn: false, burnDps: 0, poisonD: 0, cigHitSplit: 0, bigCig: false, crit: o.crit, el: o.el, lv: o.lv, wkey: 'mungcake', kbDist: 0, kbDone: {}, noKb: false, gmHitIds: null }); // 冰刺伤害 ×0.6 为施工取值；穿透数 spikeP＝Lv3 起 1（用户定版）、逐怪记账 gmHitIds 在命中段；冰刺命中同附感冒（命中段 gmColdApply）
@@ -7723,14 +7731,14 @@ function gmCakeExplode(pr){ // 绿豆饼冰爆（命中/飞尽同路）：结算
 }
 /* ---------------- 光明朱德按键技「我在福建很想你」长按冲撞（2026-10-31 技能实装轮，用户定版见 GM_SPEC 定版注） ----------------
    输入层 GM_AIM 与班仔 BZ_AIM 同构，但多一道长按门槛（2026-10-31 16:26 用户补令：防误触——须长按满
-   GM_HOLD_NEED＝2 秒才触发技能；未满 2 秒松手＝不触发、不进冷却、不浪费）：按住特殊技能键只起「蓄势」
-   （gmAimTick 逐帧累计 holdT、脚下蓄势环显示进度、拖动可预选方向），满 2 秒瞬间 gmRushBegin 经 doSpecial
+   GM_HOLD_NEED＝0.5 秒才触发技能（2026-10-31 20:32 用户改定、原 2 秒口径作废）；未满 0.5 秒松手＝不触发、不进冷却、不浪费）：按住特殊技能键只起「蓄势」
+   （gmAimTick 逐帧累计 holdT、脚下蓄势环显示进度、拖动可预选方向），满 0.5 秒瞬间 gmRushBegin 经 doSpecial
    统一门禁进入冲撞状态；触发后继续按住期间拖动 >10px 像摇杆一样 360° 改向（gmAimMove 实时写
    gmRushDx/Dy），松手/取消/失焦即 gmAimEnd 中断（未触发则无声取消、已触发则 gmRushT 归零、冷却自此起算）；
-   键盘空格同口径（按下起蓄势、满 2 秒触发、松开止、方向读移动键）。
+   键盘空格同口径（按下起蓄势、满 0.5 秒触发、松开止、方向读移动键）。
    状态推进 gmSpecTick（updateWeapons 内与 gmIceTick 并列）：蓄势计时、冲撞计时、冰雹生成（持续到技能
    结束为止、16:22 补令）、脚下战斗冰面节拍、撞怪判定（逐怪 0.35 秒再触发冷却：撞飞位移＋当场以该怪为心开撞击冰爆）。 */
-var GM_HOLD_NEED = 2.0; // 长按触发门槛 2 秒（2026-10-31 16:26 用户补令定值）
+var GM_HOLD_NEED = 0.5; // 长按触发门槛 0.5 秒（2026-10-31 20:32 用户改定：原 16:26 的 2 秒防误触口径作废、改满 0.5 秒触发；其余持续 13 秒/冷却 18 秒后置/减伤/冲撞/冰雹口径一字未动）
 var GM_AIM = { active: false, id: null, cx: 0, cy: 0, ang: 0, has: false, mouse: false, holdT: 0, fired: false, now: 0, moveAt: -9 };
 var GM_AIM_DEAD2 = 25, GM_AIM_FLOAT = 52; // 选向手感（2026-10-31 补丁轮，用户令「选方向一定要灵敏流畅、好转方向」；只改响应/转向、不动冲撞速度/时长/冷却/减伤）：选向死区半径²＝25（5px、改前 10px——小幅修向也即时生效）／浮动锚点半径 52（拖出此距锚点随指滑动、保持摇杆行程内改向不脱节）
 function gmAimCanStart(){
@@ -7738,14 +7746,14 @@ function gmAimCanStart(){
 }
 function gmAimStart(cx, cy, id, mouse){
   GM_AIM.active = true; GM_AIM.id = id; GM_AIM.cx = cx; GM_AIM.cy = cy; GM_AIM.mouse = !!mouse;
-  GM_AIM.ang = (typeof P.faceAng === 'number') ? P.faceAng : 0; GM_AIM.has = false; GM_AIM.holdT = 0; GM_AIM.fired = false; // 初始方向＝本体当前朝向（与班仔瞄准同口径：不锁怪、不预瞄）；按下只蓄势、满 2 秒才触发（16:26 补令）
+  GM_AIM.ang = (typeof P.faceAng === 'number') ? P.faceAng : 0; GM_AIM.has = false; GM_AIM.holdT = 0; GM_AIM.fired = false; // 初始方向＝本体当前朝向（与班仔瞄准同口径：不锁怪、不预瞄）；按下只蓄势、满 0.5 秒才触发（20:32 改定）
 }
-function gmRushBegin(){ // 满 2 秒触发点：经 doSpecial 统一门禁进入冲撞状态（其内 GM 分支置 gmRushT＝13 并按净冷却 18 设 specCd、持续期间冻结递减；方向取本体当前朝向——蓄势期间拖动已同步 faceAng）；返回是否成功进入
+function gmRushBegin(){ // 满 0.5 秒触发点：经 doSpecial 统一门禁进入冲撞状态（其内 GM 分支置 gmRushT＝13 并按净冷却 18 设 specCd、持续期间冻结递减；方向取本体当前朝向——蓄势期间拖动已同步 faceAng）；返回是否成功进入
   if(!P || P.charIdx !== 7) return false;
   doSpecial();
   return (P.gmRushT || 0) > 0;
 }
-function gmAimTick(dt){ // 蓄势推进（gmSpecTick 顶部调用）：累计按住时长、满 2 秒触发；状态已变（死亡/切场景）则蓄势作废
+function gmAimTick(dt){ // 蓄势推进（gmSpecTick 顶部调用）：累计按住时长、满 0.5 秒触发；状态已变（死亡/切场景）则蓄势作废
   if(!GM_AIM.active || GM_AIM.fired) return;
   if(!P || P.charIdx !== 7 || state !== 'playing'){ GM_AIM.active = false; GM_AIM.id = null; return; }
   GM_AIM.holdT += dt;
@@ -7760,24 +7768,30 @@ function gmAimMove(x, y){
   if(d2 > GM_AIM_FLOAT * GM_AIM_FLOAT){ var dl = Math.sqrt(d2), fx = dx / dl, fy = dy / dl; GM_AIM.cx = x - fx * GM_AIM_FLOAT; GM_AIM.cy = y - fy * GM_AIM_FLOAT; dx = fx * GM_AIM_FLOAT; dy = fy * GM_AIM_FLOAT; d2 = GM_AIM_FLOAT * GM_AIM_FLOAT; } // 浮动锚点（补丁轮选向手感）：拖得远时锚点跟指滑动、偏移量钳在行程内——大角度转向全程不脱节、回拉修向不丢角度
   if(d2 > GM_AIM_DEAD2){ GM_AIM.ang = Math.atan2(dy, dx); GM_AIM.has = true; GM_AIM.moveAt = GM_AIM.now; if((P.gmRushT || 0) > 0){ P.gmRushDx = Math.cos(GM_AIM.ang); P.gmRushDy = Math.sin(GM_AIM.ang); } P.faceAng = GM_AIM.ang; } // 拖动选向：蓄势期预选（同步朝向、触发即按此方向）、冲撞中实时改向；死区 5px（补丁轮由 10px 收小、小幅修向即时生效）
 }
-function gmAimEnd(){ // 松手/取消/失焦：未满 2 秒未触发＝无声取消（不进冷却、防误触口径）；已触发＝技能中断、冲撞立即结束、冷却自此起算（specCd 冻结随 gmRushT 归零在 updatePlayer 解除）；自然到期后仍按住不重启（gmAimCanStart 的 gmRushT/specCd 门禁与本函数的 active 清除共同保证）
+function gmRushFinish(){ // 按键技结束奖励（2026-10-31 20:40 用户追加）：仅由两条真结束路调用（gmSpecTick 到期、gmAimEnd 已触发后中断），调用点均已保证冲撞曾触发；未满门槛无声取消不经此路、不给。无敌走既有 P.invuln 通道 Math.max 顶 2 秒（不缩短既有更长无敌、同闪避口径）；移速计时 P.gmEndBoostT＝2（pSpeed 乘区 ×1.5、受 2 倍总封顶）
+  if(!P || P.charIdx !== 7) return;
+  P.invuln = Math.max(P.invuln || 0, 2);
+  P.gmEndBoostT = 2;
+}
+function gmAimEnd(){ // 松手/取消/失焦：未满 0.5 秒未触发＝无声取消（不进冷却）；已触发＝技能中断、冲撞立即结束、冷却自此起算（specCd 冻结随 gmRushT 归零在 updatePlayer 解除）；自然到期后仍按住不重启（gmAimCanStart 的 gmRushT/specCd 门禁与本函数的 active 清除共同保证）
   if(!GM_AIM.active) return;
   GM_AIM.active = false; GM_AIM.id = null; GM_AIM.holdT = 0; GM_AIM.fired = false;
-  if(P && (P.gmRushT || 0) > 0) P.gmRushT = 0;
+  if(P && (P.gmRushT || 0) > 0){ gmRushFinish(); P.gmRushT = 0; } // 已触发后中断＝结束路之一：给结束奖励（20:40 追加）
 }
-function gmSpecTick(dt){ // 按键技状态推进（本机光明朱德专属）：蓄势 2 秒门槛计时＋冲撞状态推进；非冲撞时只递减逐怪撞击冷却
+function gmSpecTick(dt){ // 按键技状态推进（本机光明朱德专属）：蓄势 0.5 秒门槛计时＋冲撞状态推进；非冲撞时只递减逐怪撞击冷却
   GM_AIM.now += dt; // 选向手感时钟（补丁轮）：供移动摇杆改向与按键拖动改向的时间优先仲裁（最近 0.25 秒内有拖动改向则拖动优先）
   gmAimTick(dt);
+  if(P && P.charIdx === 7 && (P.gmEndBoostT || 0) > 0) P.gmEndBoostT = Math.max(0, P.gmEndBoostT - dt); // 结束奖励移速计时（20:40 追加）：2 秒递减、到点即失效（到期结束路在同帧后段才置 2、本帧不扣）
   for(var ci = 0; ci < enemies.length; ci++){ var ce = enemies[ci]; if((ce.gmChargeCd || 0) > 0) ce.gmChargeCd -= dt; }
   if(!P || P.charIdx !== 7 || (P.gmRushT || 0) <= 0) return;
   P.gmRushT -= dt;
-  if(P.gmRushT <= 0){ P.gmRushT = 0; return; } // 到期结束：冰雹/脚下冰面/撞击随状态一并停（16:22 补令：冰雹持续到技能结束为止）
+  if(P.gmRushT <= 0){ gmRushFinish(); P.gmRushT = 0; return; } // 到期结束：给结束奖励（20:40 追加）；冰雹/脚下冰面/撞击随状态一并停（16:22 补令：冰雹持续到技能结束为止）
   if(GM_AIM.active && GM_AIM.id === 'kbd'){ // 键盘长按：方向读移动键（无拖动选向时的桌面口径）
     var kx = ((keys['arrowright'] || keys['d']) ? 1 : 0) - ((keys['arrowleft'] || keys['a']) ? 1 : 0), ky = ((keys['arrowdown'] || keys['s']) ? 1 : 0) - ((keys['arrowup'] || keys['w']) ? 1 : 0);
     if(kx || ky){ var kl = Math.sqrt(kx * kx + ky * ky); P.gmRushDx = kx / kl; P.gmRushDy = ky / kl; }
   }
   if(typeof joy !== 'undefined' && joy.active && (joy.dx * joy.dx + joy.dy * joy.dy) > 0.04 && GM_AIM.now - GM_AIM.moveAt > 0.25){ var ja = Math.atan2(joy.dy, joy.dx); P.gmRushDx = Math.cos(ja); P.gmRushDy = Math.sin(ja); } // 移动摇杆改向（2026-10-31 补丁轮选向手感）：冲撞中普通移动被冲撞位移接管、本摇杆原本无作用——现推杆（出死区）即可改向、与直觉一致；按键拖动刚改过向的 0.25 秒内拖动优先、不互相抢方向。冲撞速度/时长/冷却/减伤一字未动
-  P.gmHailT = (P.gmHailT || 0) - dt; // 冰雹：技能期间持续生成、密集如冰雹（间隔 0.09 秒施工取值），每根落点都以生成瞬间本体所在位置为圆心、四周半径 320 内均匀随机（面积均匀＝sqrt 分布）——生成中心逐根跟随本体移动、角色去到哪下到哪（2026-10-31 16:27 补令；已生成的单根冰刺按其落点下落、不再跟随）
+  P.gmHailT = (P.gmHailT || 0) - dt; // 冰雹：技能期间持续生成、密集如冰雹（间隔 0.045 秒、约 22 根/秒；20:34 加密，原 0.09 秒），每根落点都以生成瞬间本体所在位置为圆心、四周半径 320 内均匀随机（面积均匀＝sqrt 分布）——生成中心逐根跟随本体移动、角色去到哪下到哪（2026-10-31 16:27 补令；已生成的单根冰刺按其落点下落、不再跟随）
   while(P.gmHailT <= 0){
     P.gmHailT += GM_HAIL_GAP;
     var ha = rand(0, Math.PI * 2), hr = GM_HAIL_R * Math.sqrt(Math.random());
@@ -7803,7 +7817,7 @@ function gmSpecTick(dt){ // 按键技状态推进（本机光明朱德专属）�
   DMG_CRIT = svC; DMG_EL = svE;
 }
 function gmSlipMoving(){ return !!P && ((P.gmVelX || 0) * (P.gmVelX || 0) + (P.gmVelY || 0) * (P.gmVelY || 0) > 36) && gmOnIceZone(P.x, P.y); } // 冰面滑行惯性存续判定（updatePlayer 移动段进入条件：无输入时仍在冰面上滑行）
-window.__GM_ZD = { version: GAME_VERSION, charIdx: 7, pfx: 'gm', dir: 'guangming_q', weapon: 'mungcake', iceTrailDur: GM_ICE_DUR, iceZoneDur: GM_ICE_ZONE_DUR, cakeCounts: [1, 4, 7, 7, 7], specName: function(){ return CHARACTERS[7].specName; }, specState: 'full-rush-hold2s-hail-cold+patch', spec: { dur: GM_SPEC_DUR, cdNet: GM_SPEC_CD_NET, cdTable: CHARACTERS[7].specCd, holdNeed: GM_HOLD_NEED, boomR: GM_SPEC_BOOM_R, boomMul: 5, hailR: GM_HAIL_R, hailGap: GM_HAIL_GAP, hailDmgMul: GM_HAIL_DMG_MUL, hailFreezeCh: GM_HAIL_FREEZE_CH, hailOncePerLife: true, coldMax: GM_COLD_MAX, coldDur: GM_COLD_DUR, coldFreezeCh: GM_COLD_FREEZE_CH, freezeDur: GM_FREEZE_DUR, dr: 0.3, aimDeadPx: 5, aimFloatPx: GM_AIM_FLOAT, noAtkDuringRush: true }, coldFrac: gmColdFrac, cakeBaseDmg: gmCakeBaseDmg, test: { cold: gmColdApply, freeze: gmFreezeApply, hailFreeze: gmHailFreezeTry, deathCheck: gmColdDeathCheck, aimStart: gmAimStart, aimTick: gmAimTick, aimMove: gmAimMove, aimEnd: gmAimEnd, aimState: function(){ return { active: GM_AIM.active, cx: GM_AIM.cx, cy: GM_AIM.cy, ang: GM_AIM.ang, has: GM_AIM.has }; }, boomAt: gmBoomAt }, state: function(){ return { isGm: gmIceOn(), patches: gmIcePatches.length, zones: gmIceZones.length, rushT: (typeof P !== 'undefined' && P) ? +(P.gmRushT || 0).toFixed(3) : null, specCd: (typeof P !== 'undefined' && P) ? +(P.specCd || 0).toFixed(2) : null, aim: { active: GM_AIM.active, holdT: +GM_AIM.holdT.toFixed(2), fired: GM_AIM.fired }, fallers: (typeof fallers !== 'undefined') ? fallers.length : null, hailNow: (typeof fallers !== 'undefined') ? fallers.filter(function(f){ return f.type === 'hail'; }).length : null, acts: Object.keys(SIXQ_META.gm.acts), atkAct: SIXQ_META.gm.atkAct, atkCount: SIXQ_META.gm.atkCount }; } }; // 验收探针：建模轮登记/冰面池＋技能实装轮状态自述（冲撞剩余/冷却/长按蓄势进度/在场冰雹数）与同源结算函数引用（离线复核感冒层数/冻血条/冰封/长按 2 秒门槛/冲撞实测），test 只供探针调用、不参与正常游玩结算
+window.__GM_ZD = { version: GAME_VERSION, charIdx: 7, pfx: 'gm', dir: 'guangming_q', weapon: 'mungcake', iceTrailDur: GM_ICE_DUR, iceZoneDur: GM_ICE_ZONE_DUR, cakeCounts: [1, 4, 7, 7, 7], specName: function(){ return CHARACTERS[7].specName; }, specState: 'full-rush-hold0.5s-hail-cold+patch', spec: { dur: GM_SPEC_DUR, cdNet: GM_SPEC_CD_NET, cdTable: CHARACTERS[7].specCd, holdNeed: GM_HOLD_NEED, boomR: GM_SPEC_BOOM_R, boomMul: 5, kbDist: GM_SPEC_KB, kbBossMul: 0.25, hailR: GM_HAIL_R, hailGap: GM_HAIL_GAP, hailDmgMul: GM_HAIL_DMG_MUL, hailFreezeCh: GM_HAIL_FREEZE_CH, hailOncePerLife: true, coldMax: GM_COLD_MAX, coldDur: GM_COLD_DUR, coldFreezeCh: GM_COLD_FREEZE_CH, freezeDur: GM_FREEZE_DUR, dr: 0.3, aimDeadPx: 5, aimFloatPx: GM_AIM_FLOAT, noAtkDuringRush: true, endBoost: { invulnSec: 2, spdMul: 1.5, durSec: 2 } }, coldFrac: gmColdFrac, cakeBaseDmg: gmCakeBaseDmg, test: { cold: gmColdApply, freeze: gmFreezeApply, hailFreeze: gmHailFreezeTry, deathCheck: gmColdDeathCheck, aimStart: gmAimStart, aimTick: gmAimTick, aimMove: gmAimMove, aimEnd: gmAimEnd, rushFinish: gmRushFinish, aimState: function(){ return { active: GM_AIM.active, cx: GM_AIM.cx, cy: GM_AIM.cy, ang: GM_AIM.ang, has: GM_AIM.has }; }, boomAt: gmBoomAt }, state: function(){ return { isGm: gmIceOn(), patches: gmIcePatches.length, zones: gmIceZones.length, rushT: (typeof P !== 'undefined' && P) ? +(P.gmRushT || 0).toFixed(3) : null, endBoostT: (typeof P !== 'undefined' && P) ? +(P.gmEndBoostT || 0).toFixed(3) : null, invuln: (typeof P !== 'undefined' && P) ? +(P.invuln || 0).toFixed(2) : null, specCd: (typeof P !== 'undefined' && P) ? +(P.specCd || 0).toFixed(2) : null, aim: { active: GM_AIM.active, holdT: +GM_AIM.holdT.toFixed(2), fired: GM_AIM.fired }, fallers: (typeof fallers !== 'undefined') ? fallers.length : null, hailNow: (typeof fallers !== 'undefined') ? fallers.filter(function(f){ return f.type === 'hail'; }).length : null, acts: Object.keys(SIXQ_META.gm.acts), atkAct: SIXQ_META.gm.atkAct, atkCount: SIXQ_META.gm.atkCount }; } }; // 验收探针：建模轮登记/冰面池＋技能实装轮状态自述（冲撞剩余/冷却/长按蓄势进度/在场冰雹数）与同源结算函数引用（离线复核感冒层数/冻血条/冰封/长按 0.5 秒门槛/冲撞实测），test 只供探针调用、不参与正常游玩结算
 function explodeFball(pr){
   var R = (pr.boomR || 70) * (1 + pSum('boomP')); // 爆裂之心：爆炸半径
   if(pr.frost){ // 冰霜法球：冰爆＋强力减速（Ardentryst 冰系素材）
@@ -9014,7 +9028,7 @@ function updateWeapons(dt){
   }
   jgPuffTick(dt); // 梁鸡一觉被动烟雾拖尾（2026-10-31）：落点停留 3 秒衰减＋0.4 秒节拍引燃检测＋移动落烟（生效门禁/口径在 jgPuffTick 与 JG_ROUND 定版注；非梁鸡/未一觉时只做空池衰减、无开销路径）
   gmIceTick(dt); // 光明朱德冰面（2026-10-31 建模轮）：拖尾冰面 1 秒融化衰减＋Lv5 战斗冰面 10 秒存续/怪物减速刷新＋移动落冰（口径见 GM 段注；非光明朱德时只做空池衰减）
-  gmSpecTick(dt); // 光明朱德按键技（2026-10-31 技能实装轮）：长按 2 秒蓄势门槛＋冲撞状态推进（冰雹跟随本体/脚下战斗冰面/撞飞与撞击冰爆，口径见 GM_SPEC 定版注；非光明朱德时只走空转门禁）
+  gmSpecTick(dt); // 光明朱德按键技（2026-10-31 技能实装轮）：长按 0.5 秒蓄势门槛（20:32 改定）＋冲撞状态推进（冰雹跟随本体/脚下战斗冰面/撞飞与撞击冰爆，口径见 GM_SPEC 定版注；非光明朱德时只走空转门禁）
   // 荆棘背心：荆棘光环
   if(P.passives.thorn){
     P.timers['tick_thorn'] = (P.timers['tick_thorn'] || 0) - dt;
@@ -9277,8 +9291,8 @@ function updateFallers(dt){
       if(f.type === 'rain'){ spawnVfx('splash', f.x, f.y, f.r * 1.6, 0.45); sfx('splash'); } // 雨幕：Splash 水花素材（DevWizard，CC0）＋水花音效
       if(f.type === 'starbeam'){ spawnVfx('divine', f.x, f.y, f.r * 1.9, 0.5); burst(f.x, f.y, '#ffe97a', fxN(22)); burst(f.x, f.y, '#a8dcff', fxN(10)); effects.push({ type:'ring', x: f.x, y: f.y, t: 0, dur: 0.4, color: '255,215,106' }); shake = Math.max(shake, 6); hitStop(0.05); sfx('holy'); } // 老天再爱我一次轰落（可见性加强 2026-10-26）：圣光素材放大＋双色星尘加量＋冲击环＋震屏/顿帧——只加打击感，伤害与范围不变（下方 shake=3 通用值被本行 6 覆盖）
       else if(f.type === 'egg'){ burst(f.x, f.y, '#ffffff', 8); sfx('hit'); }
-      else if(f.type === 'stamp' || f.type === 'bigseal') sfx(f.nuke ? 'nadeboom' : 'stamp', f.nuke ? 1 : 0.25); else if(f.type === 'spike') sfx('spikehit'); else if(f.type === 'magma') sfx('fboom'); else if(f.type === 'acid') sfx('spray'); else if(f.type === 'rock') sfx('spikehit'); else if(f.type === 'weibomb'){ sfx('nadeboom'); spawnVfx('ard_volt', f.x, f.y, f.r * 2.1, 0.5); burst(f.x, f.y, '#4db2e8', fxN(12)); burst(f.x, f.y, '#aee6ff', fxN(6)); } else if(f.type === 'hail'){ if(Math.random() < 0.3) sfx('frost'); } else sfx('hit'); // 冰雹落地音节流（约 11 根/秒、全响会吵——三成概率抽响） // 尾爷二次元爆弹落地：蓝白电爆素材＋蓝光碎屑（蓝色光球口径，单段爆炸、无分裂子弹）；黄主任普攻印章落地 'stamp' 调小一倍（2026-10-28 用户令）：vmul 0.5 只加在非 nuke 分支——'stamp' 在此行只由普攻印章（含连环小印）触发，bigseal 恒走 nuke 'nadeboom' 不受影响；按键技释放瞬间的 sfx('stamp')（doSpecial 段）是另一调用点、不动
-      if(f.type !== 'hail') shake = Math.max(shake, 3); // 冰雹豁免通用震屏：约 11 根/秒的高频落物若每根都震 3、技能 13 秒全程画面发抖（其余落物口径一字未动）
+      else if(f.type === 'stamp' || f.type === 'bigseal') sfx(f.nuke ? 'nadeboom' : 'stamp', f.nuke ? 1 : 0.25); else if(f.type === 'spike') sfx('spikehit'); else if(f.type === 'magma') sfx('fboom'); else if(f.type === 'acid') sfx('spray'); else if(f.type === 'rock') sfx('spikehit'); else if(f.type === 'weibomb'){ sfx('nadeboom'); spawnVfx('ard_volt', f.x, f.y, f.r * 2.1, 0.5); burst(f.x, f.y, '#4db2e8', fxN(12)); burst(f.x, f.y, '#aee6ff', fxN(6)); } else if(f.type === 'hail'){ if(Math.random() < 0.3) sfx('frost'); } else sfx('hit'); // 冰雹落地音节流（约 22 根/秒、20:34 加密后、全响会吵——三成概率抽响） // 尾爷二次元爆弹落地：蓝白电爆素材＋蓝光碎屑（蓝色光球口径，单段爆炸、无分裂子弹）；黄主任普攻印章落地 'stamp' 调小一倍（2026-10-28 用户令）：vmul 0.5 只加在非 nuke 分支——'stamp' 在此行只由普攻印章（含连环小印）触发，bigseal 恒走 nuke 'nadeboom' 不受影响；按键技释放瞬间的 sfx('stamp')（doSpecial 段）是另一调用点、不动
+      if(f.type !== 'hail') shake = Math.max(shake, 3); // 冰雹豁免通用震屏：约 22 根/秒的高频落物若每根都震 3、技能 13 秒全程画面发抖（其余落物口径一字未动）
     }
   }
 }
@@ -11144,7 +11158,7 @@ function doSpecial(mhTarget){
     for(var cz2 = 0; cz2 < 6; cz2++) sfxLater('zap', 420 + cz2 * 150); // 持续期间的密集电声轰鸣
   }
   else if(P.charIdx === 7){
-    // 光明朱德「我在福建很想你」（2026-10-31 技能实装轮全机制，取代建模轮占位短冲——占位已删净）：进入冲撞状态 13 秒——本段只置状态与初始方向（＝触发瞬间本体朝向、蓄势拖动已同步 faceAng），冲撞位移在 updatePlayer 冲撞段（速度 pSpeed×2 受 2 倍总封顶）、选向/中断在 GM_AIM 输入层（长按满 2 秒才触发、拖动改向、松手中断）、撞飞＋撞击冰爆/冰雹（跟随本体）/脚下战斗冰面在 gmSpecTick、减伤 70% 在 hurtPlayer、冷却净 18 秒经 wxSpecCdBase＋持续冻结（specCdHeldByDuration）；口径全见 GM_SPEC 定版注
+    // 光明朱德「我在福建很想你」（2026-10-31 技能实装轮全机制，取代建模轮占位短冲——占位已删净）：进入冲撞状态 13 秒——本段只置状态与初始方向（＝触发瞬间本体朝向、蓄势拖动已同步 faceAng），冲撞位移在 updatePlayer 冲撞段（速度 pSpeed×2 受 2 倍总封顶）、选向/中断在 GM_AIM 输入层（长按满 0.5 秒才触发、拖动改向、松手中断）、撞飞＋撞击冰爆/冰雹（跟随本体）/脚下战斗冰面在 gmSpecTick、减伤 70% 在 hurtPlayer、冷却净 18 秒经 wxSpecCdBase＋持续冻结（specCdHeldByDuration）；口径全见 GM_SPEC 定版注
     P.gmRushT = GM_SPEC_DUR;
     P.gmRushDx = Math.cos(P.faceAng); P.gmRushDy = Math.sin(P.faceAng);
     P.gmHailT = 0; P.gmZoneT = 0;
@@ -15868,23 +15882,35 @@ function compWalkFrame(pDir){ // 分层合成下层帧：只读复算当前走�
    纯视觉：不写 P.faceAng/face/faceLockT、不碰移动/索敌锥/伤害/冷却/任何数值；GAME_VERSION＝2.0、NET_VERSION＝klf-net-2
    与寒冰锥新表达、梁鸡三轮、联机两轮、班仔头修复施工前已逐项核对在位、本轮一字未动。 */
 var FACE_ARROW_OFF = 23, FACE_ARROW_LEN = 26, FACE_ARROW_WID = 22; // 箭心前移 px／箭全长 px／箭全宽 px（口径见上注）
-function drawFacingArrow(fx, fy, ang){ // 脚下正面箭头本体：(fx,fy)＝脚底地面锚点（屏幕坐标），ang＝朝向弧度（屏幕系，0＝右、π/2＝下）
-  var ca = Math.cos(ang), sa = Math.sin(ang), cxA = fx + ca * FACE_ARROW_OFF, cyA = fy + sa * FACE_ARROW_OFF;
-  for(var passA = 0; passA < 2; passA++){ // pass 0＝贴地衬影（同形、向下错 2px）、pass 1＝箭体本体
-    ctx.save(); ctx.translate(cxA, cyA + (passA === 0 ? 2 : 0)); ctx.rotate(ang);
-    ctx.beginPath(); ctx.moveTo(15, 0); ctx.lineTo(-11, -11); ctx.lineTo(-5, 0); ctx.lineTo(-11, 11); ctx.closePath(); // 燕尾箭：尖端 +15、尾翼 ±11、尾凹 −5（全长 26×全宽 22）
+var FACE_ARROW_FLAT = 0.5; // 贴地纵向压扁系数（2026-10-31 20:31 用户追加令）：与接地影精灵同式 scale(1,0.5)——箭头按斜俯视地面投影绘制、不再是屏幕空间直立箭形
+/* 【贴地修正（2026-10-31 20:31 用户真机截图实报＋追加令）】旧版箭头在本体精灵之后、屏幕空间旋转绘制、无地面
+   压扁：朝上/朝向躯干一侧时箭身直接压在角色身上（截图里黄箭贴在班仔背上）。改三点、其余口径一字不动：
+   ①层位改地面层——调用点移到 drawPlayerActor 的三层接地影之后、本体精灵之前，本体永远盖住箭尾一侧、箭头
+   绝不覆躯干；②纵向压扁——箭形先在朝向系内成形、再整体按 FACE_ARROW_FLAT＝0.5 做地面投影（纵向分量 ×0.5、
+   与接地影同式），箭心前移量同按投影取（纵向 ×0.5）；③箭身范围不变——沿朝向距锚点 12–38px 的脚前地面带
+   （投影后纵向带宽减半、更贴脚）。颜色/全长 26/全宽 22/前移 23/朝向只读 P.faceAng 均未动、数值未动。 */
+function drawFacingArrow(fx, fy, ang){ // 脚下正面箭头本体：(fx,fy)＝脚底地面锚点（屏幕坐标），ang＝朝向弧度（屏幕系，0＝右、π/2＝下）；绘制经地面投影（纵向 ×FACE_ARROW_FLAT）
+  var ca = Math.cos(ang), sa = Math.sin(ang), cxA = fx + ca * FACE_ARROW_OFF, cyA = fy + sa * FACE_ARROW_OFF * FACE_ARROW_FLAT;
+  var ptsA = [[15, 0], [-11, -11], [-5, 0], [-11, 11]]; // 燕尾箭：尖端 +15、尾翼 ±11、尾凹 −5（全长 26×全宽 22、朝向系本地坐标）
+  for(var passA = 0; passA < 2; passA++){ // pass 0＝贴地衬影（同形、投影后向下错 1px）、pass 1＝箭体本体
+    ctx.beginPath();
+    for(var piA = 0; piA < ptsA.length; piA++){
+      var gxA = ptsA[piA][0] * ca - ptsA[piA][1] * sa, gyA = ptsA[piA][0] * sa + ptsA[piA][1] * ca; // 朝向系→地面系
+      var sxA2 = cxA + gxA, syA2 = cyA + gyA * FACE_ARROW_FLAT + (passA === 0 ? 1 : 0); // 地面投影：纵向压扁
+      if(piA === 0) ctx.moveTo(sxA2, syA2); else ctx.lineTo(sxA2, syA2);
+    }
+    ctx.closePath();
     if(passA === 0){ ctx.fillStyle = 'rgba(0,0,0,0.30)'; ctx.fill(); }
     else { ctx.fillStyle = 'rgba(255,210,62,0.92)'; ctx.fill(); ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.strokeStyle = 'rgba(24,18,2,0.78)'; ctx.stroke(); }
-    ctx.restore();
   }
 }
-window.__FACE_ARROW = function(){ // 验收探针（2026-10-31 脚下正面箭头轮，只读）：常量自述＋离屏按 6 个朝向各渲一帧，量测着色像素质心方向与目标朝向夹角（应 <8°）及像素量（应 >200，证明箭头真实画出且指向正确）；liveAng＝当前本机 P.faceAng（局内转动时应随朝向实时变化）
-  var out = { version: (typeof GAME_VERSION !== 'undefined' ? GAME_VERSION : null), off: FACE_ARROW_OFF, len: FACE_ARROW_LEN, wid: FACE_ARROW_WID, fill: 'rgba(255,210,62,0.92)', stroke: 'rgba(24,18,2,0.78)', anchor: 'foot+23px-along-faceAng', liveAng: (typeof P !== 'undefined' && P) ? +(P.faceAng || 0).toFixed(3) : null, dirs: {} };
+window.__FACE_ARROW = function(){ // 验收探针（2026-10-31 脚下正面箭头轮，只读；20:31 贴地修正后 errDeg 改与地面投影角比对）：常量自述＋离屏按 6 个朝向各渲一帧，量测着色像素质心方向与目标朝向的地面投影角（纵向 ×flat）夹角（应 <8°）及像素量（应 >200，证明箭头真实画出且指向正确）；liveAng＝当前本机 P.faceAng（局内转动时应随朝向实时变化）
+  var out = { version: (typeof GAME_VERSION !== 'undefined' ? GAME_VERSION : null), off: FACE_ARROW_OFF, len: FACE_ARROW_LEN, wid: FACE_ARROW_WID, flat: FACE_ARROW_FLAT, layer: 'ground-after-shadows-before-sprite', fill: 'rgba(255,210,62,0.92)', stroke: 'rgba(24,18,2,0.78)', anchor: 'foot+23px-along-faceAng-ground-projected', liveAng: (typeof P !== 'undefined' && P) ? +(P.faceAng || 0).toFixed(3) : null, dirs: {} };
   try{
     var cvA = document.createElement('canvas'); cvA.width = 160; cvA.height = 160; var cxA2 = cvA.getContext('2d');
     var saveCtx = ctx; ctx = cxA2;
     var angs = { down: Math.PI / 2, side: 0, up: -Math.PI / 2, left: Math.PI, downRight: Math.PI / 4, upLeft: -Math.PI * 0.75 };
-    for(var nm in angs){ cxA2.clearRect(0, 0, 160, 160); drawFacingArrow(80, 80, angs[nm]); var imgA = cxA2.getImageData(0, 0, 160, 160).data, nA = 0, sxA = 0, syA = 0; for(var yyA = 0; yyA < 160; yyA++) for(var xxA = 0; xxA < 160; xxA++){ if(imgA[(yyA * 160 + xxA) * 4 + 3] > 12){ nA++; sxA += xxA; syA += yyA; } } var cenAng = nA ? Math.atan2(syA / nA - 80, sxA / nA - 80) : 0; out.dirs[nm] = { pix: nA, errDeg: Math.round(angDiffPi(cenAng, angs[nm]) * 180 / Math.PI * 10) / 10 }; }
+    for(var nm in angs){ cxA2.clearRect(0, 0, 160, 160); drawFacingArrow(80, 80, angs[nm]); var imgA = cxA2.getImageData(0, 0, 160, 160).data, nA = 0, sxA = 0, syA = 0; for(var yyA = 0; yyA < 160; yyA++) for(var xxA = 0; xxA < 160; xxA++){ if(imgA[(yyA * 160 + xxA) * 4 + 3] > 12){ nA++; sxA += xxA; syA += yyA; } } var cenAng = nA ? Math.atan2(syA / nA - 80, sxA / nA - 80) : 0; var projA = Math.atan2(Math.sin(angs[nm]) * FACE_ARROW_FLAT, Math.cos(angs[nm])); out.dirs[nm] = { pix: nA, errDeg: Math.round(angDiffPi(cenAng, projA) * 180 / Math.PI * 10) / 10 }; }
     ctx = saveCtx;
   }catch(e){ out.renderErr = String(e && e.message || e); }
   return out;
@@ -15988,6 +16014,7 @@ function drawPlayerActor(ox, oy){
   drawAO(footX, footY, heroShW * liftF, 0.52 * liftF);
   drawShadowAt(footX, footY, Math.max(10, heroShW * 0.52 * liftF), 1.0 * liftF);
   drawContactShadow(footX, footY + 1, Math.max(10, heroShW * 0.94 * liftF), 0.66 * (0.45 + 0.55 * LIGHT.shA) * liftF);
+  drawFacingArrow(footX, footY, P.faceAng || 0); // 脚下正面箭头（2026-10-31 20:31 贴地修正）：地面层——三层接地影之后、本体精灵之前，地面投影压扁绘制，箭身只落脚前地面带、绝不覆躯干（口径见 drawFacingArrow 上方贴地修正注）；原「本体之后」调用点已删除
   // 头顶小血条：细绿条，低血量转黄／红（贴在精灵头顶上方）
   var hpF = clamp(P.hp / P.maxHp, 0, 1), hbW = Math.max(30, Math.min(46, P.r * 2.2));
   var hbX = footX - hbW / 2, hbY = footY - sprH - 13;
@@ -16076,7 +16103,6 @@ function drawPlayerActor(ox, oy){
     drawCharInto(ctx, P.charIdx, P.stage, 0, -sprH / 2, sprH, { dir: pDir, frame: pFrame, raw: 1 }); // raw：sprH 已含班仔序列 _bzK 补偿，drawCharInto 不重复补偿
   }
   ctx.restore();
-  drawFacingArrow(footX, footY, P.faceAng || 0); // 脚下正面箭头（2026-10-31 箭头轮）：本体之后、脚底锚点处按当前朝向绘制——只读 P.faceAng、不写任何状态（口径/尺寸/颜色见 drawFacingArrow 上方 FACE_ARROW_ROUND 定版注）
   if(P.charIdx === 0 && P.excT > 0){ // 解放蓄力演出：剑身辉光（越蓄越亮）＋金色光粒向剑身汇聚＋脚下蓄力进度圈＋蓄满临界光柱
     var swX = footX + P.face * 2, swY = footY - sprH * 0.78; // 蓄力帧中立于身前的剑身位置
     var glowR = 16 + excProg * 36 + Math.sin(gameTime * (6 + excProg * 10)) * 3;
@@ -16544,20 +16570,20 @@ function draw(){
     ctx.beginPath(); ctx.arc(jpx - Math.cos(jpi * 2.1) * 16, jpy - 14, 27, 0, Math.PI * 2); ctx.fill();
   }
   // 光明朱德冰面（2026-10-31 建模轮）：全数贴地绘制于地面段（角色/宝石之前、同层不浮空）——①Lv5 战斗冰面（大块、存续末段渐隐）②移动拖尾冰面（落点固定、1 秒内融化渐淡、纯特效）③脚下跟随冰面（小范围、随本体脚下、站立时常在）；素材同为用户定版 v2 冰面块
-  if(GM_ICE_IMG.complete && GM_ICE_IMG.naturalWidth){
+  { // 三层统一走 gmIcePatchDraw（图片未加载时兜底扁椭圆、加载后 v2 原图；2026-10-31 20:39 兜底轮——旧版整段以图片就绪为门、缺图环境三层全灭）
     for(var giz = 0; giz < gmIceZones.length; giz++){
       var gz2 = gmIceZones[giz], gzx = gz2.x + ox, gzy = gz2.y + oy;
       if(gzx < vx0 - gz2.r || gzx > vx1 + gz2.r || gzy < vy0 - gz2.r || gzy > vy1 + gz2.r) continue;
       ctx.globalAlpha = Math.min(1, gz2.t / 1.2) * 0.92;
-      ctx.drawImage(GM_ICE_IMG, gzx - gz2.r, gzy - gz2.r * 0.5, gz2.r * 2, gz2.r);
+      gmIcePatchDraw(gzx - gz2.r, gzy - gz2.r * 0.5, gz2.r * 2, gz2.r);
     }
     for(var gip = 0; gip < gmIcePatches.length; gip++){
       var gp2 = gmIcePatches[gip], gpx = gp2.x + ox, gpy = gp2.y + oy;
       if(gpx < vx0 - 90 || gpx > vx1 + 90 || gpy < vy0 - 60 || gpy > vy1 + 60) continue;
       ctx.globalAlpha = Math.min(1, gp2.t / GM_ICE_DUR) * 0.75;
-      ctx.drawImage(GM_ICE_IMG, gpx - 40, gpy - 15, 80, 30);
+      gmIcePatchDraw(gpx - 40, gpy - 15, 80, 30);
     }
-    if(gmIceOn() && P.hp > 0){ ctx.globalAlpha = 0.85; ctx.drawImage(GM_ICE_IMG, P.x + ox - 46, P.y + oy + P.r * 0.8 - 17, 92, 34); }
+    if(gmIceOn() && P.hp > 0){ ctx.globalAlpha = 0.85; gmIcePatchDraw(P.x + ox - 46, P.y + oy + P.r * 0.8 - 17, 92, 34); }
     ctx.globalAlpha = 1;
   }
   // 宝石
@@ -18652,7 +18678,7 @@ function showBanner(title, sub){
 /* ---------------- 技能像素图标（程式生成，原创像素画） ---------------- */
 var ICON_COLORS = { weiye:'#ffb02e', undeadwar:'#b8c4ce', thundercloud:'#8a9ab8', frostpuppet:'#aee6ff', icelance:'#7ad7f0', hellhound:'#ff8a5a', emberring:'#ffb02e', voltspirit:'#ffe97a', skystrike:'#c99af2', windfalcon:'#7af0d8', vacuumblade:'#4db8ff', lightservant:'#fff6c8', corona:'#ffd76a', oldtreant:'#7ac74f', vinegrip:'#5aa84a', rockgolem:'#c8b090', quake:'#d8a860', waterelemental:'#4db2e8', tidalwave:'#3a9ad8', critshard:'#ffd76a', soulmirror:'#ff9ad5', galephantom:'#9ae8c8', ironcaltrop:'#c8ccd4', swiftarrow:'#8ad7f0', giantarrow:'#f0a85a', timesand:'#e8d88a', poisongland:'#9ae86a', dragonsigil:'#ff8a5a', firstsigil:'#ffe97a', icebreaker:'#aee6ff', farsigil:'#8ab8f0', nearsigil:'#f08a6a', gemheal:'#8ae8c8', killshield:'#6ac8e8', xpkill:'#a8e063', windrush:'#7af0d8', movewill:'#d8b46a', stillheart:'#b49a6a', laststand:'#e86a6a', huntergait:'#8ae8a8', specresonance:'#c99af2', slowfield:'#7a9ae8', shredmark:'#f0e68a', critsiphon:'#e84a7a', shieldweb:'#8ad7f0', burnheart:'#ff7a3e', boomheart:'#ffb02e', overloadloop:'#b48ae8', bedrock:'#a89878',
   currybat:'#e8a83e', boomerang:'#7ac74f', cigshot:'#d8d4cc',
-  octoshot:'#57a8e8', stamp:'#e8483f', chainvolt:'#7ad7f0', voltstorm:'#ffe97a', firebolt:'#f0782e',
+  octoshot:'#57a8e8', stamp:'#e8483f', chainvolt:'#7ad7f0', mungcake:'#8fd14f', voltstorm:'#ffe97a', firebolt:'#f0782e',
   leafblade:'#69b84a', lightning:'#e8c832', frostnova:'#57c7e8', stardart:'#e88ec8',
   flameaura:'#e8563a',
   moonwheel:'#ffd76a', fireball:'#ff5a2e', frostcone:'#aee6ff', poisonspray:'#7ed321',
@@ -18707,6 +18733,13 @@ function drawSpecIcon(g, id, col, dk, lt){
     pxr(g, 6, 5, 5, 6, '#5a6e2e'); pxr(g, 7, 4, 3, 2, '#39431c'); pxr(g, 8, 7, 2, 2, '#8a9a4a');
     pxr(g, 2, 3, 2, 2, '#c8b46a'); pxr(g, 12, 4, 2, 2, '#c8b46a'); pxr(g, 3, 11, 2, 2, '#c8b46a'); pxr(g, 12, 12, 2, 2, '#c8b46a');
     pxr(g, 7, 1, 1, 1, '#ffd76a'); pxr(g, 13, 8, 2, 1, lt); pxr(g, 1, 8, 2, 1, lt);
+  } else if(id === 'mungcake'){ // 我在福建很想你：冲刺冲撞（前倾冲锋身影＋速度线）＋冰雹自天而降＋脚下冰面
+    pxr(g, 2, 1, 1, 3, '#aee6ff'); pxr(g, 2, 4, 1, 1, '#ffffff'); pxr(g, 6, 1, 1, 4, '#7ad7f0'); pxr(g, 6, 5, 1, 1, '#ffffff');
+    pxr(g, 10, 1, 1, 3, '#aee6ff'); pxr(g, 10, 4, 1, 1, '#ffffff'); pxr(g, 13, 1, 1, 4, '#7ad7f0'); pxr(g, 13, 5, 1, 1, '#ffffff'); // 下落冰雹（冰刺＋白尖）
+    pxr(g, 1, 7, 3, 1, lt); pxr(g, 1, 10, 4, 1, col); pxr(g, 2, 12, 3, 1, dk); // 身后速度线
+    pxr(g, 5, 8, 6, 4, col); pxr(g, 6, 7, 4, 1, col); pxr(g, 10, 6, 3, 4, lt); pxr(g, 11, 5, 2, 1, lt); // 前倾冲锋身影（躯干＋兜帽头朝右）
+    pxr(g, 13, 8, 2, 2, '#ffffff'); pxr(g, 14, 6, 1, 1, '#aee6ff'); pxr(g, 14, 11, 1, 1, '#aee6ff'); // 前方撞击星芒
+    pxr(g, 1, 13, 14, 2, '#aee6ff'); pxr(g, 3, 14, 3, 1, '#7ad7f0'); pxr(g, 9, 14, 4, 1, '#7ad7f0'); pxr(g, 6, 13, 2, 1, '#ffffff'); // 脚下冰面
   } else {
     pxr(g, 7, 7, 2, 2, '#ffffff'); pxr(g, 3, 3, 2, 2, lt); pxr(g, 11, 3, 2, 2, lt);
   }
@@ -18780,6 +18813,14 @@ function iconCanvas(id, variant){
     pxr(g, 7, 2, 2, 4, '#7a4a26'); pxr(g, 4, 6, 8, 6, md); pxr(g, 5, 8, 6, 1, '#ffffff'); pxr(g, 5, 10, 6, 1, '#ffffff');
     pxr(g, 3, 13, 10, 1, dk);
   } else if(id === 'chainvolt'){ bolt(g);
+  } else if(id === 'mungcake'){ // 冷齿绿豆饼：圆圆的绿豆饼（绿饼身＋豆点）＋一圈冰刺环绕
+    pxr(g, 7, 1, 2, 2, '#aee6ff'); pxr(g, 7, 13, 2, 2, '#aee6ff'); pxr(g, 1, 7, 2, 2, '#aee6ff'); pxr(g, 13, 7, 2, 2, '#aee6ff'); // 上下左右冰刺
+    pxr(g, 2, 2, 2, 2, '#7ad7f0'); pxr(g, 12, 2, 2, 2, '#7ad7f0'); pxr(g, 2, 12, 2, 2, '#7ad7f0'); pxr(g, 12, 12, 2, 2, '#7ad7f0'); // 四角斜冰刺
+    pxr(g, 8, 1, 1, 1, '#ffffff'); pxr(g, 3, 2, 1, 1, '#ffffff'); pxr(g, 13, 12, 1, 1, '#ffffff'); // 冰刺白尖
+    pxr(g, 6, 4, 4, 1, md); pxr(g, 5, 5, 6, 1, md); pxr(g, 4, 6, 8, 4, md); pxr(g, 5, 10, 6, 1, md); pxr(g, 6, 11, 4, 1, md); // 圆饼身
+    pxr(g, 5, 5, 3, 2, lt); pxr(g, 10, 5, 1, 1, '#ffffff'); // 饼面高光＋霜点
+    pxr(g, 6, 8, 1, 1, dk); pxr(g, 9, 7, 1, 1, dk); pxr(g, 8, 10, 1, 1, dk); pxr(g, 10, 9, 1, 1, dk); // 绿豆点
+    pxr(g, 6, 11, 4, 1, dk); // 饼底阴影
   } else if(id === 'firebolt'){
     pxr(g, 6, 8, 4, 6, md); pxr(g, 5, 10, 6, 4, md); pxr(g, 7, 5, 2, 4, '#ffd76a'); pxr(g, 6, 11, 4, 3, '#ffe9a3'); pxr(g, 4, 7, 2, 3, dk); pxr(g, 11, 6, 1, 3, dk);
   } else if(id === 'leafblade'){
