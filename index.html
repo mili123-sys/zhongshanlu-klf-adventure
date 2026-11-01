@@ -818,7 +818,7 @@
       <button id="btnLearnedHud" type="button">已学技能</button>
       <div id="bzArrayHud">剑阵 击杀累计 0/40</div>
       <div id="mhDroneHud">无人机 击杀累计 0/35</div>
-      <div id="bzWjHud">万箭齐发 击杀累计 0/200</div>
+      <div id="bzWjHud">仰望吧，天地乖离开辟之星 击杀累计 0/180</div>
       <div id="chSpecHud">豪情在天 击杀累计 0/100</div>
       <div id="vitals">
         <div class="vitals-row">
@@ -3250,8 +3250,8 @@ window.__BZ_ARRAY = { r: BZ_ARRAY_R, dur: BZ_ARRAY_DUR, tick: BZ_ARRAY_TICK, max
    【未定口径·施工落地取值（非用户逐字定数，逐项单列、交工单同列，不得冒充用户已定）】
    ①计数范围：计「归属本机玩家本人」的全部击杀——killEnemy 末尾 bzWjOnKill 按击杀归因 DMG_SRC 分流：DMG_SRC＝null 者全计（普攻剑气／剑阵落剑／按键技／通用武器／图腾与区域／召唤物，以及替身的一切击杀——替身归因恒为召唤者本人、与天威 ⑧ 同口径）；DMG_SRC 非 null（NPC／联机真人远端成员的击杀）不计。例外：万箭齐发自身飞剑的击杀永不计（BZ_WJ_SETTLING 结算旗、与 CH_TW_SETTLING 同式，防自触发串计）；朱德克隆分身在 killEnemy 开头提前返回、不经计数行（与天威同）；结界清场等不经 killEnemy 的静默移除不计。
    ②觉醒门禁与清零：仅 charIdx 0（班仔）且 stage>=2（二觉）才计数与触发；二觉前的击杀不计（计数自二觉后从 0 起算、无二觉前结转）；满 200 当场触发、计数清零重计；持续 10 秒期间计数冻结（bzWjOnKill 入口按 bzWjT>0 直接返回，与剑阵/无人机冻结同式）；10 秒结束后恢复累计（自 0 起）。
-   ③发射节拍与总量（2026-10-31 改定，取代 01:58 定版）：逐门间隔 BZ_WJ_GAP＝2 秒——2 秒同为门出现间隔与发剑间隔（每 2 秒生成一个门、该门生成 0.05 秒后出剑、非同帧齐射）；持续 BZ_WJ_DUR＝10 秒共 5 门 5 剑（按现行节拍落地：触发后首门约 0 秒出、其后约 2/4/6/8 秒各一门、末门于约 8 秒；10 秒到点 tick 先扣持续计时、到点即不再发新门；帧步恰整除间隔时浮点残留本可令名义到点帧多发第 6 门，已加 0.0001 秒到点钳制钉死——DUR÷GAP＝10÷2＝5，离线多帧步模拟恒 5 门）；十带队列单次触发只弹出 5 门取 5 个高度带、队列跨触发续用（两轮触发合起来才走完一轮 10 带洗牌序、队列空才重洗）；沿革：逐门 0.12 秒（约 50）→01:41 提速 0.08 秒（约 75）→01:43 两门一批（约 75）→01:44 四门一批（约 76）→01:52 逐门错开 0.5 秒（12）→01:55 改 0.3 秒（20）→01:56 改 0.2 秒（30）→01:58 先改 2.5 秒（3）旋即改 0.25 秒（6 秒 24 门）→2026-10-31 持续改 10 秒＋间隔改 2 秒（10 秒 5 门 5 剑、0.25 秒/24 门口径作废）；10 秒到即停发新门（已生成的门仍出剑消散、已出门飞剑与已插怪剑按 ⑨ 留存）。
-   ④传送门（01:37 定版＋01:42 随机＋01:50 高低错开＋01:52 逐门错开＋01:54 十门的施工落地取值）：「十个门」单列＝十个高度带轮流（非同时存在十门、非每批十门）：高度带 BZ_WJ_BANDS＝-135/-105/-75/-45/-15/+15/+45/+75/+105/+135（沿垂直于朝向的横向轴、带距 30；侧向朝向时即屏幕上下、高低错开不平排——01:50 口径：四带 -90/-30/+30/+90→01:53 六带→01:54 十带定版）、抖动 ±BZ_WJ_BAND_JITTER＝7px 均匀；分配方式＝高度带队列洗牌后逐门弹出、每 BZ_WJ_BAND_CYCLE＝10 个连续门覆盖十带各一次（10 秒 5 门＝单次触发只弹 5 门、队列跨触发续用、连续两轮触发合起来走完一轮十带、队列空才重洗）、队列空重洗——带序随机、无固定高度顺序循环（01:42 口径以洗牌队列形式保留）；其余两轴逐门独立均匀随机：背后距 46–120px、抬升 8–84px。不重叠（01:44 口径、2026-10-31 随间隔 2 秒更新）：门存续 0.28 秒远小于间隔 2 秒——前门消散后约 1.72 秒才出下一门、同屏至多一门、不存在相邻门并存，相邻门必属不同高度带（带距 30、抖动后横向至少差约 16）＋背后距/抬升独立随机、位置不叠合（同帧多门时期的最小间距 68＋推开松弛方案随逐门错开废止）；背后向随 faceAng 每帧现算——角色转向后新门生成在新背后、已生成门/已出剑不跟转。出剑时机＝门生成后 BZ_WJ_PORTAL_EMERGE＝0.05 秒（沿革：初版开门当帧 0 秒→01:41 提速口径 0.05 秒）；大小＝半径 BZ_WJ_PORTAL_R＝30px（视觉直径 60、约角色身高 2/3）；存续＝BZ_WJ_PORTAL_DUR＝0.28 秒（开门放大 0.3 段→全开→0.65 后收缩淡出，出剑后门自行消散，与「剑出门消失」读感一致）；金色表现＝程序绘制（无外部素材、无视频原素材盗用）：金色辉光晕＋亮金双环＋8 枚旋转刻度＋白金亮芯；剑＝自门心以生成门当帧 faceAng 为方向飞出（出剑即全速、无出门缓动段——落地取值）、剑身带金色辉光、飞行拖一道长金色光轨（尾端渐隐，01:59 演示定稿口径；原淡蓝短拖影已改；2026-10-31 加明显改定：长 2.6 倍剑长→4.2 倍剑长、单层线宽 6→三层 20／12／4、主轨峰值 alpha 0.5→0.9＋近白亮芯，只改视觉、不遮挡角色与技能本体，取值见 BZ_WJ_TRAIL_* 常量与 drawBzWj）。
+   ③发射节拍与总量（2026-10-31 改定，取代 01:58 定版）：逐门间隔 BZ_WJ_GAP＝2 秒——2 秒同为门出现间隔与发剑间隔（每 2 秒生成一个门、该门生成 0.05 秒后出剑、非同帧齐射）；持续 BZ_WJ_DUR＝10 秒共 20 门 20 剑（2026-11-01 改定：每 2 秒一批 4 门、约 0/2/4/6/8 秒各一批、末批于约 8 秒；10 秒到点 tick 先扣持续计时、到点即不再发新门；帧步恰整除间隔时浮点残留本可令名义到点帧多发第 6 批，已加 0.0001 秒到点钳制＋已发门数钉死 20——DUR÷GAP＝10÷2＝5 批×4＝20，离线多帧步模拟恒 20 门）；十带队列单次触发弹出 20 门取 20 个高度带（队列走两轮 10 带洗牌序、队列空才重洗、同批 4 门必属不同带）；沿革：逐门 0.12 秒（约 50）→01:41 提速 0.08 秒（约 75）→01:43 两门一批（约 75）→01:44 四门一批（约 76）→01:52 逐门错开 0.5 秒（12）→01:55 改 0.3 秒（20）→01:56 改 0.2 秒（30）→01:58 先改 2.5 秒（3）旋即改 0.25 秒（6 秒 24 门）→2026-10-31 持续改 10 秒＋间隔改 2 秒（10 秒 5 门 5 剑、0.25 秒/24 门口径作废）；10 秒到即停发新门（已生成的门仍出剑消散、已出门飞剑与已插怪剑按 ⑨ 留存）。
+   ④传送门（01:37 定版＋01:42 随机＋01:50 高低错开＋01:52 逐门错开＋01:54 十门的施工落地取值）：「十个门」单列＝十个高度带轮流（非同时存在十门、非每批十门）：高度带 BZ_WJ_BANDS＝-135/-105/-75/-45/-15/+15/+45/+75/+105/+135（沿垂直于朝向的横向轴、带距 30；侧向朝向时即屏幕上下、高低错开不平排——01:50 口径：四带 -90/-30/+30/+90→01:53 六带→01:54 十带定版）、抖动 ±BZ_WJ_BAND_JITTER＝7px 均匀；分配方式＝高度带队列洗牌后逐门弹出、每 BZ_WJ_BAND_CYCLE＝10 个连续门覆盖十带各一次（2026-11-01：10 秒 20 门＝单次触发弹 20 门、队列走两轮 10 带、队列空才重洗）、队列空重洗——带序随机、无固定高度顺序循环（01:42 口径以洗牌队列形式保留）；其余两轴逐门独立均匀随机：背后距 80–260px、抬升 8–140px（2026-11-01 沿现行背后/横向规则放大范围）。不重叠（2026-11-01 改定）：同批 4 门共存 0.28 秒，候选点与现存门逐一比距、不足 BZ_WJ_BATCH_MIN_DIST＝80px 重抽最多 24 次取最近距最大者（门直径 60，80 保证留空隙）；同批必属不同高度带＋背后距/抬升独立随机；背后向随 faceAng 每帧现算——角色转向后新门生成在新背后、已生成门/已出剑不跟转。出剑时机＝门生成后 BZ_WJ_PORTAL_EMERGE＝0.05 秒（沿革：初版开门当帧 0 秒→01:41 提速口径 0.05 秒）；大小＝半径 BZ_WJ_PORTAL_R＝30px（视觉直径 60、约角色身高 2/3）；存续＝BZ_WJ_PORTAL_DUR＝0.28 秒（开门放大 0.3 段→全开→0.65 后收缩淡出，出剑后门自行消散，与「剑出门消失」读感一致）；金色表现＝程序绘制（无外部素材、无视频原素材盗用）：金色辉光晕＋亮金双环＋8 枚旋转刻度＋白金亮芯；剑＝自门心以出剑时刻 faceAng（角色面朝）为方向飞出、剑尖朝前（2026-11-01 改定：此前为门生成当帧面朝、从不是门到角色的放射方向；出剑即全速、无出门缓动段——落地取值）、剑身带金色辉光、飞行拖一道长金色光轨（尾端渐隐，01:59 演示定稿口径；原淡蓝短拖影已改；2026-10-31 加明显改定：长 2.6 倍剑长→4.2 倍剑长、单层线宽 6→三层 20／12／4、主轨峰值 alpha 0.5→0.9＋近白亮芯，只改视觉、不遮挡角色与技能本体，取值见 BZ_WJ_TRAIL_* 常量与 drawBzWj）。
    ⑤攻击方向跟随（2026-10-31 01:26 令落地）：跟随的是角色朝向 P.faceAng（朝向本身在不攻击时跟随移动方向、开火时按朝向令锁定——与全游戏朝向口径同一字段）；传送门生成在当帧朝向的背后（背后向＝faceAng 反向、逐门现算）——角色转向后新门出现在新背后、攻击方向随之变；每柄剑发射瞬间的飞行方向＝发射当帧的 faceAng；已生成的门不跟转（在其 0.28 秒存续内留在原地消散）、已飞出的剑不转向（直线飞完、与普攻弹道同规）；已插怪的剑不受朝向影响（角度保持命中瞬间方向、只位置跟随怪）。
    ⑥飞行与命中：飞速 BZ_WJ_SPEED＝980 px/s；射程（2026-10-31 改定，取代旧 BZ_WJ_RANGE＝1150px）：BZ_WJ_RANGE＝Infinity 无限、碰到怪为止——无穿透不变（命中第一名敌人即停、剑尖点与敌人圆判定、半径 +12 容差、每柄至多命中 1 名敌人）；无怪命中时的落地点＝飞满当前场景「无限」实际上限 exInfRange() 即消散（与班仔 Ex「无限」同函数同口径：主地图取当前视口全对角线、下限 1241、飞出可视范围后消散；新屋／新街／虚空竞技场取各自地图全对角线、贯穿全图后消散），不留悬空无限飞行实体。
    ⑦伤害（⚠ 重点单列）：「跟剑阵一样」＝与剑阵单柄完全同式同值——bzWaveDamageBase(当刻咖喱棒等级)×earlySigMul×sigDmgMul×pDmgMul×BZ_ARRAY_MUL，直接共用剑阵常量 BZ_ARRAY_MUL。注意时序：用户说「伤害跟剑阵一样」时剑阵单柄还是 ×0.30，其后剑阵已按令提高为 ×0.35——本轮落地＝跟当前剑阵 0.35（共用常量、剑阵日后再改万箭自动跟随），不是旧 0.30；此项用户未就 0.35/0.30 明确表态、交工单须单列待确认、不得冒充已定。乘区构成与剑阵逐项同：吃觉醒（pDmgMul 内含 stageDmgMul、二觉 ×1.50）、吃商人攻击力（pDmgMul 内含 shopAtk）、暴击章＝咖喱棒基础 10%（DMG_CRIT 同剑阵 bzArrayTick 盖章式、元素 light）、吃目标易伤/剑痕（damageEnemy 内既有乘区、来源不限）；落剑不挂剑痕（与剑阵落剑同——剑痕只属普攻剑气命中段）；命中当刻现算伤害（非触发帧快照、与无人机子弹实时口径同向）。
@@ -3261,24 +3261,27 @@ window.__BZ_ARRAY = { r: BZ_ARRAY_R, dur: BZ_ARRAY_DUR, tick: BZ_ARRAY_TICK, max
    ⑪显示：本机角色头顶小字（drawPlayerActor、剑阵行上方一行、stage>=2 才显示：进行中「万箭齐发 剩余 X.Xs」、未触发「万箭齐发 击杀累计 N/200」，与 bzArrayDisp 同式）；触发时头顶大字「万箭齐发！」＋金环＋holy 音效。【2026-10-31 显示轮追加，取代旧「不设独立 HUD 片」口径】HUD 左列独立金片 #bzWjHud（照剑阵 #bzArrayHud 显示轮同式）：叠在剑阵片正下方一格（top＝剑阵片＋34：竖屏 142／窄屏 182／横屏 138，均含安全区；两片同属班仔可同屏故不同位，联机队伍面板由 body:has(#bzWjHud.on) 规则同步下推 34 防压叠）、登记 HUD_DEFS（bzjwj）编辑态强制点亮；门禁＝仅本机班仔且 stage>=2（二觉）才显示、非班仔/二觉前不显示不占位（updateHud .on 控制）；文案与头顶小字共用 bzWjDisp（进行中剩余秒一位小数、未触发累计 N/200、200＝BZ_WJ_NEED 常量）；背景渐变填充＝剩余/BZ_WJ_DUR 或累计/BZ_WJ_NEED（2% 步进守卫）；纯只读显示——数据源直读 P.bzWjKillN/P.bzWjT、不参与结算、不改伤害/间隔/持续任何已定口径。
    ⑫文案同步：图鉴「专属被动」区新增「万箭齐发」条目、已学面板班仔二觉后新增同名行（ldRow、currybat 图标）；技能本身不进 WEAPONS/PASSIVES 表、不进卡池/商人货架/NPC 学习池、不占主动上限 8 格与被动上限（系统自带、与牛马的觉悟同位）。
    ⑬红线自查：除新增本系统外，剑阵（BZ_ARRAY_* 常量与 bzArray* 函数本体）、普攻、其他英雄一字未动；接线仅四处增行——killEnemy 末尾计数钩（与 chTwOnKill 并列一行）、update 内推进钩（与 bzArrayTick 并列一行）、drawMhDrones 后绘制钩一行、resetGame 清空一行；newPlayer 仅新增 bzWj* 字段。 */
-var BZ_WJ_NEED = 200, BZ_WJ_DUR = 10, BZ_WJ_GAP = 2, BZ_WJ_PORTAL_DUR = 0.28, BZ_WJ_PORTAL_EMERGE = 0.05, BZ_WJ_PORTAL_R = 30, BZ_WJ_BACK_MIN = 46, BZ_WJ_BACK_MAX = 120, BZ_WJ_LAT = 145, BZ_WJ_BANDS = [-135, -105, -75, -45, -15, 15, 45, 75, 105, 135], BZ_WJ_BAND_CYCLE = 10, BZ_WJ_BAND_JITTER = 7, BZ_WJ_LIFT_MIN = 8, BZ_WJ_LIFT_MAX = 84, BZ_WJ_SPEED = 980, BZ_WJ_RANGE = Infinity, BZ_WJ_LEN = 72, BZ_WJ_STUCK_MAX = 12;
-var BZ_WJ_TRAIL_LEN_MUL = 4.2, BZ_WJ_TRAIL_W_OUTER = 20, BZ_WJ_TRAIL_W = 12, BZ_WJ_TRAIL_W_CORE = 4; // 万箭拖尾加明显（2026-10-31 用户令，只改视觉）：拖尾长＝剑长×4.2（旧 2.6）、三层线宽 外晕 20／主轨 12（旧单层 6）／亮芯 4，亮度见 drawBzWj 渐变（旧主轨峰值 alpha 0.5→主轨 0.9＋亮芯近白）；剑长 BZ_WJ_LEN 本身不动
+/* 2026-11-01 定版（演示横屏版进游戏，20:24 追加持续 15 秒）：50 门同现、门持续期不消失、后面 ±60° 扇形、每门每秒 1 柄相位错开、剑速 980→2940（演示 3 倍换算，助理定、非 milo 直说数值）；持续 15 秒（原 10 秒，milo 追加令）、每门 15 柄、最多 750 柄；旧分批 20 门作废。*/
+var BZ_WJ_NEED = 180, BZ_WJ_DUR = 15, BZ_WJ_GAP = 2, BZ_WJ_PORTAL_DUR = 15, BZ_WJ_PORTAL_EMERGE = 0.05, BZ_WJ_PORTAL_R = 30, BZ_WJ_BACK_MIN = 80, BZ_WJ_BACK_MAX = 260, BZ_WJ_LAT = 145, BZ_WJ_BANDS = [-135, -105, -75, -45, -15, 15, 45, 75, 105, 135], BZ_WJ_BAND_CYCLE = 10, BZ_WJ_BAND_JITTER = 7, BZ_WJ_LIFT_MIN = 8, BZ_WJ_LIFT_MAX = 140, BZ_WJ_SPEED = 2940, BZ_WJ_RANGE = Infinity, BZ_WJ_LEN = 72, BZ_WJ_STUCK_MAX = 12;
+var BZ_WJ_PER_TICK = 50, BZ_WJ_PER_ROUND = 50, BZ_WJ_PORTALS = 50, BZ_WJ_FIRE_GAP = 1, BZ_WJ_FIRE_PER_PORTAL = 15, BZ_WJ_MAX_SWORDS = 750, BZ_WJ_BATCH_MIN_DIST = 80, BZ_WJ_FAN_DIST_MIN = 360, BZ_WJ_FAN_DIST_STEP = 120, BZ_WJ_FAN_LAYERS = 5, BZ_WJ_FAN_COLS = 10, BZ_WJ_SECTOR_HALF = 60; // 2026-11-01 定版：触发时一次出 50 门（PER_TICK 即一次全出数，旧每批 4 门作废）、持续 15 秒（20:24 追加，原 10 秒）、每门每秒 1 柄、每门 15 柄、最多 750 柄；扇形 5 层×10 列、后面 ±60°、层距 120、首层距 360（门范围可离很远）、门中心最小间距 80px（门直径 60，留 20px 空隙）
+var BZ_WJ_TRAIL_LEN_MUL = 5.0, BZ_WJ_TRAIL_W_OUTER = 28, BZ_WJ_TRAIL_W = 17, BZ_WJ_TRAIL_W_CORE = 6; // 飞剑加显（2026-11-01 用户令，只改视觉）：拖尾长＝剑长×5.0（旧 4.2）、三层线宽 外晕 28／主轨 17／亮芯 6，亮度见 drawBzWj 渐变（主轨峰值更高）；剑长 BZ_WJ_LEN 本身不动
+var BZ_WJ_DRAW_SCALE = 1.4, BZ_WJ_DRAW_GLOW = 18; // 飞剑加显（2026-11-01 用户令，builder 定数，见证据）：剑显示缩放 1.4 倍（仅绘制，剑尖锚点不动、判定不动）、辉光 blur 9→18
 var bzWjSwords = []; // 万箭齐发剑实体（本机系统、非 projectiles 数组）：飞行 {x,y,dx,dy,ang,dist,stuck:null}／插怪 {stuck:e,ox,oy,ang,x,y}；resetGame 清空
 var bzWjPortals = []; // 万箭齐发金色传送门视觉实体 {x,y,t,dur,ang}：一门一剑、剑出门即自行消散（纯视觉、伤害/命中与门无关）；resetGame 清空
 var bzWjBandQueue = []; // 万箭齐发高度带队列（01:50/01:52/01:54）：每 10 个连续门覆盖十带一次的洗牌序、逐门弹出；空时重洗；resetGame 清空
 var BZ_WJ_SETTLING = 0; // 万箭齐发伤害结算中旗（>0 时其击杀不计数，防自触发串计；与 CH_TW_SETTLING 同式）
-function bzWjDisp(kills, t){ if((t || 0) > 0) return '万箭齐发 剩余 ' + t.toFixed(1) + 's'; return '万箭齐发 击杀累计 ' + (kills || 0) + '/' + BZ_WJ_NEED; } // 显示文案（头顶小字/探针共用、与 bzArrayDisp 同式）
-function bzWjPortalPos(latOverride){ // 传送门生成点（生成当帧现算）：角色背后——背后向＝朝向反向、背后距随机 46–120、抬升随机 8–84；横向（垂直于朝向的轴、侧向朝向时即屏幕上下）由调用方按 01:50 高度带传入（带值＋抖动）、无传入时才全域 ±BZ_WJ_LAT 均匀抽；角色转向后新门生成在新背后、已生成的门不跟转
+function bzWjDisp(kills, t){ if((t || 0) > 0) return '仰望吧，天地乖离开辟之星 剩余 ' + t.toFixed(1) + 's'; return '仰望吧，天地乖离开辟之星 击杀累计 ' + (kills || 0) + '/' + BZ_WJ_NEED; } // 显示文案（头顶小字/探针共用、与 bzArrayDisp 同式；2026-11-01 改名：原「万箭齐发」按 milo 原字改成「仰望吧，天地乖离开辟之星」，内部标识不动）
+function bzWjPortalPos(latOverride, backOverride, liftOverride){ // 传送门生成点（生成当帧现算）：角色背后——背后向＝朝向反向；横向（垂直于朝向的轴）由调用方传入，背后距/抬升可由调用方指定（扇形定版用），无指定时沿旧随机口径；角色转向后新门生成在新背后、已生成的门不跟转
   var fa = (P && P.faceAng) || 0, fx = Math.cos(fa), fy = Math.sin(fa);
-  var back = BZ_WJ_BACK_MIN + Math.random() * (BZ_WJ_BACK_MAX - BZ_WJ_BACK_MIN);
+  var back = (typeof backOverride === 'number') ? backOverride : BZ_WJ_BACK_MIN + Math.random() * (BZ_WJ_BACK_MAX - BZ_WJ_BACK_MIN);
   var lat = (typeof latOverride === 'number') ? latOverride : (Math.random() * 2 - 1) * BZ_WJ_LAT;
-  var lift = BZ_WJ_LIFT_MIN + Math.random() * (BZ_WJ_LIFT_MAX - BZ_WJ_LIFT_MIN);
+  var lift = (typeof liftOverride === 'number') ? liftOverride : BZ_WJ_LIFT_MIN + Math.random() * (BZ_WJ_LIFT_MAX - BZ_WJ_LIFT_MIN);
   return { x: P.x - fx * back - fy * lat, y: P.y - fy * back + fx * lat - lift };
 }
 function bzWjTrigger(){ // 满 200 触发：计数已由调用方清零；首门首剑当帧即发
-  P.bzWjT = BZ_WJ_DUR; P.bzWjFireT = 0;
+  P.bzWjT = BZ_WJ_DUR; P.bzWjFireT = 0; P.bzWjFired = 0; P.bzWjSwordsFired = 0; bzWjLaunchAll(); // 2026-11-01 定版：触发时一次出 50 门，不再分批
   effects.push({ type:'ring', x: P.x, y: P.y - 56, t: 0, dur: 0.6, color: '255,215,106' });
-  texts.push({ x: P.x, y: P.y - 118, v: 0, txt: '万箭齐发！', t: 0, color: '#ffd76a', big: true });
+  texts.push({ x: P.x, y: P.y - 118, v: 0, txt: '仰望吧，天地乖离开辟之星！', t: 0, color: '#ffd76a', big: true });
   sfx('holy');
 }
 function bzWjOnKill(e){ // 万箭齐发计数唯一入口（killEnemy 末尾、与 chTwOnKill 并列）：归因/门禁/冻结口径见定版注 ①②
@@ -3289,13 +3292,44 @@ function bzWjOnKill(e){ // 万箭齐发计数唯一入口（killEnemy 末尾、�
   P.bzWjKillN = (P.bzWjKillN || 0) + 1;
   if(P.bzWjKillN >= BZ_WJ_NEED){ P.bzWjKillN = 0; bzWjTrigger(); }
 }
-function bzWjLaunch(){ // 生成一个门（01:52 逐门错开＋01:54 十门＋2026-10-31 间隔 2 秒／持续 10 秒改定，取代 01:58 间隔 0.25 定版及 01:43/01:44 同帧多门、01:53 六门与 0.5/0.3/0.2/2.5 秒间隔）：每节拍只生成一座金色传送门——2 秒一门、非同帧齐射，10 秒一轮共 5 门 5 剑（约 0/2/4/6/8 秒各一门）；高度带队列逐门弹出：每 BZ_WJ_BAND_CYCLE＝10 个连续门覆盖十个高度带（-135 至 +135、带距 30、沿横向轴）各一次、洗牌序（不按固定顺序）、带内 ±BZ_WJ_BAND_JITTER＝7 均匀抖动——即「十个门」落地为十个高度带轮流、非同时存在十门（交工单单列、待用户纠正）；门生成 BZ_WJ_PORTAL_EMERGE＝0.05 秒后出剑；门存续 0.28 秒远小于 2 秒间隔、同屏至多一门，相邻门必属不同高度带＋深度/抬升独立随机、位置不叠合（出剑动作在 bzWjTick 的门推进段）
+function bzWjLaunch(){ // 生成一个门（2026-11-01 改定：每 2 秒一批 4 门，见 bzWjLaunchBatch；本函数只生成单门）：高度带队列逐门弹出：每 BZ_WJ_BAND_CYCLE＝10 个连续门覆盖十个高度带（-135 至 +135、带距 30、沿横向轴）各一次、洗牌序（不按固定顺序）、带内 ±BZ_WJ_BAND_JITTER＝7 均匀抖动——同批 4 门必属 4 个不同高度带；门生成 BZ_WJ_PORTAL_EMERGE＝0.05 秒后出剑；同批门最小间距 BZ_WJ_BATCH_MIN_DIST＝80px：候选点与全部现存门逐一比距，不足 80 则重抽背后距/抬升/抖动（带不变）最多 24 次，取其中与现存门最近距离最大者，仍不足者照常落位（不丢门、不超 20 门上限）；出剑动作在 bzWjTick 的门推进段，出剑方向取该时刻面朝（见 bzWjTick）
   if(!bzWjBandQueue.length){ bzWjBandQueue = BZ_WJ_BANDS.slice(); for(var si = bzWjBandQueue.length - 1; si > 0; si--){ var sj = Math.floor(Math.random() * (si + 1)), st = bzWjBandQueue[si]; bzWjBandQueue[si] = bzWjBandQueue[sj]; bzWjBandQueue[sj] = st; } }
   var band = bzWjBandQueue.pop();
   var fa = P.faceAng || 0;
   var pp = bzWjPortalPos(band + (Math.random() * 2 - 1) * BZ_WJ_BAND_JITTER);
-  bzWjPortals.push({ x: pp.x, y: pp.y, t: 0, dur: BZ_WJ_PORTAL_DUR, ang: fa, pending: true });
+  var bestPp = pp, bestMin = -1;
+  for(var tr = 0; tr < 24; tr++){
+    var minD = 1e9;
+    for(var qi = 0; qi < bzWjPortals.length; qi++){ var dd = Math.hypot(pp.x - bzWjPortals[qi].x, pp.y - bzWjPortals[qi].y); if(dd < minD) minD = dd; }
+    if(!bzWjPortals.length || minD >= BZ_WJ_BATCH_MIN_DIST){ bestPp = pp; break; }
+    if(minD > bestMin){ bestMin = minD; bestPp = pp; }
+    pp = bzWjPortalPos(band + (Math.random() * 2 - 1) * BZ_WJ_BAND_JITTER);
+  }
+  bzWjPortals.push({ x: bestPp.x, y: bestPp.y, t: 0, dur: BZ_WJ_PORTAL_DUR, ang: fa, pending: true });
 }
+function bzWjLaunchAll(){ // 2026-11-01 定版：触发时一次出 50 门，扇形 5 层×10 列、后面 ±60°（演示扇区 30°~150°，以后面方向为中心）、层距 120、首层距 360（门范围可离很远）、每门相位 (ii+随机)/50 分层错开、每门每秒 1 柄、持续 15 秒＝每门 15 柄、共 750 柄上限；门与门中心距不足 80 时只重抽抬升（角度/层不变）最多 12 次取最远者，仍不足照常落位、不丢门
+  bzWjPortals.length = 0;
+  for(var ii = 0; ii < BZ_WJ_PORTALS; ii++){
+    var col = ii % BZ_WJ_FAN_COLS, layer = Math.floor(ii / BZ_WJ_FAN_COLS);
+    var offDeg = -BZ_WJ_SECTOR_HALF + col * (2 * BZ_WJ_SECTOR_HALF / (BZ_WJ_FAN_COLS - 1));
+    var off = offDeg * Math.PI / 180;
+    var dist = BZ_WJ_FAN_DIST_MIN + layer * BZ_WJ_FAN_DIST_STEP + Math.random() * 20;
+    var back = dist * Math.cos(off), lat = dist * Math.sin(off);
+    var best = null, bestMin = -1;
+    for(var tr = 0; tr < 12; tr++){
+      var lift = BZ_WJ_LIFT_MIN + Math.random() * (BZ_WJ_LIFT_MAX - BZ_WJ_LIFT_MIN);
+      var pp = bzWjPortalPos(lat, back, lift);
+      var minD = 1e9;
+      for(var qi = 0; qi < bzWjPortals.length; qi++){ var dd = Math.hypot(pp.x - bzWjPortals[qi].x, pp.y - bzWjPortals[qi].y); if(dd < minD) minD = dd; }
+      if(!bzWjPortals.length || minD >= BZ_WJ_BATCH_MIN_DIST){ best = pp; break; }
+      if(minD > bestMin){ bestMin = minD; best = pp; }
+    }
+    var phase = (ii + Math.random()) / BZ_WJ_PORTALS;
+    bzWjPortals.push({ x: best.x, y: best.y, t: 0, dur: BZ_WJ_PORTAL_DUR, ang: P.faceAng || 0, pending: false, phase: phase, nextFire: phase, fired: 0 });
+  }
+  P.bzWjFired = BZ_WJ_PORTALS;
+}
+function bzWjLaunchBatch(){ bzWjLaunchAll(); } // 旧分批入口已改走一次全出（兼容旧调用，实际不再分批）
 function bzWjStuckCount(e){ var n = 0; for(var i = 0; i < bzWjSwords.length; i++) if(bzWjSwords[i].stuck === e) n++; return n; }
 function bzWjHitEnemy(e){ // 飞剑命中结算：伤害与剑阵单柄完全同式（共用 BZ_ARRAY_MUL＝当前 0.35、见定版注 ⑦⚠）；命中当刻现算、盖章/恢复同 bzArrayTick 式
   var w = P.weapons.currybat, lv = w ? w.lv : 1;
@@ -3309,15 +3343,14 @@ function bzWjHitEnemy(e){ // 飞剑命中结算：伤害与剑阵单柄完全同
 }
 function bzWjTick(dt){ // 万箭齐发推进（update 内、bzArrayTick 后调用）：持续计时/逐门逐剑发射/传送门消散/飞行命中/插怪跟随与清理；持续效果口径同剑阵（面板开启照常推进）
   if(!P || P.charIdx !== 0){ if(bzWjSwords.length) bzWjSwords = []; if(bzWjPortals.length) bzWjPortals = []; return; }
-  for(var pti = bzWjPortals.length - 1; pti >= 0; pti--){ var po2 = bzWjPortals[pti]; po2.t += dt; if(po2.pending && po2.t >= BZ_WJ_PORTAL_EMERGE){ po2.pending = false; bzWjSwords.push({ x: po2.x, y: po2.y, dx: Math.cos(po2.ang), dy: Math.sin(po2.ang), ang: po2.ang, dist: 0, stuck: null, ox: 0, oy: 0 }); } if(po2.t >= po2.dur) bzWjPortals.splice(pti, 1); } // 传送门推进：生成 0.05 秒出剑（出剑方向＝生成门当帧朝向、出剑后 pending 清除、只出一剑）；存续 0.28 秒到期消散（剑出后门即逝）；10 秒已过时已生成的门仍照常出剑消散（门已生成即完成这一发）
+  for(var pti = bzWjPortals.length - 1; pti >= 0; pti--){ var po2 = bzWjPortals[pti]; po2.t += dt; if((P.bzWjT || 0) > 0){ while(po2.fired < BZ_WJ_FIRE_PER_PORTAL && po2.nextFire <= po2.t){ var emergeAng = (P && typeof P.faceAng === 'number') ? P.faceAng : po2.ang; bzWjSwords.push({ x: po2.x, y: po2.y, dx: Math.cos(emergeAng), dy: Math.sin(emergeAng), ang: emergeAng, dist: 0, stuck: null, ox: 0, oy: 0 }); po2.fired++; P.bzWjSwordsFired = (P.bzWjSwordsFired || 0) + 1; po2.nextFire += BZ_WJ_FIRE_GAP; } } if(po2.t >= po2.dur) bzWjPortals.splice(pti, 1); } // 2026-11-01 定版：各门独立发剑，每门每秒 1 柄、相位错开；剑向＝发剑时刻面朝；每门最多 15 柄；传送门推进：生成 0.05 秒出剑（2026-11-01 改定：出剑方向＝出剑时刻的角色面朝 P.faceAng，剑尖朝前；此前为门生成当帧面朝——两者只差 0.05 秒内转身的极小窗口，本轮按“出门时刻”口径落地；现行剑向核查结论：此前已是面朝角、从不是门到角色的放射方向，见证据；各门每秒 1 柄、相位错开、每门最多 15 柄）；门持续期不消失、15 秒到点一起消失；已飞出的剑按既有规则留存
   if((P.bzWjT || 0) > 0){
     P.bzWjT -= dt;
-    if(P.bzWjT < 0.0001) P.bzWjT = 0; // 到点边界钳制（2026-10-31 改定配套）：帧步恰整除 2 秒间隔时浮点累积可令剩余在名义 10.0 秒帧残留微正值、无此钳制会多发第 6 门——钳后 10 秒恒恰 5 门 5 剑（0.0001 秒级、无可感差异；离线多帧步模拟已验）
-    if(P.bzWjT <= 0){ P.bzWjT = 0; } // 10 秒到：不再生成新门新剑；已生成的门自行消散完、飞行中与已插怪的剑按各自口径留存（见下方实体段）
+    if(P.bzWjT < 0.0001) P.bzWjT = 0; // 到点边界钳制（2026-10-31 改定配套）：帧步恰整除 2 秒间隔时浮点累积可令剩余在名义 10.0 秒帧残留微正值、无此钳制会多发第 6 批——钳后 10 秒恒恰 5 批（0.0001 秒级、无可感差异；离线多帧步模拟已验）
+    if(P.bzWjT <= 0){ P.bzWjT = 0; bzWjPortals.length = 0; } // 15 秒到：门一起消失；飞行中与已插怪的剑按各自口径留存（见下方实体段）
     else {
       P.bzWjFireT -= dt;
-      var guard = 0;
-      while(P.bzWjFireT <= 0 && guard++ < 4){ P.bzWjFireT += BZ_WJ_GAP; bzWjLaunch(); } // 逐门节拍：2 秒一门一剑、10 秒共 5 门 5 剑（2026-10-31 改定，取代 01:58 的 0.25 秒／24 门定版；单帧至多补发 4 门防卡顿帧爆射——间隔 2 秒下正常每帧至多补 1 门）
+      // 2026-11-01 定版：50 门在触发时一次全出，本处不再分批、不再发门
     }
   }
   for(var i = bzWjSwords.length - 1; i >= 0; i--){
@@ -3348,26 +3381,26 @@ function bzWjDrawSword(cx, cy, ang){ // 画一柄横置的剑（剑身中心 cx,
   var dx = Math.cos(ang), dy = Math.sin(ang);
   var tipX = cx + dx * (BZ_WJ_LEN / 2), tipY = cy + dy * (BZ_WJ_LEN / 2);
   ctx.save();
-  ctx.shadowColor = 'rgba(255,205,92,.9)'; ctx.shadowBlur = 9; // 金色辉光（01:59 演示定稿：剑身金光、飞行带长金色光轨在 drawBzWj 另画）
+  ctx.shadowColor = 'rgba(255,205,92,.9)'; ctx.shadowBlur = BZ_WJ_DRAW_GLOW; // 金色辉光（01:59 演示定稿：剑身金光、飞行带长金色光轨在 drawBzWj 另画；2026-11-01 加显：blur 9→18，仅绘制）
   if(BZ_SWORD_SPR.ready){
-    var ss = BZ_WJ_LEN / BZ_SWORD_SPR.axis;
+    var ss = BZ_WJ_LEN / BZ_SWORD_SPR.axis * BZ_WJ_DRAW_SCALE; // 2026-11-01 加显：显示缩放 1.4 倍，剑尖锚点仍为 tipX/tipY（判定剑尖点不动，见证据显示与判定分离说明）
     ctx.translate(tipX, tipY); ctx.rotate(Math.atan2(-dy, -dx) + Math.PI / 2);
     ctx.drawImage(BZ_SWORD_SPR.img, -BZ_SWORD_SPR.tipX * ss, -BZ_SWORD_SPR.tipY * ss, BZ_SWORD_SPR.img.naturalWidth * ss, BZ_SWORD_SPR.img.naturalHeight * ss);
   } else {
     var ux = -dx, uy = -dy; // 尖→柄轴（与 bzsword 回退同构）
-    var gX = tipX + ux * (BZ_WJ_LEN * 0.74), gY = tipY + uy * (BZ_WJ_LEN * 0.74), pX = tipX + ux * BZ_WJ_LEN, pY = tipY + uy * BZ_WJ_LEN;
-    ctx.strokeStyle = 'rgba(255,215,106,.55)'; ctx.lineWidth = 5.5; ctx.beginPath(); ctx.moveTo(gX, gY); ctx.lineTo(tipX, tipY); ctx.stroke();
-    ctx.strokeStyle = '#ffeeb0'; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.moveTo(gX, gY); ctx.lineTo(tipX, tipY); ctx.stroke();
-    ctx.strokeStyle = '#ffd76a'; ctx.lineWidth = 3.6; ctx.beginPath(); ctx.moveTo(gX - uy * 7, gY + ux * 7); ctx.lineTo(gX + uy * 7, gY - ux * 7); ctx.stroke();
-    ctx.strokeStyle = '#c8912a'; ctx.lineWidth = 3.4; ctx.beginPath(); ctx.moveTo(gX, gY); ctx.lineTo(pX, pY); ctx.stroke();
-    ctx.fillStyle = '#ffeeb0'; ctx.beginPath(); ctx.arc(pX, pY, 2.2, 0, Math.PI * 2); ctx.fill();
+    var gX = tipX + ux * (BZ_WJ_LEN * 0.74 * BZ_WJ_DRAW_SCALE), gY = tipY + uy * (BZ_WJ_LEN * 0.74 * BZ_WJ_DRAW_SCALE), pX = tipX + ux * BZ_WJ_LEN * BZ_WJ_DRAW_SCALE, pY = tipY + uy * BZ_WJ_LEN * BZ_WJ_DRAW_SCALE;
+    ctx.strokeStyle = 'rgba(255,215,106,.55)'; ctx.lineWidth = 7.5; ctx.beginPath(); ctx.moveTo(gX, gY); ctx.lineTo(tipX, tipY); ctx.stroke();
+    ctx.strokeStyle = '#ffeeb0'; ctx.lineWidth = 3.5; ctx.beginPath(); ctx.moveTo(gX, gY); ctx.lineTo(tipX, tipY); ctx.stroke();
+    ctx.strokeStyle = '#ffd76a'; ctx.lineWidth = 5.0; ctx.beginPath(); ctx.moveTo(gX - uy * 10, gY + ux * 10); ctx.lineTo(gX + uy * 10, gY - ux * 10); ctx.stroke();
+    ctx.strokeStyle = '#c8912a'; ctx.lineWidth = 4.5; ctx.beginPath(); ctx.moveTo(gX, gY); ctx.lineTo(pX, pY); ctx.stroke();
+    ctx.fillStyle = '#ffeeb0'; ctx.beginPath(); ctx.arc(pX, pY, 3.0, 0, Math.PI * 2); ctx.fill();
   }
   ctx.restore();
 }
 function drawBzWjPortal(x, y, t, dur){ // 金色圆形传送门（01:37 定版；程序绘制、无外部素材/不盗用视频原素材）：金色辉光晕＋白金亮芯＋亮金双环＋8 枚旋转刻度；开门放大、闭门收缩淡出——一门只出一剑、出剑后即消散
-  var pp = clamp(t / dur, 0, 1);
-  var sc = pp < 0.3 ? (0.55 + 0.45 * (pp / 0.3)) : (pp > 0.7 ? (1 - 0.45 * ((pp - 0.7) / 0.3)) : 1);
-  var al = pp < 0.2 ? pp / 0.2 : (pp > 0.65 ? 1 - (pp - 0.65) / 0.35 : 1);
+  var open = clamp(t / 0.3, 0, 1);
+  var sc = open < 1 ? (0.55 + 0.45 * open) : (t > dur - 1 ? (1 - 0.45 * (t - (dur - 1))) : 1);
+  var al = t < 0.2 ? t / 0.2 : (t > dur - 1 ? Math.max(0, dur - t) : 1); // 2026-11-01 定版：门持续期不消失，0.3 秒开门放大、持续期满前 1 秒收缩淡出、到点一起消失（旧 0.28 秒存续口径作废）
   var R = BZ_WJ_PORTAL_R * sc;
   ctx.save(); ctx.translate(x, y); ctx.globalAlpha = Math.max(0, al);
   var g = ctx.createRadialGradient(0, 0, 2, 0, 0, R * 2.0);
@@ -3391,10 +3424,10 @@ function drawBzWj(ox, oy){ // 万箭齐发绘制（drawMhDrones 后、演员层�
       var tx0 = sw.x - sw.dx * (BZ_WJ_LEN * BZ_WJ_TRAIL_LEN_MUL) + ox, ty0 = sw.y - sw.dy * (BZ_WJ_LEN * BZ_WJ_TRAIL_LEN_MUL) + oy, tx1 = sw.x - sw.dx * (BZ_WJ_LEN * 0.25) + ox, ty1 = sw.y - sw.dy * (BZ_WJ_LEN * 0.25) + oy;
       ctx.save(); ctx.lineCap = 'round';
       var tgO = ctx.createLinearGradient(tx0, ty0, tx1, ty1);
-      tgO.addColorStop(0, 'rgba(255,190,60,0)'); tgO.addColorStop(0.55, 'rgba(255,205,92,0.16)'); tgO.addColorStop(1, 'rgba(255,215,106,0.32)');
+      tgO.addColorStop(0, 'rgba(255,190,60,0)'); tgO.addColorStop(0.55, 'rgba(255,205,92,0.28)'); tgO.addColorStop(1, 'rgba(255,215,106,0.45)');
       ctx.strokeStyle = tgO; ctx.lineWidth = BZ_WJ_TRAIL_W_OUTER; ctx.beginPath(); ctx.moveTo(tx0, ty0); ctx.lineTo(tx1, ty1); ctx.stroke(); // 外晕：宽而淡、只作辉光
       var tg = ctx.createLinearGradient(tx0, ty0, tx1, ty1);
-      tg.addColorStop(0, 'rgba(255,190,60,0)'); tg.addColorStop(0.55, 'rgba(255,205,92,0.50)'); tg.addColorStop(1, 'rgba(255,230,160,0.9)');
+      tg.addColorStop(0, 'rgba(255,190,60,0)'); tg.addColorStop(0.55, 'rgba(255,205,92,0.65)'); tg.addColorStop(1, 'rgba(255,230,160,1.0)');
       ctx.strokeStyle = tg; ctx.lineWidth = BZ_WJ_TRAIL_W; ctx.beginPath(); ctx.moveTo(tx0, ty0); ctx.lineTo(tx1, ty1); ctx.stroke(); // 主轨：加粗加亮主体
       var tgC = ctx.createLinearGradient(tx0, ty0, tx1, ty1);
       tgC.addColorStop(0, 'rgba(255,240,190,0)'); tgC.addColorStop(0.6, 'rgba(255,240,190,0.35)'); tgC.addColorStop(1, 'rgba(255,252,230,0.95)');
@@ -3404,7 +3437,7 @@ function drawBzWj(ox, oy){ // 万箭齐发绘制（drawMhDrones 后、演员层�
     bzWjDrawSword(sw.x + ox, sw.y + oy, sw.ang);
   }
 }
-window.__BZ_WJ = { need: BZ_WJ_NEED, dur: BZ_WJ_DUR, gap: BZ_WJ_GAP, bandCycle: BZ_WJ_BAND_CYCLE, bands: BZ_WJ_BANDS, bandJitter: BZ_WJ_BAND_JITTER, portalDur: BZ_WJ_PORTAL_DUR, portalEmerge: BZ_WJ_PORTAL_EMERGE, portalR: BZ_WJ_PORTAL_R, backMin: BZ_WJ_BACK_MIN, backMax: BZ_WJ_BACK_MAX, lat: BZ_WJ_LAT, liftMin: BZ_WJ_LIFT_MIN, liftMax: BZ_WJ_LIFT_MAX, speed: BZ_WJ_SPEED, range: BZ_WJ_RANGE, rangeLimit: function(){ return (typeof exInfRange === 'function') ? exInfRange() : 4000; }, trailLenMul: BZ_WJ_TRAIL_LEN_MUL, trailWOuter: BZ_WJ_TRAIL_W_OUTER, trailW: BZ_WJ_TRAIL_W, trailWCore: BZ_WJ_TRAIL_W_CORE, trailLen: Math.round(BZ_WJ_LEN * BZ_WJ_TRAIL_LEN_MUL), len: BZ_WJ_LEN, stuckMax: BZ_WJ_STUCK_MAX, mul: BZ_ARRAY_MUL, state: function(){ return P ? { charIdx: P.charIdx, stage: P.stage || 0, kills: P.bzWjKillN || 0, t: Math.max(0, P.bzWjT || 0), portals: bzWjPortals.length, flying: bzWjSwords.filter(function(s){ return !s.stuck; }).length, stuck: bzWjSwords.filter(function(s){ return !!s.stuck; }).length, settling: BZ_WJ_SETTLING } : null; }, disp: function(k, t){ return bzWjDisp(k || 0, t || 0); }, hud: function(){ var e = document.getElementById('bzWjHud'); return e ? { on: e.classList.contains('on'), active: e.classList.contains('active'), txt: e.textContent } : null; } }; // 验收探针（只读）：万箭齐发全部落地口径＋本机状态＋HUD 状态片（hud 为 2026-10-31 显示轮追加、与 __BZ_ARRAY.hud 同式；传送门为 01:37 定版发射源、视频观察细节待复核，见定版注）
+window.__BZ_WJ = { need: BZ_WJ_NEED, dur: BZ_WJ_DUR, gap: BZ_WJ_GAP, perTick: BZ_WJ_PER_TICK, perRound: BZ_WJ_PER_ROUND, portals: BZ_WJ_PORTALS, fireGap: BZ_WJ_FIRE_GAP, firePerPortal: BZ_WJ_FIRE_PER_PORTAL, maxSwords: BZ_WJ_MAX_SWORDS, fanDistMin: BZ_WJ_FAN_DIST_MIN, fanDistStep: BZ_WJ_FAN_DIST_STEP, sectorHalf: BZ_WJ_SECTOR_HALF, batchMinDist: BZ_WJ_BATCH_MIN_DIST, bandCycle: BZ_WJ_BAND_CYCLE, bands: BZ_WJ_BANDS, bandJitter: BZ_WJ_BAND_JITTER, portalDur: BZ_WJ_PORTAL_DUR, portalEmerge: BZ_WJ_PORTAL_EMERGE, portalR: BZ_WJ_PORTAL_R, backMin: BZ_WJ_BACK_MIN, backMax: BZ_WJ_BACK_MAX, lat: BZ_WJ_LAT, liftMin: BZ_WJ_LIFT_MIN, liftMax: BZ_WJ_LIFT_MAX, speed: BZ_WJ_SPEED, range: BZ_WJ_RANGE, rangeLimit: function(){ return (typeof exInfRange === 'function') ? exInfRange() : 4000; }, trailLenMul: BZ_WJ_TRAIL_LEN_MUL, trailWOuter: BZ_WJ_TRAIL_W_OUTER, trailW: BZ_WJ_TRAIL_W, trailWCore: BZ_WJ_TRAIL_W_CORE, trailLen: Math.round(BZ_WJ_LEN * BZ_WJ_TRAIL_LEN_MUL), len: BZ_WJ_LEN, drawScale: BZ_WJ_DRAW_SCALE, drawGlow: BZ_WJ_DRAW_GLOW, stuckMax: BZ_WJ_STUCK_MAX, mul: BZ_ARRAY_MUL, state: function(){ return P ? { charIdx: P.charIdx, stage: P.stage || 0, kills: P.bzWjKillN || 0, t: Math.max(0, P.bzWjT || 0), fired: P.bzWjFired || 0, portals: bzWjPortals.length, flying: bzWjSwords.filter(function(s){ return !s.stuck; }).length, stuck: bzWjSwords.filter(function(s){ return !!s.stuck; }).length, settling: BZ_WJ_SETTLING } : null; }, disp: function(k, t){ return bzWjDisp(k || 0, t || 0); }, hud: function(){ var e = document.getElementById('bzWjHud'); return e ? { on: e.classList.contains('on'), active: e.classList.contains('active'), txt: e.textContent } : null; } }; // 验收探针（只读）：万箭齐发全部落地口径＋本机状态＋HUD 状态片（hud 为 2026-10-31 显示轮追加、与 __BZ_ARRAY.hud 同式；传送门为 01:37 定版发射源、视频观察细节待复核，见定版注）
 /* ===== 莫哈哈普攻无人机定版注（2026-10-30 用户令＋同日自爆补充令；本地、版本仍 1.8） =====
    【用户定版】莫哈哈普通攻击每击杀 35 名敌人，召唤 2 架无人机助战 10 秒；无人机每 2 秒发射 2 枚飞弹、飞弹命中爆炸造成小范围伤害；击杀计数在无人机持续时间内不能累积（无无人机时击杀才累计、无人机消失后恢复累计）；无人机飞在莫哈哈头上盘旋、可自由飞翔但不能离开玩家屏幕视野；10 秒到点不直接消失——每架各冲向敌人自爆一次（两架各爆一次、非合计一次），每次自爆为中范围爆炸、造成受波及怪物各自生命上限 5% 的伤害，普通/精英/Boss 全吃、不设豁免或减免（milo 23:21–23:22 三次补充澄清）。
    【现行普攻击杀结算口径（施工前源码实查）】本机 AK 子弹（projectiles 中 kind:'bullet'、wkey:'ak47'）在投射物命中段经 damageEnemy 结算，死亡在同段可当场判定（与班仔剑阵 bzOnWaveKillLocal 只计 bzwave 击杀同式）；killEnemy 本身不分武器来源（天威 chTwOnKill 则按归因计全部击杀）——本轮按用户「普通攻击每击杀」字面接线：只计 AK 普攻子弹的直接命中击杀。
@@ -4670,7 +4703,7 @@ function newPlayer(ci){
     moving:0, atkPoseT:0, specPoseT:0, lastAtkT:-1, lastSpecT:-1, hurtT:0, atkStyle:'slash', atkAnimT:9, atkAnimDur:0.32, atkAlt:0, atkAltMap:{}, hasStandSkill:false, standAtkT:0, dollPartner:false, dollFormT:0, dollGrowT:0, shockAcc:0, // dollPartner＝持有隐藏被动（拾取后常驻）；dollFormT＝变身剩余秒数（改版：攻击 1% 触发 15 秒，非常驻）
     excT:0, excMul:1, excSMul:1, excSR:1, excChgMul:1, excInvT:0, excAimAng:null, excHold:false, excHoldT:0, // excChgMul＝蓄力伤害加成倍率（2026-10-29）：松手时按实际蓄力秒数锁定、releaseExcalibur 消费，无蓄力/兜底路径恒 1
     bzKillN:0, bzArrT:0, bzArrTick:0, bzTotalKills:0, // 班仔剑阵（Lv5）：普攻击杀累计计数／剑阵剩余秒／落剑节拍计时（新局随 P 重建清零；口径见 BZ_ARRAY 规格段）；bzTotalKills＝班仔每 100 杀 +1% 的本局累计击杀（2026-11-01 新增，新局随 P 重建清零，与剑阵 40 计数、万箭 200 计数各自独立）
-    bzWjKillN:0, bzWjT:0, bzWjFireT:0, // 班仔二觉专属「万箭齐发」（2026-10-31 用户令）：归属击杀累计计数（满 200 触发、二觉前不计）／持续剩余秒（>0 期间冻结计数）／逐柄发射节拍（新局随 P 重建清零；口径见 BZ_WJ 定版注）
+    bzWjKillN:0, bzWjT:0, bzWjFireT:0, bzWjFired:0, bzWjSwordsFired:0, // 班仔二觉专属（2026-10-31 用户令，2026-11-01 定版 50 门同现、持续 15 秒、激活 180 杀）：归属击杀累计计数（满 180 触发、二觉前不计）／持续剩余秒（>0 期间冻结计数）／逐柄发射节拍（旧分批用，现仅保留字段）／本轮已发门数（定版：触发时 50 门，新局随 P 重建清零）／本轮已发剑数（定版：最多 750 柄）
     chTwKillN:0, // 天威（陈哈哈 Lv5）：归属本人的击杀累计计数（满 10 触发、触发即清零；新局随 P 重建清零，口径见天威定版注）
     chSpecKillN:0, chStaticKillTotal:0, // 陈哈哈按键技击杀开启＋静电（2026-10-31）：按键技计数（满 100 开启、释放清零、封顶 100）／静电独立累计总数（只增不减、每满 100 叠 1 层暴击 +0.2%）；新局随 P 重建清零，口径见 CH_SPEC 定版注
     mhKillN:0, mhDroneT:0 // 莫哈哈无人机（2026-10-30 用户令）：AK 普攻击杀累计计数（满 35 召唤、召唤即清零）／无人机剩余秒（>0 或自爆冲刺中均冻结计数；新局随 P 重建清零，口径见 MH_DRONE 定版注）
@@ -20712,7 +20745,7 @@ var HUD_DEFS = [
   { key:'pause', id:'btnPause', name:'暂停键', base:'' },
   { key:'combo', id:'comboHud', name:'连杀', base:'', bar:true }, /* 编辑态强制 opacity:1 点亮（见 CSS），非编辑态仍按击杀点亮/断连隐藏；含连杀条、列长条类 */
   { key:'bzarray', id:'bzArrayHud', name:'剑阵状态', base:'' }, /* 编辑态强制 display:block 点亮（见 CSS），非编辑态仍仅班仔剑气 Lv5 时点亮 */
-  { key:'bzjwj', id:'bzWjHud', name:'万箭齐发状态', base:'' }, /* 编辑态强制 display:block 点亮（见 CSS），非编辑态仍仅班仔二觉时点亮 */
+  { key:'bzjwj', id:'bzWjHud', name:'仰望吧，天地乖离开辟之星状态', base:'' }, /* 编辑态强制 display:block 点亮（见 CSS），非编辑态仍仅班仔二觉时点亮 */
   { key:'netconn', id:'netConn', name:'联机连接状态', base:'' }, /* 编辑态强制 display:block 点亮、无文案时 hud-ph 占位（见 hudEditEnter），非编辑态仍仅联机时显示 */
   { key:'egg', id:'egg648', name:'彩蛋按钮', base:'' } /* ¥ 彩蛋钮：局内右下角常显小钮（用户截图右下角可见），点击开彩蛋弹窗的功能未动 */
 ];
@@ -21124,10 +21157,10 @@ function renderCodexSkills(body){
     h += '<div>移动时角色持续释放烟雾——就是按键技后身后那个烟雾拖尾特效：每 0.12 秒在脚下落一团烟，烟雾落在地图上<b>停留 3 秒</b>才消散，不断落烟连成一条长长的拖尾（判定半径 90）。烟雾本身不造成伤害，但怪物碰到烟雾（包括停留中的烟雾）就会被<b>引燃</b>：持续 10 秒、每秒掉生命上限 5%（Boss 2%）；普通怪一生只能被引燃一次、Boss 每 20 秒可再触发一次，与按键技烟雾的引燃共用同一套规则与机会。</div>';
     h += '<div class="cx-dim">第二次觉醒后强化：只有这个被动的烟雾打到的引燃可以叠加到 <b>2 层</b>（其他引燃来源不叠层）——叠满 2 层时每秒掉血变为小怪 10%／精英怪 8%／Boss 4%（2 层合计值，就是把第 1 层的效果换成第 2 层、不是两层各掉一次；两层共用同一次引燃的 10 秒计时、叠层不刷新时长）。每只怪只能叠一次 2 层。</div>';
     body.appendChild(codexEntry(iconCanvas('cigshot', ''), h)); })();
-  (function(){ var h = '<h4>万箭齐发<span class="el-chip" style="background:#ffd76a">专属</span><span class="cx-dim">班仔 二觉专属攻击技能</span></h4>';
+  (function(){ var h = '<h4>仰望吧，天地乖离开辟之星<span class="el-chip" style="background:#ffd76a">专属</span><span class="cx-dim">班仔 二觉专属攻击技能</span></h4>';
     h += '<div>班仔第二次觉醒后自动获得的专属攻击技能：不能学习、不能升级，不会出现在技能卡池里，不占主动技能上限；仅班仔本人（本机玩家）自带，NPC 与替身班仔不带（替身的击杀按归因计入召唤者）。</div>';
-    h += '<div>每击杀 <b>200</b> 个敌人自动触发，持续 <b>10 秒</b>：角色背后每 2 秒生成一个金色圆形传送门（吉尔伽美什王之财宝式），发出一把剑就消失、随即再生成下一个门——十个高度带轮流出现、高低错开不平排、门在背后随机位置生成；剑模型就是剑阵的剑、横过来、剑尖朝角色正面，一根根依次朝正面飞出去攻击敌人（10 秒共 5 柄），攻击方向跟随角色朝向实时变化。单柄伤害与剑阵落剑完全相同＝当刻普攻单发伤害 ×<b>0.35</b>。剑命中怪物后会插在怪物身上、一直跟随怪物，直到怪物死亡才消散（只伤命中那一下、无持续伤害；每只怪最多插 12 柄）。</div>';
-    h += '<div class="cx-dim">计数口径：二觉前的击杀不算、二觉后从 0 累计；触发后清零重计；技能持续 10 秒期间的击杀不计入下一轮，结束后才重新累计；万箭齐发自己的飞剑造成的击杀不计。</div>';
+    h += '<div>每击杀 <b>180</b> 个敌人自动触发，持续 <b>15 秒</b>：触发时角色背后一次出现 <b>50</b> 个金色圆形传送门（吉尔伽美什王之财宝式），门在后面扇区（后面、后面左右）分开铺开、持续期间不消失、15 秒到点一起消失；每门每秒各发 1 柄剑、相位错开不同步，15 秒最多 750 柄；剑模型就是剑阵的剑、横过来、剑尖朝角色正面，朝正面飞出去攻击敌人，攻击方向跟随角色朝向实时变化（以发剑时刻的面朝为准）。单柄伤害与剑阵落剑完全相同＝当刻普攻单发伤害 ×<b>0.35</b>。剑命中怪物后会插在怪物身上、一直跟随怪物，直到怪物死亡才消散（只伤命中那一下、无持续伤害；每只怪最多插 12 柄）。</div>';
+    h += '<div class="cx-dim">计数口径：二觉前的击杀不算、二觉后从 0 累计；触发后清零重计；技能持续 15 秒期间的击杀不计入下一轮，结束后才重新累计；仰望吧，天地乖离开辟之星自己的飞剑造成的击杀不计。</div>';
     body.appendChild(codexEntry(iconCanvas('currybat', ''), h)); })();
   (function(){ var h = '<h4>心电<span class="el-chip" style="background:#7ad7f0">专属</span><span class="cx-dim">陈哈哈 二觉被动</span></h4>';
     h += '<div>陈哈哈第二次觉醒后自动获得的专属被动：不能学习、不能升级、不能强化，不会出现在技能卡池／商人货架里，不占被动上限（' + MAX_PAS_LEARN + '）；仅陈哈哈本人（本机玩家）二觉后自带，NPC 陈哈哈不带（无觉醒阶段）、替身陈哈哈读召唤者二觉同口径生效。</div>';
@@ -21354,7 +21387,7 @@ function renderLearned(targetBody){ // 2026-10-30 独立按钮轮起只渲染进
   });
   if(P.charIdx === 5) body.appendChild(ldRow('stamp', '', '<b>牛马的觉悟</b> <span class="ld-tag" style="background:#ff5a4e">专属被动·常驻</span>', '黄主任自带 · 不用学习不用升级 · 不占被动上限<br>常驻淡红圈半径 213（由剑阵半径 320 小三分之一推算：320×2/3≈213），跟随黄主任整局存在。怪第一次进圈掷点一次、每怪只判一次：30% 变牛马（「吃得苦中苦 方为人上人」友方转化 15 秒，玩家方打不动它、敌怪可打它，到期死亡）／20% 逃跑远离 5 秒（不可被打断、期间仍可被攻击）／50% 易伤 +20% 持续 10 秒。觉醒分级：未觉醒仅小怪 · 一觉加精英 · 二觉加 Boss（Boss 只吃易伤档、仍按 50% 判定）'));
   if(P.charIdx === 3 && P.stage >= 1) body.appendChild(ldRow('cigshot', '', '<b>烟雾拖尾</b> <span class="ld-tag" style="background:#b9bec4">专属被动·一觉</span>', '一觉获得 · 不能升级 · 不占被动上限 · 持续到游戏结束<br>移动时每 0.12 秒落一团烟（半径 90），烟雾在地图上停留 3 秒，连成长拖尾；怪物碰到烟雾被引燃（10 秒、每秒小怪/精英 5%／Boss 2%，与按键技烟雾共用一生一次／Boss 20 秒规则）' + (P.stage >= 2 ? '<br>二觉强化：被动烟雾的引燃可叠 2 层——每秒小怪 10%／精英 8%／Boss 4%（2 层合计）；每只怪只能叠一次 2 层' : '')));
-  if(P.charIdx === 0 && P.stage >= 2) body.appendChild(ldRow('currybat', '', '<b>万箭齐发</b> <span class="ld-tag" style="background:#ffd76a">专属攻击技能·二觉</span>', '二觉获得 · 不能学习不能升级 · 不占主动上限<br>每击杀 200 个敌人自动触发，持续 10 秒：角色背后每 2 秒生成一个金色传送门（十个高度带轮流、高低错开）、发出一把剑（剑尖朝正面）就消失，逐门逐剑朝正面飞出（攻击方向跟随角色朝向），10 秒共 5 柄；单柄伤害与剑阵落剑相同（当刻普攻单发 ×0.35）；命中怪物后插在怪身上、跟随到怪死亡；持续期间击杀不计入下一轮 200，结束后重新累计'));
+  if(P.charIdx === 0 && P.stage >= 2) body.appendChild(ldRow('currybat', '', '<b>仰望吧，天地乖离开辟之星</b> <span class="ld-tag" style="background:#ffd76a">专属攻击技能·二觉</span>', '二觉获得 · 不能学习不能升级 · 不占主动上限<br>每击杀 180 个敌人自动触发，持续 15 秒：触发时角色背后一次出现 50 个金色传送门（后面、后面左右扇区、分开铺开）、持续期间不消失、15 秒到点一起消失，每门每秒各发 1 柄剑、相位错开（剑尖朝正面，攻击方向以发剑时刻面朝为准），15 秒最多 750 柄；单柄伤害与剑阵落剑相同（当刻普攻单发 ×0.35）；命中怪物后插在怪身上、跟随到怪死亡；持续期间击杀不计入下一轮 180，结束后重新累计'));
   if(P.charIdx === 6 && P.stage >= 2) body.appendChild(ldRow('chainvolt', '', '<b>心电</b> <span class=\"ld-tag\" style=\"background:#7ad7f0\">专属被动·二觉</span>', '二觉获得 · 不能学习不能升级不能强化 · 不占被动上限 · 效果固定<br>普通攻击与按键技能的雷电传导无上限、无距离限制、全图传导：普攻电弧传遍全图（每链每敌至多一次、逐跳 ×0.86 衰减不变）；按键技落雷道数不封顶、全图每敌一道'));
   if(P.charIdx === 6) body.appendChild(ldRow('chainvolt', '', '<b>静电</b> <span class="ld-tag" style="background:#ffe97a;color:#241a02">专属被动·常驻</span>', '初始自带 · 不能学习不能升级不能强化 · 不占被动上限<br>击杀累计每满 100 个，暴击率永久 +0.2%（本局内不消失、新局清零；总暴击率封顶 100%）<br>当前：累计击杀 ' + (P.chStaticKillTotal || 0) + ' · 已叠加 ' + chStaticStacks() + ' 层 · 暴击率 +' + (chStaticStacks() * 0.2).toFixed(1) + '%（与按键技 100 杀计数各自独立）'));
   sec('特 殊 获 取（宝箱系 · 不占上限）');
