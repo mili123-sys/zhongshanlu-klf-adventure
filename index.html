@@ -3141,7 +3141,20 @@ function bzSwordUp(x, y){ var bzh = (Math.floor(x) * 73 + Math.floor(y) * 41) % 
 function bzWaveSpeed(lv){ return lv >= 3 ? BZ_WAVE_SPEED3 : BZ_WAVE_SPEED; } // Lv3 起 900、之前 720
 function bzWaveRange(lv){ return lv >= 4 ? exInfRange() : (lv >= 3 ? BZ_WAVE_RANGE3 : (lv >= 2 ? BZ_WAVE_RANGE2 : BZ_WAVE_RANGE1)); } // 飞行距离：Lv1 420／Lv2 480／Lv3 560／Lv4 起无限（场景对角线）
 function bzWaveInterval(lv){ return 0.70; } // 全级 0.70 秒（05:15 攻速适中令：恒定不随等级变、实际间隔＝0.70×cd 冷却倍率）
-function bzWaveDamageBase(lv){ return 13 + lv * 4.6; }
+function bzWaveDamageBase(lv){ return (13 + lv * 4.6) * 5; } // 班仔伤害×5（2026-11-01 用户令，只翻伤害）：基数一处×5，普攻/剑阵/万箭三者共用此基数故三者恰好各×5；BZ_ARRAY_MUL 仍 0.35 不动，绝不二次乘成×25；娃娃冲击波 dollShockDmg 的内联 13+lv*4.6 不走此函数、不在本轮四项内，一字未动
+var BZ_KILL_DMG_STEP = 100, BZ_KILL_DMG_PER = 0.01; // 班仔每 100 杀 +1% 基础伤害（2026-11-01 用户令，无上限）：倍率 = 1 + 0.01 × floor(本局班仔累计击杀 / 100)
+function bzKillDmgMul(total){ return 1 + BZ_KILL_DMG_PER * Math.floor((total || 0) / BZ_KILL_DMG_STEP); }
+function bzKillMulLocal(){ return (typeof P !== 'undefined' && P && P.charIdx === 0) ? bzKillDmgMul(P.bzTotalKills || 0) : 1; } // 本机班仔：只乘四项，不进 pDmgMul（pDmgMul 进通用武器会串味）
+function bzKillMulNpc(p){ return (p && p.hero === 0) ? bzKillDmgMul(p.bzTotalKills || 0) : 1; } // NPC 班仔：各算各
+function bzKillMulStand(s){ return (s && s.charIdx === 0) ? bzKillDmgMul(s.bzTotalKills || 0) : 1; } // 替身班仔：各算各
+var BZ_KILL_STAND = null; // 替身击杀标记：standHit 置入当前替身、damageEnemy 后还原，供 killEnemy 末尾把替身击杀记到替身自己而非召唤者
+function bzKillOnKill(){ // 班仔每 100 杀计数唯一入口（killEnemy 末尾，与 bzWjOnKill 并列）：归因按 killEnemy 现行口径——替身标记优先、DMG_SRC 空归本机、DMG_SRC 为成员 id 时归该成员（NPC 班仔与真人远端班仔各算各、房主侧 peer 对象累计）；朱德分身/旺财二号在 killEnemy 开头已提前返回，不经此行
+  if(BZ_KILL_STAND){ var ss = BZ_KILL_STAND; if(ss.charIdx === 0) ss.bzTotalKills = (ss.bzTotalKills || 0) + 1; return; }
+  if(!DMG_SRC){ if(typeof P !== 'undefined' && P && P.charIdx === 0) P.bzTotalKills = (P.bzTotalKills || 0) + 1; return; }
+  var peer = (window.__NET && __NET.chTwPeer) ? __NET.chTwPeer(DMG_SRC) : null;
+  if(!peer && typeof N !== 'undefined' && N && N.peers) peer = N.peers[DMG_SRC] || null;
+  if(peer && peer.hero === 0) peer.bzTotalKills = (peer.bzTotalKills || 0) + 1;
+}
 function bzWaveSpec(lv){ // 班仔大剑气规格（唯一来源）：Lv4 起无限穿透＋无限飞行＋尺寸强化；速度/间隔/飞行距离全按等级派生（寿命＝当级飞行距离/当级速度）
   var spd = bzWaveSpeed(lv), rng = bzWaveRange(lv);
   return { pierce: lv >= 4 ? BZ_INF_PIERCE : 3 + (lv >= 3 ? 1 : 0),
@@ -3204,7 +3217,7 @@ function bzArrayTick(dt){ // 本机剑阵推进（update 内、updateWeapons 后
   P.bzArrT -= dt; if(P.bzArrT <= 0){ P.bzArrT = 0; P.bzKillN = 0; return; } // 剑阵消失：计数归 0、之后从 0 重新累计（合并轮定版）
   P.bzArrTick = (P.bzArrTick || 0) - dt; if(P.bzArrTick > 0) return;
   P.bzArrTick += BZ_ARRAY_TICK; if(P.bzArrTick <= 0 || P.bzArrTick > BZ_ARRAY_TICK) P.bzArrTick = BZ_ARRAY_TICK;
-  var dmg = bzWaveDamageBase(w.lv) * earlySigMul() * sigDmgMul() * pDmgMul() * BZ_ARRAY_MUL;
+  var dmg = bzWaveDamageBase(w.lv) * earlySigMul() * sigDmgMul() * pDmgMul() * BZ_ARRAY_MUL * bzKillMulLocal();
   var svC = DMG_CRIT, svE = DMG_EL, svS = DMG_SRC, svW = (typeof CUR_WKEY !== 'undefined' ? CUR_WKEY : null);
   CUR_WKEY = 'currybat'; DMG_CRIT = (WEAPONS.currybat.crit != null ? WEAPONS.currybat.crit : 0.10); DMG_EL = 'light'; DMG_SRC = null;
   bzArrayVolley(P.x, P.y, dmg, function(e, d){ damageEnemy(e, d, 0, 0); });
@@ -3216,7 +3229,7 @@ function bzArrayTickNpc(p, dt){ // NPC 剑阵推进（npcTickNpcFx 内调用）�
   p.npcBzArrT -= dt; if(p.npcBzArrT <= 0){ p.npcBzArrT = 0; p.npcBzKillN = 0; return; } // 剑阵消失：计数归 0、之后从 0 重新累计（合并轮定版）
   p.npcBzArrTick = (p.npcBzArrTick || 0) - dt; if(p.npcBzArrTick > 0) return;
   p.npcBzArrTick += BZ_ARRAY_TICK; if(p.npcBzArrTick <= 0 || p.npcBzArrTick > BZ_ARRAY_TICK) p.npcBzArrTick = BZ_ARRAY_TICK;
-  var dmg = bzWaveDamageBase(w.lv) * npcMul(p) * earlySigMul() * sigDmgMul() * BZ_ARRAY_MUL;
+  var dmg = bzWaveDamageBase(w.lv) * npcMul(p) * earlySigMul() * sigDmgMul() * BZ_ARRAY_MUL * bzKillMulNpc(p);
   bzArrayVolley(p.x, p.y, dmg, function(e, d){ npcHit(p, e, d, 0, 0, 'currybat'); });
 }
 function drawBzArrayAura(cx, cy, frac){ // 剑阵光环（贴地、跟随圆心绘制）：金色大圈＋旋转剑纹刻度＋剩余时长弧（frac＝剩余/BZ_ARRAY_DUR、2026-10-29 显示轮补实：旧版注释有「剩余时长弧」但从未绘制；不传 frac 时不画弧、与旧观感一致）
@@ -3286,7 +3299,7 @@ function bzWjLaunch(){ // 生成一个门（01:52 逐门错开＋01:54 十门＋
 function bzWjStuckCount(e){ var n = 0; for(var i = 0; i < bzWjSwords.length; i++) if(bzWjSwords[i].stuck === e) n++; return n; }
 function bzWjHitEnemy(e){ // 飞剑命中结算：伤害与剑阵单柄完全同式（共用 BZ_ARRAY_MUL＝当前 0.35、见定版注 ⑦⚠）；命中当刻现算、盖章/恢复同 bzArrayTick 式
   var w = P.weapons.currybat, lv = w ? w.lv : 1;
-  var dmg = bzWaveDamageBase(lv) * earlySigMul() * sigDmgMul() * pDmgMul() * BZ_ARRAY_MUL;
+  var dmg = bzWaveDamageBase(lv) * earlySigMul() * sigDmgMul() * pDmgMul() * BZ_ARRAY_MUL * bzKillMulLocal();
   var svC = DMG_CRIT, svE = DMG_EL, svS = DMG_SRC, svW = (typeof CUR_WKEY !== 'undefined' ? CUR_WKEY : null);
   CUR_WKEY = 'currybat'; DMG_CRIT = (WEAPONS.currybat.crit != null ? WEAPONS.currybat.crit : 0.10); DMG_EL = 'light'; DMG_SRC = null;
   BZ_WJ_SETTLING++;
@@ -4656,7 +4669,7 @@ function newPlayer(ci){
     awkGiven:false, chestP:{}, reviveCd:0, drainAcc:0, distPx:0, windStacks:0,
     moving:0, atkPoseT:0, specPoseT:0, lastAtkT:-1, lastSpecT:-1, hurtT:0, atkStyle:'slash', atkAnimT:9, atkAnimDur:0.32, atkAlt:0, atkAltMap:{}, hasStandSkill:false, standAtkT:0, dollPartner:false, dollFormT:0, dollGrowT:0, shockAcc:0, // dollPartner＝持有隐藏被动（拾取后常驻）；dollFormT＝变身剩余秒数（改版：攻击 1% 触发 15 秒，非常驻）
     excT:0, excMul:1, excSMul:1, excSR:1, excChgMul:1, excInvT:0, excAimAng:null, excHold:false, excHoldT:0, // excChgMul＝蓄力伤害加成倍率（2026-10-29）：松手时按实际蓄力秒数锁定、releaseExcalibur 消费，无蓄力/兜底路径恒 1
-    bzKillN:0, bzArrT:0, bzArrTick:0, // 班仔剑阵（Lv5）：普攻击杀累计计数／剑阵剩余秒／落剑节拍计时（新局随 P 重建清零；口径见 BZ_ARRAY 规格段）
+    bzKillN:0, bzArrT:0, bzArrTick:0, bzTotalKills:0, // 班仔剑阵（Lv5）：普攻击杀累计计数／剑阵剩余秒／落剑节拍计时（新局随 P 重建清零；口径见 BZ_ARRAY 规格段）；bzTotalKills＝班仔每 100 杀 +1% 的本局累计击杀（2026-11-01 新增，新局随 P 重建清零，与剑阵 40 计数、万箭 200 计数各自独立）
     bzWjKillN:0, bzWjT:0, bzWjFireT:0, // 班仔二觉专属「万箭齐发」（2026-10-31 用户令）：归属击杀累计计数（满 200 触发、二觉前不计）／持续剩余秒（>0 期间冻结计数）／逐柄发射节拍（新局随 P 重建清零；口径见 BZ_WJ 定版注）
     chTwKillN:0, // 天威（陈哈哈 Lv5）：归属本人的击杀累计计数（满 10 触发、触发即清零；新局随 P 重建清零，口径见天威定版注）
     chSpecKillN:0, chStaticKillTotal:0, // 陈哈哈按键技击杀开启＋静电（2026-10-31）：按键技计数（满 100 开启、释放清零、封顶 100）／静电独立累计总数（只增不减、每满 100 叠 1 层暴击 +0.2%）；新局随 P 重建清零，口径见 CH_SPEC 定版注
@@ -6286,7 +6299,9 @@ function standHit(s, e, dmg, kx, ky, wkey, critBase, elOv){ // npcHit 的替身�
   DMG_CRIT = Math.min(1, (critBase != null ? critBase : ((WEAPONS[wk] && WEAPONS[wk].crit != null) ? WEAPONS[wk].crit : 0.05)) + Math.min(0.25, 0.06 * (P.passives.critlens || 0) + pSum('critP')) + (s.charIdx === 2 && s.critBuffT > 0 ? 0.10 : 0));
   DMG_EL = elOv !== undefined ? elOv : ((WEAPONS[wk] && WEAPONS[wk].el) || null);
   DMG_SRC = null;
+  var prevStand = BZ_KILL_STAND; BZ_KILL_STAND = s; // 替身击杀标记（2026-11-01 班仔每 100 杀轮）：替身伤害同步经 damageEnemy→killEnemy，标记在结算期间在位、结算后还原
   damageEnemy(e, dmg, kx || 0, ky || 0);
+  BZ_KILL_STAND = prevStand;
   DMG_SRC = null;
 }
 function standNearest(o, n, range){ // npcNearest 的同构版（任意原点、按距排序取前 n）
@@ -6309,7 +6324,7 @@ function bzArrayTickStand(s, dt){ // bzArrayTickNpc 的替身镜像：圆心跟�
   s.bzArrT -= dt; if(s.bzArrT <= 0){ s.bzArrT = 0; s.bzKillN = 0; return; } // 剑阵消失：计数归 0、之后从 0 重新累计（合并轮定版）
   s.bzArrTick = (s.bzArrTick || 0) - dt; if(s.bzArrTick > 0) return;
   s.bzArrTick += BZ_ARRAY_TICK; if(s.bzArrTick <= 0 || s.bzArrTick > BZ_ARRAY_TICK) s.bzArrTick = BZ_ARRAY_TICK;
-  var dmg = bzWaveDamageBase(w.lv) * standMul() * earlySigMul() * sigDmgMul() * BZ_ARRAY_MUL;
+  var dmg = bzWaveDamageBase(w.lv) * standMul() * earlySigMul() * sigDmgMul() * BZ_ARRAY_MUL * bzKillMulStand(s);
   bzArrayVolley(s.x, s.y, dmg, function(e, d){ standHit(s, e, d, 0, 0, 'currybat'); });
 }
 function updateStandFriendly(s, dt){ // 友方替身单帧：帧序与 NPC hostTick 同构（持续段→冷却→普攻→按键技）；移动/待命沿用替身旧口径
@@ -6347,7 +6362,7 @@ function standBasicAttack(s, tgt){ // npcBasicAttack 的替身镜像：逐英雄
     s.atkT = bzWaveInterval(lv) * cd;
     standSetPose(s, tgt);
     var angC = Math.atan2(tgt.y - s.y, tgt.x - s.x);
-    var dmgC = bzWaveDamageBase(lv) * mul;
+    var dmgC = bzWaveDamageBase(lv) * mul * bzKillMulStand(s);
     var specC = bzWaveSpec(lv);
     s.projs.push({ kind:'bzwave', x:s.x, y:s.y, ang:angC, speed:specC.speed, dmg:dmgC, r:specC.r, wid:specC.wid, t:0, life:specC.life, hitCd:{}, bzCap:specC.pierce, bzHits:0, bzHitIds:{}, bzBonus:(w.bonus || 0), bzLv:lv, color:BZ_WAVE_COLOR });
     teamAtkSfx(s, 'swing', 0.25); // 替身音效走 NPC 队友通道（teamAtkSfx ×0.35＋距离静音，与 NPC 普攻同口径；vmul 2026-10-30 第二次减半 0.5→0.25；s 只需 x/y 坐标、本函数只读坐标）
@@ -6494,14 +6509,14 @@ function standCastSpecial(s){ // npcCastSpecial 的替身镜像：逐英雄按�
       var dx = e.x - s.x, dy = e.y - s.y, along0 = dx * Math.cos(ang0) + dy * Math.sin(ang0), perp0 = Math.abs(-dx * Math.sin(ang0) + dy * Math.cos(ang0));
       if(along0 > -20 && along0 < beamLen && perp0 < beamWid * (0.5 + 0.45 * Math.max(0, along0) / beamLen) + e.r){
         hitIds[e.id] = 1; e.curryT = 3;
-        standHit(s, e, 195 * mul, 0, 0, key);
+        standHit(s, e, 975 * mul * bzKillMulStand(s), 0, 0, key);
         if(!e.dead && !(e.type === 'ghost' && e.ghState)){ var kbBm = 420 * (e.boss ? 0.25 : 1); e.x += Math.cos(ang0) * kbBm; e.y += Math.sin(ang0) * kbBm; }
       }
     }
     for(i = 0; i < enemies.length; i++){ e = enemies[i]; if(e.dead || hitIds[e.id]) continue;
       var dx2 = e.x - s.x, dy2 = e.y - s.y;
       if(dx2 * dx2 + dy2 * dy2 < (blastR + e.r) * (blastR + e.r)){ e.curryT = 3; var ba = Math.atan2(dy2, dx2);
-        standHit(s, e, 90 * mul, 0, 0, key);
+        standHit(s, e, 450 * mul * bzKillMulStand(s), 0, 0, key);
         if(!e.dead && !(e.type === 'ghost' && e.ghState)){ var kbBl = 330 * (e.boss ? 0.25 : 1); e.x += Math.cos(ba) * kbBl; e.y += Math.sin(ba) * kbBl; }
       }
     }
@@ -7115,6 +7130,7 @@ function killEnemy(e){
   }
   chTwOnKill(e); // 天威计数（陈哈哈 Lv5，2026-10-29 用户令）：挂 killEnemy 末尾——朱德克隆在函数开头已提前返回不经此行、掉落/Boss 结算全数完成才计数/触发；归因分流与排除口径见 applyShock 下方天威定版注
   bzWjOnKill(e); // 万箭齐发计数（班仔二觉，2026-10-31 用户令）：与天威计数并列挂 killEnemy 末尾——归因分流/二觉门禁/持续期间冻结/自触发排除口径见 BZ_WJ 定版注 ①②
+  bzKillOnKill(); // 班仔每 100 杀计数（2026-11-01 用户令）：本机/NPC/替身班仔各算各、其他英雄不计；万箭/剑阵持续期间、转化到期等既有不计口径按 killEnemy 归因与提前返回口径不动（分身/二号提前返回不到此行）
   chSpecOnKill(e); // 陈哈哈按键技击杀开启＋静电计数（2026-10-31 用户令）：与天威计数并列挂 killEnemy 末尾——归因/双计数独立/封顶与清零口径见 CH_SPEC 定版注
 }
 var drainHit = false;
@@ -8439,7 +8455,7 @@ function updateWeapons(dt){
           faceAim(angC); // 朝向令：发射瞬间转身对准目标（剑气朝向＝面朝方向）
           poseAtk('slash', cdC); tryStandProc('player'); // 挥剑姿势只作发射动作表现、无近战判定
           buzz('bzswing', 14, 360); // 发射震动：沿用既有 bzswing 节流桶（口径见旧注：14ms 轻震、360ms 间隔封顶震频）
-          var dmgC = bzWaveDamageBase(lv) * earlySigMul() * sigDmgMul() * mul; // 伤害基数沿用旧普攻公式不改（13＋lv×4.6，同乘区；进化 30 与分支 B ×0.85 已随进化/分支删除）
+          var dmgC = bzWaveDamageBase(lv) * earlySigMul() * sigDmgMul() * mul * bzKillMulLocal(); // 普攻×5 走基数（2026-11-01）；每 100 杀倍率只乘本项（bzKillMulLocal），不进 pDmgMul
           var specC = bzWaveSpec(lv); // 剑气规格（最终分级表）：穿透 Lv1–2 3／Lv3 4／Lv4 起无限；r 34／38／42／50／54；wid 150／170／190／230／250；速度 Lv1–2 720／Lv3 起 900；飞行 Lv1 420／Lv2 480／Lv3 560／Lv4 起无限、life＝当级飞行距离/当级速度
           var waveStart = projectiles.length;
           fireProj('bzwave', angC, specC.speed, dmgC, BZ_WAVE_COLOR, specC.r, { life: specC.life, pierce: specC.pierce - 1, wid: specC.wid, noKb: true, wkey: 'currybat' }); // 金色大剑气出膛：无击退；pierce 字段仅作信息（实际穿透计数走 bzHits/bzHitIds 专属记账，见投射物命中段）
@@ -11003,7 +11019,7 @@ function releaseExcalibur(){
     var perp0 = Math.abs(-dx * Math.sin(ang0) + dy * Math.cos(ang0));
     if(along0 > -20 && along0 < beamLen && perp0 < beamWid * (0.5 + 0.45 * Math.max(0, along0) / beamLen) + e.r){
       hitIds[e.id] = 1; e.curryT = 3;
-      damageEnemy(e, 195 * mul * sMul * chgMul, 0, 0); // 光束伤害先零击退结算（基础 195 不变、末乘蓄力加成 chgMul）（2026-10-28 用户令：击退只对没死的怪物生效——旧口径在 damageEnemy 内扣血前先位移、被打死的怪掉落点也会被推走，现改为存活者才补位移）
+      damageEnemy(e, 975 * mul * sMul * chgMul * bzKillMulLocal(), 0, 0); // 光束伤害先零击退结算（基础 195×5＝975，2026-11-01 只翻伤害；末乘蓄力加成 chgMul；每 100 杀倍率只乘本项）
       if(!e.dead && !(e.type === 'ghost' && e.ghState)){ var kbBm = BZ_SPEC_KB_BEAM * (1 + pSum('kbP')) * (e.boss ? 0.25 : 1); e.x += Math.cos(ang0) * kbBm; e.y += Math.sin(ang0) * kbBm; } // 存活补击退：光束 420（2026-10-28 由 140 ×3 提高到非常远；再旧为 16）；折算同 damageEnemy 既有口径——Boss ×0.25（实际 105）、精英全量 420、相位闪烁幽灵免疫、吃 kbP 强化乘区
     }
   }
@@ -11014,7 +11030,7 @@ function releaseExcalibur(){
     if(dx * dx + dy * dy < (blastR + e.r) * (blastR + e.r)){
       e.curryT = 3;
       var ba = Math.atan2(dy, dx);
-      damageEnemy(e, 90 * mul * sMul * chgMul, 0, 0); // 圣光爆伤害先零击退结算（同光束口径：击退只对没死的怪物生效；基础 90 不变、末乘蓄力加成 chgMul，与光束同吃）
+      damageEnemy(e, 450 * mul * sMul * chgMul * bzKillMulLocal(), 0, 0); // 圣光爆伤害先零击退结算（基础 90×5＝450，2026-11-01 只翻伤害；末乘蓄力加成 chgMul；每 100 杀倍率只乘本项）
       if(!e.dead && !(e.type === 'ghost' && e.ghState)){ var kbBl = BZ_SPEC_KB_BLAST * (1 + pSum('kbP')) * (e.boss ? 0.25 : 1); e.x += Math.cos(ba) * kbBl; e.y += Math.sin(ba) * kbBl; } // 存活补击退：圣光爆 330（2026-10-28 由 110 ×3；再旧为 11），沿远离释放点方向；Boss ×0.25（实际 82.5）／精英全量／相位幽灵免疫同既有口径
     }
   }
@@ -22464,7 +22480,7 @@ function npcBasicAttack(p, tgt, c){
     p.atkCd = bzWaveInterval(lv) * cd;
     npcSetPose(p, tgt);
     var angC = Math.atan2(tgt.y - p.y, tgt.x - p.x);
-    var dmgC = bzWaveDamageBase(lv) * mul;
+    var dmgC = bzWaveDamageBase(lv) * mul * bzKillMulNpc(p);
     var specC = bzWaveSpec(lv);
     p.npcProjs.push({ kind:'bzwave', x:p.x, y:p.y, ang:angC, speed:specC.speed, dmg:dmgC, r:specC.r, wid:specC.wid, t:0, life:specC.life, hitCd:{}, bzCap:specC.pierce, bzHits:0, bzHitIds:{}, bzBonus:(w.bonus || 0), bzLv:lv, color:BZ_WAVE_COLOR });
     visBzWave(p.x, p.y, angC, specC, BZ_WAVE_COLOR); /* 【队友特效与玩家一致轮】镜像 vis 剑气本体：与该 NPC 本发剑气同规格（specC 读其自身 lv）进 projectiles 绘制管线出月牙精灵——npcProjs 本体仍只结算＋粒子轨迹、伤害不经 vis（见 vis 段头注） */
@@ -22611,14 +22627,14 @@ function npcCastSpecial(p, c){
       var dx = e.x - p.x, dy = e.y - p.y, along0 = dx * Math.cos(ang0) + dy * Math.sin(ang0), perp0 = Math.abs(-dx * Math.sin(ang0) + dy * Math.cos(ang0));
       if(along0 > -20 && along0 < beamLen && perp0 < beamWid * (0.5 + 0.45 * Math.max(0, along0) / beamLen) + e.r){
         hitIds[e.id] = 1; e.curryT = 3;
-        npcHit(p, e, 195 * mul, 0, 0, key);
+        npcHit(p, e, 975 * mul * bzKillMulNpc(p), 0, 0, key);
         if(!e.dead && !(e.type === 'ghost' && e.ghState)){ var kbBm = 420 * (e.boss ? 0.25 : 1); e.x += Math.cos(ang0) * kbBm; e.y += Math.sin(ang0) * kbBm; }
       }
     }
     for(i = 0; i < enemies.length; i++){ e = enemies[i]; if(e.dead || hitIds[e.id]) continue;
       var dx2 = e.x - p.x, dy2 = e.y - p.y;
       if(dx2 * dx2 + dy2 * dy2 < (blastR + e.r) * (blastR + e.r)){ e.curryT = 3; var ba = Math.atan2(dy2, dx2);
-        npcHit(p, e, 90 * mul, 0, 0, key);
+        npcHit(p, e, 450 * mul * bzKillMulNpc(p), 0, 0, key);
         if(!e.dead && !(e.type === 'ghost' && e.ghState)){ var kbBl = 330 * (e.boss ? 0.25 : 1); e.x += Math.cos(ba) * kbBl; e.y += Math.sin(ba) * kbBl; }
       }
     }
@@ -23561,7 +23577,7 @@ function hostTick(dt){
        else {
         p.atkCd=0.55;
         var lvlMul=(1+0.03*Math.max(0,(p.lv||1)-1))*(1+0.025*Math.max(0,(p.lv||1)-1)); // 与本机 pDmgMul 同口径【2026-10-29 平衡轮同步】：基础每级 +3.0% × 升级伤害加成每级 +2.5%——等级改读该成员自己的 p.lv（2026-10-29 联机等级各自独立轮；旧为全队共享等级、远端成员同享房主等级）
-        var dmg=16*c.dmgMul*lvlMul*earlySigMul() * sigDmgMul()*(1+0.06*(p.buildCount||0))*(p.chestDmgT>0?1.25:1)*timeBuffMul()*streakMul(p.comboN||0); // 连杀奖励（2026-10-31）：真人远端成员普攻同接 streakMul、读其本人 p.comboN // 定时全队增幅（2026-10-30）：真人远端成员普攻同接 timeBuffMul（全队口径） // 宝箱力量药剂：该成员本人伤害 +25%（存续中）
+        var dmg=16*c.dmgMul*lvlMul*earlySigMul() * sigDmgMul()*(1+0.06*(p.buildCount||0))*(p.chestDmgT>0?1.25:1)*timeBuffMul()*streakMul(p.comboN||0); if(p.hero===0) dmg=dmg*5*bzKillMulNpc(p); // 班仔伤害×5＋每 100 杀（2026-11-01）：真人远端班仔房主侧抽象普攻同口径（抽象基数 16 本为全英雄通用、仅班仔路乘；其他英雄一字不动） // 连杀奖励（2026-10-31）：真人远端成员普攻同接 streakMul、读其本人 p.comboN // 定时全队增幅（2026-10-30）：真人远端成员普攻同接 timeBuffMul（全队口径） // 宝箱力量药剂：该成员本人伤害 +25%（存续中）
         DMG_CRIT=0.05; DMG_EL=EL_OF[c.weapon]||0;
         var kb=Math.atan2(tgt.y-p.y,tgt.x-p.x);
         DMG_SRC=p.id; /* 归因：这一下的击杀牛筋/计数记到该成员名下（killEnemy 同步结算，结算后立即清） */
@@ -23589,7 +23605,7 @@ function hostTick(dt){
       cliSpecFx({id:p.id,h:p.hero,x:Math.round(p.x),y:Math.round(p.y),fa:+p.faceAng.toFixed(2),tx:(p.hero===2||p.hero===5)?Math.round(p.x+Math.cos(p.faceAng)*(p.hero===2?200:130)):null,ty:(p.hero===2||p.hero===5)?Math.round(p.y+Math.sin(p.faceAng)*(p.hero===2?200:130)):null}); /* 【队友特效与玩家一致轮】房主屏同步复刻：旧版 specFxPush 只供客机——房主屏自己只剩下方金环＋技能名，看不到队友按键技本体。本行在房主本屏按同一事件调 cliSpecFx（与客机逐字同清单：班仔光束/鸡哥烟雾爆开/莫哈哈子母雷延迟爆链登记/黄主任落点预警＋落爆登记/陈哈哈雷笼落雷/闻西·八思起势环），延迟爆点由 hostTick 末尾 cliFxPend 推进段同式触发；落点与 specFxPush 同一近似口径（简化结算无真实落点状态）；进行时（龙卷风本体/隐身压淡）另由 drawRemote 按 sd 绘制、旋流/星光/烟雾粒子由下方 specVisT 进行时补播段续播。纯视觉、下方伤害结算一字未动 */
       if(p.hero===3){ p._visSmokeX=p.x; p._visSmokeY=p.y; } /* 鸡哥固定烟雾锚点（房主屏进行时补播用、与 cliSpecFx 客机锚点同口径） */
       var sr=(p.hero===6)?340:200;
-      var sd=90*c.dmgMul*(1+0.03*Math.max(0,(p.lv||1)-1))*(1+0.06*(p.buildCount||0))*(p.chestDmgT>0?1.25:1)*timeBuffMul()*streakMul(p.comboN||0); // 连杀奖励（2026-10-31）：真人远端成员按键技同接 streakMul、读其本人 p.comboN // 定时全队增幅（2026-10-30）：真人远端成员按键技同接 timeBuffMul // 基础等级段与 pDmgMul 首段同口径【2026-10-29 平衡轮同步 +2.5%→+3.0%/级；本简化结算历来只吃首段、不另加第二段，避免另乘一遍】；等级改读该成员自己的 p.lv（2026-10-29 联机等级各自独立轮）；宝箱力量药剂：同吃 +25%
+      var sd=90*c.dmgMul*(1+0.03*Math.max(0,(p.lv||1)-1))*(1+0.06*(p.buildCount||0))*(p.chestDmgT>0?1.25:1)*timeBuffMul()*streakMul(p.comboN||0); if(p.hero===0) sd=sd*5*bzKillMulNpc(p); // 班仔伤害×5＋每 100 杀（2026-11-01）：真人远端班仔房主侧简化按键技同口径（简化基数本为全英雄通用、仅班仔路乘；其他英雄一字不动） // 连杀奖励（2026-10-31）：真人远端成员按键技同接 streakMul、读其本人 p.comboN // 定时全队增幅（2026-10-30）：真人远端成员按键技同接 timeBuffMul // 基础等级段与 pDmgMul 首段同口径【2026-10-29 平衡轮同步 +2.5%→+3.0%/级；本简化结算历来只吃首段、不另加第二段，避免另乘一遍】；等级改读该成员自己的 p.lv（2026-10-29 联机等级各自独立轮）；宝箱力量药剂：同吃 +25%
       DMG_CRIT=0.05; DMG_EL=EL_OF[c.weapon]||0;
       var hit=0;
       DMG_SRC=p.id;
