@@ -853,7 +853,7 @@
     <div class="overlay" id="pauseScreen">
       <h2 class="panel-title">暂 停</h2>
       <p class="panel-sub" id="pauseStats">战斗暂停中</p>
-      <p class="panel-sub" style="margin-top:-8px;">版本 <span class="gameVerVal">1.9</span></p>
+      <p class="panel-sub" style="margin-top:-8px;">版本 <span class="gameVerVal">1.0</span></p>
       <div class="pause-col">
         <button class="btn" id="btnResume">继续战斗</button>
         <button class="btn ghost" id="btnLearned">已学技能</button>
@@ -929,7 +929,7 @@
       <h1 class="game-title">中山路KLF大冒险</h1>
       <div class="game-sub">ZHONGSHAN ROAD KLF ADVENTURE</div>
       <p class="game-author">作者：陈哈哈</p>
-      <p class="game-version">版本 <span class="gameVerVal">1.9</span></p>
+      <p class="game-version">版本 <span class="gameVerVal">1.0</span></p>
       <p class="game-desc">中山路的夜很普通——天突然暗了一块，像被扯开一个口子，八个人还没来得及跑，就被吸了进去。</p>
       <div class="pause-col">
         <button class="btn" id="btnTitleStart">开 始</button>
@@ -2597,7 +2597,7 @@ var BRANCHES = {
   ak47:{ C:{ name:'追踪弹射', desc:'子弹获得追踪能力：出膛后自动拐弯咬住最近的敌人，转向不减速、弹速不减；同时解锁弹射：命中后折线弹射到附近另一名敌人，每颗子弹最多弹射 13 次（每跳伤害不变、无衰减）；分裂子弹出生 55%、自带弹射 1 次同样无衰减（全程 55%）——追踪与弹射同在本分支一次解锁、不再分开抽卡' } } // AK 普攻双分支合并（2026-10-29 用户令，取代 2026-10-27 两卡分行口径）：旧两条升级路——①Lv3 分支 C「追踪弹」（type:'branch'，homing）与②独立专属强化卡「弹射」（type:'akmod'，置 w.akRico）——合并为同一条路线：只剩 Lv3 分支 C「追踪弹射」一张卡，applyChoice／npcAutoLearn 选入时同置 branch='C' 与 akRico=true，追踪与弹射同帧起效；独立 akmod 卡已从 buildChoices 与 npcLearnPool 两池删除、不再单独出现。数值：Lv1 初始无追踪无弹射；弹射封顶 13 次、无衰减（2026-10-31 用户令改版，旧封顶 3 次＋逐跳 ×0.72 作废）；分裂子弹出生 55%、弹射封顶 1 次同样无衰减（2026-10-31 追加令，见命中段 isSplitBullet），不叠加、不随等级/进化增长（见 ak47 发射处 ricoB）；AK 普攻分裂已去除（splitB 恒 0）；穿透为进化「黄金AK」专属（见 evoDesc）
 };
 /* 主技能终极进化所需的对应道具 */
-var GAME_VERSION = '2.0.1'; // 游戏版本号（单一来源）：标题页与暂停菜单都从此常量渲染；2026-10-28 用户令由 1.0 改为 1.1、同日再改为 1.2、再改为 1.3；2026-10-29 用户令再改为 1.4、同日再改为 1.5、同日再改为 1.6；2026-10-30 用户令再改为 1.7、同日再改为 1.8（与八思光阵轮同轮交付）；2026-10-31 用户令再改为 1.9、同日再改为 2.0；2026-11-01 用户令再改为 2.0.1（与语音调大轮同轮交付；缓存名 klf-assets-v1 与联机版本 klf-net-2／NET_VERSION 均不动，联机握手只校验 NET_VERSION，故旧版互联不受影响）
+var GAME_VERSION = '1.0'; // 游戏版本号（单一来源）：标题页与暂停菜单都从此常量渲染；2026-10-28 用户令由 1.0 改为 1.1、同日再改为 1.2、再改为 1.3；2026-10-29 用户令再改为 1.4、同日再改为 1.5、同日再改为 1.6；2026-10-30 用户令再改为 1.7、同日再改为 1.8（与八思光阵轮同轮交付）；2026-10-31 用户令再改为 1.9、同日再改为 2.0；2026-11-01 用户令再改为 2.0.1（与语音调大轮同轮交付）；2026-11-01 用户令再改为 2.0.2（与劳农韧性锁定＋旁路封堵轮同轮交付；缓存名 klf-assets-v1 与联机版本 klf-net-2／NET_VERSION 均不动，联机握手只校验 NET_VERSION，故旧版互联不受影响）；2026-11-01 用户令再改为 1.0（与版本号改 1.0 轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）
 var SIG_ITEM = { weiye:'luckbell', undeadwar:'fang', thundercloud:'voltcore', icelance:'icevein', emberring:'emberboots', voltspirit:'voltcore', skystrike:'magcore', vacuumblade:'windheart', corona:'luckbell', oldtreant:'thorn', vinegrip:'regen', rockgolem:'stoneskin', quake:'earthheart', waterelemental:'tidalheart', tidalwave:'tidalcore', boomerang:'boots', cigshot:'rune', octoshot:'rune', stamp:'magnet', chainvolt:'xpcrystal',
   firebolt:'fang', leafblade:'boots', lightning:'rune', frostnova:'shield', stardart:'shadow', flameaura:'thorn',
   moonwheel:'critlens', fireball:'glove', frostcone:'shield', poisonspray:'fang', earthspike:'thornheart', orbitblade:'windheart', totem:'magcore', gravitytrap:'hourglass',
@@ -2863,6 +2863,7 @@ var JG_INVIS_DUR = 5, JG_SMOKE_R = 353, JG_TRAIL_R = 135, JG_LURE_R = 1200, JG_L
 var JG_IGNITE_PCT = 0.05, JG_IGNITE_BOSS_PCT = 0.02, JG_IGNITE_DUR = 10, JG_IGNITE_BOSS_CD = 20; // 持续 2026-10-30 用户令：JG_IGNITE_DUR 5→10 秒（每秒跳伤 5%/2% 不动 → 单轮合计普通 50%、Boss 20%；Boss 20 秒冷却仍自触发起算、10 秒燃烧含在其中、结束后约剩 10 秒）
 function jgTryIgnite(e, srcId, sx, sy){ // 烟雾引燃触发（唯一入口）：普通怪一生一次／Boss 每 20 秒一次（触发起算）／结界门禁都在此收口
   if(!e || e.dead) return false;
+  if(e.isLaonong) return false; // 2026-11-01 引燃对劳农无效轮：劳农永不吃引燃，置于 Boss 冷却检查之前，故不得因此消耗劳农的引燃 Boss 冷却、不得置 Used；其他敌人原口径不动
   if((e.jgIgniteT || 0) > 0) return false; // 已在引燃中：不刷新、不延长、不重复置冷却/Used（Boss 的 20 秒冷却本就覆盖燃烧期，此为双保险）
   if(e.boss){ if((e.jgIgniteBossCd || 0) > 0) return false; } // Boss：20 秒冷却未尽不挂（不像普通怪一生仅一次）
   else if(e.jgIgniteUsed) return false; // 普通怪（含精英）：一生仅一次
@@ -2898,6 +2899,7 @@ var jgPuffs = []; // 被动烟雾落点池（本机梁鸡专用）：{x, y, t（
 function jgPassiveOn(){ return typeof P !== 'undefined' && !!P && P.charIdx === 3 && (P.stage || 0) >= 1; } // 一觉被动生效判定（唯一入口）：本机梁鸡且已第一次觉醒
 function jgTryIgnite2(e, srcId, sx, sy){ // 被动烟雾引燃唯一入口：第 1 层走现行 jgTryIgnite 全门禁；二觉时对已燃者升第 2 层（只有被动烟雾能叠、按键技烟雾不走本函数）
   if(!e || e.dead) return false;
+  if(e.isLaonong) return false; // 2026-11-01 引燃对劳农无效轮：劳农永不吃引燃，第 1 层与第 2 层叠层一并拦下，不得置 jgIgn2Used
   if((e.jgIgniteT || 0) > 0){
     if((e.jgIgniteLayers || 1) >= 2) return false; // 已满 2 层
     if(e.jgIgn2Used) return false; // 二层一生仅一次（2026-10-31 修正轮，milo 00:44 令）：该怪已叠过一次 2 层、终身不再叠——普通/精英本就因第 1 层一生一次而间接只叠一次，此标记主要收口 Boss（20 秒可再引燃、旧版每次再引燃都能再叠）；标记独立于 jgIgniteUsed、终身不清（口径见 JG_IGN2_FIX 定版注）
@@ -4646,7 +4648,7 @@ function newPlayer(ci){
     face:1, faceAng:0, faceLockT:0, walkPhase:0, invuln:0,
     specCd:0, dodgeCd:0, dodgeRe:[0,0], dodgeT:0, dodgeDx:1, dodgeDy:0, tornadoT:0, tornadoTick:0, tornadoPoisonT:0, tornadoCastId:0, starT:0, starTick:0, starMul:1, starSMul:1, paperT:0, orbitAngle:0, oakAngle:0, oakFxT:0, shield:0, shieldT:0,
     smokeT:0, smokeTick:0, smokeX:0, smokeY:0, swingSide:1, jgPuffT:0, jgTrailX:null, jgTrailY:null, // 梁鸡一觉被动烟雾拖尾（2026-10-31）：落烟节拍计时／上一帧位置（位移判定）；新局随 P 重建清零，落点池 jgPuffs 在 resetGame 清空
-    gmRushT:0, gmEndBoostT:0, gmRushDx:1, gmRushDy:0, gmHailT:0, gmZoneX:null, gmZoneY:null, gmVelX:0, gmVelY:0, gmIceT:0, gmTrailX:null, gmTrailY:null, // 光明朱德（2026-10-31 建模轮＋技能实装轮）：按键技冲撞剩余秒／冲撞方向、冰雹生成节拍、脚下战斗冰面上一落点锚点（2026-11-01 拖尾连贯轮：原时间节拍字段 gmZoneT 改距离落点锚点 gmZoneX/Y）、冰面滑溜惯性速度、冰面拖尾落冰节拍计时／上一帧位置；建模轮占位短冲字段 gmDash* 已删；新局随 P 重建清零，冰面池 gmIcePatches/gmIceZones 在 resetGame 清空
+    gmRushT:0, gmEndBoostT:0, gmRushDx:1, gmRushDy:0, gmHailT:0, gmZoneX:null, gmZoneY:null, gmVelX:0, gmVelY:0, gmDirectVelX:0, gmDirectVelY:0, gmIceT:0, gmTrailX:null, gmTrailY:null, // 光明朱德（2026-10-31 建模轮＋技能实装轮）；gmDirectVelX/Y 为冰面顺滑轮新增：离冰面直驱速度（进冰面首帧惯性初速）：按键技冲撞剩余秒／冲撞方向、冰雹生成节拍、脚下战斗冰面上一落点锚点（2026-11-01 拖尾连贯轮：原时间节拍字段 gmZoneT 改距离落点锚点 gmZoneX/Y）、冰面滑溜惯性速度、冰面拖尾落冰节拍计时／上一帧位置；建模轮占位短冲字段 gmDash* 已删；新局随 P 重建清零，冰面池 gmIcePatches/gmIceZones 在 resetGame 清空
     invisT:0, invisX:0, invisY:0, invisTrailT:0, invisDmgTick:0, invisHealAcc:0, invisHealTxtT:0, invisHealShown:0, learnStealthT:0, lsX:0, lsY:0, // learnStealthT＝离开学习页后的隐身剩余秒数（2026-10-28 用户令：关页起 3 秒、归零即恢复可见与受击）；lsX/lsY＝关页瞬间位置（隐身期间怪物索敌/瞄准只扑此点，与鸡哥 invisX/invisY 同机制）；整局重置随 P 重建清零
     rageT:0, stimT:0, urineT:0, chestDmgT:0, shieldUp:false, shieldCd:3, holyFlashT:0, poseUntil:0,
     bonusDmg:0, bonusSpd:0, xpMul:1, bonusCdMul:1, bonusMagMul:1, specCdMul:1, regenBonus:0, regenAcc:0,
@@ -4761,8 +4763,9 @@ function resetGame(){
   P = newPlayer(selChar);
   if(typeof PANEL_GUARD !== 'undefined') PANEL_GUARD = {}; // 面板护盾防残留：新开一局清空全部面板标记并收起面板层，绝不把无敌带进新局
   if(typeof lvDraftSaved !== 'undefined'){ lvDraftSaved = false; lvChoices = []; lvRerolled = []; } // 学习页返回暂存防残留（2026-10-29）：新局必清暂存卡组——暂存卡是按旧局构筑掷的，绝不带进新局复用
+  if(typeof awkLearnDeferred !== 'undefined') awkLearnDeferred = false; // 觉醒特效跟随轮：新局清暂缓旗——上一局未播完的觉醒特效不带进新局补开学习页（effects 本行已清空，特效门禁亦已失效）
   ['learnedScreen','statsScreen','settingsScreen','levelupScreen'].forEach(function(id9){ var e9 = document.getElementById(id9); if(e9) e9.classList.remove('on'); });
-  enemies = []; projectiles = []; gems = []; texts = []; particles = []; novas = []; fallers = []; effects = []; vfxList = []; recentTypes = []; summons = []; totems = []; totemRespawns = []; bsSigils = []; jgPuffs = []; gmIcePatches = []; gmIceZones = []; // 光明朱德冰面两池随新局清空（2026-10-31 建模轮） WX2_MINIS.length = 0; WX2_HOLDS.length = 0; // 八思金色光阵随新局清空（2026-10-29）；梁鸡一觉被动烟雾落点池随新局清空（2026-10-31）；闻西重做小龙卷风随新局清空（2026-10-31、防上一局残留卷进新局）；闻西吸怪停留窗随新局清空（2026-10-31 续轮、防上一局未到点停留带进新局）
+  enemies = []; projectiles = []; gems = []; texts = []; particles = []; novas = []; fallers = []; effects = []; vfxList = []; recentTypes = []; summons = []; totems = []; totemRespawns = []; bsSigils = []; jgPuffs = []; gmIcePatches = []; gmIceZones = []; gmIceZoneSeq = 0; // 光明朱德冰面两池随新局清空（2026-10-31 建模轮）；2026-11-01 冰面感冒轮：冰面 ID 序列随新局归零，新局冰面 ID 从 1 重新分配、旧局怪集合随 enemies 清空不带入 WX2_MINIS.length = 0; WX2_HOLDS.length = 0; // 八思金色光阵随新局清空（2026-10-29）；梁鸡一觉被动烟雾落点池随新局清空（2026-10-31）；闻西重做小龙卷风随新局清空（2026-10-31、防上一局残留卷进新局）；闻西吸怪停留窗随新局清空（2026-10-31 续轮、防上一局未到点停留带进新局）
   if(typeof MAZE !== 'undefined'){ MAZE.active = false; MAZE.portal = null; MAZE.stash = null; }
   if(typeof STREET !== 'undefined'){ STREET.active = false; STREET.portal = null; STREET.stash = null; STREET.chest = null; STREET.exitPortal = null; STREET.kills = 0; STREET.spawned = 0; STREET.bossSpawned = false; }
   zones = []; totems = []; totemRespawns = [];
@@ -5666,14 +5669,31 @@ function laonongCollapse(e){ // ⑤ 虚空坍缩（暴怒阶段大招）
 }
 /* ---------------- 劳农专属技能：蓄力元气弹（韧性条打断） ----------------
    触发：每场仅两次——血量跌破 50% 一次、跌破 20%（快死阈值）一次；按「跌破」判定，单次大伤害跨过阈值也触发；每阈值每场只触发一次；第一次被打断不影响第二次；两次放完不再重复，其余时间只放原有五技能（频率/种类/伤害未动）。
-   蓄力 8 秒：劳农原地不动、不移动、不放其他技能（通用冲锋同步冻结），头上出现紫色韧性条（总量 3800）与逐渐长大的能量球，并有横幅＋大字＋音效预警。
+   蓄力 10 秒：劳农原地不动、不移动、不放其他技能（通用冲锋同步冻结），头上出现紫色韧性条（总量按出现那一刻锁定：有效秒伤×6 秒，见 laonongUltStart）与逐渐长大的能量球，并有横幅＋大字＋音效预警。
    血量关系（定一种，不双算）：蓄力期间玩家伤害只削韧性条、不扣劳农血量（在 damageEnemy 内拦截），该期间命中不触发吸血/击退/击杀判定；蓄力结束或被打断后恢复正常扣血。
    韧性打空 → 打断：不放元气弹，劳农硬直 2.5 秒（不能动、不能放技能），随后恢复正常战斗。
    蓄满未打空 → 释放元气弹：无视走位与闪避无敌，全员致命——单人＝死亡结算（不死鸟之心按既有规则仍可抵挡一次，与 hurtPlayer 同口径）；联机＝房主侧把全部存活成员打入既有倒地链（远端 downPeer、本机 tryLocalDown），全员倒地后无人可救、出血耗尽由既有 checkWipe 判团灭；若已无任何可救者，tryLocalDown 返回 false → 直接死亡结算。客户端不本地执行，经房主快照同步（含韧性条字段 po）。 */
-var LN_ULT = { thr1: 0.5, thr2: 0.2, dur: 8, poise: 3800, stun: 2.5 }; // 蓄力时长 8 秒（用户定版）；韧性 3800、硬直 2.5 秒不变
+var LN_ULT = { thr1: 0.5, thr2: 0.2, dur: 10, targetSec: 6, stun: 2.5 }; // 蓄力时长 10 秒（2026-11-01 由 8 秒改为 10 秒；韧性目标仍 6 秒份，见 laonongUltStart）；韧性不再写死：出现那一刻按最高秒伤代理×人数倍率×6 秒锁定（2026-11-01 韧性锁定轮，见 laonongUltStart）；硬直 2.5 秒不变
+var lnPoiseRec = null; // 最近一次蓄力锁定的韧性记录（只读探针 __LN_POISE 用，不参与结算）
 function laonongUltStart(e){
   e.lnChargeDur = LN_ULT.dur; e.lnChargeT = LN_ULT.dur;
-  e.lnPoiseMax = LN_ULT.poise; e.lnPoise = LN_ULT.poise;
+  // 韧性锁定轮（2026-11-01，milo 16:04 令）：在韧性条出现这一刻算一次、存到该 Boss 个体上，本次蓄力 10 秒内锁定；
+  // 蓄力内最高秒伤玩家变化、玩家数量变化、死亡/加入、增益变化一律不重算；第二次触发（20%）是新的一次技能，出现时重新算，不沿用第一次的值。
+  // 公式复用既有口径，不自造新 DPS 定义：proxy＝无尽时 endlessMaxDpsProxy()，否则 playerPowerMul()×(1＋P.shopAtk)；
+  // DPSest＝BOSS_AUTO_DPSREF(162)×proxy×timeBuffMul()×(gameTime<240 ? 0.75＋0.25×gameTime/240 : 1)；
+  // N＝蓄力开始那一刻的队伍人数，来源为 mpRoster()（即 endlessPlayerMul 的底层 N 来源、与 teamList 同口径：全体成员含房主本人，单人 teamList 为空时 mpRoster 恒 1）；
+  // EPM＝1＋0.5×(N−1)；有效秒伤＝DPSest×EPM；韧性＝有效秒伤×6 秒（6 秒为 milo 给定区间 [4, 8] 的中值，正常集火约 6 秒打断）。
+  // 本轮不设区间钳制：韧性即有效秒伤×6，无上下限钳制可破坏 [4, 8] 区间；下方仅一条防 NaN 守卫（输入缺失时才触发，正常局 proxy>0、timeBuff≥1，永不触发）。
+  var lnProxy = (typeof endless !== 'undefined' && endless && typeof endlessMaxDpsProxy === 'function') ? endlessMaxDpsProxy() : (playerPowerMul() * (1 + ((P && P.shopAtk) || 0)));
+  var lnEarly = (gameTime < 240 ? 0.75 + 0.25 * gameTime / 240 : 1);
+  var lnDps = BOSS_AUTO_DPSREF * lnProxy * timeBuffMul() * lnEarly;
+  var lnN = 1; try { if (typeof mpRoster === 'function') lnN = Math.max(1, mpRoster()); } catch (err) {}
+  var lnEpm = 1 + 0.5 * (lnN - 1);
+  var lnEffDps = lnDps * lnEpm;
+  var lnPoise = lnEffDps * LN_ULT.targetSec;
+  if (!(lnPoise > 0) || !isFinite(lnPoise)) lnPoise = BOSS_AUTO_DPSREF * LN_ULT.targetSec;
+  e.lnPoiseMax = lnPoise; e.lnPoise = lnPoise;
+  lnPoiseRec = { poise: Math.round(lnPoise), dps: Math.round(lnDps * 100) / 100, effDps: Math.round(lnEffDps * 100) / 100, proxy: Math.round(lnProxy * 100) / 100, epm: lnEpm, n: lnN, targetSec: LN_ULT.targetSec, estBreakSec: LN_ULT.targetSec, locked: true, endless: !!endless, gameTime: Math.round(gameTime) };
   e.lnBusy = true; e.charging = 0; e.chargeWind = 0; e.chargeT = Math.max(e.chargeT || 0, 2.5);
   e.flash = Math.max(e.flash, 0.3);
   showBanner('劳农正在蓄力元气弹！', '在他蓄满之前打空头上的韧性条，否则全员致命！');
@@ -5681,6 +5701,7 @@ function laonongUltStart(e){
   shake = Math.max(shake, 8);
   sfx('voidgrowl');
 }
+window.__LN_POISE = function(){ return lnPoiseRec; }; // 只读探针（2026-11-01 韧性锁定轮）：最近一次蓄力锁定的韧性/DPSest/EPM/N/目标秒数/估算打断时长/是否已锁定，不参与结算
 function laonongUltInterrupt(e){
   e.lnChargeT = 0; e.lnPoise = 0;
   e.lnStunT = LN_ULT.stun; e.lnBusy = true;
@@ -6917,7 +6938,7 @@ function damageEnemy(e, dmg, kx, ky){
   if(dmg >= 40) buzz('heavy', 12, 320); // 重击命中：轻震确认（与暴击震错开节流，互不叠加轰炸）
   if(dmg >= 40) spawnVfx(Math.random() < 0.5 ? 'impact' : 'earth', e.x, e.y, e.r * 3, 0.3); // 重击：素材包冲击火花／大地冲击（Drive 素材包 RPG VFX）
   else if(dmg >= 10 && Math.random() < 0.35) spawnVfx('blood', e.x, e.y, e.r * 2.4, 0.32); // 命中血花
-  var gmDieLine = (e.gmCold >= 2) ? e.maxHp * (e.gmCold - 1) * 0.1 : 0; // 感冒冻血条死亡线（2026-10-31 技能实装轮，用户定版）：二层起冻住段＝(层数−1)×10% 上限血量——hp 扣到冻住段边界即判死、冻住段无需打掉（例：100 血六层冻 50、打 50 即死）；无感冒/一层时死亡线恒 0、与旧口径逐值相同；冻量公式与 gmColdFrac 同式
+  var gmDieLine = e.isLaonong ? 0 : ((e.gmCold >= 2) ? e.maxHp * (e.gmCold - 1) * 0.1 : 0); // 感冒冻血条死亡线（2026-10-31 技能实装轮，用户定版）：二层起冻住段＝(层数−1)×10% 上限血量——hp 扣到冻住段边界即判死、冻住段无需打掉（例：100 血六层冻 50、打 50 即死）；无感冒/一层时死亡线恒 0、与旧口径逐值相同；冻量公式与 gmColdFrac 同式；2026-11-01 感冒对劳农无效轮防御兜底：劳农死亡线恒 0，即使残留层也不因扣血路径判死，其他敌人原口径不动
   if(e.hp <= gmDieLine){ if(isCrit) hitStop(0.05); killEnemy(e); } // 暴击击杀：短顿帧
 }
 /* ===== 全英雄普攻与按键技可暴击（2026-10-31 用户令·定版注；本地、版本保持 2.0、不推托管、不打 APK） =====
@@ -7723,7 +7744,7 @@ function visBasicFx(hero, x, y, ang, tgt, own){ /* 远端成员普攻的本机�
    dmgMul 1.0／critDmg 1.5（沿用建模轮暂定）；绿豆饼单饼伤害 14＋lv×5（沿用建模轮）、飞速 Lv1 500／Lv2 起 640
    （沿用建模轮）、爆炸半径 74／Lv4 大饼 96（沿用建模轮）、冰爆冰刺伤害＝冰爆 ×0.6（沿用建模轮）、冰刺 16 根／圈（2026-10-31 20:36 用户令加倍、原 8 根）、
    冰刺飞速 430、冰刺寿命 1.8 秒（20:36 令远程化、原 0.55 秒、射程约 774px≈原 3.3 倍）、冰刺 r 普通 8／Lv4 大冰刺 11（20:36 令加粗、原 6／8）、普攻齐射间隔系数 1.15（沿用建模轮）；撞击冰爆半径 54（补丁轮收小、原 88）、撞飞位移 184px（20:42 令飞远、原 46 的 ×4；Boss ×0.25＝46px 同击退口径）、
-   逐怪撞击再触发冷却 0.35 秒；冰雹间隔 0.045 秒（约 22 根/秒、13 秒约 289 根；2026-10-31 20:34 加密、原 0.09 秒约 11 根/秒）、单根半径 26、下落时长 0.38 秒、
+   逐怪撞击再触发冷却 0.35 秒；冰雹间隔 0.035 秒（约 28.6 根/秒、13 秒约 371 根；2026-11-01 用户令加密、原 0.045 秒约 22 根/秒）、单根半径 26、下落时长 0.38 秒、
    单根伤害＝单饼伤害 ×0.5；冰封抗性折算（精英 ×0.6／Boss ×0.35、同 applyStunResist 口径，用户只定普通怪足额 5 秒）；
    冲撞脚下战斗冰面半径 74、每 0.5 秒落一块（池上限 44 块、超限移除最旧）；冰面滑溜＝速度以 3.2/秒速率趋近
    目标速度（起步/转向/松杆滑行同式惯性）；冲撞速度＝pSpeed()×2 再受基础移速 2 倍总封顶（移速封顶为既有用户令）。
@@ -7748,8 +7769,8 @@ var GM_ICE_DUR = 1.0, GM_ICE_GAP = 0.12, GM_ICE_ZONE_DUR = 10; // 拖尾停留 1
 var GM_SPEC_DUR = 13, GM_SPEC_CD_NET = 24; // 按键技持续 13 秒／冷却 24 秒（2026-11-01 冷却令改定，原净冷却 18 秒）：CHARACTERS 表 specCd 存总和 37、doSpecial 经 wxSpecCdBase 扣持续 13 得净冷却 24，持续期间由 specCdHeldByDuration 冻结递减——与闻西同式；GM_SPEC_CD_NET 仅供 __GM_ZD 探针 cdNet 字段引用、不参与游玩结算
 var GM_SPEC_BOOM_R = 54, GM_SPEC_HIT_CD = 0.35, GM_SPEC_KB = 300, GM_KNOCK_SFX_CD = 1.5; // 撞击冰爆半径（2026-10-31 16:56 用户补令「小小的就行」：由 88 收小为 54、小于普攻冰爆 74，伤害 ×5 不变）／逐怪再触发间隔／撞飞位移 300px（沿革：2026-10-31 20:42 用户令「撞到的怪物可以飞很远」由 46 提高为 ×4＝184px；2026-11-01 撞飞距离令改定 184→240px 后同轮再更正为 300px（240 口径作废）、Boss ×0.25 折算同步 46→75px；逐怪再触发 0.35 秒、落点入墙整段取消、飞行时长/弧高公式与封顶均未动——复核见 GM_FLY 常量行注）／撞飞音效逐怪 CD 1.5 秒（2026-11-01 追加令：按怪单独计时、只节流音效，与 0.35 秒撞飞再触发间隔分开、互不影响）
 var GM_FLY_REF_SPEED = 700, GM_FLY_DUR_MIN = 0.18, GM_FLY_DUR_MAX = 0.32; // 撞飞飞行时长施工取值（2026-11-01 撞飞表现轮，口径见 gmFlyStart 上方定版注）：时长＝clamp(距离÷700, 0.18, 0.32) 秒——普通/精英 184px→约 0.263 秒（60fps 约 16 帧、手机上看得清轨迹又不拖沓）、Boss 46px→下限 0.18 秒（短距不致一闪而过）；上限 0.32＜逐怪再触发 0.35 秒——同一只怪飞行必在下次可被撞之前落完、不会叠飞【2026-11-01 撞飞距离 184→300 复核（同轮中间值 240 已作废；公式与封顶未动）：普通/精英 300÷700≈0.429 秒→触顶 0.32 秒（与 240 版同为顶值；距离照常落满 300px、只是飞得更快）、Boss 75÷700≈0.107 秒→触底 0.18 秒不变；弧高＝clamp(距离×0.22, 12, 40)：普通/精英 300×0.22＝66→触顶 40px 不变、Boss 75×0.22＝16.5px（原 46px 时 10.12→触底 12）；0.32＜0.35 不叠飞不变量仍成立】
-var GM_HAIL_R = 320, GM_HAIL_GAP = 0.045, GM_HAIL_DMG_MUL = 0.5, GM_HAIL_FREEZE_CH = 0.001; // 冰雹范围半径 320（用户定版：与剑阵同大）／间隔 0.045 秒（2026-10-31 20:34 用户令加密：原 0.09 秒约 11 根/秒→现约 22 根/秒、密度翻倍；单根伤害倍率不变、故单位时间冰雹总伤害同步约 ×2，半径/跟随/直落/感冒/0.1% 冰封一字未动）／命中 0.1% 冰封（用户定版）
-var GM_COLD_MAX = 6, GM_COLD_DUR = 8, GM_COLD_FREEZE_CH = 0.01, GM_FREEZE_DUR = 5; // 感冒上限 6 层／持续 8 秒／叠新层 1% 冰封／冰封 5 秒（全为用户定版）
+var GM_HAIL_R = 400, GM_HAIL_GAP = 0.035, GM_HAIL_DMG_MUL = 0.65, GM_HAIL_FREEZE_CH = 0.5; // 冰雹范围半径 400（2026-11-01 用户令加大：原 320）／间隔 0.035 秒（2026-11-01 用户令加密：原 0.045 秒约 22 根/秒→现约 28.6 根/秒）／单根伤害倍率 0.65（2026-11-01 用户令提高：原 0.5，单根＝单饼冰爆×0.65）／命中 50% 冰封（2026-11-01 用户令改定，不动）
+var GM_COLD_MAX = 6, GM_COLD_DUR = 8, GM_COLD_FREEZE_CH = 0.10, GM_FREEZE_DUR = 5; // 感冒上限 6 层／持续 8 秒／叠新层 10% 冰封（2026-11-01 用户令由 1% 改定）／冰封 5 秒（全为用户定版）
 var GM_ZONE_STEP = 36, GM_ZONE_R = 74, GM_ZONE_CAP = 176, GM_SLIP_RATE = 3.2; // 冲撞落战斗冰面落点间距/半径/池上限／冰面滑溜趋近速率（2026-11-01 拖尾连贯轮改定，核算见 GM_ZONE_STEP 下方注；原时间节拍 GM_ZONE_GAP＝0.5 秒已删）
 /* 冲撞冰面拖尾连贯核算（2026-11-01 用户令「衝撞時留下的冰面要有拖尾連貫性」）：
    冲撞速度上限＝min(pSpeed()×2, baseSpeed×2)；光明朱德 baseSpeed＝228（CHARACTERS 表），pSpeed 本身亦受基础 2 倍总封顶，
@@ -7762,7 +7783,8 @@ var GM_ZONE_STEP = 36, GM_ZONE_R = 74, GM_ZONE_CAP = 176, GM_SLIP_RATE = 3.2; //
    冰面存续 10 秒、战斗效果（己方 +30%／怪物 −20%）、冲撞速度/持续/冷却/减伤/撞飞、移动拖尾纯特效层（gmIcePatches）一字未动。 */
 function gmColdFrac(layers){ return layers >= 2 ? (layers - 1) * 0.1 : 0; } // 冻血条总量（用户定版）：二层 10%、三层 20%、四层 30%、五层 40%、六层 50%
 function gmCakeBaseDmg(){ var w = (typeof P !== 'undefined' && P && P.weapons) ? P.weapons.mungcake : null; var lv = w ? w.lv : 1; return (14 + lv * 5) * pDmgMul() * (lv >= 4 ? 1.3 : 1); } // 单饼冰爆伤害现算（与普攻发射段 dmgGm 同式：14＋lv×5 为施工取值、Lv4 ×1.3 为用户定版相对口径）——按键技撞击冰爆 ×5 与冰雹单根伤害的派生基数
-function gmColdDeathCheck(e){ if(!e || e.dead) return; var fl = gmColdFrac(e.gmCold || 0); if(fl > 0 && e.hp <= e.maxHp * fl) killEnemy(e); } // 冻血条死亡线（用户定版例：100 血六层冻 50、打掉 50 即死）：叠层瞬间剩余血量已落入冻住段者当场判死（damageEnemy 内的同式死亡线管扣血路径、此处管叠层路径）
+function gmColdDeathCheck(e){ if(!e || e.dead) return; if(e.isLaonong) return; // 2026-11-01 感冒对劳农无效轮防御兜底：劳农永不因感冒判死——蓄力期在内；即使残留 gmCold 层也不判死；其他敌人原口径不动
+ var fl = gmColdFrac(e.gmCold || 0); if(fl > 0 && e.hp <= e.maxHp * fl) killEnemy(e); } // 冻血条死亡线（用户定版例：100 血六层冻 50、打掉 50 即死）：叠层瞬间剩余血量已落入冻住段者当场判死（damageEnemy 内的同式死亡线管扣血路径、此处管叠层路径）
 function gmFreezeApply(e){ // 冰封（与冻血条分开的独立效果）：冻住不能动、持续 5 秒（抗性折算为施工取值、见 GM_SPEC 定版注）；返回是否真正生效（冰雹一生一次门以此记账、Boss 免疫期拦截不算生效不消耗）
   if(!e || e.dead) return false;
   if(e.boss && typeof bossCcImmune === 'function' && bossCcImmune(e)){ if(typeof bossCcBlockedFx === 'function') bossCcBlockedFx(e); return false; } // Boss 免疫控制期整段不生效（与 tryFreeze 同口径）
@@ -7784,6 +7806,7 @@ function gmHailFreezeTry(e, roll){ // 冰雹冰封一生一次（2026-10-31 补�
 }
 function gmColdApply(e){ // 附一层感冒（绿豆饼冰爆/冰刺、按键技冰雹命中共用入口）：叠到新一层才刷新 8 秒并掷 1% 冰封（每层只掷一次）；已满 6 层不再叠、不刷新、不掷（全为用户定版）
   if(!e || e.dead) return;
+  if(e.isLaonong){ e.gmCold = 0; e.gmColdT = 0; return; } // 2026-11-01 感冒对劳农无效轮：劳农永不挂感冒层——不叠层、不刷新、不掷感冒层 1% 冰封、不走判死；残留层在此一并清零；其他敌人原口径不动
   var L = e.gmCold || 0;
   if(L >= GM_COLD_MAX) return;
   e.gmCold = L + 1;
@@ -7793,6 +7816,29 @@ function gmColdApply(e){ // 附一层感冒（绿豆饼冰爆/冰刺、按键技
 }
 var gmIcePatches = []; // 拖尾冰面落点池（纯特效）：{x, y, t 剩余停留}；新局 resetGame 清空
 var gmIceZones = [];   // Lv5 战斗冰面池：{x, y, r, t 剩余存续}；新局 resetGame 清空
+var GM_ICE_COLD_CH = 0.10; // 冰面感冒（2026-11-01）：战斗冰面上小怪/精英掷骰概率 10%，不是必得（2026-11-01 用户令由 1% 改定）
+var GM_ICE_COLD_CD = 3.0; // 冰面感冒（2026-11-01）：每只怪掷骰/获得共用冷却 3.0 秒
+var gmIceZoneSeq = 0; // 战斗冰面唯一递增 ID（2026-11-01）：新建冰面时分配、永不复用；快照 iz 同步的客机冰面无此 ID、只作显示
+function gmIceZonePush(x, y, r, t){ var id = ++gmIceZoneSeq; gmIceZones.push({ x: x, y: y, r: r, t: t, id: id }); return id; } // 战斗冰面新建唯一入口（2026-11-01）：带唯一 ID 入池
+function gmIceZoneDropOldest(){ if(!gmIceZones.length) return; var old = gmIceZones.shift(); if(old && old.id != null){ for(var i = 0; i < enemies.length; i++){ var e = enemies[i]; if(e && e.gmIceColdThrown) delete e.gmIceColdThrown[old.id]; } } } // 池满移出最老冰面时同步清理各怪已投掷集合里的该 ID，防集合随旧 ID 膨胀
+function gmIceColdTick(dt){ // 冰面感冒结算（2026-11-01）：只走房主侧，客机不得本地结算；只算战斗冰面 gmIceZones，移动拖尾 gmIcePatches 纯特效不算
+  if(window.__NET_CLIENT_MODE) return;
+  if(!gmIceZones.length) return;
+  for(var i = 0; i < enemies.length; i++){
+    var e = enemies[i];
+    if(!e || e.dead || e.boss || (e.hzConvT || 0) > 0) continue; // Boss 除外（劳农是 Boss 且已感冒无效，双重排除）；转化友军除外；旺财小猫 boss 为 false，按普通怪算
+    if((e.gmIceColdCd || 0) > 0){ e.gmIceColdCd -= dt; continue; } // 冷却递减：离开冰面也继续递减、不重置
+    var zn = null;
+    for(var zi = 0; zi < gmIceZones.length; zi++){ var z = gmIceZones[zi]; if(z.id == null) continue; if(dist2(z.x, z.y, e.x, e.y) < z.r * z.r && !(e.gmIceColdThrown && e.gmIceColdThrown[z.id])){ zn = z; break; } } // 只对其中一个未投掷过的冰面掷骰一次；快照客机冰面无 ID 时跳过
+    if(!zn) continue; // 不在冰面上、或重叠冰面都已投掷过：不掷骰、不置冷却，下帧可立即再查新冰面
+    e.gmIceColdCd = GM_ICE_COLD_CD; // 无论中与否，掷完立即置 3.0 秒冷却
+    if(!e.gmIceColdThrown) e.gmIceColdThrown = {}; e.gmIceColdThrown[zn.id] = 1; // 2026-11-01 16:21 更正（取代旧“获得集合”口径）：掷骰当刻就记入已投掷集合，中与不中都记，记完永不再对该冰面掷骰；离开又回到同一冰面（10 秒存续期内）仍不得再掷；概率现为 10%（2026-11-01 由 1% 改定），不因一次定生死而调高
+    if(Math.random() < GM_ICE_COLD_CH){
+      gmColdApply(e); // 走既有入口：满 6 层不叠、感冒 8 秒、每新层 1% 冰封、冻血条与判死均按既有口径；无新增特效与音效；已满 6 层时掷中也无层可得，但该冰面已按新口径消耗，不再重掷
+    }
+  }
+}
+window.__ICE_COLD = { ch: GM_ICE_COLD_CH, cd: GM_ICE_COLD_CD, tick: gmIceColdTick, tryIgnite: jgTryIgnite }; // 只读探针（2026-11-01 冰面感冒轮）：概率/冷却/结算函数引用，不参与结算；引燃无效探针见 jgTryIgnite 守卫
 var GM_ICE_IMG = new Image(); GM_ICE_IMG.src = 'assets/fx/guangming_ice_patch.png'; // 冰面块 v2 纹理（2026-11-01 起作冰面精灵的底纹来源，见下）
 /* 冰面做真（2026-11-01 用户实报「冰面特效太假」）：旧版三层统一画法＝把矩形纹理图（或未加载时的兜底扁椭圆）整盒拉伸，
    屏上就是一块光滑扁平的半透明蓝椭圆。现三层统一改走程序预渲染冰面精灵（4 个变体、256×128 离线画布、按落点位置哈希选变体、
@@ -7873,9 +7919,12 @@ function slipIceTick(){
 }
 function gmIceTick(dt){ // 冰面主 tick（本机 updateWeapons 每帧与 jgPuffTick 并列调用）：拖尾/战斗冰面衰减＋战斗冰面怪物减速刷新＋移动落冰
   for(var i = gmIcePatches.length - 1; i >= 0; i--){ gmIcePatches[i].t -= dt; if(gmIcePatches[i].t <= 0) gmIcePatches.splice(i, 1); }
-  for(var z = gmIceZones.length - 1; z >= 0; z--){ gmIceZones[z].t -= dt; if(gmIceZones[z].t <= 0) gmIceZones.splice(z, 1); }
+  var expiredIceIds = [];
+  for(var z = gmIceZones.length - 1; z >= 0; z--){ gmIceZones[z].t -= dt; if(gmIceZones[z].t <= 0){ if(gmIceZones[z].id != null) expiredIceIds.push(gmIceZones[z].id); gmIceZones.splice(z, 1); } }
+  if(expiredIceIds.length){ for(var ei2 = 0; ei2 < enemies.length; ei2++){ var en2 = enemies[ei2]; if(en2 && en2.gmIceColdThrown){ for(var xi = 0; xi < expiredIceIds.length; xi++) delete en2.gmIceColdThrown[expiredIceIds[xi]]; } } } // 冰面过期清理（2026-11-01 冰面感冒轮）：过期 ID 永不复用，各怪已投掷集合里的该 ID 同步删掉，防长期局集合无限膨胀；只删过期 ID，已投掷的现存冰面 ID 保留
   for(var zi = 0; zi < gmIceZones.length; zi++){ var zn2 = gmIceZones[zi];
     for(var ei = 0; ei < enemies.length; ei++){ var en = enemies[ei]; if(en.dead) continue; if(dist2(zn2.x, zn2.y, en.x, en.y) < zn2.r * zn2.r) en.gmIceT = 0.15; } }
+  gmIceColdTick(dt); // 冰面感冒结算（2026-11-01）：在过期清理之后、同一帧过期冰面不再掷骰；房主侧结算、客机内函数自带门禁
   slipIceTick(); // 新音效接入轮第 3 组（2026-11-01）：队友踩战斗冰面边沿检测——置于本机朱德门禁之前（冰面可由队友朱德生成、本机非朱德时其拖尾段虽不跑、打滑检测仍须逐帧推进）；只读 gmIceZones、只出声、无任何结算
   if(!gmIceOn() || P.hp <= 0) return;
   if(P.gmTrailX == null){ P.gmTrailX = P.x; P.gmTrailY = P.y; }
@@ -7910,7 +7959,7 @@ function gmBoomAt(x, y, R, dmg, o){ // 冰爆结算共用（绿豆饼命中冰�
         burn: false, burnDps: 0, poisonD: 0, cigHitSplit: 0, bigCig: false, crit: o.crit, el: o.el, lv: o.lv, wkey: 'mungcake', kbDist: 0, kbDone: {}, noKb: false, gmHitIds: null }); // 冰刺伤害 ×0.6 为施工取值；穿透数 spikeP＝Lv3 起 1（用户定版）、逐怪记账 gmHitIds 在命中段；冰刺命中同附感冒（命中段 gmColdApply）
     }
   }
-  if(o.iceField) gmIceZones.push({ x: x, y: y, r: R, t: GM_ICE_ZONE_DUR }); // Lv5（用户定版）：爆炸留战斗冰面 10 秒
+  if(o.iceField) gmIceZonePush(x, y, R, GM_ICE_ZONE_DUR); // Lv5（用户定版）：爆炸留战斗冰面 10 秒（2026-11-01 冰面感冒轮：经唯一 ID 入口新建）
   sfx('frost');
 }
 function gmCakeExplode(pr){ // 绿豆饼冰爆（命中/飞尽同路）：结算收口 gmBoomAt（冰爆＋冰刺圈＋Lv5 战斗冰面）
@@ -7919,7 +7968,7 @@ function gmCakeExplode(pr){ // 绿豆饼冰爆（命中/飞尽同路）：结算
   shake = Math.max(shake, 2);
 }
 /* ===== 朱德轮·NPC/替身/远端朱德共用（2026-11-01，用户令：光明朱德与七人同等——队友/NPC/替身的饼/冰爆/冰刺/感冒/冰封/冲撞/冰雹/冰面须同时可见并结算，不得只做视觉复刻；本地、版本保持 2.0.1、不推托管、不打 APK）=====
-   【口径总表】数量 [1,3,6,6,6]（Lv1 1／Lv2 共3／Lv3 共6／Lv4/Lv5 恒6，含连发加成 bonus）；单饼冰爆伤害 (14+lv×5)×乘区×(Lv4起1.3)；飞速 Lv2起640、否则500；饼半径 Lv4起13、否则10；寿命1.25；爆炸半径 Lv4起96、否则74（再×各自 boomP 因子：NPC 读 npcPSum boomP、替身读召唤者 pSum boomP、远端真人主机侧未知其被动故 ×1）；冰刺一圈16根、速度430、寿命1.8、伤害＝冰爆×0.6、半径普通8／Lv4大冰刺11、穿透 Lv3起1、Lv5爆炸留战斗冰面；感冒/冰封全走 gmColdApply（本机同口径）；冲撞持续13秒、撞击冰爆＝单饼冰爆×5、半径54、不出冰刺、撞飞普通/精英300px、Boss ×0.25＝75px、逐怪再触发0.35秒、落点入墙整段取消、减伤70%、停发普攻、结束奖励2秒无敌＋移速×1.5持续2秒；冰雹半径320、间隔0.045秒、单根＝单饼冰爆×0.5、附感冒＋0.1%冰封（每怪一生一次，走 updateFallers hail 分支）；脚下战斗冰面距离落点36px、半径74、池176、存续10秒；移动拖尾纯特效（GM_ICE_DUR 1秒、间隔0.12秒，gmIcePatches，不带战斗效果）；战斗冰面效果己方＋30%／怪物－20%（怪物侧由 gmIceTick 逐帧刷 en.gmIceT、队友移速侧由 hostTick 冰面乘区，见下方 hostTick 改动）。
+   【口径总表】数量 [1,3,6,6,6]（Lv1 1／Lv2 共3／Lv3 共6／Lv4/Lv5 恒6，含连发加成 bonus）；单饼冰爆伤害 (14+lv×5)×乘区×(Lv4起1.3)；飞速 Lv2起640、否则500；饼半径 Lv4起13、否则10；寿命1.25；爆炸半径 Lv4起96、否则74（再×各自 boomP 因子：NPC 读 npcPSum boomP、替身读召唤者 pSum boomP、远端真人主机侧未知其被动故 ×1）；冰刺一圈16根、速度430、寿命1.8、伤害＝冰爆×0.6、半径普通8／Lv4大冰刺11、穿透 Lv3起1、Lv5爆炸留战斗冰面；感冒/冰封全走 gmColdApply（本机同口径）；冲撞持续13秒、撞击冰爆＝单饼冰爆×5、半径54、不出冰刺、撞飞普通/精英300px、Boss ×0.25＝75px、逐怪再触发0.35秒、落点入墙整段取消、减伤70%、停发普攻、结束奖励2秒无敌＋移速×1.5持续2秒；冰雹半径400、间隔0.035秒、单根＝单饼冰爆×0.65、附感冒＋50%冰封（每怪一生一次，走 updateFallers hail 分支）；脚下战斗冰面距离落点36px、半径74、池176、存续10秒；移动拖尾纯特效（GM_ICE_DUR 1秒、间隔0.12秒，gmIcePatches，不带战斗效果）；战斗冰面效果己方＋30%／怪物－20%（怪物侧由 gmIceTick 逐帧刷 en.gmIceT、队友移速侧由 hostTick 冰面乘区，见下方 hostTick 改动）。
    【乘区】NPC 走 npcMul、替身走 standMul（本体50%）、远端真人走主机侧既有抽象乘区（角色倍率×等级双成长×earlySigMul×sigDmgMul×构筑层×宝箱药剂×全队增幅×连杀，不含其客户端被动明细——主机本就不持有远端被动，见远端等级同步注）。
    【远端等级同步注】远端真人朱德的 mungcake 等级主机侧本无从得知（旧抽象普攻根本不读武器等级）：本轮新增可选消息 {t:'wlv',k:'mungcake',lv}，客机在 clientTick 以差值上报（等级变化才发一封、旧客机不发则主机默认 Lv1，仍比旧抽象单体伤害更接近本机饼形态）；NPC 读自身 npcW、替身实时读召唤者 P.weapons，七人其他分支一字未动。 */
 function gmCakeCountFor(lv, bonus){ return [1, 3, 6, 6, 6][Math.max(1, Math.min(5, lv || 1)) - 1] + (bonus || 0); }
@@ -7931,7 +7980,7 @@ function gmBoomAtActor(hitFn, projs, x, y, R, dmg, o){ // gmBoomAt 的归因可�
   burst(x, y, '#aee6ff', fxN(10));
   for(var i = 0; i < enemies.length; i++){ var e = enemies[i]; if(e.dead) continue; var rr = R + e.r; if(dist2(x, y, e.x, e.y) < rr * rr){ hitFn(e, dmg, (e.x - x) * 0.03, (e.y - y) * 0.03); if(!e.dead) gmColdApply(e); } }
   if(o.spikes){ for(var si = 0; si < 16; si++){ var sa = si / 16 * Math.PI * 2 + (o.ph || 0); projs.push({ kind:'gspike', x: x, y: y, vx: Math.cos(sa) * 430, vy: Math.sin(sa) * 430, dmg: dmg * 0.6, color: '#aee6ff', r: o.bigSpike ? 11 : 8, t: 0, life: 1.8, pierce: o.spikeP || 0, gmHitIds: {} }); } }
-  if(o.iceField) gmIceZones.push({ x: x, y: y, r: R, t: GM_ICE_ZONE_DUR });
+  if(o.iceField) gmIceZonePush(x, y, R, GM_ICE_ZONE_DUR); // 2026-11-01 冰面感冒轮：经唯一 ID 入口新建
   sfx('frost');
 }
 function gmActorCakeExplode(hitFn, projs, pr){ // 饼命中/飞尽同路（本机 gmCakeExplode 的归因可插拔版）：pr.boomR 在发射帧已按各自身 boomP 因子缩放，此处不再二次乘
@@ -7962,10 +8011,10 @@ function gmRushTickActor(a, dt, ctx){ // 任一朱德行动体的冲撞推进（
   if((a.gmRushT || 0) <= 0) return;
   a.gmRushT -= dt;
   if(a.gmRushT <= 0){ a.gmRushT = 0; a.invuln = Math.max(a.invuln || 0, 2); if(a.invulnT != null) a.invulnT = Math.max(a.invulnT || 0, 2); a.gmEndBoostT = 2; a.gmZoneX = null; a.gmZoneY = null; return; } // 到期结束奖励（本机 gmRushFinish 同口径：2 秒无敌＋移速×1.5持续2秒；中断路不经此函数——NPC/远端/替身无松手中断，冲撞恒打满13秒）
-  a.gmHailT = (a.gmHailT || 0) - dt; // 冰雹：与本机同间隔/半径/单根伤害（单饼冰爆×0.5），落点跟随本体、落地结算走 updateFallers hail 分支（感冒＋0.1%一生一次冰封），归因经 faller.srcPeer（NPC/远端＝行动体 id、替身＝'__stand__' 表召唤者归因）
+  a.gmHailT = (a.gmHailT || 0) - dt; // 冰雹：与本机同间隔/半径/单根伤害（单饼冰爆×0.65），落点跟随本体、落地结算走 updateFallers hail 分支（感冒＋50%一生一次冰封），归因经 faller.srcPeer（NPC/远端＝行动体 id、替身＝'__stand__' 表召唤者归因）
   while(a.gmHailT <= 0){ a.gmHailT += GM_HAIL_GAP; var ha = rand(0, Math.PI * 2), hr = GM_HAIL_R * Math.sqrt(Math.random()); fallers.push({ type: 'hail', x: a.x + Math.cos(ha) * hr, y: a.y + Math.sin(ha) * hr, t: 0, dur: 0.38, r: 26, dmg: ctx.cakeBase() * GM_HAIL_DMG_MUL, srcPeer: ctx.srcPeer }); }
   var gzx = a.x, gzy = a.y + (a.r || 17) * 0.8; // 脚下战斗冰面（距离落点36px、半径74、池176、存续10秒，与本机 gmSpecTick 同式）
-  if(a.gmZoneX == null || dist2(a.gmZoneX, a.gmZoneY, gzx, gzy) >= GM_ZONE_STEP * GM_ZONE_STEP){ if(gmIceZones.length >= GM_ZONE_CAP) gmIceZones.shift(); gmIceZones.push({ x: gzx, y: gzy, r: GM_ZONE_R, t: GM_ICE_ZONE_DUR }); a.gmZoneX = gzx; a.gmZoneY = gzy; }
+  if(a.gmZoneX == null || dist2(a.gmZoneX, a.gmZoneY, gzx, gzy) >= GM_ZONE_STEP * GM_ZONE_STEP){ if(gmIceZones.length >= GM_ZONE_CAP) gmIceZoneDropOldest(); gmIceZonePush(gzx, gzy, GM_ZONE_R, GM_ICE_ZONE_DUR); a.gmZoneX = gzx; a.gmZoneY = gzy; }
   var svC = DMG_CRIT, svE = DMG_EL; DMG_CRIT = 0.10; DMG_EL = 'ice'; // 撞击冰爆盖按键技章（本机同口径：基础暴击10%/冰元素），结算后还原
   a.gmChargeMap = a.gmChargeMap || {}; a.gmKnockMap = a.gmKnockMap || {};
   for(var i = 0; i < enemies.length; i++){ var e = enemies[i]; if(e.dead) continue; if(a.gmChargeMap[e.id] != null && gameTime - a.gmChargeMap[e.id] < GM_SPEC_HIT_CD) continue; // 逐怪再触发0.35秒（本机 e.gmChargeCd 的行动体版：按行动体各自记账，不与本机/其他行动体的冲撞互相顶替）
@@ -8118,17 +8167,17 @@ function gmSpecTick(dt){ // 按键技状态推进（本机光明朱德专属）�
     if(kx || ky){ var kl = Math.sqrt(kx * kx + ky * ky); P.gmRushDx = kx / kl; P.gmRushDy = ky / kl; }
   }
   if(typeof joy !== 'undefined' && joy.active && (joy.dx * joy.dx + joy.dy * joy.dy) > 0.04 && GM_AIM.now - GM_AIM.moveAt > 0.25){ var ja = Math.atan2(joy.dy, joy.dx); P.gmRushDx = Math.cos(ja); P.gmRushDy = Math.sin(ja); } // 移动摇杆改向（2026-10-31 补丁轮选向手感）：冲撞中普通移动被冲撞位移接管、本摇杆原本无作用——现推杆（出死区）即可改向、与直觉一致；按键拖动刚改过向的 0.25 秒内拖动优先、不互相抢方向。冲撞速度/时长/冷却/减伤一字未动
-  P.gmHailT = (P.gmHailT || 0) - dt; // 冰雹：技能期间持续生成、密集如冰雹（间隔 0.045 秒、约 22 根/秒；20:34 加密，原 0.09 秒），每根落点都以生成瞬间本体所在位置为圆心、四周半径 320 内均匀随机（面积均匀＝sqrt 分布）——生成中心逐根跟随本体移动、角色去到哪下到哪（2026-10-31 16:27 补令；已生成的单根冰刺按其落点下落、不再跟随）
+  P.gmHailT = (P.gmHailT || 0) - dt; // 冰雹：技能期间持续生成、密集如冰雹（间隔 0.035 秒、约 28.6 根/秒；2026-11-01 加密，原 0.045 秒），每根落点都以生成瞬间本体所在位置为圆心、四周半径 400 内均匀随机（面积均匀＝sqrt 分布）——生成中心逐根跟随本体移动、角色去到哪下到哪（2026-10-31 16:27 补令；已生成的单根冰刺按其落点下落、不再跟随）
   while(P.gmHailT <= 0){
     P.gmHailT += GM_HAIL_GAP;
     var ha = rand(0, Math.PI * 2), hr = GM_HAIL_R * Math.sqrt(Math.random());
-    fallers.push({ type:'hail', x: P.x + Math.cos(ha) * hr, y: P.y + Math.sin(ha) * hr, t: 0, dur: 0.38, r: 26, dmg: gmCakeBaseDmg() * GM_HAIL_DMG_MUL }); // 落地结算在 updateFallers hail 分支：伤害＋感冒一层＋0.1% 冰封
+    fallers.push({ type:'hail', x: P.x + Math.cos(ha) * hr, y: P.y + Math.sin(ha) * hr, t: 0, dur: 0.38, r: 26, dmg: gmCakeBaseDmg() * GM_HAIL_DMG_MUL }); // 落地结算在 updateFallers hail 分支：伤害＋感冒一层＋50% 冰封
   }
   // 脚下战斗冰面（2026-11-01 拖尾连贯轮改定）：距离落点——本体离上一块中心 ≥ GM_ZONE_STEP（36 px）即落下一块，拖尾恒重叠连成一片（核算见 GM_ZONE_STEP 注）；效果同 Lv5 爆炸冰面、存续 10 秒不变；贴墙滑行实际位移不足间距时不落（原地不堆叠）；池上限防无界膨胀
   var gzx2 = P.x, gzy2 = P.y + P.r * 0.8;
   if(P.gmZoneX == null || dist2(P.gmZoneX, P.gmZoneY, gzx2, gzy2) >= GM_ZONE_STEP * GM_ZONE_STEP){
-    if(gmIceZones.length >= GM_ZONE_CAP) gmIceZones.shift();
-    gmIceZones.push({ x: gzx2, y: gzy2, r: GM_ZONE_R, t: GM_ICE_ZONE_DUR });
+    if(gmIceZones.length >= GM_ZONE_CAP) gmIceZoneDropOldest();
+    gmIceZonePush(gzx2, gzy2, GM_ZONE_R, GM_ICE_ZONE_DUR);
     P.gmZoneX = gzx2; P.gmZoneY = gzy2;
   }
   var svC = DMG_CRIT, svE = DMG_EL; DMG_CRIT = 0.10; DMG_EL = 'ice'; // 撞击冰爆盖按键技章（基础暴击 10%/冰元素、与 doSpecial 入口同口径），结算后还原
@@ -9512,6 +9561,13 @@ function hzNearestHostile(e){ var best = null, bd = Infinity; for(var i = 0; i <
 function hzNearestConverted(e){ var best = null, bd = Infinity; for(var i = 0; i < enemies.length; i++){ var o = enemies[i]; if(o === e || o.dead || (o.hzConvT || 0) <= 0) continue; var dd = dist2(e.x, e.y, o.x, o.y); if(dd < bd){ bd = dd; best = o; } } return best; } // 敌对怪转火用：最近的转化友军
 function hzAllyDamage(e, dmg){ // 转化友军对敌对怪的伤害结算：直扣（不经 damageEnemy 的玩家乘区/结界门禁——友军身处场内、按其自身数值打）；致死走 killEnemy（击杀/经验/掉落归本机玩家方）
   if(!e || e.dead) return;
+  if(e.isLaonong && (e.lnChargeT || 0) > 0){ // 蓄力期旁路封堵（2026-11-01，milo 16:05 确认）：目标为蓄力期劳农时只削韧性、不扣血、不走 killEnemy；韧性 <=0 即打断；覆盖经此函数的所有转化友军伤害路（接触、预警圈、弹道、hzFoeHit 转伤）
+    e.lnPoise = (e.lnPoise || 0) - dmg;
+    if(!(e.flashCd > 0)){ e.flash = 0.09; e.flashCd = 0.25; }
+    texts.push({ x: e.x + rand(-8, 8), y: e.y - e.r - 4, v: dmg, t: 0, crit: false });
+    if(e.lnPoise <= 0) laonongUltInterrupt(e);
+    return;
+  }
   e.hp -= dmg;
   if(!(e.flashCd > 0)){ e.flash = 0.09; e.flashCd = 0.25; }
   texts.push({ x: e.x + rand(-8, 8), y: e.y - e.r - 4, v: dmg, t: 0, crit: false });
@@ -9650,7 +9706,7 @@ function updateFallers(dt){
       if(f.type === 'rain'){ spawnVfx('splash', f.x, f.y, f.r * 1.6, 0.45); sfx('splash'); } // 雨幕：Splash 水花素材（DevWizard，CC0）＋水花音效
       if(f.type === 'starbeam'){ spawnVfx('divine', f.x, f.y, f.r * 1.9, 0.5); burst(f.x, f.y, '#ffe97a', fxN(22)); burst(f.x, f.y, '#a8dcff', fxN(10)); effects.push({ type:'ring', x: f.x, y: f.y, t: 0, dur: 0.4, color: '255,215,106' }); shake = Math.max(shake, 6); hitStop(0.05); sfx('holy'); } // 老天再爱我一次轰落（可见性加强 2026-10-26）：圣光素材放大＋双色星尘加量＋冲击环＋震屏/顿帧——只加打击感，伤害与范围不变（下方 shake=3 通用值被本行 6 覆盖）
       else if(f.type === 'egg'){ burst(f.x, f.y, '#ffffff', 8); sfx('hit'); }
-      else if(f.type === 'stamp' || f.type === 'bigseal') sfx(f.nuke ? 'nadeboom' : 'stamp', f.nuke ? 1 : 0.25); else if(f.type === 'spike') sfx('spikehit'); else if(f.type === 'magma') sfx('fboom'); else if(f.type === 'acid') sfx('spray'); else if(f.type === 'rock') sfx('spikehit'); else if(f.type === 'weibomb'){ sfx('nadeboom'); spawnVfx('ard_volt', f.x, f.y, f.r * 2.1, 0.5); burst(f.x, f.y, '#4db2e8', fxN(12)); burst(f.x, f.y, '#aee6ff', fxN(6)); } else if(f.type === 'hail'){ if(Math.random() < 0.3) sfx('frost'); } else sfx('hit'); // 冰雹落地音节流（约 22 根/秒、20:34 加密后、全响会吵——三成概率抽响） // 尾爷二次元爆弹落地：蓝白电爆素材＋蓝光碎屑（蓝色光球口径，单段爆炸、无分裂子弹）；黄主任普攻印章落地 'stamp' 调小一倍（2026-10-28 用户令）：vmul 0.5 只加在非 nuke 分支——'stamp' 在此行只由普攻印章（含连环小印）触发，bigseal 恒走 nuke 'nadeboom' 不受影响；按键技释放瞬间的 sfx('stamp')（doSpecial 段）是另一调用点、不动
+      else if(f.type === 'stamp' || f.type === 'bigseal') sfx(f.nuke ? 'nadeboom' : 'stamp', f.nuke ? 1 : 0.25); else if(f.type === 'spike') sfx('spikehit'); else if(f.type === 'magma') sfx('fboom'); else if(f.type === 'acid') sfx('spray'); else if(f.type === 'rock') sfx('spikehit'); else if(f.type === 'weibomb'){ sfx('nadeboom'); spawnVfx('ard_volt', f.x, f.y, f.r * 2.1, 0.5); burst(f.x, f.y, '#4db2e8', fxN(12)); burst(f.x, f.y, '#aee6ff', fxN(6)); } else if(f.type === 'hail'){ if(Math.random() < 0.3) sfx('frost'); } else sfx('hit'); // 冰雹落地音节流（约 28.6 根/秒、2026-11-01 加密后、全响会吵——三成概率抽响） // 尾爷二次元爆弹落地：蓝白电爆素材＋蓝光碎屑（蓝色光球口径，单段爆炸、无分裂子弹）；黄主任普攻印章落地 'stamp' 调小一倍（2026-10-28 用户令）：vmul 0.5 只加在非 nuke 分支——'stamp' 在此行只由普攻印章（含连环小印）触发，bigseal 恒走 nuke 'nadeboom' 不受影响；按键技释放瞬间的 sfx('stamp')（doSpecial 段）是另一调用点、不动
       if(f.type !== 'hail') shake = Math.max(shake, 3); // 冰雹豁免通用震屏：约 22 根/秒的高频落物若每根都震 3、技能 13 秒全程画面发抖（其余落物口径一字未动）
     }
   }
@@ -12251,8 +12307,9 @@ function buildChoices(exclude){
   for(key in PASSIVES){
     pl = P.passives[key] || 0;
     if(!PASSIVES[key].hidden && heroCanUsePassive(P.charIdx, key) && pl < PASSIVES[key].max && (pl > 0 || !hasCP('doomcontract'))){ // 被动学习上限：MAX_PAS_LEARN＝16 个（2026-10-29 由 20 改 15、2026-10-30 再改 16；按不同技能计数）；已学被动的升级卡（pl>0）不受上限影响。【2026-10-28 槽满替换（用户令）】被动槽满（16）时未学被动卡照常出现——选中后走替换流程（同 applyChoice 拦截，替换同类型已学被动、新被动 Lv1 入槽、总数仍 ≤16）；毁灭契约仍封新被动卡（同攻击口径）；专属他角过滤（2026-10-30 统一判定 heroCanUsePassive，现行无专属被动恒放行）
-      var pwB = pl > 0 ? 9.5 : 2.0; // 已学被动加权（2026-10-26 用户令三度调高：4.2 → 6.3 → 9.5，约新被动 2.0 的 4.75 倍）；满级被动已被上方 pl < max 条件排除、不占卡位
-      pwB *= pairBoostP(key); // 组合联动（2026-10-29 用户令）：已学未进化的配对主动 → 本卡 ×2（未学 2.0→4.0、已学 9.5→19.0）；取代旧单向平加 +1.2（平加废除、只算一次不叠加，见 PAIR_LINK_MUL 定版注）
+      var isExclPas = !!(PASSIVES[key].onlyHero || PASSIVES[key].onlyChar != null); // 通用专属权重（2026-11-01 用户令）：入池专属被动（带 onlyHero/onlyChar，如班定菜）才走此档；觉醒时自动给的被动（班仔一觉、梁鸡烟雾拖尾、陈哈哈心电、黄主任牛马的觉悟、朱德中山路马拉松王子等）不在 PASSIVES 表里、不进本循环，本轮一个都不加进池、获得方式一字不动
+      var pwB = isExclPas ? (pl > 0 ? 15.0 : 6.0) : (pl > 0 ? 9.5 : 2.0); // 专属档：未学 6.0（通用新被动 2.0 的 3 倍）、已学未满级 15.0（通用已学 9.5 的约 1.58 倍），所有入池专属被动同权重、不只班定菜单独提权；通用档一字不动（已学 9.5／未学 2.0）；满级被动已被上方 pl < max 条件排除、不占卡位
+      if(!isExclPas) pwB *= pairBoostP(key); // 组合联动（2026-10-29 用户令）只算通用档：已学未进化的配对主动 → 本卡 ×2（未学 2.0→4.0、已学 9.5→19.0）；专属档不吃此乘区，最终权重恒为 6.0／15.0、不被二次放大（班定菜现行 SIG_ITEM 无武器配对、pairBoostP 恒为 1，跳过亦同值；未来专属被动若成配对项亦不二次放大）
       pool.push({ type:'passive', key: key, weight: pwB });
     }
   }
@@ -12288,6 +12345,7 @@ function buildChoices(exclude){
 var lvChoices = [], lvRerolled = [];
 var lvDraftSaved = false; // 学习页「返回游戏」暂存旗（2026-10-29 用户令）：返回时当前卡组（lvChoices）与各卡已刷新状态（lvRerolled）原样保留，重进学习页复用同一组卡、不重掷——见 closeLevelUpToGame
 function openLevelUp(){
+  if(awkFxActive()){ awkLearnDeferred = true; return; } // 觉醒特效跟随轮（2026-11-01 用户令④）：光柱/粗雷还在场时学习页不得盖住它——暂缓重开，特效播完由 update/clientTick 补开；待学次数与暂存卡组一字不动，sfx/掷卡一律不提前消费
   sfx('levelup');
   buzz('levelup', [20, 40, 20], 200); // 升级：轻快两段震
   panelGuardSet('learn', true); // 面板护盾（第 15 项定版）：不切 state、不暂停世界——学习期间本机无敌、不被索敌，世界照常跑
@@ -12543,7 +12601,7 @@ function applyChoice(c){
   document.getElementById('levelupScreen').classList.remove('on');
   pendingLevels--;
   checkAwakening(function(){
-    if(pendingLevels > 0){ openLevelUp(); return; } // 待学未学完：学习页内直接续开下一级（玩家已在学习中，不经按钮、更不自动弹——入口仍只有按钮）
+    if(pendingLevels > 0){ openLevelUp(); if(!awkLearnDeferred) return; } // 待学未学完：学习页内直接续开下一级（玩家已在学习中，不经按钮、更不自动弹——入口仍只有按钮）；觉醒特效跟随轮：若本级刚觉醒且特效在场、学习页被暂缓，则不直接返回——走下方离页清理（摘护盾、亮「可学习」钮），特效播完由 update/clientTick 补开下一级，待学次数不丢
     state = 'playing'; // 选完卡回到战场（state 本就保持 playing，此行仅兜底觉醒演出后的回位）；经验拾取禁令轮（2026-10-29）：旧「选完卡全场宝石飞吸入袋 vacuumT」已删除——升级收尾不再自动吸经验，场上宝石仍须玩家靠近捡取或靠吸铁石道具
     panelGuardSet('learn', false); // 学习结束：摘护盾并上报房主——恢复可受击、可被索敌（不残留无敌）；同时 panelGuardSet 内部按 2026-10-28 晚用户令启动「离开学习页后隐身 3 秒」（隐身期怪物不索敌不攻击、本人可移动可攻击、到期恢复，详见 panelGuardSet 注）
     learnBtnSync();
@@ -12660,6 +12718,8 @@ function applyAwkPassive(c){
   else if(t === 'mag') P.bonusMagMul = 1.6;
   else if(t === 'spec') P.specCdMul = 0.7;
 }
+var awkLearnDeferred = false; // 觉醒特效跟随轮（2026-11-01 用户令④）：觉醒光柱/粗雷在场时学习页暂缓重开的待补旗——特效播完由 update/clientTick 补开，待学次数与暂存卡组不丢
+function awkFxActive(){ for(var ai0 = 0; ai0 < effects.length; ai0++){ var e0 = effects[ai0]; if((e0.type === 'awkpillar' || e0.type === 'awkb') && e0.t <= e0.dur) return true; } return false; } // 觉醒光柱/粗雷是否还在场（只认类型，旧残留亦挡学习页）
 function checkAwakening(done){
   var targetStage = P.level >= 40 ? 2 : (P.level >= 20 ? 1 : 0); // 觉醒时点（2026-10-26 定版：一觉 Lv20；2026-11-01 朱德轮用户令：二觉 Lv45→Lv40，一觉不动；阶段伤害×1.25/×1.50、一觉专属被动、生命加成＋30/＋50 均不动）
   if(targetStage > P.stage){
@@ -12691,11 +12751,11 @@ function checkAwakening(done){
       var awB1 = awPts[3].slice(), awB2 = awPts[5].slice();
       awBr.push([awB1, [awB1[0] + 46, awB1[1] + 90], [awB1[0] + 78, awB1[1] + 170]]);
       awBr.push([awB2, [awB2[0] - 52, awB2[1] + 80], [awB2[0] - 88, awB2[1] + 150]]);
-      effects.push({ type:'awkb', x: P.x, y: P.y, t: 0, dur: 0.7, pts: awPts, br: awBr });
+      effects.push({ type:'awkb', x: P.x, y: P.y, t: 0, dur: 0.7, pts: awPts, br: awBr, followP: true }); // 觉醒特效跟随轮（2026-11-01 用户令③）：粗雷跟随本体——pts 为相对偏移，绘制时以当前 P.x/P.y 为原点，落点恒为本体脚下
       effects.push({ type:'flash', t: 0, dur: 0.3, color: '170,215,255' });
       P.poseUntil = gameTime + 0.8;
     } else { // 其他所有角色（含光明朱德）：DNF 式脚底冲天光柱
-      effects.push({ type:'awkpillar', x: P.x, y: P.y, t: 0, dur: 1.1 });
+      effects.push({ type:'awkpillar', x: P.x, y: P.y, t: 0, dur: 2.0, followP: true }); // 觉醒特效跟随轮（2026-11-01 用户令①②）：光柱跟随本体、持续 1.1 秒→2.0 秒；旧固定触发点坐标作废
     }
     effects.push({ type:'ring', x: P.x, y: P.y, t: 0, dur: 0.8, color: '255,210,62' });
     effects.push({ type:'ring', x: P.x, y: P.y, t: -0.18, dur: 0.8, color: '255,240,190' });
@@ -13064,10 +13124,11 @@ function update(dt){
     var pxPre = P.x, pyPre = P.y; // 步频同步用：slideMove 前的真实位置（治滑步——帧推进改由真实位移驱动，见下方 walkPhase 行）
     if(gmOnIceZone(P.x, P.y)){ // 战斗冰面滑溜手感（2026-10-31 技能实装轮，用户定方向、数值施工取值）：身处战斗冰面时改走惯性速度——实际速度以 GM_SLIP_RATE/秒 趋近输入目标速度（起步/转向/刹车都滑），松开输入后按同式衰减滑行到停；速度量级仍为 pSpeed（含冰面 ×1.3 与 2 倍封顶）；离冰面即回下方直驱并清惯性（纯特效拖尾冰面不进本段——gmOnIceZone 只认战斗冰面池）
       var slipK = Math.min(1, dt * GM_SLIP_RATE), slipSpd = dt > 0 ? pStep / dt : 0;
+      if((P.gmVelX || 0) === 0 && (P.gmVelY || 0) === 0 && ((P.gmDirectVelX || 0) !== 0 || (P.gmDirectVelY || 0) !== 0)){ P.gmVelX = P.gmDirectVelX; P.gmVelY = P.gmDirectVelY; } // 冰面进出顺滑轮（2026-11-01 用户令：去掉进冰面停顿感）：进冰面首帧惯性速度承接进冰面前直驱速度——离冰面时 gmVel 恒清零，旧口径进冰面首帧只能从 0 以 slipK（约 5.3%/帧）起步，位移从 100% 断崖到约 5%，就是停顿减速感的根因；现进冰面首帧先以进冰面前直驱速度为初速，再按旧 slipK 趋近冰面目标速度（×1.3），首帧位移约等于进冰面前速度、无归零、无断崖；静止上冰时直驱速度为 0，仍从 0 起步（正常起步滑溜，不属本轮改动）
       P.gmVelX = (P.gmVelX || 0) + (mx * slipSpd - (P.gmVelX || 0)) * slipK;
       P.gmVelY = (P.gmVelY || 0) + (my * slipSpd - (P.gmVelY || 0)) * slipK;
       slideMove(P, P.gmVelX * dt, P.gmVelY * dt);
-    } else { P.gmVelX = 0; P.gmVelY = 0; slideMove(P, mx * pStep, my * pStep); }
+    } else { if(dt > 0){ P.gmDirectVelX = mx * pStep / dt; P.gmDirectVelY = my * pStep / dt; } P.gmVelX = 0; P.gmVelY = 0; slideMove(P, mx * pStep, my * pStep); }
     if(ml > 0.05 && !(P.faceLockT > 0) && !(P.charIdx === 0 && (P.excT > 0 || (typeof BZ_AIM !== 'undefined' && BZ_AIM.active)))){ // 朝向令：开火朝向锁生效期间（开火中＋停火 0.3 秒内）移动不改朝向；锁过期后朝向回归移动方向；班仔按键技瞄准/蓄力期间（2026-10-28 纠正口径）移动同样不改朝向——正面保持指示方向，释放后恢复；ml 门禁为冰面滑行补入（无输入滑行时不硬转朝向、与旧有输入路径逐值相同）
       P.face = mx !== 0 ? Math.sign(mx) : P.face;
       P.faceAng = Math.atan2(my, mx);
@@ -13646,18 +13707,30 @@ function update(dt){
        跳伤飘字/白闪/火花与既有持续伤害同格式；致死走 killEnemy 且临时恢复 e.jgIgniteSrc 为 DMG_SRC（击杀牛筋/计数按引燃来源归因，结算后还原）；
        本段位置在 stun 段之前——烟雾锁晕中的怪照常烧（与通用持续伤害同序）；普通怪 jgIgniteUsed 不在此清除：一生只触发一次（见 jgTryIgnite）；Boss 的 20 秒冷却 e.jgIgniteBossCd 在敌人主循环顶部逐帧递减、不在此清除/重置（触发起算）。 */
     if(e.jgIgniteT > 0){
+      if(e.isLaonong){ e.jgIgniteT = 0; e.jgIgniteAcc = 0; e.jgIgniteLayers = 0; e.jgIgniteBossCd = 0; } // 2026-11-01 引燃对劳农无效轮：残留引燃计时在此清掉，不结算跳伤；后续触发由 jgTryIgnite/jgTryIgnite2 拦下，此处只清残留，不影响其他敌人
       e.jgIgniteAcc = (e.jgIgniteAcc || 0) + dt;
       e.jgIgniteT -= dt;
       while(e.jgIgniteAcc >= 1){ // 先结算整秒跳再判到期：最后一帧跨过 1 秒的第 10 跳不丢失，10 跳恰满
+        if(e.isLaonong) break; // 2026-11-01 引燃对劳农无效轮：大 dt 下累积满 1 秒也不结算——不扣血、不削韧性（上一轮转韧性口径被本条“无效”取代）、不致死、不飘字
         e.jgIgniteAcc -= 1;
         var igPct = e.boss ? JG_IGNITE_BOSS_PCT : JG_IGNITE_PCT;
         if((e.jgIgniteLayers || 1) >= 2) igPct = e.boss ? JG_IGN2_PCT.boss : (e.elite ? JG_IGN2_PCT.elite : JG_IGN2_PCT.normal); // 引燃 2 层（2026-10-31 梁鸡轮；修正轮核实 2026-10-31）：每秒只跳一次、2 层时把这一跳的费率「换成」2 层合计值——小怪 10%／精英 8%／Boss 4%（JG_IGN2_PCT、milo 定值；精英 8% 不按单层 5%×2 推导）——即 milo 00:44「二层＝改变第一层效果」模型：不是两层各跳一次、无双计（口径见 JG_ROUND 定版注 ⑤ 与 JG_IGN2_FIX 定版注）
         var igDmg = e.maxHp * igPct;
-        e.hp -= igDmg;
-        if(!(e.flashCd > 0)){ e.flash = 0.09; e.flashCd = 0.25; }
-        texts.push({ x: e.x + rand(-8, 8), y: e.y - e.r - 4, v: igDmg, t: 0, crit: false });
-        if(particles.length < 800) particles.push({ x: e.x + rand(-8, 8), y: e.y - 4, vx: rand(-14, 14), vy: rand(-52, -24), t: 0, life: 0.34, color: '#ff8a3e', r: 2.6 });
-        if(e.hp <= 0){ var igPrevSrc = DMG_SRC; DMG_SRC = (e.jgIgniteSrc === undefined ? null : e.jgIgniteSrc); killEnemy(e); DMG_SRC = igPrevSrc; break; }
+        if(e.isLaonong && (e.lnChargeT || 0) > 0){ // 蓄力期旁路封堵（2026-11-01，milo 16:05 确认）：引燃跳伤只削韧性、不扣血、不致死；
+          // 与 damageEnemy 韧性门同口径：削 lnPoise，韧性 <=0 即走 laonongUltInterrupt；引燃计时/层数在外层继续走，本跳不走 killEnemy；
+          // 打断后 break：本帧剩余累积跳数留到下一帧结算，总跳数不变，不在打断同帧立即转扣血。
+          e.lnPoise = (e.lnPoise || 0) - igDmg;
+          if(!(e.flashCd > 0)){ e.flash = 0.09; e.flashCd = 0.25; }
+          texts.push({ x: e.x + rand(-8, 8), y: e.y - e.r - 4, v: igDmg, t: 0, crit: false });
+          if(particles.length < 800) particles.push({ x: e.x + rand(-8, 8), y: e.y - 4, vx: rand(-14, 14), vy: rand(-52, -24), t: 0, life: 0.34, color: '#ff8a3e', r: 2.6 });
+          if(e.lnPoise <= 0){ laonongUltInterrupt(e); break; }
+        } else {
+          e.hp -= igDmg;
+          if(!(e.flashCd > 0)){ e.flash = 0.09; e.flashCd = 0.25; }
+          texts.push({ x: e.x + rand(-8, 8), y: e.y - e.r - 4, v: igDmg, t: 0, crit: false });
+          if(particles.length < 800) particles.push({ x: e.x + rand(-8, 8), y: e.y - 4, vx: rand(-14, 14), vy: rand(-52, -24), t: 0, life: 0.34, color: '#ff8a3e', r: 2.6 });
+          if(e.hp <= 0){ var igPrevSrc = DMG_SRC; DMG_SRC = (e.jgIgniteSrc === undefined ? null : e.jgIgniteSrc); killEnemy(e); DMG_SRC = igPrevSrc; break; }
+        }
       }
       if(e.dead) continue;
       if(e.jgIgniteT <= 0){ e.jgIgniteT = 0; e.jgIgniteAcc = 0; e.jgIgniteLayers = 0; } // 燃烧结束：清计时/累积/层数（梁鸡轮：2 层随本次引燃一并结束、不单独计时）；普通怪 jgIgniteUsed 与二层标记 jgIgn2Used 均保留终身、不在此清（修正轮：Boss 再引燃后也不能再叠二层——落地取值、milo 未定、见 JG_IGN2_FIX 定版注），Boss 的 20 秒冷却不在此清（触发起算、顶部逐帧递减，结束后约剩 10 秒）
@@ -14010,6 +14083,7 @@ function update(dt){
   // 【流畅度优化轮（2026-10-29）】四类纯视觉实体（novas/effects/vfxList/particles）的到期回收由 splice 改尾元素交换删除（swap-remove）：splice 每次删除要搬移其后全部元素，粒子峰值 800+ 时一帧内多次删除即 O(n²) 搬移、是安卓 WebView 密集战斗掉帧源之一；这四类实体的数组顺序无玩法/结算语义（绘制叠序为瞬时特效、无人依赖），交换删除行为等价、单次 O(1)。texts 涉及飘字叠序、保留原 splice 不动
   for(var ni = novas.length - 1; ni >= 0; ni--){ var nv = novas[ni]; nv.t += dt; nv.r += (nv.maxR - nv.r) * Math.min(1, dt * 9); if(nv.t > 0.45){ novas[ni] = novas[novas.length - 1]; novas.pop(); } }
   for(var fi2 = effects.length - 1; fi2 >= 0; fi2--){ effects[fi2].t += dt; if(effects[fi2].t > effects[fi2].dur){ effects[fi2] = effects[effects.length - 1]; effects.pop(); } }
+  if(awkLearnDeferred && pendingLevels > 0 && !awkFxActive()){ var _ls = document.getElementById('levelupScreen'); if(!_ls || !_ls.classList.contains('on')){ awkLearnDeferred = false; openLevelUp(); } } // 觉醒特效跟随轮：特效播完补开被暂缓的学习页（待学次数不丢；openLevelUp 内仍有特效门禁，复查通过才真开；学习页已开时不重开）
   for(var vfi = vfxList.length - 1; vfi >= 0; vfi--){ vfxList[vfi].t += dt; if(vfxList[vfi].t > vfxList[vfi].dur){ vfxList[vfi] = vfxList[vfxList.length - 1]; vfxList.pop(); } }
   for(var qi = particles.length - 1; qi >= 0; qi--){ var pt = particles[qi]; pt.t += dt; pt.x += pt.vx * dt; pt.y += pt.vy * dt; pt.vx *= 0.9; pt.vy *= 0.9; if(pt.t > pt.life){ particles[qi] = particles[particles.length - 1]; particles.pop(); } }
   if(texts.length > 160) texts.splice(0, texts.length - 160); // 飘字硬上限（与粒子 850／特效 72／宝石 400 同口径）：飘字此前是全场唯一无上限实体——炸弹/磁石拾取会在一帧内批量结算击杀与拾取，密集怪群里同帧堆出数百条，叠上绘制端逐条描边填充，是真机内存吃紧时拾取瞬间闪退的尖峰来源；超限丢最旧（飘字寿命仅 0.75 秒，正常战斗远达不到上限，无感）
@@ -16090,13 +16164,13 @@ function drawEnemy(e, sx, sy){
     ctx.fillStyle = e.hidden ? '#ffb3d8' : '#ffd8d2';
     ctx.fillText(e.name, sx, topY - 22);
     ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(sx - e.r, topY - 18, e.r * 2, 6);
-    ctx.fillStyle = e.hidden ? '#ff5a8a' : '#e8483f'; ctx.fillRect(sx - e.r, topY - 18, e.r * 2 * clamp(e.hp / e.maxHp, 0, 1), 6);
-    if((e.gmCold || 0) >= 2){ var gfb = (e.gmCold - 1) * 0.1; ctx.fillStyle = '#57b6e8'; ctx.fillRect(sx + e.r - e.r * 2 * gfb, topY - 18, e.r * 2 * gfb, 6); ctx.font = '900 9px sans-serif'; ctx.textAlign = 'left'; ctx.fillStyle = '#aee6ff'; ctx.fillText('感冒×' + e.gmCold, sx + e.r + 4, topY - 12); } // 感冒冻血条（2026-10-31 技能实装轮，用户定版）：血条总长与表面血量不变、右段按冻量覆冰蓝（冻住的那段血）＋层数小字
+    var gfbB = gmColdFrac(e.gmCold || 0), ghpB = clamp(e.hp / e.maxHp, 0, 1), gfrB = clamp(ghpB - gfbB, 0, 1), gfzB = Math.min(gfbB, ghpB); ctx.fillStyle = e.hidden ? '#ff5a8a' : '#e8483f'; ctx.fillRect(sx - e.r, topY - 18, e.r * 2 * gfrB, 6);
+    if(gfbB > 0){ ctx.fillStyle = '#57b6e8'; ctx.fillRect(sx - e.r + e.r * 2 * gfrB, topY - 18, e.r * 2 * gfzB, 6); ctx.font = '900 9px sans-serif'; ctx.textAlign = 'left'; ctx.fillStyle = '#aee6ff'; ctx.fillText('感冒×' + e.gmCold, sx + e.r + 4, topY - 12); } // 感冒冻血条显示（2026-11-01 用户令改定，取代 10-31 固定右端口径）：红段＝有效血 (hp−冻量)/maxHp、冻段冰蓝紧贴红段右侧、空段＝maxHp−hp；受击时缩的是红段、冻段不动；感冒到期 gmCold 归 0 时冻段消失、红段回到 hp/maxHp（冻量返还显示、hp 本身从未被冻段扣掉）；叠层当刻 hp 已入冻段者按既有 gmColdDeathCheck 当场判死、显示不另改
     if(!e.hidden && !e.wc2){ ctx.fillStyle = '#ffd23e'; ctx.fillRect(sx - 8, topY - 30, 16, 3); ctx.fillRect(sx - 8, topY - 30, 3, 5); ctx.fillRect(sx - 1, topY - 31, 3, 6); ctx.fillRect(sx + 5, topY - 30, 3, 5); } // 旺财二号不戴 Boss 王冠标记（2026-10-30）：它是召唤物不是池 Boss、头顶只留名牌＋血条与本体区分
     if(e.lnChargeT > 0 || e.lnStunT > 0){ // 劳农专属技能：韧性条（紫，与红色血条分开、位于其上方）＋头顶元气弹能量球（随蓄力进度长大）
       var poW = Math.max(90, e.r * 2), poFrac = e.lnPoiseMax > 0 ? clamp((e.lnPoise || 0) / e.lnPoiseMax, 0, 1) : 0;
       if(e.lnChargeT > 0){
-        var prog = 1 - e.lnChargeT / (e.lnChargeDur || 8), br2 = 10 + prog * 24, bx2 = sx, by2 = topY - 96;
+        var prog = 1 - e.lnChargeT / (e.lnChargeDur || 10), br2 = 10 + prog * 24, bx2 = sx, by2 = topY - 96;
         var grd2 = ctx.createRadialGradient(bx2, by2, 2, bx2, by2, br2 * 1.6);
         grd2.addColorStop(0, 'rgba(255,244,255,.95)'); grd2.addColorStop(0.35, 'rgba(196,150,255,.7)'); grd2.addColorStop(1, 'rgba(120,60,220,0)');
         ctx.fillStyle = grd2; ctx.beginPath(); ctx.arc(bx2, by2, br2 * 1.6, 0, Math.PI * 2); ctx.fill();
@@ -16112,8 +16186,8 @@ function drawEnemy(e, sx, sy){
     }
   } else if(e.hp < e.maxHp || (e.gmCold || 0) >= 2){
     ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(sx - e.r, topY - 8, e.r * 2, 4);
-    ctx.fillStyle = '#e8483f'; ctx.fillRect(sx - e.r, topY - 8, e.r * 2 * clamp(e.hp / e.maxHp, 0, 1), 4);
-    if((e.gmCold || 0) >= 2){ var gfn = (e.gmCold - 1) * 0.1; ctx.fillStyle = '#57b6e8'; ctx.fillRect(sx + e.r - e.r * 2 * gfn, topY - 8, e.r * 2 * gfn, 4); ctx.font = '900 9px sans-serif'; ctx.textAlign = 'left'; ctx.fillStyle = '#aee6ff'; ctx.fillText('感冒×' + e.gmCold, sx + e.r + 4, topY - 4); } // 感冒冻血条（2026-10-31 技能实装轮，用户定版）：满血挂冻时也显条（冻住段必须看得见）——红条满长不变、右段按冻量覆冰蓝＋层数小字
+    var gfn = gmColdFrac(e.gmCold || 0), ghpN = clamp(e.hp / e.maxHp, 0, 1), gfrN = clamp(ghpN - gfn, 0, 1), gfzN = Math.min(gfn, ghpN); ctx.fillStyle = '#e8483f'; ctx.fillRect(sx - e.r, topY - 8, e.r * 2 * gfrN, 4);
+    if(gfn > 0){ ctx.fillStyle = '#57b6e8'; ctx.fillRect(sx - e.r + e.r * 2 * gfrN, topY - 8, e.r * 2 * gfzN, 4); ctx.font = '900 9px sans-serif'; ctx.textAlign = 'left'; ctx.fillStyle = '#aee6ff'; ctx.fillText('感冒×' + e.gmCold, sx + e.r + 4, topY - 4); } // 感冒冻血条显示（2026-11-01 用户令改定，与 Boss 处同口径）：红段＝有效血 (hp−冻量)/maxHp、冻段冰蓝紧贴红段右侧、空段＝maxHp−hp；满血挂冻时红段＝1−冻量、冻段在右仍看得见；感冒到期冻段消失、红段回到 hp/maxHp
   }
   if(e.elite && !e.boss){ ctx.font = '900 10px sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#ffd23e'; ctx.fillText('精英', sx, topY - 12); }
   if((e.hzConvT || 0) > 0){ ctx.font = '900 ' + HZ_CONV_LABEL_FS + 'px sans-serif'; ctx.textAlign = 'center'; ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,.55)'; ctx.strokeText('牛嗎', sx, topY - 20); ctx.fillStyle = '#ff3b30'; ctx.fillText('牛嗎', sx, topY - 20); } // 吃苦转化标记（2026-10-29 用户令）：转化期间头顶常驻红色「牛嗎」二字（用户原字——嗎、非馬，不得改字）——13px 粗体（HZ_CONV_LABEL_FS，中等可见：略大于精英字 10px/Boss 名 12px）、头顶 topY－20（血条与精英字上方）、黑描边保可读；随转化全程 15 秒常显、hzConvT 到期清零即消失
@@ -17972,9 +18046,10 @@ function draw(){
       ctx.beginPath(); ctx.ellipse(0, 6, 40 * (1 - pp2 * 0.4), 11, 0, 0, Math.PI * 2); ctx.fill();
       ctx.restore();
     }
-    if(ef.type === 'awkb'){ // 觉醒粗雷（陈哈哈专属，2026-11-01 觉醒特效分线令）：单道天雷从天而降直劈本体——外层辉光 30px＋中层 16px＋亮芯 7px，远粗于既有 bolt 的 8/3.6；主干折点与分叉在触发帧固化进 ef.pts/ef.br（逐帧不重掷、只做闪烁衰减）；落点即本体脚下、附落点爆闪光晕；程序绘制、零外部素材、零授权风险（来源见 checkAwakening 注）
+    if(ef.type === 'awkb'){ // 觉醒粗雷（陈哈哈专属，2026-11-01 觉醒特效分线令）：单道天雷从天而降直劈本体——外层辉光 30px＋中层 16px＋亮芯 7px，远粗于既有 bolt 的 8/3.6；主干折点与分叉在触发帧固化进 ef.pts/ef.br（逐帧不重掷、只做闪烁衰减）；落点即本体脚下、附落点爆闪光晕；程序绘制、零外部素材、零授权风险（来源见 checkAwakening 注）；跟随轮（2026-11-01 用户令③）：followP 时每帧以当前 P.x/P.y 为原点绘制，pts 相对偏移不动，落点恒跟本体
       var ap = clamp(ef.t / ef.dur, 0, 1), aa = ap < 0.25 ? 1 : Math.max(0, 1 - (ap - 0.25) / 0.75);
-      ctx.save(); ctx.translate(ef.x + ox, ef.y + oy);
+      var awkX = (ef.followP && typeof P !== 'undefined' && P) ? P.x : ef.x, awkY = (ef.followP && typeof P !== 'undefined' && P) ? P.y : ef.y;
+      ctx.save(); ctx.translate(awkX + ox, awkY + oy);
       var awDraw = function(pts, w, col){ ctx.strokeStyle = col; ctx.lineWidth = w; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); for(var ai = 1; ai < pts.length; ai++) ctx.lineTo(pts[ai][0], pts[ai][1]); ctx.stroke(); };
       ctx.globalAlpha = aa * 0.35; awDraw(ef.pts, 30, 'rgb(80,160,255)');
       ctx.globalAlpha = aa * 0.8; awDraw(ef.pts, 16, 'rgb(140,200,255)');
@@ -17983,9 +18058,10 @@ function draw(){
       ctx.globalAlpha = aa; ctx.fillStyle = 'rgba(220,240,255,0.9)'; ctx.beginPath(); ctx.ellipse(0, 4, 55, 12, 0, 0, Math.PI * 2); ctx.fill();
       ctx.restore();
     }
-    if(ef.type === 'awkpillar'){ // 觉醒光柱（陈哈哈以外全员，2026-11-01 觉醒特效分线令）：DNF 升级光柱口径——柱高 560、芯宽 64、辉光宽 130、柱脚地面光晕 rx95、柱内上升光点，远大于既有 pillar 的 34×260；程序绘制、零外部素材、零授权风险（来源见 checkAwakening 注）
+    if(ef.type === 'awkpillar'){ // 觉醒光柱（陈哈哈以外全员，2026-11-01 觉醒特效分线令）：DNF 升级光柱口径——柱高 560、芯宽 64、辉光宽 130、柱脚地面光晕 rx95、柱内上升光点，远大于既有 pillar 的 34×260；程序绘制、零外部素材、零授权风险（来源见 checkAwakening 注）；跟随轮（2026-11-01 用户令①②）：followP 时每帧以当前 P.x/P.y 为原点绘制，持续 2.0 秒，全程固定在角色身上
       var kp = clamp(ef.t / ef.dur, 0, 1), ka = kp < 0.15 ? kp / 0.15 : Math.max(0, 1 - (kp - 0.15) / 0.85);
-      ctx.save(); ctx.translate(ef.x + ox, ef.y + oy);
+      var awkPX = (ef.followP && typeof P !== 'undefined' && P) ? P.x : ef.x, awkPY = (ef.followP && typeof P !== 'undefined' && P) ? P.y : ef.y;
+      ctx.save(); ctx.translate(awkPX + ox, awkPY + oy);
       var kg = ctx.createLinearGradient(0, -560, 0, 10);
       kg.addColorStop(0, 'rgba(255,240,190,0)'); kg.addColorStop(0.7, 'rgba(255,235,170,' + (0.5 * ka) + ')'); kg.addColorStop(1, 'rgba(255,255,255,' + (0.9 * ka) + ')');
       ctx.fillStyle = 'rgba(255,230,150,' + (0.18 * ka) + ')'; ctx.fillRect(-65, -560, 130, 570);
@@ -22287,8 +22363,9 @@ function npcLearnPool(p){
     if(PASSIVES[key].hidden || pl >= PASSIVES[key].max) continue;
     if(!heroCanUsePassive(p.hero, key)) continue; // 专属他角过滤（2026-10-30 统一判定，现行无专属被动恒放行）
     if(pl === 0 && pasCount >= MAX_PAS_LEARN) continue; // 被动槽满（上限 16，2026-10-29 改 15、2026-10-30 改 16，与玩家同读 MAX_PAS_LEARN）：未学被动不再入池（NPC 不走替换，既有定版）
-    var pwB = pl > 0 ? 9.5 : 2.0;
-    pwB *= npcPairBoostP(p, key); // 组合联动（2026-10-29）：已学未进化的配对主动 → ×2，取代旧 +1.2 平加，与本机同口径
+    var isExclPas = !!(PASSIVES[key].onlyHero || PASSIVES[key].onlyChar != null); // 通用专属权重 NPC 同步（2026-11-01 用户令）：入池专属被动（带 onlyHero/onlyChar，如班定菜）才走此档；觉醒时自动给的被动不在 PASSIVES 表里、不进本循环，一个都不加进池、获得方式一字不动；与玩家 buildChoices 约 12310 行同口径
+    var pwB = isExclPas ? (pl > 0 ? 15.0 : 6.0) : (pl > 0 ? 9.5 : 2.0); // 专属档：未学 6.0、已学未满级 15.0，所有入池专属被动同权重；通用档一字不动（已学 9.5／未学 2.0）；满级被动已被上方 pl < max 条件排除、不占卡位
+    if(!isExclPas) pwB *= npcPairBoostP(p, key); // 组合联动（2026-10-29）只算通用档：已学未进化的配对主动 → ×2，与本机同口径；专属档不吃此乘区，最终权重恒为 6.0／15.0、不被二次放大（班定菜现行 SIG_ITEM 无武器配对、npcPairBoostP 恒为 1，跳过亦同值）
     pool.push({ type:'passive', key:key, weight:pwB });
   }
   return pool;
@@ -23639,7 +23716,7 @@ function buildSnap(){
   for(var i=0;i<enemies.length && es.length<420;i++){ var e=enemies[i];
     if(e._nid==null) e._nid=++N.eidSeq;
     if(!nearPlayers(e.x,e.y,1600)) continue;
-    es.push({id:e._nid,k:e.type,b:e.boss?1:0,el:e.elite?1:0,vs:e.visual||'',x:Math.round(e.x),y:Math.round(e.y),r:e.r,hp:Math.max(0,Math.round(e.hp)),mx:Math.round(e.maxHp),po:e.isLaonong&&(e.lnChargeT>0||e.lnStunT>0)?[Math.max(0,Math.round(e.lnPoise||0)),e.lnPoiseMax||3800,+(e.lnChargeT||0).toFixed(2),e.lnChargeDur||8,e.lnStunT>0?1:0]:0});
+    es.push({id:e._nid,k:e.type,b:e.boss?1:0,el:e.elite?1:0,vs:e.visual||'',x:Math.round(e.x),y:Math.round(e.y),r:e.r,hp:Math.max(0,Math.round(e.hp)),mx:Math.round(e.maxHp),po:e.isLaonong&&(e.lnChargeT>0||e.lnStunT>0)?[Math.max(0,Math.round(e.lnPoise||0)),e.lnPoiseMax||3800,+(e.lnChargeT||0).toFixed(2),e.lnChargeDur||10,e.lnStunT>0?1:0]:0});
   }
   var gs=[];
   /* 【怪多不掉经验查修（2026-10-31）根因③＋修法】旧版快照按 gems 数组顺序（＝生成先后）取前 160 颗下发：怪多时场上宝石远超 160，排在后面的新掉宝石（多半就在客机玩家脚边）被队友附近的旧宝石挤出快照——客机整表替换本地 gems 后这些宝石在其画面上根本不存在，看起来像「不掉经验」（房主权威数组本身不被快照截断、经验入账由 hostTick 按坐标结算、账面不丢，但客机看不见就不会去拾、体感即丢）。修法：候选先按「距最近一名玩家（含房主与全部 peers）的距离」升序排序再取 160——下发的恒是全场最贴近玩家的 160 颗；排序只作用于临时候选表，房主权威 gems 数组的顺序/内容/颗数一字不动，160 上限外宝石仍在房主侧存续、随近处宝石被拾后自然递补进快照（不丢弃未拾经验，兜底＝就近优先＋房主存续递补）。1600 剔除口径不变。 */
@@ -23733,6 +23810,7 @@ function clientTick(dt){
   if(N.snapRaw){ var rawSnap=N.snapRaw; N.snapRaw=null; var msnap=null; try{ msnap=JSON.parse(rawSnap); }catch(e){} if(msnap){ N.smStats.parsed++; netQNoteSnapApplied(); clientOnMsg(msnap); } } /* NETQ2026: applied interval + adaptive smK refreshed here */
   /* 【客机视觉实体推进（2026-10-28 NPC 攻击/学习可见性修复）】客机 update() 在 clientTick 后即返回，主动画尾段（update 内）的特效/飘字/粒子推进在客机上永不执行——客机本地推送的任何 effects/texts/vfxList 都会冻在 t=0（画不出/消不掉）。在此按与主机同一口径推进这四类纯视觉实体（不碰任何结算状态），客机屏上的 NPC 斩击/金环/技能名/学习飘字才真正播得出来 */
   for(var cfi=effects.length-1;cfi>=0;cfi--){ effects[cfi].t+=dt; if(effects[cfi].t>effects[cfi].dur){ effects[cfi]=effects[effects.length-1]; effects.pop(); } } // 【流畅度优化轮】swap-remove 同主机段注（纯视觉实体、顺序无语义）
+  if(typeof awkLearnDeferred !== 'undefined' && awkLearnDeferred && typeof pendingLevels !== 'undefined' && pendingLevels > 0 && !awkFxActive()){ var _ls2 = document.getElementById('levelupScreen'); if(!_ls2 || !_ls2.classList.contains('on')){ awkLearnDeferred = false; openLevelUp(); } } // 觉醒特效跟随轮（客机段）：与主机 update 段同口径，特效播完补开被暂缓的学习页；客机 update 尾段不跑特效推进，故补开只在此处
   for(var cvf=vfxList.length-1;cvf>=0;cvf--){ vfxList[cvf].t+=dt; if(vfxList[cvf].t>vfxList[cvf].dur){ vfxList[cvf]=vfxList[vfxList.length-1]; vfxList.pop(); } }
   for(var cti=texts.length-1;cti>=0;cti--){ var ctxx=texts[cti]; if(ctxx.t<0){ ctxx.t+=dt; continue; } ctxx.t+=dt; ctxx.y-=44*dt; if(ctxx.t>0.75) texts.splice(cti,1); }
   for(var cpi=particles.length-1;cpi>=0;cpi--){ var cpt=particles[cpi]; cpt.t+=dt; cpt.x+=cpt.vx*dt; cpt.y+=cpt.vy*dt; cpt.vx*=0.9; cpt.vy*=0.9; if(cpt.t>cpt.life){ particles[cpi]=particles[particles.length-1]; particles.pop(); } }
