@@ -72,6 +72,10 @@
       #btnStatsHud:active{transform:translateY(1px);}
       #btnLearnedHud{position:absolute; left:80px; top:calc(70px + env(safe-area-inset-top)); pointer-events:auto; font-family:inherit; font-size:13px; font-weight:800; letter-spacing:.06em; color:var(--ink); background:rgba(10,12,8,.65); border:1px solid var(--line); border-radius:999px; padding:6px 14px; cursor:pointer; white-space:nowrap;}
       #btnLearnedHud:active{transform:translateY(1px);}
+      /* 托管按钮（2026-11-01 托管轮）：与属性/已学技能钮同式样，默认落左列状态片下方（单人时该处空闲；联机队伍面板或万箭片点亮时若觉碍眼，可在 HUD 布局编辑页拖走，随 klf_hud_layout_v1 保存）；.on 时金底黑字＋文案变「托管中」，即 HUD 上的托管中标识 */
+      #btnAutoplay{position:absolute; left:12px; top:calc(176px + env(safe-area-inset-top)); pointer-events:auto; font-family:inherit; font-size:13px; font-weight:800; letter-spacing:.06em; color:var(--ink); background:rgba(10,12,8,.65); border:1px solid var(--line); border-radius:999px; padding:6px 14px; cursor:pointer; white-space:nowrap;}
+      #btnAutoplay:active{transform:translateY(1px);}
+      #btnAutoplay.on{background:#ffd23e; border-color:#ffe98a; color:#2a1503;}
       .slot-row{display:flex; gap:6px;}
       .el-chip{display:inline-block; margin-left:6px; padding:0 7px; border-radius:8px; font-size:11px; font-weight:900; color:#141a10; vertical-align:1px;}
       .el-chip img{width:13px; height:13px; image-rendering:pixelated; vertical-align:-2px; margin-right:3px; border-radius:3px;}
@@ -592,6 +596,7 @@
   #mhDroneHud{top:calc(148px + env(safe-area-inset-top));}
   #chSpecHud{top:calc(148px + env(safe-area-inset-top));}
   #bzWjHud{top:calc(182px + env(safe-area-inset-top));} /* 窄屏：万箭片叠剑阵片下方一格（148＋34＝182、底 ≈208） */
+  #btnAutoplay{top:calc(216px + env(safe-area-inset-top));} /* 窄屏托管钮：万箭片底 ≈208 之下 */
   body:has(#bzWjHud.on) #netTeam, body.hud-edit #netTeam{top:calc(224px + env(safe-area-inset-top));} /* 窄屏：万箭片点亮时队伍面板由 190 下推至 224、避开万箭片底 ≈208；编辑态同推 */
 }
 
@@ -621,6 +626,7 @@
   #mhDroneHud{top:calc(104px + env(safe-area-inset-top)); left:calc(12px + env(safe-area-inset-left));}
   #chSpecHud{top:calc(104px + env(safe-area-inset-top)); left:calc(12px + env(safe-area-inset-left));}
   #bzWjHud{top:calc(138px + env(safe-area-inset-top)); left:calc(12px + env(safe-area-inset-left));} /* 横屏：万箭片叠剑阵片下方一格（104＋34＝138、底 ≈164） */
+  #btnAutoplay{top:calc(172px + env(safe-area-inset-top)); left:calc(12px + env(safe-area-inset-left));} /* 横屏托管钮：万箭片底 ≈164 之下 */
   body:has(#bzWjHud.on) #netTeam, body.hud-edit #netTeam{top:calc(182px + env(safe-area-inset-top));} /* 横屏：万箭片点亮时队伍面板由 148 下推至 182、避开万箭片底 ≈164；编辑态同推 */
   #comboHud{top:calc(206px + env(safe-area-inset-top)); right:calc(12px + env(safe-area-inset-right));}
   #vitals{left:calc(8px + env(safe-area-inset-left));}
@@ -666,7 +672,7 @@
    ② 摇杆 knob 改走合成层：joyTrack 不再逐事件写 left/top（每次写都触发布局），改由 JS 写 transform 位移（见 joyTrack 注），此处只声明 will-change 让 knob 常驻合成层、跟手不掉帧；base 认领时定位一次、不逐帧动。
    ③ 列表滑动统一口径：此前只有 choiceRow/charRow/rep-list/net-trows 显式带 pan-y＋惯性＋边界隔离，其余可滚容器（已学/属性面板、图鉴、鸣谢、商店/标题/联机整页、通用 .overlay 与 .lv-panel）只有裸 overflow-y:auto——手势起手要先被浏览器猜测方向、滚到边界还会把滚动链传给下层画布/页面，表现为起滑迟滞＋串扰发卡。本块给全部可滚面统一补齐四件套（touch-action:pan-y 只认纵滑、overscroll-behavior:contain 边界不外传、-webkit-overflow-scrolling:touch 惯性、scrollbar-width:thin），位置/尺寸/内容一字未动；#levelupScreen .lv-panel 的 overflow:hidden 由更高特异性旧规则管辖、不受 .lv-panel 本条影响。
    ④ 长列表渲染解耦：图鉴条目（.codex-entry，技能+怪物上百条）与已学技能行（.ld-row）加 content-visibility:auto——视口外条目跳过渲染、滚动时主线程不再为整表布局/绘制买单，滑动帧率稳；contain-intrinsic-size 给未渲染条目预留近似高度、滚动条不乱跳。条目内容/顺序/高度口径未动（已渲染过的条目用 auto 记忆真实高度）。 */
-.tbtn, #btnPause, #btnStatsHud, #btnLearnedHud, .music-btn{touch-action:manipulation;}
+.tbtn, #btnPause, #btnStatsHud, #btnLearnedHud, #btnAutoplay, .music-btn{touch-action:manipulation;}
 #stickKnob{will-change:transform;}
 #learnedBody, #statsBody, .codex-body, #creditsScreen .cred-body, #shopScreen, #titleScreen, #netScreen, #preloadScreen, .overlay, .lv-panel{touch-action:pan-y; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; scrollbar-width:thin;}
 .codex-entry{content-visibility:auto; contain-intrinsic-size:auto 92px;}
@@ -816,6 +822,7 @@
       <div id="skillBar"></div>
       <button id="btnStatsHud" type="button">属性</button>
       <button id="btnLearnedHud" type="button">已学技能</button>
+      <button id="btnAutoplay" type="button">托管</button>
       <div id="bzArrayHud">剑阵 击杀累计 0/40</div>
       <div id="mhDroneHud">无人机 击杀累计 0/35</div>
       <div id="bzWjHud">仰望吧，天地乖离开辟之星 击杀累计 0/180</div>
@@ -3263,15 +3270,15 @@ window.__BZ_ARRAY = { r: BZ_ARRAY_R, dur: BZ_ARRAY_DUR, tick: BZ_ARRAY_TICK, max
    ⑬红线自查：除新增本系统外，剑阵（BZ_ARRAY_* 常量与 bzArray* 函数本体）、普攻、其他英雄一字未动；接线仅四处增行——killEnemy 末尾计数钩（与 chTwOnKill 并列一行）、update 内推进钩（与 bzArrayTick 并列一行）、drawMhDrones 后绘制钩一行、resetGame 清空一行；newPlayer 仅新增 bzWj* 字段。 */
 /* 2026-11-01 定版（演示横屏版进游戏，20:24 追加持续 15 秒）：50 门同现、门持续期不消失、后面 ±60° 扇形、每门每秒 1 柄相位错开、剑速 980→2940（演示 3 倍换算，助理定、非 milo 直说数值）；持续 15 秒（原 10 秒，milo 追加令）、每门 15 柄、最多 750 柄；旧分批 20 门作废。*/
 var BZ_WJ_NEED = 180, BZ_WJ_DUR = 15, BZ_WJ_GAP = 2, BZ_WJ_PORTAL_DUR = 15, BZ_WJ_PORTAL_EMERGE = 0.05, BZ_WJ_PORTAL_R = 30, BZ_WJ_BACK_MIN = 80, BZ_WJ_BACK_MAX = 260, BZ_WJ_LAT = 145, BZ_WJ_BANDS = [-135, -105, -75, -45, -15, 15, 45, 75, 105, 135], BZ_WJ_BAND_CYCLE = 10, BZ_WJ_BAND_JITTER = 7, BZ_WJ_LIFT_MIN = 8, BZ_WJ_LIFT_MAX = 140, BZ_WJ_SPEED = 2940, BZ_WJ_RANGE = Infinity, BZ_WJ_LEN = 72, BZ_WJ_STUCK_MAX = 12;
-var BZ_WJ_PER_TICK = 50, BZ_WJ_PER_ROUND = 50, BZ_WJ_PORTALS = 50, BZ_WJ_FIRE_GAP = 1, BZ_WJ_FIRE_PER_PORTAL = 15, BZ_WJ_MAX_SWORDS = 750, BZ_WJ_BATCH_MIN_DIST = 80, BZ_WJ_FAN_DIST_MIN = 360, BZ_WJ_FAN_DIST_STEP = 120, BZ_WJ_FAN_LAYERS = 5, BZ_WJ_FAN_COLS = 10, BZ_WJ_SECTOR_HALF = 60; // 2026-11-01 定版：触发时一次出 50 门（PER_TICK 即一次全出数，旧每批 4 门作废）、持续 15 秒（20:24 追加，原 10 秒）、每门每秒 1 柄、每门 15 柄、最多 750 柄；扇形 5 层×10 列、后面 ±60°、层距 120、首层距 360（门范围可离很远）、门中心最小间距 80px（门直径 60，留 20px 空隙）
+var BZ_WJ_PER_TICK = 27, BZ_WJ_PER_ROUND = 27, BZ_WJ_PORTALS = 27, BZ_WJ_FIRE_GAP = 0.5, BZ_WJ_FIRE_PER_PORTAL = 30, BZ_WJ_MAX_SWORDS = 810, BZ_WJ_BATCH_MIN_DIST = 80, BZ_WJ_FAN_DIST_MIN = 360, BZ_WJ_FAN_DIST_STEP = 120, BZ_WJ_FAN_LAYERS = 5, BZ_WJ_FAN_COLS = 10, BZ_WJ_SECTOR_HALF = 60, BZ_WJ_GATE_DIST_MIN = 250, BZ_WJ_GATE_DIST_MAX = 840, BZ_WJ_GATE_MIN_DIST = 80, BZ_WJ_PLAYER_MIN_DIST = 110; // 2026-11-01 21:15 不重叠定版：宝库门中心距 ≥80px（门直径 60，留 20px 空隙），与旧扇形版最小间距同值 // 2026-11-01 定版：触发时一次出 50 门（PER_TICK 即一次全出数，旧每批 4 门作废）、持续 15 秒（20:24 追加，原 10 秒）、每门每秒 1 柄、每门 15 柄、最多 750 柄；扇形 5 层×10 列、后面 ±60°、层距 120、首层距 360（门范围可离很远）、门中心最小间距 80px（门直径 60，留 20px 空隙）// 2026-11-01 20:52 0.5 秒版（取代 1 秒版）：每门 0.5 秒 1 柄（每秒 2 柄）、每门 30 柄、最多 1500 柄；门跟随见 bzWjLaunchAll/bzWjTick（门存相对偏移、每帧按玩家位置+面朝重算）
 var BZ_WJ_TRAIL_LEN_MUL = 5.0, BZ_WJ_TRAIL_W_OUTER = 28, BZ_WJ_TRAIL_W = 17, BZ_WJ_TRAIL_W_CORE = 6; // 飞剑加显（2026-11-01 用户令，只改视觉）：拖尾长＝剑长×5.0（旧 4.2）、三层线宽 外晕 28／主轨 17／亮芯 6，亮度见 drawBzWj 渐变（主轨峰值更高）；剑长 BZ_WJ_LEN 本身不动
 var BZ_WJ_DRAW_SCALE = 1.4, BZ_WJ_DRAW_GLOW = 18; // 飞剑加显（2026-11-01 用户令，builder 定数，见证据）：剑显示缩放 1.4 倍（仅绘制，剑尖锚点不动、判定不动）、辉光 blur 9→18
 var bzWjSwords = []; // 万箭齐发剑实体（本机系统、非 projectiles 数组）：飞行 {x,y,dx,dy,ang,dist,stuck:null}／插怪 {stuck:e,ox,oy,ang,x,y}；resetGame 清空
-var bzWjPortals = []; // 万箭齐发金色传送门视觉实体 {x,y,t,dur,ang}：一门一剑、剑出门即自行消散（纯视觉、伤害/命中与门无关）；resetGame 清空
+var bzWjPortals = []; // 万箭齐发金色传送门视觉实体 {x,y,t,dur,ang}：一门一剑、剑出门即自行消散（纯视觉、伤害/命中与门无关）；resetGame 清空；2026-11-01 21:00 宝库散布：LaunchAll 门带 {relAng,relDist,lift}（另存 relBack/relLat 兼容），bzWjTick 每帧按玩家位置+面朝重算 x/y
 var bzWjBandQueue = []; // 万箭齐发高度带队列（01:50/01:52/01:54）：每 10 个连续门覆盖十带一次的洗牌序、逐门弹出；空时重洗；resetGame 清空
 var BZ_WJ_SETTLING = 0; // 万箭齐发伤害结算中旗（>0 时其击杀不计数，防自触发串计；与 CH_TW_SETTLING 同式）
 function bzWjDisp(kills, t){ if((t || 0) > 0) return '仰望吧，天地乖离开辟之星 剩余 ' + t.toFixed(1) + 's'; return '仰望吧，天地乖离开辟之星 击杀累计 ' + (kills || 0) + '/' + BZ_WJ_NEED; } // 显示文案（头顶小字/探针共用、与 bzArrayDisp 同式；2026-11-01 改名：原「万箭齐发」按 milo 原字改成「仰望吧，天地乖离开辟之星」，内部标识不动）
-function bzWjPortalPos(latOverride, backOverride, liftOverride){ // 传送门生成点（生成当帧现算）：角色背后——背后向＝朝向反向；横向（垂直于朝向的轴）由调用方传入，背后距/抬升可由调用方指定（扇形定版用），无指定时沿旧随机口径；角色转向后新门生成在新背后、已生成的门不跟转
+function bzWjPortalPos(latOverride, backOverride, liftOverride){ // 传送门生成点（生成当帧现算）：相对面朝的极坐标——back 为背后距（正为身后、负为前方），lat 为横向（垂直于朝向的轴），由调用方传入，无指定时沿旧随机口径；2026-11-01 21:00 宝库散布：bzWjLaunchAll 的门存 relAng/relDist/lift，由 bzWjTick 每帧换算为 back/lat 后用本函数按当前玩家位置+面朝重算，不再是触发时 baked 的世界坐标
   var fa = (P && P.faceAng) || 0, fx = Math.cos(fa), fy = Math.sin(fa);
   var back = (typeof backOverride === 'number') ? backOverride : BZ_WJ_BACK_MIN + Math.random() * (BZ_WJ_BACK_MAX - BZ_WJ_BACK_MIN);
   var lat = (typeof latOverride === 'number') ? latOverride : (Math.random() * 2 - 1) * BZ_WJ_LAT;
@@ -3279,7 +3286,7 @@ function bzWjPortalPos(latOverride, backOverride, liftOverride){ // 传送门生
   return { x: P.x - fx * back - fy * lat, y: P.y - fy * back + fx * lat - lift };
 }
 function bzWjTrigger(){ // 满 200 触发：计数已由调用方清零；首门首剑当帧即发
-  P.bzWjT = BZ_WJ_DUR; P.bzWjFireT = 0; P.bzWjFired = 0; P.bzWjSwordsFired = 0; bzWjLaunchAll(); // 2026-11-01 定版：触发时一次出 50 门，不再分批
+  P.bzWjT = BZ_WJ_DUR; P.bzWjFireT = 0; P.bzWjFired = 0; P.bzWjSwordsFired = 0; bzWjLaunchAll(); // 2026-11-01 定版：触发时一次出 27 门，不再分批
   effects.push({ type:'ring', x: P.x, y: P.y - 56, t: 0, dur: 0.6, color: '255,215,106' });
   texts.push({ x: P.x, y: P.y - 118, v: 0, txt: '仰望吧，天地乖离开辟之星！', t: 0, color: '#ffd76a', big: true });
   sfx('holy');
@@ -3307,25 +3314,24 @@ function bzWjLaunch(){ // 生成一个门（2026-11-01 改定：每 2 秒一批 
   }
   bzWjPortals.push({ x: bestPp.x, y: bestPp.y, t: 0, dur: BZ_WJ_PORTAL_DUR, ang: fa, pending: true });
 }
-function bzWjLaunchAll(){ // 2026-11-01 定版：触发时一次出 50 门，扇形 5 层×10 列、后面 ±60°（演示扇区 30°~150°，以后面方向为中心）、层距 120、首层距 360（门范围可离很远）、每门相位 (ii+随机)/50 分层错开、每门每秒 1 柄、持续 15 秒＝每门 15 柄、共 750 柄上限；门与门中心距不足 80 时只重抽抬升（角度/层不变）最多 12 次取最远者，仍不足照常落位、不丢门
+function bzWjLaunchAll(){ // 2026-11-01 21:21 背后分布定版（取代 21:00 宝库四周散布；此前身后扇形以本轮背后扇区为基恢复）：触发时一次出 27 门，角色居中、只在背后散布：身后 ±60° 扇区（相对角 120°–240°，相对角 180° 为正背后）内分左/上/右三档——背后左侧 120°–160°、头顶上方/正背后 160°–200°、背后右侧 200°–240°，每档均有门；距离分 5 层格子 300/420/540/660/780（首层 300 落在近档 250–320 内，步距 120 与扇形基对齐；近档下限 21:19 由 150 抬至 250，见本函数末段不压脚定版）；2026-11-01 21:15 不重叠定版（取代 21:00「可重叠、只防完全同点堆叠」）：门中心距 ≥ BZ_WJ_GATE_MIN_DIST ＝ 80px（门直径 60，留 20px 空隙），格子确定性保证（同层弧距 ≥98、层间径距 120、层间抬升差 30，屏距最坏 ≥90，见证据；不再随机重抽/补抽），不丢门、不减门数；2026-11-01 20:52 0.5 秒版+20:53/21:00 门跟随：每门 0.5 秒 1 柄、相位重算为 (ii+随机)/27×BZ_WJ_FIRE_GAP（首发散在 0–0.5 秒内、之后每 0.5 秒一柄、15 秒每门 30 柄、共 810 柄）；每门存 relAng/relDist/lift（另存 relBack/relLat 兼容），bzWjTick 每帧按玩家位置+面朝重算门位，移动跟移、转身门云跟转、仍只在背后左/右/上；2026-11-01 21:15 发射口定版：门是剑的发射口，闲置门内不画剑尖（见 drawBzWjPortal），剑只在发射时刻从门心飞出；2026-11-01 21:19 不压脚定版：门不得压在角色脚下/身上——角色占位核查：P.r＝17（newPlayer）、脚底锚点 P.y＋P.r×0.95≈P.y＋16、精灵高 P.r×5.05≈86、距 P 锚点最远处为头顶约 70（脚底 16、半宽约 29），保守取角色半径 70，门半径 30＋空隙 10，得 P 锚点最小屏距 BZ_WJ_PLAYER_MIN_DIST＝110；门屏距最坏值＝相对距−抬升（抬升最高 BZ_WJ_LIFT_MAX＝140，见 bzWjPortalPos y−lift），故近档下限 BZ_WJ_GATE_DIST_MIN 150→250（250−140＝110，任意转身下最坏屏距仍 ≥110），近档 250–320、中/远档不变，门两两 ≥80 不变；2026-11-01 21:21 背后格子补充：随机散布无法同时满足近档等档 + ≥80 + 50 门（见函数体格子注），故改扇形格子，首层 300 在近档内、屏距 ≥292，≥80 由格子确定性保证
   bzWjPortals.length = 0;
-  for(var ii = 0; ii < BZ_WJ_PORTALS; ii++){
-    var col = ii % BZ_WJ_FAN_COLS, layer = Math.floor(ii / BZ_WJ_FAN_COLS);
-    var offDeg = -BZ_WJ_SECTOR_HALF + col * (2 * BZ_WJ_SECTOR_HALF / (BZ_WJ_FAN_COLS - 1));
-    var off = offDeg * Math.PI / 180;
-    var dist = BZ_WJ_FAN_DIST_MIN + layer * BZ_WJ_FAN_DIST_STEP + Math.random() * 20;
-    var back = dist * Math.cos(off), lat = dist * Math.sin(off);
-    var best = null, bestMin = -1;
-    for(var tr = 0; tr < 12; tr++){
-      var lift = BZ_WJ_LIFT_MIN + Math.random() * (BZ_WJ_LIFT_MAX - BZ_WJ_LIFT_MIN);
-      var pp = bzWjPortalPos(lat, back, lift);
-      var minD = 1e9;
-      for(var qi = 0; qi < bzWjPortals.length; qi++){ var dd = Math.hypot(pp.x - bzWjPortals[qi].x, pp.y - bzWjPortals[qi].y); if(dd < minD) minD = dd; }
-      if(!bzWjPortals.length || minD >= BZ_WJ_BATCH_MIN_DIST){ best = pp; break; }
-      if(minD > bestMin){ bestMin = minD; best = pp; }
+  // 2026-11-01 21:21 背后扇形格子：此前随机散布在背后 120° 扇区内无法同时满足“近档 250–320 + 门两两 ≥80 + 50 门”（离线 500 轮：等档随机散布 100% 轮次有门距 <80，近-近对占绝大多数；偏档 6/22/22 仍 31% 轮次失败），故改回扇形格子确定性排布，不再随机重抽。
+  // 2026-11-01 21:28 27 门格子：5 层 × 列数 4/5/6/6/6（合计 27，内层列少、外层列多，使同层相邻门弧距恒 >80）——层距 300/420/540/660/780（步距 120，首层 300 落在近档 250–320 内）；列角为每列档位中心（120°+(ci+0.5)×120°/列数），避开档位端点重叠；每层抬升固定 8/38/68/98/128（步距 30，层间抬升差 30，使屏距最坏值仍 ≥90，见证据）。
+  // 子档计数：左 9 / 上 9 / 右 9（左=相对角 120°–160°、上=160°–200°、右=200°–240°，三档均分）；距离档：近 4 门（300 层）、中 11 门（420/540 层）、远 12 门（660/780 层），三档齐全；前方相对角 -90°–90° 一律 0 门，屏距 ≥292（首层 300−抬升 8），远超不压脚界 110。
+  var bzWjBehindLayers = [{ d: 300, cols: 4 }, { d: 420, cols: 5 }, { d: 540, cols: 6 }, { d: 660, cols: 6 }, { d: 780, cols: 6 }];
+  var bzWjBehindIdx = 0;
+  for(var li = 0; li < bzWjBehindLayers.length; li++){
+    for(var ci = 0; ci < bzWjBehindLayers[li].cols; ci++){
+      var relAng = (120 + (ci + 0.5) * 120 / bzWjBehindLayers[li].cols) * Math.PI / 180;
+      var relDist = bzWjBehindLayers[li].d;
+      var lift = 8 + li * 30;
+      var back = -relDist * Math.cos(relAng), lat = relDist * Math.sin(relAng);
+      var pos = bzWjPortalPos(lat, back, lift);
+      var phase = (bzWjBehindIdx + Math.random()) / BZ_WJ_PORTALS * BZ_WJ_FIRE_GAP;
+      bzWjPortals.push({ x: pos.x, y: pos.y, t: 0, dur: BZ_WJ_PORTAL_DUR, ang: Math.atan2(P.y - (pos.y + lift), P.x - pos.x), pending: false, phase: phase, nextFire: phase, fired: 0, relBack: back, relLat: lat, lift: lift, relAng: relAng, relDist: relDist });
+      bzWjBehindIdx++;
     }
-    var phase = (ii + Math.random()) / BZ_WJ_PORTALS;
-    bzWjPortals.push({ x: best.x, y: best.y, t: 0, dur: BZ_WJ_PORTAL_DUR, ang: P.faceAng || 0, pending: false, phase: phase, nextFire: phase, fired: 0 });
   }
   P.bzWjFired = BZ_WJ_PORTALS;
 }
@@ -3343,14 +3349,15 @@ function bzWjHitEnemy(e){ // 飞剑命中结算：伤害与剑阵单柄完全同
 }
 function bzWjTick(dt){ // 万箭齐发推进（update 内、bzArrayTick 后调用）：持续计时/逐门逐剑发射/传送门消散/飞行命中/插怪跟随与清理；持续效果口径同剑阵（面板开启照常推进）
   if(!P || P.charIdx !== 0){ if(bzWjSwords.length) bzWjSwords = []; if(bzWjPortals.length) bzWjPortals = []; return; }
-  for(var pti = bzWjPortals.length - 1; pti >= 0; pti--){ var po2 = bzWjPortals[pti]; po2.t += dt; if((P.bzWjT || 0) > 0){ while(po2.fired < BZ_WJ_FIRE_PER_PORTAL && po2.nextFire <= po2.t){ var emergeAng = (P && typeof P.faceAng === 'number') ? P.faceAng : po2.ang; bzWjSwords.push({ x: po2.x, y: po2.y, dx: Math.cos(emergeAng), dy: Math.sin(emergeAng), ang: emergeAng, dist: 0, stuck: null, ox: 0, oy: 0 }); po2.fired++; P.bzWjSwordsFired = (P.bzWjSwordsFired || 0) + 1; po2.nextFire += BZ_WJ_FIRE_GAP; } } if(po2.t >= po2.dur) bzWjPortals.splice(pti, 1); } // 2026-11-01 定版：各门独立发剑，每门每秒 1 柄、相位错开；剑向＝发剑时刻面朝；每门最多 15 柄；传送门推进：生成 0.05 秒出剑（2026-11-01 改定：出剑方向＝出剑时刻的角色面朝 P.faceAng，剑尖朝前；此前为门生成当帧面朝——两者只差 0.05 秒内转身的极小窗口，本轮按“出门时刻”口径落地；现行剑向核查结论：此前已是面朝角、从不是门到角色的放射方向，见证据；各门每秒 1 柄、相位错开、每门最多 15 柄）；门持续期不消失、15 秒到点一起消失；已飞出的剑按既有规则留存
+  for(var pti = bzWjPortals.length - 1; pti >= 0; pti--){ var po2 = bzWjPortals[pti]; po2.t += dt; if(typeof po2.relAng === 'number' && typeof po2.relDist === 'number' && P){ var along2 = po2.relDist * Math.cos(po2.relAng), perp2 = po2.relDist * Math.sin(po2.relAng); var fp2 = bzWjPortalPos(perp2, -along2, po2.lift); po2.x = fp2.x; po2.y = fp2.y; } else if(typeof po2.relBack === 'number' && typeof po2.relLat === 'number' && P){ var fp2 = bzWjPortalPos(po2.relLat, po2.relBack, po2.lift); po2.x = fp2.x; po2.y = fp2.y; } // 2026-11-01 21:00 宝库门云跟随：每帧按当前玩家位置+当前面朝重算门位（相对角 relAng、距离 relDist、抬升 lift 均不变，整片门云跟移跟转、仍只在背后左/右/上）；2026-11-01 21:10 门面定版（取代 21:06 朝向角色）：门面竖下来、正面朝向观察者、完整正圆无标记，ang 不再每帧按门到玩家方向更新；发剑取的 po2.x/po2.y 已是跟随后位置，剑向仍为发剑时刻面朝，已飞剑只按自身 dx/dy 前进、门跟随不改已飞剑方向
+  if((P.bzWjT || 0) > 0){ while(po2.fired < BZ_WJ_FIRE_PER_PORTAL && po2.nextFire <= po2.t){ var emergeAng = (P && typeof P.faceAng === 'number') ? P.faceAng : po2.ang; bzWjSwords.push({ x: po2.x, y: po2.y, dx: Math.cos(emergeAng), dy: Math.sin(emergeAng), ang: emergeAng, dist: 0, stuck: null, ox: 0, oy: 0 }); po2.fired++; P.bzWjSwordsFired = (P.bzWjSwordsFired || 0) + 1; po2.nextFire += BZ_WJ_FIRE_GAP; } } if(po2.t >= po2.dur) bzWjPortals.splice(pti, 1); } // 2026-11-01 定版：各门独立发剑，每门每秒 1 柄、相位错开；剑向＝发剑时刻面朝；每门最多 15 柄；传送门推进：生成 0.05 秒出剑（2026-11-01 改定：出剑方向＝出剑时刻的角色面朝 P.faceAng，剑尖朝前；此前为门生成当帧面朝——两者只差 0.05 秒内转身的极小窗口，本轮按“出门时刻”口径落地；现行剑向核查结论：此前已是面朝角、从不是门到角色的放射方向，见证据；各门每秒 1 柄、相位错开、每门最多 15 柄）；门持续期不消失、15 秒到点一起消失；已飞出的剑按既有规则留存；2026-11-01 20:52 0.5 秒版：每门 0.5 秒 1 柄、相位 (ii+随机)/50×0.5、每门最多 30 柄、共 1500 柄，门跟随见本行前段
   if((P.bzWjT || 0) > 0){
     P.bzWjT -= dt;
     if(P.bzWjT < 0.0001) P.bzWjT = 0; // 到点边界钳制（2026-10-31 改定配套）：帧步恰整除 2 秒间隔时浮点累积可令剩余在名义 10.0 秒帧残留微正值、无此钳制会多发第 6 批——钳后 10 秒恒恰 5 批（0.0001 秒级、无可感差异；离线多帧步模拟已验）
     if(P.bzWjT <= 0){ P.bzWjT = 0; bzWjPortals.length = 0; } // 15 秒到：门一起消失；飞行中与已插怪的剑按各自口径留存（见下方实体段）
     else {
       P.bzWjFireT -= dt;
-      // 2026-11-01 定版：50 门在触发时一次全出，本处不再分批、不再发门
+      // 2026-11-01 定版：27 门在触发时一次全出，本处不再分批、不再发门
     }
   }
   for(var i = bzWjSwords.length - 1; i >= 0; i--){
@@ -3397,7 +3404,7 @@ function bzWjDrawSword(cx, cy, ang){ // 画一柄横置的剑（剑身中心 cx,
   }
   ctx.restore();
 }
-function drawBzWjPortal(x, y, t, dur){ // 金色圆形传送门（01:37 定版；程序绘制、无外部素材/不盗用视频原素材）：金色辉光晕＋白金亮芯＋亮金双环＋8 枚旋转刻度；开门放大、闭门收缩淡出——一门只出一剑、出剑后即消散
+function drawBzWjPortal(x, y, t, dur){ // 金色圆形传送门（01:37 定版；程序绘制、无外部素材/不盗用视频原素材）：金色辉光晕＋白金亮芯＋亮金双环＋8 枚旋转刻度；开门放大、闭门收缩淡出——一门只出一剑、出剑后即消散；2026-11-01 21:10 门面定版（取代 21:06 朝向角色及亮弧标记，回到 21:05 版）：门面竖下来、竖着立着、正面朝向观察者，屏幕上是完整正圆（本函数只用 ctx.arc、无 scale/ellipse 压扁或透视倾斜、不平躺，半径 BZ_WJ_PORTAL_R×开合缩放），无朝向标记，不改门位散布/发剑/门数/持续/伤害/剑速；2026-11-01 21:15 发射口定版：门内不画剑尖——门是剑的发射口，闲置门只画辉光晕＋亮芯＋双环＋8 刻度门本体（本函数体内无画剑语句），剑只在发射时刻从门心飞出（drawBzWj 飞行剑段，剑向发剑时刻面朝、飞出后不改向）
   var open = clamp(t / 0.3, 0, 1);
   var sc = open < 1 ? (0.55 + 0.45 * open) : (t > dur - 1 ? (1 - 0.45 * (t - (dur - 1))) : 1);
   var al = t < 0.2 ? t / 0.2 : (t > dur - 1 ? Math.max(0, dur - t) : 1); // 2026-11-01 定版：门持续期不消失，0.3 秒开门放大、持续期满前 1 秒收缩淡出、到点一起消失（旧 0.28 秒存续口径作废）
@@ -3417,7 +3424,7 @@ function drawBzWjPortal(x, y, t, dur){ // 金色圆形传送门（01:37 定版�
 }
 function drawBzWj(ox, oy){ // 万箭齐发绘制（drawMhDrones 后、演员层之上）：金色传送门（背后、剑之下）＋飞行剑（带拖影）＋插怪剑
   if(!P || P.charIdx !== 0) return;
-  for(var k = 0; k < bzWjPortals.length; k++){ var po = bzWjPortals[k]; drawBzWjPortal(po.x + ox, po.y + oy, po.t, po.dur); }
+  for(var k = 0; k < bzWjPortals.length; k++){ var po = bzWjPortals[k]; drawBzWjPortal(po.x + ox, po.y + oy, po.t, po.dur); } // 2026-11-01 21:10 门面定版：不再传 po.ang，门面竖着朝向观察者、无朝向标记
   for(var j = 0; j < bzWjSwords.length; j++){
     var sw = bzWjSwords[j];
     if(!sw.stuck){ // 飞行光轨（01:59 演示定稿＋2026-10-31 加明显改定，只改视觉）：剑身后一道长金色光轨、尾端渐隐——长由 2.6 倍剑长加至 BZ_WJ_TRAIL_LEN_MUL＝4.2 倍剑长（约 302px）、单层线宽 6 改三层（外晕 20 低 alpha 柔光／主轨 12 高 alpha／亮芯 4 近白），主轨渐变峰值 alpha 0.5→0.9、整体更亮更粗更长；尾端恒渐隐至 0、三层均为半透明渐变、不遮挡角色与技能本体
@@ -3437,7 +3444,7 @@ function drawBzWj(ox, oy){ // 万箭齐发绘制（drawMhDrones 后、演员层�
     bzWjDrawSword(sw.x + ox, sw.y + oy, sw.ang);
   }
 }
-window.__BZ_WJ = { need: BZ_WJ_NEED, dur: BZ_WJ_DUR, gap: BZ_WJ_GAP, perTick: BZ_WJ_PER_TICK, perRound: BZ_WJ_PER_ROUND, portals: BZ_WJ_PORTALS, fireGap: BZ_WJ_FIRE_GAP, firePerPortal: BZ_WJ_FIRE_PER_PORTAL, maxSwords: BZ_WJ_MAX_SWORDS, fanDistMin: BZ_WJ_FAN_DIST_MIN, fanDistStep: BZ_WJ_FAN_DIST_STEP, sectorHalf: BZ_WJ_SECTOR_HALF, batchMinDist: BZ_WJ_BATCH_MIN_DIST, bandCycle: BZ_WJ_BAND_CYCLE, bands: BZ_WJ_BANDS, bandJitter: BZ_WJ_BAND_JITTER, portalDur: BZ_WJ_PORTAL_DUR, portalEmerge: BZ_WJ_PORTAL_EMERGE, portalR: BZ_WJ_PORTAL_R, backMin: BZ_WJ_BACK_MIN, backMax: BZ_WJ_BACK_MAX, lat: BZ_WJ_LAT, liftMin: BZ_WJ_LIFT_MIN, liftMax: BZ_WJ_LIFT_MAX, speed: BZ_WJ_SPEED, range: BZ_WJ_RANGE, rangeLimit: function(){ return (typeof exInfRange === 'function') ? exInfRange() : 4000; }, trailLenMul: BZ_WJ_TRAIL_LEN_MUL, trailWOuter: BZ_WJ_TRAIL_W_OUTER, trailW: BZ_WJ_TRAIL_W, trailWCore: BZ_WJ_TRAIL_W_CORE, trailLen: Math.round(BZ_WJ_LEN * BZ_WJ_TRAIL_LEN_MUL), len: BZ_WJ_LEN, drawScale: BZ_WJ_DRAW_SCALE, drawGlow: BZ_WJ_DRAW_GLOW, stuckMax: BZ_WJ_STUCK_MAX, mul: BZ_ARRAY_MUL, state: function(){ return P ? { charIdx: P.charIdx, stage: P.stage || 0, kills: P.bzWjKillN || 0, t: Math.max(0, P.bzWjT || 0), fired: P.bzWjFired || 0, portals: bzWjPortals.length, flying: bzWjSwords.filter(function(s){ return !s.stuck; }).length, stuck: bzWjSwords.filter(function(s){ return !!s.stuck; }).length, settling: BZ_WJ_SETTLING } : null; }, disp: function(k, t){ return bzWjDisp(k || 0, t || 0); }, hud: function(){ var e = document.getElementById('bzWjHud'); return e ? { on: e.classList.contains('on'), active: e.classList.contains('active'), txt: e.textContent } : null; } }; // 验收探针（只读）：万箭齐发全部落地口径＋本机状态＋HUD 状态片（hud 为 2026-10-31 显示轮追加、与 __BZ_ARRAY.hud 同式；传送门为 01:37 定版发射源、视频观察细节待复核，见定版注）
+window.__BZ_WJ = { need: BZ_WJ_NEED, dur: BZ_WJ_DUR, gap: BZ_WJ_GAP, perTick: BZ_WJ_PER_TICK, perRound: BZ_WJ_PER_ROUND, portals: BZ_WJ_PORTALS, fireGap: BZ_WJ_FIRE_GAP, firePerPortal: BZ_WJ_FIRE_PER_PORTAL, maxSwords: BZ_WJ_MAX_SWORDS, fanDistMin: BZ_WJ_FAN_DIST_MIN, fanDistStep: BZ_WJ_FAN_DIST_STEP, sectorHalf: BZ_WJ_SECTOR_HALF, batchMinDist: BZ_WJ_BATCH_MIN_DIST, gateMinDist: BZ_WJ_GATE_MIN_DIST, gateDistMin: BZ_WJ_GATE_DIST_MIN, playerMinDist: BZ_WJ_PLAYER_MIN_DIST, bandCycle: BZ_WJ_BAND_CYCLE, bands: BZ_WJ_BANDS, bandJitter: BZ_WJ_BAND_JITTER, portalDur: BZ_WJ_PORTAL_DUR, portalEmerge: BZ_WJ_PORTAL_EMERGE, portalR: BZ_WJ_PORTAL_R, backMin: BZ_WJ_BACK_MIN, backMax: BZ_WJ_BACK_MAX, lat: BZ_WJ_LAT, liftMin: BZ_WJ_LIFT_MIN, liftMax: BZ_WJ_LIFT_MAX, speed: BZ_WJ_SPEED, range: BZ_WJ_RANGE, rangeLimit: function(){ return (typeof exInfRange === 'function') ? exInfRange() : 4000; }, trailLenMul: BZ_WJ_TRAIL_LEN_MUL, trailWOuter: BZ_WJ_TRAIL_W_OUTER, trailW: BZ_WJ_TRAIL_W, trailWCore: BZ_WJ_TRAIL_W_CORE, trailLen: Math.round(BZ_WJ_LEN * BZ_WJ_TRAIL_LEN_MUL), len: BZ_WJ_LEN, drawScale: BZ_WJ_DRAW_SCALE, drawGlow: BZ_WJ_DRAW_GLOW, stuckMax: BZ_WJ_STUCK_MAX, mul: BZ_ARRAY_MUL, state: function(){ return P ? { charIdx: P.charIdx, stage: P.stage || 0, kills: P.bzWjKillN || 0, t: Math.max(0, P.bzWjT || 0), fired: P.bzWjFired || 0, portals: bzWjPortals.length, flying: bzWjSwords.filter(function(s){ return !s.stuck; }).length, stuck: bzWjSwords.filter(function(s){ return !!s.stuck; }).length, settling: BZ_WJ_SETTLING } : null; }, disp: function(k, t){ return bzWjDisp(k || 0, t || 0); }, hud: function(){ var e = document.getElementById('bzWjHud'); return e ? { on: e.classList.contains('on'), active: e.classList.contains('active'), txt: e.textContent } : null; } }; // 验收探针（只读）：万箭齐发全部落地口径＋本机状态＋HUD 状态片（hud 为 2026-10-31 显示轮追加、与 __BZ_ARRAY.hud 同式；传送门为 01:37 定版发射源、视频观察细节待复核，见定版注）
 /* ===== 莫哈哈普攻无人机定版注（2026-10-30 用户令＋同日自爆补充令；本地、版本仍 1.8） =====
    【用户定版】莫哈哈普通攻击每击杀 35 名敌人，召唤 2 架无人机助战 10 秒；无人机每 2 秒发射 2 枚飞弹、飞弹命中爆炸造成小范围伤害；击杀计数在无人机持续时间内不能累积（无无人机时击杀才累计、无人机消失后恢复累计）；无人机飞在莫哈哈头上盘旋、可自由飞翔但不能离开玩家屏幕视野；10 秒到点不直接消失——每架各冲向敌人自爆一次（两架各爆一次、非合计一次），每次自爆为中范围爆炸、造成受波及怪物各自生命上限 5% 的伤害，普通/精英/Boss 全吃、不设豁免或减免（milo 23:21–23:22 三次补充澄清）。
    【现行普攻击杀结算口径（施工前源码实查）】本机 AK 子弹（projectiles 中 kind:'bullet'、wkey:'ak47'）在投射物命中段经 damageEnemy 结算，死亡在同段可当场判定（与班仔剑阵 bzOnWaveKillLocal 只计 bzwave 击杀同式）；killEnemy 本身不分武器来源（天威 chTwOnKill 则按归因计全部击杀）——本轮按用户「普通攻击每击杀」字面接线：只计 AK 普攻子弹的直接命中击杀。
@@ -4223,29 +4230,29 @@ var DMK_PATTERNS = ['ring16', 'ring2x', 'fan13', 'cross12', 'xcross12', 'wave9',
 var DMK_PATTERNS_MID = ['fan9', 'ring10', 'cross8', 'xcross8', 'rain7', 'wall6', 'diag5']; // 中档 7 种（精英齐射）
 var DMK_PATTERNS_MINI = ['fan3', 'tri', 'rain4', 'wall3', 'diag3', 'cross4']; // 小档 6 种（普通远程怪圆弹）
 function dmkPick(pool){ return pool[Math.floor(Math.random() * pool.length)]; } // 每次发动等概率随机抽一种（不固定于 Boss/技能）
-function dmkBullets(pat, e, tgt, ox, oy, dense){ // dense＝1 时仅全档图案加密（2026-11-01 全 Boss 弹幕加密轮：同图案、同缺口规则、同同步距，只扩覆盖面；中档/小档分支不读 dense、天然不动） // 图案 → 弹体清单 [{x,y,vx,vy}]（纯几何、供离线逐图案核验弹数/方向/缝隙）；ox/oy＝发射原点（默认施法者本体口、旺财口部可指定）；墙面/弹雨/斜扫类以 tgt（目标当下位置）为锚
+function dmkBullets(pat, e, tgt, ox, oy, dense){ // dense＝1 为 2026-11-01 全 Boss 弹幕加密轮（保留）；dense＝2 为 2026-11-01 Boss 弹幕加数量轮（仅 3 处 Boss 调用点传 2，同图案、同缺口规则、同同步距，只扩覆盖面；中档/小档分支不读 dense、天然不动） // 图案 → 弹体清单 [{x,y,vx,vy}]（纯几何、供离线逐图案核验弹数/方向/缝隙）；ox/oy＝发射原点（默认施法者本体口、旺财口部可指定）；墙面/弹雨/斜扫类以 tgt（目标当下位置）为锚
   var out = [], i, a, gx = (ox != null ? ox : e.x), gy = (oy != null ? oy : e.y - 6);
   var baseA = Math.atan2(tgt.y - e.y, tgt.x - e.x), spd = DMK_SPD;
   function push(x, y, ang, s){ out.push({ x: x, y: y, vx: Math.cos(ang) * (s || spd), vy: Math.sin(ang) * (s || spd) }); }
   function rel(a2, g){ return ((a2 - g) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2); } // 角度相对缺口起点（环形留缺判定：缺口＝rel 落在 [0,0.40]∪[2π−0.40,2π) 的 45° 扇区）
-  if(pat === 'ring16'){ var n16 = dense ? 24 : 16, gap = (Math.floor(rand(0, n16)) + 0.5) / n16 * Math.PI * 2; for(i = 0; i < n16; i++){ a = i / n16 * Math.PI * 2; var rr1 = rel(a, gap); if(rr1 > 0.40 && rr1 < Math.PI * 2 - 0.40) push(gx, gy, a); } } // 环形留缺：缺口中心恒落在两发正中（随机选位）→ 恒剔除缺口内 2 发、实发 14、缺口张角约 67°
-  else if(pat === 'ring2x'){ var ni2 = dense ? 14 : 10, no2 = dense ? 20 : 14, g1 = (Math.floor(rand(0, ni2)) + 0.5) / ni2 * Math.PI * 2, g2 = (Math.floor(rand(0, no2)) + 0.5) / no2 * Math.PI * 2 + Math.PI * 0.9 + (dense ? Math.PI / no2 : 0); for(i = 0; i < ni2; i++){ a = i / ni2 * Math.PI * 2; var q1 = rel(a, g1); if(q1 > 0.40 && q1 < Math.PI * 2 - 0.40) push(gx, gy, a, spd * 0.82); } for(i = 0; i < no2; i++){ a = (i + 0.5) / no2 * Math.PI * 2; var q2 = rel(a, g2); if(q2 > 0.40 && q2 < Math.PI * 2 - 0.40) push(gx, gy, a, spd * 1.05); } } // 双环错峰：内环慢/外环快、两缺口同式恒剔 2 发（内 8＋外 12＝实发 20）、缺口错开约 162°；dense：内 14→12＋外 20→18＝实发 30（dense 外环缺口另补半步 π/no2：因 π×0.9 偏移在 20 向格上恰落整格、缺口中心会压住一发致恒剔 3 发，补半步后中心落两发正中、恒剔 2 发，错开角变为约 171°）
-  else if(pat === 'fan13'){ var f13 = dense ? 9 : 6; for(i = -f13; i <= f13; i++) push(gx, gy, baseA + i * 0.13); } // 扇形宽幕 13 发 ±0.78 rad、步距 0.13 留缝
+  if(pat === 'ring16'){ var n16 = dense >= 2 ? 32 : (dense ? 24 : 16), gap = (Math.floor(rand(0, n16)) + 0.5) / n16 * Math.PI * 2; for(i = 0; i < n16; i++){ a = i / n16 * Math.PI * 2; var rr1 = rel(a, gap); if(rr1 > 0.40 && rr1 < Math.PI * 2 - 0.40) push(gx, gy, a); } } // 环形留缺：缺口中心恒落在两发正中（随机选位）→ 恒剔除缺口内 2 发、实发 14、缺口张角约 67°
+  else if(pat === 'ring2x'){ var ni2 = dense >= 2 ? 18 : (dense ? 14 : 10), no2 = dense >= 2 ? 26 : (dense ? 20 : 14), g1 = (Math.floor(rand(0, ni2)) + 0.5) / ni2 * Math.PI * 2, g2 = (Math.floor(rand(0, no2)) + 0.5) / no2 * Math.PI * 2 + Math.PI * 0.9 + (dense ? Math.PI / no2 : 0); for(i = 0; i < ni2; i++){ a = i / ni2 * Math.PI * 2; var q1 = rel(a, g1); if(q1 > 0.40 && q1 < Math.PI * 2 - 0.40) push(gx, gy, a, spd * 0.82); } for(i = 0; i < no2; i++){ a = (i + 0.5) / no2 * Math.PI * 2; var q2 = rel(a, g2); if(q2 > 0.40 && q2 < Math.PI * 2 - 0.40) push(gx, gy, a, spd * 1.05); } } // 双环错峰：内环慢/外环快、两缺口同式恒剔 2 发（内 8＋外 12＝实发 20）、缺口错开约 162°；dense：内 14→12＋外 20→18＝实发 30（dense 外环缺口另补半步 π/no2：因 π×0.9 偏移在 20 向格上恰落整格、缺口中心会压住一发致恒剔 3 发，补半步后中心落两发正中、恒剔 2 发，错开角变为约 171°）
+  else if(pat === 'fan13'){ var f13 = dense >= 2 ? 12 : (dense ? 9 : 6); for(i = -f13; i <= f13; i++) push(gx, gy, baseA + i * 0.13); } // 扇形宽幕 13 发 ±0.78 rad、步距 0.13 留缝
   else if(pat === 'fan9'){ for(i = -4; i <= 4; i++) push(gx, gy, baseA + i * 0.15, DMK_MINI_SPD); }
   else if(pat === 'fan3'){ for(i = -1; i <= 1; i++) push(gx, gy, baseA + i * 0.16, DMK_MINI_SPD); }
   else if(pat === 'tri'){ push(gx, gy, baseA, DMK_MINI_SPD); push(gx, gy, baseA + 2.5, DMK_MINI_SPD); push(gx, gy, baseA - 2.5, DMK_MINI_SPD); } // 小档三角散射：正前＋两侧大角度、中间两大片全空
-  else if(pat === 'cross12' || pat === 'cross8' || pat === 'cross4'){ var per = pat === 'cross12' ? (dense ? 5 : 3) : (pat === 'cross8' ? 2 : 1), cs = pat === 'cross4' ? DMK_MINI_SPD : spd; for(var arm = 0; arm < 4; arm++){ a = arm * Math.PI / 2; for(i = 0; i < per; i++) push(gx - Math.cos(a) * i * 26, gy - Math.sin(a) * i * 26, a, cs); } } // 十字：四向（上/右/下/左）各 per 发、沿臂错位出发、臂间 90° 全空
-  else if(pat === 'xcross12' || pat === 'xcross8'){ var per2 = pat === 'xcross12' ? (dense ? 5 : 3) : 2; for(var arm3 = 0; arm3 < 4; arm3++){ a = Math.PI / 4 + arm3 * Math.PI / 2; for(i = 0; i < per2; i++) push(gx - Math.cos(a) * i * 26, gy - Math.sin(a) * i * 26, a, spd); } } // 斜十字：四斜向各 per 发、臂间 90° 全空
-  else if(pat === 'wave9'){ var w9 = dense ? 6 : 4; for(i = -w9; i <= w9; i++){ push(gx + Math.cos(baseA + Math.PI / 2) * i * 30, gy + Math.sin(baseA + Math.PI / 2) * i * 30, baseA + i * 0.14 + Math.sin(i * 1.3) * 0.12); } } // 波浪列：横列错位出发＋角度正弦扭摆、列间留隙
-  else if(pat === 'rain_down' || pat === 'rain4' || pat === 'rain7'){ var rn = pat === 'rain_down' ? (dense ? 13 : 9) : (pat === 'rain7' ? 7 : 4), rsp = pat === 'rain_down' ? spd : DMK_MINI_SPD, skip = {}; var sk1 = Math.floor(rand(0, rn)); skip[sk1] = 1; if(rn > 4) skip[(sk1 + 2 + Math.floor(rand(0, rn - 3))) % rn] = 1; for(i = 0; i < rn; i++){ if(skip[i]) continue; push(tgt.x + (i - (rn - 1) / 2) * 54, tgt.y - 430, Math.PI / 2, rsp); } } // 弹雨自天：目标上方 430 一排、自上而下、随机空 1–2 列成整条无弹通道
-  else if(pat === 'rise_up'){ var ruN = dense ? 13 : 9, skipU = {}; var su1 = Math.floor(rand(0, ruN)); skipU[su1] = 1; skipU[(su1 + 3) % ruN] = 1; for(i = 0; i < ruN; i++){ if(skipU[i]) continue; push(tgt.x + (i - (ruN - 1) / 2) * 54, tgt.y + 430, -Math.PI / 2); } } // 升空弹幕：目标下方一排、自下而上、空 2 列
-  else if(pat === 'wall_right' || pat === 'wall6' || pat === 'wall3'){ var wn = pat === 'wall_right' ? (dense ? 12 : 8) : (pat === 'wall6' ? 6 : 3), wsp = pat === 'wall_right' ? spd : DMK_MINI_SPD, skipW = {}; if(wn > 3){ var sw1 = Math.floor(rand(0, wn)); skipW[sw1] = 1; skipW[(sw1 + 2) % wn] = 1; } for(i = 0; i < wn; i++){ if(skipW[i]) continue; push(tgt.x - 430, tgt.y + (i - (wn - 1) / 2) * 54, 0, wsp); } } // 左墙横扫：目标左侧 430 一列、自左而右、空 2 槽
-  else if(pat === 'wall_left'){ var wlN = dense ? 12 : 8, skipL = {}; var sl1 = Math.floor(rand(0, wlN)); skipL[sl1] = 1; skipL[(sl1 + 3) % wlN] = 1; for(i = 0; i < wlN; i++){ if(skipL[i]) continue; push(tgt.x + 430, tgt.y + (i - (wlN - 1) / 2) * 54, Math.PI); } } // 右墙横扫：目标右侧一列、自右而左、空 2 槽
-  else if(pat === 'diag_dr' || pat === 'diag_dl' || pat === 'diag5' || pat === 'diag3'){ var dn = (pat === 'diag_dr' || pat === 'diag_dl') ? (dense ? 11 : 7) : (pat === 'diag5' ? 5 : 3), dsp = dn >= 7 ? spd : DMK_MINI_SPD, dang = (pat === 'diag_dl') ? Math.PI * 0.75 : Math.PI * 0.25, perp = dang - Math.PI / 2, dskip = dn >= 5 ? Math.floor(rand(0, dn)) : -1; for(i = 0; i < dn; i++){ if(i === dskip) continue; var off = (i - (dn - 1) / 2) * 56; push(tgt.x - Math.cos(dang) * 400 + Math.cos(perp) * off, tgt.y - Math.sin(dang) * 400 + Math.sin(perp) * off, dang, dsp); } } // 斜向扫射：平行斜流自目标斜后方压来（↘ 向右下／↙ 向左下）、错开 1 道留缝
+  else if(pat === 'cross12' || pat === 'cross8' || pat === 'cross4'){ var per = pat === 'cross12' ? (dense >= 2 ? 7 : (dense ? 5 : 3)) : (pat === 'cross8' ? 2 : 1), cs = pat === 'cross4' ? DMK_MINI_SPD : spd; for(var arm = 0; arm < 4; arm++){ a = arm * Math.PI / 2; for(i = 0; i < per; i++) push(gx - Math.cos(a) * i * 26, gy - Math.sin(a) * i * 26, a, cs); } } // 十字：四向（上/右/下/左）各 per 发、沿臂错位出发、臂间 90° 全空
+  else if(pat === 'xcross12' || pat === 'xcross8'){ var per2 = pat === 'xcross12' ? (dense >= 2 ? 7 : (dense ? 5 : 3)) : 2; for(var arm3 = 0; arm3 < 4; arm3++){ a = Math.PI / 4 + arm3 * Math.PI / 2; for(i = 0; i < per2; i++) push(gx - Math.cos(a) * i * 26, gy - Math.sin(a) * i * 26, a, spd); } } // 斜十字：四斜向各 per 发、臂间 90° 全空
+  else if(pat === 'wave9'){ var w9 = dense >= 2 ? 9 : (dense ? 6 : 4); for(i = -w9; i <= w9; i++){ push(gx + Math.cos(baseA + Math.PI / 2) * i * 30, gy + Math.sin(baseA + Math.PI / 2) * i * 30, baseA + i * 0.14 + Math.sin(i * 1.3) * 0.12); } } // 波浪列：横列错位出发＋角度正弦扭摆、列间留隙
+  else if(pat === 'rain_down' || pat === 'rain4' || pat === 'rain7'){ var rn = pat === 'rain_down' ? (dense >= 2 ? 17 : (dense ? 13 : 9)) : (pat === 'rain7' ? 7 : 4), rsp = pat === 'rain_down' ? spd : DMK_MINI_SPD, skip = {}; var sk1 = Math.floor(rand(0, rn)); skip[sk1] = 1; if(rn > 4) skip[(sk1 + 2 + Math.floor(rand(0, rn - 3))) % rn] = 1; for(i = 0; i < rn; i++){ if(skip[i]) continue; push(tgt.x + (i - (rn - 1) / 2) * 54, tgt.y - 430, Math.PI / 2, rsp); } } // 弹雨自天：目标上方 430 一排、自上而下、随机空 1–2 列成整条无弹通道
+  else if(pat === 'rise_up'){ var ruN = dense >= 2 ? 17 : (dense ? 13 : 9), skipU = {}; var su1 = Math.floor(rand(0, ruN)); skipU[su1] = 1; skipU[(su1 + 3) % ruN] = 1; for(i = 0; i < ruN; i++){ if(skipU[i]) continue; push(tgt.x + (i - (ruN - 1) / 2) * 54, tgt.y + 430, -Math.PI / 2); } } // 升空弹幕：目标下方一排、自下而上、空 2 列
+  else if(pat === 'wall_right' || pat === 'wall6' || pat === 'wall3'){ var wn = pat === 'wall_right' ? (dense >= 2 ? 16 : (dense ? 12 : 8)) : (pat === 'wall6' ? 6 : 3), wsp = pat === 'wall_right' ? spd : DMK_MINI_SPD, skipW = {}; if(wn > 3){ var sw1 = Math.floor(rand(0, wn)); skipW[sw1] = 1; skipW[(sw1 + 2) % wn] = 1; } for(i = 0; i < wn; i++){ if(skipW[i]) continue; push(tgt.x - 430, tgt.y + (i - (wn - 1) / 2) * 54, 0, wsp); } } // 左墙横扫：目标左侧 430 一列、自左而右、空 2 槽
+  else if(pat === 'wall_left'){ var wlN = dense >= 2 ? 16 : (dense ? 12 : 8), skipL = {}; var sl1 = Math.floor(rand(0, wlN)); skipL[sl1] = 1; skipL[(sl1 + 3) % wlN] = 1; for(i = 0; i < wlN; i++){ if(skipL[i]) continue; push(tgt.x + 430, tgt.y + (i - (wlN - 1) / 2) * 54, Math.PI); } } // 右墙横扫：目标右侧一列、自右而左、空 2 槽
+  else if(pat === 'diag_dr' || pat === 'diag_dl' || pat === 'diag5' || pat === 'diag3'){ var dn = (pat === 'diag_dr' || pat === 'diag_dl') ? (dense >= 2 ? 15 : (dense ? 11 : 7)) : (pat === 'diag5' ? 5 : 3), dsp = dn >= 7 ? spd : DMK_MINI_SPD, dang = (pat === 'diag_dl') ? Math.PI * 0.75 : Math.PI * 0.25, perp = dang - Math.PI / 2, dskip = dn >= 5 ? Math.floor(rand(0, dn)) : -1; for(i = 0; i < dn; i++){ if(i === dskip) continue; var off = (i - (dn - 1) / 2) * 56; push(tgt.x - Math.cos(dang) * 400 + Math.cos(perp) * off, tgt.y - Math.sin(dang) * 400 + Math.sin(perp) * off, dang, dsp); } } // 斜向扫射：平行斜流自目标斜后方压来（↘ 向右下／↙ 向左下）、错开 1 道留缝
   else if(pat === 'ring10'){ var g10 = (Math.floor(rand(0, 10)) + 0.5) / 10 * Math.PI * 2; for(i = 0; i < 10; i++){ a = i / 10 * Math.PI * 2; var r10 = rel(a, g10); if(r10 > 0.40 && r10 < Math.PI * 2 - 0.40) push(gx, gy, a, DMK_MINI_SPD); } } // 中档环形留缺：缺口中心恒落两发正中、恒剔 2 发、实发 8
   return out;
 }
-function dmkCast(e, tgt, opt){ // 图案池发射唯一入口：随机抽一种图案、圆弹推入 eProjectiles（直线、无 homing、既有跨界/墙体拦截同享）；opt＝{tier:'full'|'mid'|'mini', dmg, color, r, kind, ox, oy, dense}；dense＝1 时仅全档图案加密（2026-11-01 全 Boss 弹幕加密轮：只 3 处 Boss 档调用点传 dense，中档/小档调用点不传、天然不动）
+function dmkCast(e, tgt, opt){ // 图案池发射唯一入口：随机抽一种图案、圆弹推入 eProjectiles（直线、无 homing、既有跨界/墙体拦截同享）；opt＝{tier:'full'|'mid'|'mini', dmg, color, r, kind, ox, oy, dense}；dense＝2 为 2026-11-01 Boss 弹幕加数量轮（只 3 处 Boss 档调用点传 2，dense＝1 保留备查，中档/小档调用点不传、天然不动）
   opt = opt || {};
   var pool = opt.tier === 'mid' ? DMK_PATTERNS_MID : (opt.tier === 'mini' ? DMK_PATTERNS_MINI : DMK_PATTERNS);
   var pat = dmkPick(pool), bs = dmkBullets(pat, e, tgt, opt.ox, opt.oy, opt.dense);
@@ -4653,12 +4660,13 @@ var ENEMY_CAP = 300; // 同屏怪数上限（刷怪成长·数量线）：护手
 var zhudePlanned = false, zhudeSpawned = false;
 var wangcaiPlanned = false, wangcaiSpawned = false, wangcaiIntroPending = false; // 旺财隐藏乱入（仅非无尽，2026-10-31 刷新率轮）：计划／已刷／登场演出中——与朱德同式三旗标；无尽模式恒不置位（无尽旺财仍走 spawnEndlessBoss 随机池、一字未动）
 /* ---------------- 隐藏 Boss 刷新率（2026-10-31 用户令，本轮唯一改动） ----------------
-   ①黑暗朱德：基线约 3%／局、25 局保底（klf_zhude_miss，未遇满 25 局必出）——保底口径一字未动（判定仍为 miss>=25 强制 planned、刷出后计数清零、开局计数 +1 均在原处）。非无尽模式下，场上有任一光明朱德（英雄序号 7）在场时，本局乱入机率由 3% 提高到 10%。
-   ②旺财：此前仅无尽随机池刷出、非无尽模式从不出现（基线 0）。非无尽模式下，场上有任一陈哈哈（英雄序号 6）在场时，本局以 10% 机率计划一次旺财隐藏乱入（刷出走 spawnWangcai、与朱德同式在 Boss 点追加乱入、不占主线名额，时间门同借朱德 420 秒门）；无陈哈哈则仍为 0、永不刷出。
-   ③不叠加：「在场」只取布尔——单人看本机 P.charIdx、联机看房主侧全体成员（本机＋__NET.peersList 逐名 chTwPeer(id).hero，含 NPC 队友）；多个光明朱德／多个陈哈哈同场仍只判定一次在场、机率恒封顶 10%，不按人数累加。
-   ④无尽除外：两条效果在无尽模式一律不生效——朱德在无尽仍为基线 3%（zhudeChance 对无尽恒返基线）、旺财无尽池（spawnEndlessBoss 的 7 条目等权重、旺财 1/7）与无尽计时一字未动，wangcaiChance 对无尽恒返 0（隐藏乱入通道在无尽关闭）。本局是否无尽在 resetGame 掷骰时以 wantEndless 为准（startGame／beginHost 均在 resetGame 之后才把 endless 落定，掷骰点 endless 恒为复位后的 false、不可读）。
+   ①黑暗朱德：分英雄机率／局、25 局保底（klf_zhude_miss，未遇满 25 局必出）——保底口径一字未动（判定仍为 miss>=25 强制 planned、刷出后计数清零、开局计数 +1 均在原处）。2026-11-01 最终口径（取代 2026-10-31 的 3% 基线／光明朱德 10% 提升与此前 5%／20% 单一／30% 单一等全部旧口径）：场上有任一光明朱德（英雄序号 7）在场时本局机率 30%，其他角色时一律 20%。
+   ②旺财（2026-11-01 最终矩阵，取代 10%／0 旧档）：非无尽模式下，旺财隐藏乱入本局机率按本局英雄分——场上有任一陈哈哈（英雄序号 6）在场时 30%，光明朱德（英雄序号 7）在场时 20%，其他角色时一律 20%（刷出走 spawnWangcai、与朱德同式在 Boss 点追加乱入、不占主线名额，时间门同借朱德 420 秒门）。同场优先级：陈哈哈与光明朱德同场时取陈哈哈档 30%（旺财通道里陈哈哈是 30% 的特定英雄，光明朱德的旺财档与通用档同为 20%、不构成例外；反向取光明档会把陈哈哈已指定的 30% 压回 20%，与“陈哈哈在场时对旺财 30%”冲突；与暗朱德侧“光明朱德优先”同理——每只隐藏 Boss 各以其特定英雄优先）。
+   ③不叠加：「在场」只取布尔——单人看本机 P.charIdx、联机看房主侧全体成员（本机＋__NET.peersList 逐名 chTwPeer(id).hero，含 NPC 队友）；多个光明朱德／多个陈哈哈同场仍只判定一次在场、朱德机率恒为分英雄档（光明朱德在场 30%／否则 20%），不按人数累加。
+   ④无尽口径（2026-11-01 最终口径取代旧例外）：朱德的无尽恒 3% 例外作废——新分英雄机率（光明朱德 30%／其他 20%）在无尽与非无尽均适用（zhudeChance 不再按无尽返基线，isEndlessRun 参数仅保留调用兼容）；旺财无尽池（spawnEndlessBoss 的 7 条目等权重、旺财 1/7）与无尽计时一字未动，wangcaiChance 对无尽恒返 0（隐藏乱入通道在无尽关闭——本轮无尽侧不套用新矩阵：新矩阵未指明无尽，且 wangcaiDue 内另有 !endless 硬门，单改机率在无尽也触发不了；若 milo 本意无尽隐藏乱入也按矩阵，须另令同时改 wangcaiDue 门，否则只改机率是死代码）。本局是否无尽在 resetGame 掷骰时以 wantEndless 为准（startGame／beginHost 均在 resetGame 之后才把 endless 落定，掷骰点 endless 恒为复位后的 false、不可读）。
    掷骰点唯一：resetGame 内（与朱德 planned 同点同帧）；联机由房主权威掷骰（客机不跑 Boss 刷出段、口径与朱德一致）。 */
-var HIDDEN_RATE_BASE = 0.03, HIDDEN_RATE_BOOST = 0.10, ZHUDE_PITY_RUNS = 25; // 基线 3%／提升 10%／朱德保底 25 局（保底值与旧判定 miss>=25 同值、仅具名）
+var HIDDEN_RATE_GUANGMING = 0.30, HIDDEN_RATE_OTHER = 0.20, HIDDEN_RATE_BOOST = 0.10, ZHUDE_PITY_RUNS = 25; // 2026-11-01 最终口径：光明朱德在场 30%／其他角色 20%／局、朱德保底 25 局（保底值与旧判定 miss>=25 同值、仅具名）；HIDDEN_RATE_BOOST 0.10 为旧旺财档（非无尽陈哈哈 10%），2026-11-01 最终矩阵后作废、保留定义仅防旧引用，wangcaiChance 不再读它
+var HIDDEN_RATE_WANGCAI_CHEN = 0.30, HIDDEN_RATE_WANGCAI_OTHER = 0.20; // 2026-11-01 最终矩阵旺财侧：非无尽陈哈哈在场 30%、光明朱德在场 20%、其他角色 20%／局（光明档与通用档同值，故同场优先级只影响陈哈哈 vs 光明朱德一对，见 wangcaiChance）
 function teamHasHero(heroIdx){ // 任一在场成员是否为该英雄（布尔、天然不叠加）：本机 P＋联机房主侧全部远端成员／NPC（peersList 枚举 id、chTwPeer 读其 hero）
   if(typeof P !== 'undefined' && P && P.charIdx === heroIdx) return true;
   try{
@@ -4670,9 +4678,9 @@ function teamHasHero(heroIdx){ // 任一在场成员是否为该英雄（布尔�
   }catch(e){}
   return false;
 }
-function zhudeChance(isEndlessRun, hasGuangming){ if(isEndlessRun) return HIDDEN_RATE_BASE; return hasGuangming ? HIDDEN_RATE_BOOST : HIDDEN_RATE_BASE; } // 黑暗朱德本局机率：无尽恒基线 3%；非无尽有光明朱德在场→10%、否则 3%（保底另行强制、不经本函数）
-function wangcaiChance(isEndlessRun, hasChenHaha){ if(isEndlessRun) return 0; return hasChenHaha ? HIDDEN_RATE_BOOST : 0; } // 旺财隐藏乱入本局机率：无尽恒 0（无尽走随机池、不经此通道）；非无尽有陈哈哈在场→10%、否则 0（非无尽基线即 0）
-window.__HIDDEN_BOSS_RATE = { base: HIDDEN_RATE_BASE, boost: HIDDEN_RATE_BOOST, pityRuns: ZHUDE_PITY_RUNS, zhudeChance: zhudeChance, wangcaiChance: wangcaiChance, hasGuangming: function(){ return teamHasHero(7); }, hasChenHaha: function(){ return teamHasHero(6); }, state: function(){ var m = 0; try{ m = parseInt(localStorage.getItem('klf_zhude_miss') || '0', 10) || 0; }catch(e){} return { version: (typeof GAME_VERSION !== 'undefined' ? GAME_VERSION : null), endless: (typeof endless !== 'undefined' ? !!endless : null), wantEndless: (typeof wantEndless !== 'undefined' ? !!wantEndless : null), zhudePlanned: zhudePlanned, zhudeSpawned: zhudeSpawned, wangcaiPlanned: wangcaiPlanned, wangcaiSpawned: wangcaiSpawned, pityMiss: m, endlessPoolWangcai: '1/7（未动）' }; } }; // 只读探针（2026-10-31 刷新率轮）：机率纯函数／在场判定／本局计划旗标／保底计数现值，供离线实测单人/联机/不叠加/无尽不变/保底口径，不参与任何结算（与既有 __BOSS_RATE 技能频率探针无关、未动）
+function zhudeChance(isEndlessRun, hasGuangming){ return hasGuangming ? HIDDEN_RATE_GUANGMING : HIDDEN_RATE_OTHER; } // 黑暗朱德本局机率（2026-11-01 最终口径）：有光明朱德在场→30%、否则一律 20%，无尽与非无尽同口径（旧无尽恒 3% 例外作废；isEndlessRun 参数仅保留调用兼容、不参与取值；保底另行强制、不经本函数）
+function wangcaiChance(isEndlessRun, hasChenHaha, hasGuangming){ if(isEndlessRun) return 0; if(hasChenHaha) return HIDDEN_RATE_WANGCAI_CHEN; return HIDDEN_RATE_WANGCAI_OTHER; } // 旺财隐藏乱入本局机率（2026-11-01 最终矩阵）：无尽恒 0（无尽走随机池 1/7、不经此通道，wangcaiDue 另有 !endless 硬门）；非无尽陈哈哈在场→30%（同场有光明朱德也取此档，见定版注 ②）、光明朱德在场→20%、其他角色→20%（光明档与通用档同值，hasGuangming 参数仅用于明示优先级、不改变数值结果）
+window.__HIDDEN_BOSS_RATE = { base: HIDDEN_RATE_OTHER, boost: HIDDEN_RATE_GUANGMING, guangming: HIDDEN_RATE_GUANGMING, other: HIDDEN_RATE_OTHER, wangcaiChen: HIDDEN_RATE_WANGCAI_CHEN, wangcaiOther: HIDDEN_RATE_WANGCAI_OTHER, pityRuns: ZHUDE_PITY_RUNS, zhudeChance: zhudeChance, wangcaiChance: wangcaiChance, hasGuangming: function(){ return teamHasHero(7); }, hasChenHaha: function(){ return teamHasHero(6); }, state: function(){ var m = 0; try{ m = parseInt(localStorage.getItem('klf_zhude_miss') || '0', 10) || 0; }catch(e){} return { version: (typeof GAME_VERSION !== 'undefined' ? GAME_VERSION : null), endless: (typeof endless !== 'undefined' ? !!endless : null), wantEndless: (typeof wantEndless !== 'undefined' ? !!wantEndless : null), zhudePlanned: zhudePlanned, zhudeSpawned: zhudeSpawned, wangcaiPlanned: wangcaiPlanned, wangcaiSpawned: wangcaiSpawned, pityMiss: m, endlessPoolWangcai: '1/7（未动）' }; } }; // 只读探针（2026-11-01 分英雄机率轮更新）：机率纯函数／在场判定／本局计划旗标／保底计数现值，供离线实测单人/联机/不叠加/保底口径，不参与任何结算（与既有 __BOSS_RATE 技能频率探针无关、未动）；base＝其他角色档 0.20、boost＝光明朱德档 0.30（旧 base 0.03／boost 0.10 含义已作废；旺财档改走 HIDDEN_RATE_WANGCAI_CHEN 0.30／HIDDEN_RATE_WANGCAI_OTHER 0.20，HIDDEN_RATE_BOOST 0.10 已作废不再被读）
 var runCounted = false, skillBarDirty = true;
 var entranceSfxPlayed = false; // 鸡哥登场「鸡叫」本局已播标记：resetGame 每局重置；局内复活/升级/切场景/开关店都不重置，一局只响一次
 /* 角色专属自言自语系统（用户立项 2026-10-23）：英雄序号 → 专属自播音效「池」（数组）。
@@ -4703,7 +4711,7 @@ function newPlayer(ci){
     moving:0, atkPoseT:0, specPoseT:0, lastAtkT:-1, lastSpecT:-1, hurtT:0, atkStyle:'slash', atkAnimT:9, atkAnimDur:0.32, atkAlt:0, atkAltMap:{}, hasStandSkill:false, standAtkT:0, dollPartner:false, dollFormT:0, dollGrowT:0, shockAcc:0, // dollPartner＝持有隐藏被动（拾取后常驻）；dollFormT＝变身剩余秒数（改版：攻击 1% 触发 15 秒，非常驻）
     excT:0, excMul:1, excSMul:1, excSR:1, excChgMul:1, excInvT:0, excAimAng:null, excHold:false, excHoldT:0, // excChgMul＝蓄力伤害加成倍率（2026-10-29）：松手时按实际蓄力秒数锁定、releaseExcalibur 消费，无蓄力/兜底路径恒 1
     bzKillN:0, bzArrT:0, bzArrTick:0, bzTotalKills:0, // 班仔剑阵（Lv5）：普攻击杀累计计数／剑阵剩余秒／落剑节拍计时（新局随 P 重建清零；口径见 BZ_ARRAY 规格段）；bzTotalKills＝班仔每 100 杀 +1% 的本局累计击杀（2026-11-01 新增，新局随 P 重建清零，与剑阵 40 计数、万箭 200 计数各自独立）
-    bzWjKillN:0, bzWjT:0, bzWjFireT:0, bzWjFired:0, bzWjSwordsFired:0, // 班仔二觉专属（2026-10-31 用户令，2026-11-01 定版 50 门同现、持续 15 秒、激活 180 杀）：归属击杀累计计数（满 180 触发、二觉前不计）／持续剩余秒（>0 期间冻结计数）／逐柄发射节拍（旧分批用，现仅保留字段）／本轮已发门数（定版：触发时 50 门，新局随 P 重建清零）／本轮已发剑数（定版：最多 750 柄）
+    bzWjKillN:0, bzWjT:0, bzWjFireT:0, bzWjFired:0, bzWjSwordsFired:0, // 班仔二觉专属（2026-10-31 用户令，2026-11-01 定版 50 门同现、持续 15 秒、激活 180 杀）：归属击杀累计计数（满 180 触发、二觉前不计）／持续剩余秒（>0 期间冻结计数）／逐柄发射节拍（旧分批用，现仅保留字段）／本轮已发门数（定版：触发时 27 门，新局随 P 重建清零）／本轮已发剑数（2026-11-01 20:52 0.5 秒版：最多 810 柄）
     chTwKillN:0, // 天威（陈哈哈 Lv5）：归属本人的击杀累计计数（满 10 触发、触发即清零；新局随 P 重建清零，口径见天威定版注）
     chSpecKillN:0, chStaticKillTotal:0, // 陈哈哈按键技击杀开启＋静电（2026-10-31）：按键技计数（满 100 开启、释放清零、封顶 100）／静电独立累计总数（只增不减、每满 100 叠 1 层暴击 +0.2%）；新局随 P 重建清零，口径见 CH_SPEC 定版注
     mhKillN:0, mhDroneT:0 // 莫哈哈无人机（2026-10-30 用户令）：AK 普攻击杀累计计数（满 35 召唤、召唤即清零）／无人机剩余秒（>0 或自爆冲刺中均冻结计数；新局随 P 重建清零，口径见 MH_DRONE 定版注）
@@ -4825,14 +4833,14 @@ function resetGame(){
   comboN = 0; comboT = 0; comboBest = 0; comboNextMs = 15; vacuumT = 0; magnetVac = false; magnetVacT = 0; gemChain = 0; gemChainT = 0; wavePulses = 0; wavePulseT = 0; waveTotal = 0;
   var chR = document.getElementById('comboHud'); if(chR) chR.classList.remove('on'); syncComboBonus(); // 连杀奖励：新开一局连杀清零、加成行同步清空
   voidArena = false; voidPortal = null; returnPortal = null; beams = []; storms = []; fxAnims = []; deathAnims = []; droneStop(); mhDrones = []; bzWjSwords = []; bzWjPortals = []; bzWjBandQueue = []; // 终局流程状态复位；莫哈哈无人机随新局清空（计数随 P 重建归零）；万箭齐发剑实体与传送门随新局清空（计数随 P 重建归零）
-  // 隐藏 Boss 朱德：保底计数（localStorage）＋本局机率乱入（基线 3%；非无尽且光明朱德在场→10%，2026-10-31 刷新率轮，口径见 HIDDEN_RATE 定版注）
+  // 隐藏 Boss 朱德：保底计数（localStorage）＋本局机率乱入（分英雄：光明朱德在场→30%、其他→20%，2026-11-01 最终口径，口径见 HIDDEN_RATE 定版注）
   var miss = 0;
   try{ miss = parseInt(localStorage.getItem('klf_zhude_miss') || '0', 10) || 0; }catch(e){}
   zhudeSpawned = false;
   var _hbEndless = (typeof wantEndless !== 'undefined' && !!wantEndless); // 本局模式以 wantEndless 为准（endless 在本函数上方已复位 false、startGame/beginHost 在本函数返回后才落定）
-  zhudePlanned = miss >= ZHUDE_PITY_RUNS || Math.random() < zhudeChance(_hbEndless, teamHasHero(7)); // 保底未动：未遇满 25 局仍必出（强制 planned、优先于机率）；机率段＝zhudeChance（无尽恒 3%／非无尽有光明朱德 10%／否则 3%）
+  zhudePlanned = miss >= ZHUDE_PITY_RUNS || Math.random() < zhudeChance(_hbEndless, teamHasHero(7)); // 保底未动：未遇满 25 局仍必出（强制 planned、优先于机率）；机率段＝zhudeChance（光明朱德在场 30%／其他一律 20%，无尽同口径）
   wangcaiSpawned = false; wangcaiIntroPending = false;
-  wangcaiPlanned = Math.random() < wangcaiChance(_hbEndless, teamHasHero(6)); // 旺财隐藏乱入掷骰（同点同帧）：无尽恒不计划（池不变）；非无尽有陈哈哈→10%、否则不计划
+  wangcaiPlanned = Math.random() < wangcaiChance(_hbEndless, teamHasHero(6), teamHasHero(7)); // 旺财隐藏乱入掷骰（同点同帧，最终矩阵）：无尽恒不计划（池 1/7 不变）；非无尽陈哈哈在场→30%（同场光明朱德也取 30%）、光明朱德在场→20%、其他角色→20%
   runCounted = false;
   shopReset(); // 梁鸡细佬：牛筋/货架/购买计数全部按局重置
   skillBarDirty = true;
@@ -5403,10 +5411,12 @@ function spawnEnemy(typeKey, isBoss, bossDef){
     var baDps = BOSS_AUTO_DPSREF * baProxy * timeBuffMul() * (gameTime < 240 ? 0.75 + 0.25 * (gameTime / 240) : 1);
     var baBase = e.maxHp / ((window.__NET_MUL && !DUNGEON_SPAWN_NEXT) ? (window.__NET_MUL.bossHp || 1) : 1); // 单人等效旧实血：除回联机 bossHp，F 只对玩家伤害负责（联机人数缩放一字未动、照旧乘在 F 之外）
     var baOldHp = e.maxHp;
-    var baF = clamp(baDps * BOSS_AUTO_TARGET_SEC / Math.max(1, baBase), 1, 8);
+    var baIsLaonong = !!(e.isLaonong || e.final); // 2026-11-01 劳农 120 保证轮：无尽随机劳农目标由 60 秒改为 120 秒（首行明报），其他 Boss 仍 60 秒；劳农 F 上限放宽到 200，避免 8 倍钳制把 120 秒目标压回约 80 秒
+    var baTargetSec = baIsLaonong ? 120 : BOSS_AUTO_TARGET_SEC;
+    var baF = clamp(baDps * baTargetSec / Math.max(1, baBase), baIsLaonong ? 0.05 : 1, baIsLaonong ? 200 : 8); // 劳农下限亦放宽：旧血已超 120 秒份时亦削到 120 秒份（其他 Boss 仍只补不削，下限 1 不动）
     if(baF !== 1){ e.hp *= baF; e.maxHp *= baF; }
     e.bossAutoF = Math.round(baF * 100) / 100;
-    bossAutoRec = { name: e.name, f: e.bossAutoF, dps: Math.round(baDps), oldHp: Math.round(baOldHp), newHp: Math.round(e.maxHp), t: Math.round(gameTime), lv: P.level, net: window.__NET_MUL ? 1 : 0, endless: endless ? 1 : 0, maxProxy: endless ? 1 : 0 };
+    bossAutoRec = { name: e.name, f: e.bossAutoF, dps: Math.round(baDps), oldHp: Math.round(baOldHp), newHp: Math.round(e.maxHp), t: Math.round(gameTime), lv: P.level, net: window.__NET_MUL ? 1 : 0, endless: endless ? 1 : 0, maxProxy: endless ? 1 : 0, targetSec: baTargetSec };
   }
   if(isBoss && endless){ // 无尽人数倍率（2026-10-30 旺财轮，用户令「每多一個玩家數值翻0.5倍＋數值包括血量」）：EPM＝1＋0.5×(N−1)，hp/maxHp 与 dmg 同步同倍率；与既有 __NET_MUL 人数表叠加不替换（该表已在上方原位乘过）、与自动调 F 分工见增补注②；仅无尽 Boss、刷出时结算一次，单人 N＝1 倍率 1.0 逐值不变
     var epm = endlessPlayerMul();
@@ -5470,7 +5480,7 @@ function spawnBoss(){
   }, { story: true });
 }
 /* ---------------- 无尽模式：Boss 随机召唤（用户定版） ----------------
-   仅无尽模式：Boss 不再按剧情顺序/进度出，改为随机池召唤——池＝BOSSES 0–5（5 个常规 Boss＋最终 Boss 劳农），绝不含朱德（朱德不在 BOSSES 表内、仍只走独立隐藏乱入规则：约 3%/局、25 局保底，无尽里也照旧，见下方无尽计时段的 zhudePlanned 分支，未动）。
+   仅无尽模式：Boss 不再按剧情顺序/进度出，改为随机池召唤——池＝BOSSES 0–5（5 个常规 Boss＋最终 Boss 劳农），绝不含朱德（朱德不在 BOSSES 表内、仍只走独立隐藏乱入规则：分英雄 30%/20%／局、25 局保底，见下方无尽计时段的 zhudePlanned 分支；池构成未动，机率档本轮改）。
    【2026-10-30 旺财增补】池在运行时等权重拼入第 7 个条目 WANGCAI_DEF（无尽专属 Boss 旺财，见 WANGCAI_DEF 上方定版注）：常态 7 条目等概率、旺财 1/7；剔劳农时 6 条目、旺财 1/6。BOSSES 表本身未动——剧情出场/联机剧情池/图鉴等一切读表处均不含旺财。
    节奏沿用无尽既有口径：每 150 秒一只；同时在场 Boss 上限 3 只（满员跳过本次，不刷屏）；随机劳农同时至多 1 只（场上有存活劳农时，本次池内剔除劳农再抽）。
    结尾守门（已核查、无需新增）：结尾动画唯一触发点在 killEnemy——`if(e.final && !endless) startEnding();`，本就以 !endless 为条件；虚空传送门/竞技场入口也只在剧情分支（!endless）内。故无尽随机劳农被打死只走普通 Boss 击杀结算（牛筋/宝石/道具掉落按既有 Boss 规则，横幅亦为「Boss 击杀！」），不触发结尾、不结束整局，无尽继续。
@@ -5513,7 +5523,7 @@ function spawnEndlessBossNow(def){ // 无尽 Boss 实际刷出（自 spawnEndles
    人数越多 Boss 越多（数量曲线，施工安排）：
      · 单次事件刷出数 mpBossBatch(n)＝1＋floor(max(0, n−2)/8)：2–9 人 1 只／10–17 人 2 只／18–25 人 3 只／26–33 人 4 只／…／98–100 人 13 只。
      · 同场存活 Boss 上限 mpBossAliveCap(n)＝2＋floor(n/10)：2–9 人 2 只／10–19 人 3 只／20–29 人 4 只／50 人 7 只／100 人 12 只；达上限时本次事件跳过刷出、12 秒后重试（不堆积欠账）。
-   出场选择：自 BOSSES 前 5 只（黏液君王/哥布林王/水晶魔像王/火焰恶魔/三头蛇龙）等概率随机抽、不按顺序、可重复（同一只本局可多次出场）；防连续重复：与上一只相同时 75% 概率重抽一次。朱德：zhudeDue()（既有隐藏规则：约 3%/局、25 局保底、420 秒时间门，一字未动）成立时占本次事件的第一个名额（spawnZhude 既有入口），其余名额照常随机。
+   出场选择：自 BOSSES 前 5 只（黏液君王/哥布林王/水晶魔像王/火焰恶魔/三头蛇龙）等概率随机抽、不按顺序、可重复（同一只本局可多次出场）；防连续重复：与上一只相同时 75% 概率重抽一次。朱德：zhudeDue()（既有隐藏规则：分英雄 30%/20%／局、25 局保底、420 秒时间门；机率档本轮改，时间门与保底未动）成立时占本次事件的第一个名额（spawnZhude 既有入口），其余名额照常随机。
    劳农除外（用户明令）：终局仍按现行计时/终局口径——联机下 gameTime 达 900 秒（BOSS_TIMES[5]）时只触发一次 openVoidPortal（裂缝门→竞技场决战劳农，含朱德先行乱入判定与原终局分支同式），劳农本人绝不进入随机池（池只含 BOSSES 0–4）；mpFinaleDone 后随机刷出继续（终局未结算前主地图仍可刷常规 Boss，踏入门/进竞技场期间由门禁暂停）。
    接线：update 内剧情 Boss 判定段改三路分流（联机>1 人 → mpBossTick；否则原 BOSS_TIMES 段逐字不变）；客机不跑本段（__NET_CLIENT_MODE 门禁、房主权威）。NPC 救援逻辑未动。 */
 function mpRoster(){ var tl = (typeof teamList === 'function') ? teamList() : null; return tl ? tl.length : 1; }
@@ -5599,13 +5609,15 @@ function openVoidPortal(){
    成因：Boss 分支只吃时间曲线（900 秒仅 ×3.57），完全不接普通怪在用的战力对表——普通怪同点吃 timeScale ×24（900 秒封顶）×powerTrackMul（0.8–1.5），相对成长差约一个数量级，Boss 越到终局相对越薄；且 playerPowerMul 本身不含商人「攻击力」堆叠（pDmgMul 内 (1＋shopAtk)、最高 ×11）与 600 秒起的定时全队伤害增幅 timeBuffMul（900 秒 ×1.5），重仓构筑的真实 DPS 更是完全不进任何 Boss 缩放——故强构筑进场即秒杀。另查无百分比血量绕过机制可秒 Boss：链爆 chainbomb 的 e.maxHp×0.12 是「被击杀怪」自身的血、不是目标 Boss 的；鸡哥引燃 JG_IGNITE_BOSS_PCT 为每秒上限 2%×10 跳的灼烧（持续 2026-10-30 由 5 秒改 10 秒、单轮合计 20%）、属正常持续伤害口径；劳农蓄力元气弹期间伤害只削韧性（3800、本轮未动）不扣血、反而延长战斗，不是秒杀通道。
    【本轮改法】只在 enterVoidArena（踏入虚空竞技场那一刻、剧情终局唯一入口）结算一次、只对刚刷出的劳农本体：
      · 门禁：仅单人——!window.__NET_MUL（与 soloPreActive／spEarly 既有单人判定同一开关：联机房主开局 applyScaling 必写入、单人永不设置）；联机局整段不跑、劳农仍走既有联机人数缩放（__NET_MUL.bossHp），一字未动；客机不跑 enterVoidArena（竞技场与 Boss 血量经房主快照同步），不会本地二次缩放。无尽随机劳农走 spawnEndlessBoss、不经本函数，不受影响；其他 Boss（含朱德）与劳农前 soloPreActive 缓和一字未动；技能/预警/释放频率（BOSS_SKILL_RATE 与 lnT 轮换）一字未动，频率翻倍属下一轮。
-     · 缩放基准与公式：R＝clamp( playerPowerMul() × (1＋P.shopAtk) ÷ expectedPower(gameTime), 1, 20 )——即进场角色的持久总战力（含等级/武器广度深度/进化/宝箱/被动/商人暴击冷却折算，再补上 playerPowerMul 漏掉的商人攻击力堆叠）相对同局时名义轨迹的倍率；弱于名义轨迹钳到 1（只吃静态加强、不放水），强构筑最高钳到 20 防血量失控（商人攻击力堆满的极端构筑 R 原始值可达 50+、钳后时长会短于目标、属钳制预期）。
+     · 缩放基准与公式：R＝宽幅钳制后值（2026-11-01 劳农 120 保证轮：原始值 clamp 到 0.05–200，非有限/≤0 时取 1；旧 1–20 钳制作废）——即进场角色的持久总战力（含等级/武器广度深度/进化/宝箱/被动/商人暴击冷却折算，再补上 playerPowerMul 漏掉的商人攻击力堆叠）相对同局时名义轨迹的倍率；宽幅内血量与战力同比例，理论时长恒约 121 秒。
      · 血量：实血 ×(2.25 × R)——2.25 为静态加强底（用户令「数值提高一些」），R 为动态部分；900 秒普通难度：名义构筑 R=1 → 321,429×2.25≈723,214；强构筑 R≈7.6（Lv72/二觉/13 武器均 Lv4/shopAtk ×2 的离线复算例）→ ≈5,496,626；R=20（封顶）→ ≈14,464,286。
      · 伤害：本体 dmg ×1.25（58→72.5，普通难度；接触与以 e.dmg 派生的技能伤害同源提高，技能写死数值/预警/频率不动）。
-   【理论时长测算（估算锚点、非实测）】锚点假设：名义轨迹构筑在 900 秒的持续 DPS≈6.0k/s（按终局典型等级/武器阵容量级估算），旧实血 321,429 对应约 54 秒；本公式下血量与玩家 DPS 近似同比例（R 同时出现在血量倍率与玩家实际 DPS 里），时长收敛到 54×2.25≈121 秒≈约 2 分钟，与构筑强弱基本无关（R 钳制区间内）；R 被钳到 20 以上的极端构筑时长会短于 2 分钟、属钳制预期。局内活体时长/真机未验（探针打不到 900 秒终局流程），须用户实局核对。
+   【理论时长测算（估算锚点、非实测）】锚点假设：名义轨迹构筑在 900 秒的持续 DPS≈6.0k/s（按终局典型等级/武器阵容量级估算），旧实血 321,429 对应约 54 秒；本公式下血量与玩家 DPS 近似同比例（R 同时出现在血量倍率与玩家实际 DPS 里），时长收敛到 54×2.25≈121 秒≈约 2 分钟，与构筑强弱基本无关（R 钳制区间内）；2026-11-01 劳农 120 保证轮：R 钳制由 1–20 改为 0.05–200 宽幅守卫，宽幅内理论时长恒约 121 秒（见 enterVoidArena 内 lnR 注释）；无尽随机劳农目标由 60 改为 120 秒、联机终局劳农新增房主侧合力定血（见 BOSS_AUTO 与 enterVoidArena 联机分支）。局内活体时长/真机未验（探针打不到 900 秒终局流程），须用户实局核对。
    探针：window.__LN_SOLO_SCALE() 只读返回最近一次进场缩放记录（未触发/联机为 null），与局内实际结算同源。 */
 var lnSoloScaleRec = null;
 window.__LN_SOLO_SCALE = function(){ return lnSoloScaleRec; };
+var ln120Rec = null; // 2026-11-01 劳农 120 保证轮：最近一次劳农 120 秒保证结算记录（单人/联机终局），只读探针，不参与结算
+window.__LN_120 = function(){ return ln120Rec; };
 function enterVoidArena(){
   loadVoidFx();
   voidPortal = null; voidArena = true;
@@ -5619,11 +5631,22 @@ function enterVoidArena(){
     currentBoss = spawnEnemy(null, true, BOSSES[5]);
     if(currentBoss && !window.__NET_MUL){ // 单人动态缩放（口径见上方定版注）：仅单人、仅剧情终局进场这一刻、仅劳农本体
       var lnOldHp = currentBoss.maxHp, lnOldDmg = currentBoss.dmg;
-      var lnR = clamp(playerPowerMul() * (1 + (P.shopAtk || 0)) / expectedPower(Math.max(1, gameTime)), 1, 20);
+      var lnRRaw = playerPowerMul() * (1 + (P.shopAtk || 0)) / expectedPower(Math.max(1, gameTime));
+      var lnR = (!isFinite(lnRRaw) || lnRRaw <= 0) ? 1 : clamp(lnRRaw, 0.05, 200); // 2026-11-01 劳农 120 保证轮：去 1–20 钳制，改为 0.05–200 宽幅守卫——宽幅内血量与战力同比例，理论时长恒约 121 秒；弱构筑不再因钳到 1 而拖到 240 秒，极端强构筑（R 原始 50+）不再因钳到 20 而缩到约 48 秒
       var lnHpF = 2.25 * lnR;
       currentBoss.maxHp = Math.round(lnOldHp * lnHpF); currentBoss.hp = currentBoss.maxHp;
       currentBoss.dmg = Math.round(lnOldDmg * 1.25 * 10) / 10;
       lnSoloScaleRec = { r: Math.round(lnR * 100) / 100, hpF: Math.round(lnHpF * 100) / 100, dmgF: 1.25, oldHp: Math.round(lnOldHp), newHp: currentBoss.maxHp, oldDmg: lnOldDmg, newDmg: currentBoss.dmg, t: Math.round(gameTime), lv: P.level };
+      ln120Rec = { mode: 'solo', target: 120, r: Math.round(lnR * 100) / 100, rRaw: Math.round(lnRRaw * 100) / 100, hpF: Math.round(lnHpF * 100) / 100, oldHp: Math.round(lnOldHp), newHp: currentBoss.maxHp, t: Math.round(gameTime) };
+    }
+    else if(currentBoss && window.__NET_MUL){ // 2026-11-01 劳农 120 保证轮：联机终局劳农（首行明报，纳入 120 保证）——单人缩放不跑，房主侧按全队合力一次性定血量：合力≈房主 DPS×EPM，目标血量＝合力×120 秒；伤害不动（已走 bossDmg），客机经快照同步、不本地二次缩放
+      var lnMpN = 1; try { if (typeof mpRoster === 'function') lnMpN = Math.max(1, mpRoster()); } catch (err2) {}
+      var lnMpEpm = 1 + 0.5 * (lnMpN - 1);
+      var lnMpProxy = playerPowerMul() * (1 + (P.shopAtk || 0));
+      var lnMpEarly = (gameTime < 240 ? 0.75 + 0.25 * (gameTime / 240) : 1);
+      var lnMpDps = BOSS_AUTO_DPSREF * lnMpProxy * timeBuffMul() * lnMpEarly * lnMpEpm;
+      var lnMpWant = Math.round(lnMpDps * 120);
+      if (isFinite(lnMpWant) && lnMpWant > 0) { var lnMpOldHp = currentBoss.maxHp; currentBoss.maxHp = lnMpWant; currentBoss.hp = lnMpWant; ln120Rec = { mode: 'mp', target: 120, dps: Math.round(lnMpDps), oldHp: Math.round(lnMpOldHp), newHp: lnMpWant, n: lnMpN, epm: lnMpEpm, t: Math.round(gameTime) }; }
     }
     if(currentBoss){ currentBoss.x = 0; currentBoss.y = -290; }
     showBanner('虚 空 裂 缝', '最终决战——劳农');
@@ -5706,13 +5729,114 @@ function laonongCollapse(e){ // ⑤ 虚空坍缩（暴怒阶段大招）
   teles.push({ x: 0, y: 0, r: 330, t: 0, dur: 1.3, dmg: 30, col: '#b48aff', srcE: e });
   var apC = aimPos(); // 玩家周围 8 爆弹圈的圆心瞄准点：鸡哥隐身时只围最后已知位置
   for(var cb = 0; cb < 8; cb++){ var ca = (cb / 8) * Math.PI * 2; teles.push({ x: apC.x + Math.cos(ca) * 150, y: apC.y + Math.sin(ca) * 150, r: 84, t: 0, dur: 1.45, dmg: 24, col: '#b48aff', srcE: e }); }
-  dmkCast(e, aimPos(), { tier: 'full', dense: 1, dmg: 16, color: '#b48aff', r: 6 }); // 虚空坍缩环形弹（2026-10-31 弹幕／Boss 合并轮改图案池；2026-11-01 全 Boss 弹幕加密轮加 dense：全档实发 6–20 发 → 10–30 发、每式留缝同规则）；单发伤害 16 不变；坍缩预警圈（场心 r330＋玩家环 8 圈）属 BOSS_AOE 式预警圈系统、不在本行范围、一字未动，口径见 DMK_ROUND 定版注
+  dmkCast(e, aimPos(), { tier: 'full', dense: 2, dmg: 16, color: '#b48aff', r: 6 }); // 虚空坍缩环形弹（2026-10-31 弹幕／Boss 合并轮改图案池；2026-11-01 全 Boss 弹幕加密轮加 dense：全档实发 6–20 发 → 10–30 发、每式留缝同规则）；单发伤害 16 不变；坍缩预警圈（场心 r330＋玩家环 8 圈）属 BOSS_AOE 式预警圈系统、不在本行范围、一字未动，口径见 DMK_ROUND 定版注
   fxAnims.push({ img:'firebombP', frames:14, fw:64, fh:64, x:0, y:0, t:-0.75, dur:0.9, size:430 });
   fxAnims.push({ img:'shockwave', frames:6, fw:96, fh:96, x:0, y:0, t:-0.8, dur:0.7, size:520 });
   texts.push({ x: e.x, y: e.y - e.r - 34, v: 0, txt: '劳农 ‧ 虚空坍缩！！', t: 0, color: '#ff8ad8', big: true });
   shake = Math.max(shake, 12);
   sfx('voidgrowl'); sfxLater('nadeboom', 1250);
 }
+/* ---------------- 劳农新技能：拳影三拳（2026-11-01 演示定稿进游戏） ----------------
+   口径来源：演示 ~/workspace/your_files/laonong-nongfu-sanquan-demo.html（13,882 字节，milo 2026-11-01 21:59 批准“就这样吧”并令做入技能池），全部按演示执行、旧农夫主题一字不回。
+   节奏：三拳依次，每拳先蓄力 2 秒（蓄力期间拳影由小变大、蓄力条涨满、地面有攻击方向提示），蓄满后轰出拳头虚影；拳间收招 0.6 秒、第三拳后收招 1.0 秒；整套约 8.2 秒（2.6＋2.6＋3.0）。
+   第一拳 · 直冲大拳影：地面竖直走廊（半宽 55px）加向下箭头，方向在蓄力开始时朝 aimPos() 锁定；轰出 100px 大拳影（视觉直径 100、碰撞用演示中心距 66px）沿走廊直冲，速度 560、飞行 1.6 秒，伤害 200，横向走出走廊可躲。
+   第二拳 · 扇形三重拳影：地面三条扇形箭头；同时轰出三只 70px 拳影（视觉直径 70、碰撞用演示中心距 51px），方向为锁定角与 ±0.35 rad，速度 560、飞行 1.4 秒，每只伤害 140；同一拳只算一次——同拳编号的拳影命中某目标后记入源 Boss 的 lnSqHit，该目标再遇同拳其他拳影只穿过不重复结算（拳影中心距 130px 起、51px 判定圈本身已使同帧双中在几何上极难成立，lnSqHit 为兜底）；站两拳间空隙或扇形外可躲。
+   第三拳 · 坠落巨拳影：地面大圆（半径 110px）加向下箭头，落点在蓄力开始时锁定；轰出 140px 巨拳影，0.40 秒坠落、0.45 秒消失，落地当帧按演示中心距 110px 结算，伤害 320，命中飘字“眩晕！”仅为视觉示意、不施加玩家眩晕计时（不与既有眩晕/抗性系统叠加）；2 秒内走出大圆可躲。
+   拳影画面：程序绘制（手掌＋四指节＋拇指，见 drawLnFist），不得接入 spine 王者来源特效；qubodup/thwack 只有音效、非拳影画面，本轮未用现成特效。
+   技能池：不占 laonongSkill 的四格轮换，独立计时——劳农出生后 18 秒首发，之后每 25 秒一轮；蓄力/收招期间 laonongSkill 与虚空坍缩暂停（不重叠秒人），元气弹阈值触发顺延至三拳结束；蓄力期间 Boss 原地不动（lnSqHold 进移动/烟雾改向门禁）、通用冲锋触发同步冻结；暂停/开面板时敌人主循环不推进，三拳计时与地面提示同步冻结。
+   联机：结算只在房主/单人权威 update 内推进（update() 在客机经 clientTick 提前返回，本状态机不跑客机本地结算）；飞拳走既有 eProjectiles 通道，房主本机经弹道段、远端成员经 hostTick 既有弹道扫描同口径结算，坠落拳的 sqHitR/drop 延迟在两处同式处理；客机只经快照看 Boss 位置/血量（拳影实体本身与既有 teles/beams 同级、快照不下发弹道实体，为既有缺口、不冒充已同步）。
+   伤害量级如实：演示数值 200/140/320 按原样入游戏，约为劳农现有技能（15–30）的 7–10 倍、终局玩家血量约 310–430 时第三拳近乎致命，但每拳均有 2 秒蓄力＋地面方向提示可躲，平衡 verdict 归 milo 真机。 */
+var LN_SQ = { charge: 2.0, rec: 0.6, recLast: 1.0, firstCd: 18, cd: 25, speed: 560, dropT: 0.40, dropLife: 0.45 };
+function drawLnFist(ctx, x, y, size, ang, color){
+  ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.shadowColor = color; ctx.shadowBlur = 18;
+  ctx.fillStyle = color;
+  ctx.beginPath(); ctx.rect(-size * 0.42, -size * 0.30, size * 0.84, size * 0.62); ctx.fill();
+  for(var fi = 0; fi < 4; fi++){ ctx.beginPath(); ctx.arc(-size * 0.32 + fi * size * 0.21, -size * 0.38, size * 0.13, 0, 7); ctx.fill(); }
+  ctx.beginPath(); ctx.ellipse(size * 0.42, size * 0.10, size * 0.16, size * 0.28, 0.5, 0, 7); ctx.fill();
+  ctx.shadowBlur = 0; ctx.fillStyle = 'rgba(255,255,255,.35)';
+  ctx.beginPath(); ctx.rect(-size * 0.30, -size * 0.18, size * 0.60, size * 0.36); ctx.fill();
+  ctx.restore();
+}
+function laonongSanquanStartCharge(e, idx){
+  var ap = aimPos();
+  e.lnSq = { active: true, idx: idx, phase: 'charge', t: 0, dir: Math.atan2(ap.y - e.y, ap.x - e.x), lockX: ap.x, lockY: ap.y, ox: e.x, oy: e.y };
+  e.lnSqHold = true;
+  texts.push({ x: e.x, y: e.y - e.r - 26, v: 0, txt: idx === 0 ? '劳农 ‧ 拳影三拳 · 蓄力！' : (idx === 1 ? '劳农 ‧ 第二拳 · 蓄力！' : '劳农 ‧ 第三拳 · 蓄力！'), t: 0, color: '#c8a8ff' });
+}
+function laonongSanquanRelease(e){
+  var sq = e.lnSq; if(!sq) return;
+  var seq = (e.lnSqSeq = (e.lnSqSeq || 0) + 1);
+  var sqId = 'sq' + (e._nid || e.id || 0) + '-' + seq;
+  if(sq.idx === 0){
+    eProjectiles.push({ kind: 'lnFist', srcE: e, x: e.x, y: e.y, vx: Math.cos(sq.dir) * LN_SQ.speed, vy: Math.sin(sq.dir) * LN_SQ.speed, dmg: 200, color: '#4dd8ff', r: 50, t: 0, life: 1.6, sq: sqId, sqMode: 'fly', sqHitR: 66, sqSize: 100, sqAng: sq.dir });
+    texts.push({ x: e.x, y: e.y - e.r - 26, v: 0, txt: '劳农 ‧ 直冲大拳影！', t: 0, color: '#4dd8ff' });
+    sfx('voidcast'); shake = Math.max(shake, 6);
+  } else if(sq.idx === 1){
+    for(var k = -1; k <= 1; k++){ var a = sq.dir + k * 0.35; eProjectiles.push({ kind: 'lnFist', srcE: e, x: e.x, y: e.y, vx: Math.cos(a) * LN_SQ.speed, vy: Math.sin(a) * LN_SQ.speed, dmg: 140, color: '#c07aff', r: 35, t: 0, life: 1.4, sq: sqId, sqMode: 'fly', sqHitR: 51, sqSize: 70, sqAng: a }); }
+    texts.push({ x: e.x, y: e.y - e.r - 26, v: 0, txt: '劳农 ‧ 扇形三重拳影！', t: 0, color: '#c07aff' });
+    sfx('voidcast'); shake = Math.max(shake, 6);
+  } else {
+    eProjectiles.push({ kind: 'lnFist', srcE: e, x: sq.lockX, y: sq.lockY, vx: 0, vy: 0, dmg: 320, color: '#ff6a8a', r: 70, t: 0, life: LN_SQ.dropLife, sq: sqId, sqMode: 'drop', sqDropT: LN_SQ.dropT, sqHitR: 110, sqSize: 140, sqAng: 0 });
+    texts.push({ x: e.x, y: e.y - e.r - 26, v: 0, txt: '劳农 ‧ 坠落巨拳影！', t: 0, color: '#ff6a8a' });
+    sfx('voidcast'); shake = Math.max(shake, 10);
+  }
+}
+function laonongSanquanTick(e, dt){
+  if(state !== 'playing' || e.dead) { if(e.dead && e.lnSq){ e.lnSq = null; e.lnSqHold = false; } return; }
+  var sq = e.lnSq;
+  if(!sq){
+    if(e.lnSqCd === undefined) e.lnSqCd = LN_SQ.firstCd;
+    if((e.lnChargeT || 0) > 0 || (e.lnStunT || 0) > 0 || e.lnBusy) return; // 元气弹蓄力/硬直期间不触发、不扣冷却
+    e.lnSqCd -= dt;
+    if(e.lnSqCd <= 0) laonongSanquanStartCharge(e, 0);
+    return;
+  }
+  e.charging = 0; e.chargeWind = 0; if(e.chargeT < 0.6) e.chargeT = 0.6; // 三拳期间冻结通用冲锋（触发行另有 lnSq 门禁、见敌人主循环）
+  if(sq.phase === 'charge'){
+    e.lnSqHold = true;
+    sq.t += dt;
+    if(sq.t >= LN_SQ.charge){ laonongSanquanRelease(e); sq.phase = 'recover'; sq.t = 0; sq.recDur = (sq.idx === 2 ? LN_SQ.recLast : LN_SQ.rec); e.lnSqHold = false; }
+  } else {
+    e.lnSqHold = false;
+    sq.t += dt;
+    if(sq.t >= (sq.recDur || LN_SQ.rec)){
+      if(sq.idx >= 2){ e.lnSq = null; e.lnSqHold = false; e.lnSqCd = LN_SQ.cd; }
+      else laonongSanquanStartCharge(e, sq.idx + 1);
+    }
+  }
+}
+function drawLnSqHints(ox, oy){
+  for(var ei = 0; ei < enemies.length; ei++){
+    var e = enemies[ei]; if(!e.isLaonong || e.dead || !e.lnSq || e.lnSq.phase !== 'charge') continue;
+    var sq = e.lnSq, frac = clamp(sq.t / LN_SQ.charge, 0, 1), pulse = 0.5 + 0.5 * Math.abs(Math.sin(sq.t * 9));
+    var bx = e.x + ox, by = e.y + oy;
+    if(sq.idx === 0){
+      var dx = Math.cos(sq.dir), dy = Math.sin(sq.dir), px = -dy, py = dx, len = 700;
+      ctx.fillStyle = 'rgba(77,216,255,' + (0.16 + 0.10 * pulse).toFixed(3) + ')';
+      ctx.beginPath(); ctx.moveTo(bx + px * 55, by + py * 55); ctx.lineTo(bx + dx * len + px * 55, by + dy * len + py * 55); ctx.lineTo(bx + dx * len - px * 55, by + dy * len - py * 55); ctx.lineTo(bx - px * 55, by - py * 55); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = 'rgba(77,216,255,.9)'; ctx.lineWidth = 2.5; ctx.stroke();
+      ctx.fillStyle = '#4dd8ff'; ctx.save(); ctx.translate(bx + dx * (len - 30), by + dy * (len - 30)); ctx.rotate(sq.dir); ctx.beginPath(); ctx.moveTo(28, 0); ctx.lineTo(-12, -18); ctx.lineTo(-12, 18); ctx.closePath(); ctx.fill(); ctx.restore();
+    } else if(sq.idx === 1){
+      for(var fa = -1; fa <= 1; fa++){
+        var aa = sq.dir + fa * 0.35, ax = Math.cos(aa), ay = Math.sin(aa), apx = -ay, apy = ax, fl = 520;
+        ctx.fillStyle = 'rgba(192,122,255,' + (0.16 + 0.10 * pulse).toFixed(3) + ')';
+        ctx.beginPath(); ctx.moveTo(bx + apx * 18, by + apy * 18); ctx.lineTo(bx + ax * fl + apx * 48, by + ay * fl + apy * 48); ctx.lineTo(bx + ax * fl - apx * 48, by + ay * fl - apy * 48); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = 'rgba(192,122,255,.9)'; ctx.lineWidth = 2; ctx.stroke();
+        ctx.fillStyle = '#c07aff'; ctx.save(); ctx.translate(bx + ax * (fl - 30), by + ay * (fl - 30)); ctx.rotate(aa); ctx.beginPath(); ctx.moveTo(24, 0); ctx.lineTo(-10, -14); ctx.lineTo(-10, 14); ctx.closePath(); ctx.fill(); ctx.restore();
+      }
+    } else {
+      var lx = sq.lockX + ox, ly = sq.lockY + oy;
+      ctx.fillStyle = 'rgba(255,106,138,' + (0.18 + 0.10 * pulse).toFixed(3) + ')'; ctx.beginPath(); ctx.arc(lx, ly, 110, 0, 7); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,106,138,.95)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(lx, ly, 110, 0, 7); ctx.stroke();
+      ctx.fillStyle = '#ff6a8a'; ctx.save(); ctx.translate(lx, ly - 84); ctx.beginPath(); ctx.moveTo(0, 30); ctx.lineTo(-14, 4); ctx.lineTo(14, 4); ctx.closePath(); ctx.fill(); ctx.restore();
+    }
+    var col = sq.idx === 0 ? '#4dd8ff' : (sq.idx === 1 ? '#c07aff' : '#ff6a8a');
+    ctx.fillStyle = '#222'; ctx.fillRect(bx - 60, by - (e.r || 40) - 52, 120, 10);
+    ctx.fillStyle = col; ctx.fillRect(bx - 60, by - (e.r || 40) - 52, 120 * frac, 10);
+    drawLnFist(ctx, bx + (e.r || 40) + 52, by - 20, 20 + frac * 55, 0, col); // 蓄力中的拳影由小变大（演示同式）
+  }
+}
+window.__LN_SQ = function(){ var out = null; for(var i = 0; i < enemies.length; i++){ if(enemies[i].isLaonong){ var s = enemies[i].lnSq; out = { active: !!(s && s.active), idx: s ? s.idx : -1, phase: s ? s.phase : null, t: s ? Math.round(s.t * 100) / 100 : 0, cd: Math.round((enemies[i].lnSqCd || 0) * 100) / 100, seq: enemies[i].lnSqSeq || 0 }; break; } } return out; }; // 只读探针：拳影三拳状态/冷却，不参与结算
 /* ---------------- 劳农专属技能：蓄力元气弹（韧性条打断） ----------------
    触发：每场仅两次——血量跌破 50% 一次、跌破 20%（快死阈值）一次；按「跌破」判定，单次大伤害跨过阈值也触发；每阈值每场只触发一次；第一次被打断不影响第二次；两次放完不再重复，其余时间只放原有五技能（频率/种类/伤害未动）。
    蓄力 10 秒：劳农原地不动、不移动、不放其他技能（通用冲锋同步冻结），头上出现紫色韧性条（总量按出现那一刻锁定：有效秒伤×6 秒，见 laonongUltStart）与逐渐长大的能量球，并有横幅＋大字＋音效预警。
@@ -5799,6 +5923,7 @@ function laonongUltTick(e, dt){
   }
   if(e.lnStunT > 0){ e.lnBusy = true; e.lnStunT -= dt; if(e.lnStunT <= 0){ e.lnStunT = 0; e.lnBusy = false; } return; } // 打断后硬直：不动、不放技能
   e.lnBusy = false;
+  if(e.lnSq && e.lnSq.active) return; // 拳影三拳进行中：元气弹阈值触发顺延至三拳结束、不得中途插队（见 LN_SQ 定版注）
   var frac = e.hp / e.maxHp;
   if(!e.lnUlt1 && frac < LN_ULT.thr1){ e.lnUlt1 = true; laonongUltStart(e); return; }
   if(!e.lnUlt2 && frac < LN_ULT.thr2){ e.lnUlt2 = true; laonongUltStart(e); return; }
@@ -5918,7 +6043,7 @@ function wcDanmaku(e, tgt){ // ②口吐弹幕（2026-10-31 弹幕／Boss 合并
   wcPose(e, 'spit', 0.7);
   var baseA = Math.atan2(tgt.y - e.y, tgt.x - e.x); e.wcFaceAng = baseA;
   var mp = wcMouth(e, baseA);
-  dmkCast(e, tgt, { tier: 'full', dense: 1, dmg: Math.round(e.dmg * WC_DANMAKU.dmgMul), color: '#ffd76a', r: WC_DANMAKU.r, ox: mp.x, oy: mp.y }); // 朱德轮：旺财口吐弹幕加 dense（全档实发 6–20 发 → 10–30 发、每式留缝同规则；旺财二号无独立弹幕调用点、不另加）
+  dmkCast(e, tgt, { tier: 'full', dense: 2, dmg: Math.round(e.dmg * WC_DANMAKU.dmgMul), color: '#ffd76a', r: WC_DANMAKU.r, ox: mp.x, oy: mp.y }); // 朱德轮：旺财口吐弹幕加 dense（全档实发 6–20 发 → 10–30 发、每式留缝同规则；旺财二号无独立弹幕调用点、不另加）
   texts.push({ x: e.x, y: e.y - e.r - 26, v: 0, txt: '旺财 ‧ 口吐弹幕！', t: 0, color: '#ffe97a' });
   beep(520, 0.12, 'square', 0.04);
 }
@@ -6112,7 +6237,7 @@ function wc2Tick(e, dt, tgt){ // 二号每帧（敌人主循环 e.boss 支内、
   }
 }
 window.__WANGCAI2 = function(){ var c = wc2AliveRef(); var par = null; for(var i = 0; i < enemies.length; i++) if(enemies[i].wangcai && !enemies[i].dead) par = enemies[i]; var loveN = 0; for(var li3 = 0; li3 < effects.length; li3++) if(effects[li3].type === 'wc2love') loveN++; return { alive: !!c, hp: c ? Math.round(c.hp) : null, maxHp: c ? Math.round(c.maxHp) : null, dmgMul: c ? c.wc2DmgMul : null, dmg: c ? c.dmg : null, r: c ? c.r : null, speed: c ? c.speed : null, devT: c ? Math.round(c.wc2DevT * 10) / 10 : null, parentAlive: !!par, parentSummoned: par ? !!par.wc2Summoned : null, claw: WC2_CLAW, pounce: WC2_POUNCE, dev: WC2_DEV, love: WC2_LOVE, loveFxActive: loveN, spawnT: c ? Math.round((c.wc2SpawnT || 0) * 100) / 100 : null, meow: WC2_MEOW, meowAt: wc2MeowAt || null, meowLog: window.__sfxLog.filter(function(x){ return x.k === 'wc2meow'; }).length }; }; // 只读探针（旺财二号轮＋爱意登场轮＋登场喵叫轮）：二号存活/锁定血量/冻结倍率/三技能常量/旺财召唤旗标＋爱意登场常量/当前在场 wc2love 特效数（恒应 ≤1）/淡入剩余＋登场喵叫三声常量/最近召唤时刻/wc2meow 播放日志条数（每次召唤恒 +3），不参与结算
-var ZHUDE_MIN_TIME = 420; /* 朱德时间门（2026-10-28 用户令）：局内时间（gameTime，副本期间冻结的主线钟）未满 7 分钟绝不刷出；满 420 秒后按既有口径（约 3%/局、25 局保底，zhudePlanned 判定与保底计数一字未动） */
+var ZHUDE_MIN_TIME = 420; /* 朱德时间门（2026-10-28 用户令）：局内时间（gameTime，副本期间冻结的主线钟）未满 7 分钟绝不刷出；满 420 秒后按既有口径（分英雄 30%/20%／局、25 局保底，时间门与保底计数一字未动） */
 function zhudeDue(){ return zhudePlanned && !zhudeSpawned && gameTime >= ZHUDE_MIN_TIME; } /* 调用点据此决定走朱德分支还是照常刷主线/无尽 Boss：门未开时主线 Boss 照常出、朱德顺延到 420 秒后的下一个 Boss 点（普通模式 BOSS_TIMES 450 点起）或无尽下一个 150 秒计时点 */
 function spawnZhude(){
   if(gameTime < ZHUDE_MIN_TIME) return; // 硬门禁：唯一刷出入口兜底，任何调用点都不得在 7 分钟前刷出朱德
@@ -6137,7 +6262,7 @@ function spawnZhude(){
   }, { zhude: true });
 }
 /* ---------------- 旺财隐藏乱入（仅非无尽，2026-10-31 刷新率轮新增） ----------------
-   旺财此前仅无尽随机池刷出；本轮按用户令在非无尽模式补一条与朱德同式的隐藏乱入通道：resetGame 已按 wangcaiChance 掷定 wangcaiPlanned（非无尽且陈哈哈在场 10%、无尽恒不计划），Boss 点（单人剧情 BOSS_TIMES 非终局点／联机 spawnMpBoss 事件）经 wangcaiDue 追加刷出——不占主线 Boss 名额、不动 bossIdx/currentBoss、终局点不触发。时间门同借朱德 ZHUDE_MIN_TIME（420 秒）：门未开时顺延到 420 秒后的下一个 Boss 点（与朱德顺延口径一致）。登场走旺财既有口径：喵叫（wcMeowSfx）＋专属登场演出（bossIntroStart、kind=wangcai、lead 1.1 与无尽同值），现身帧横幅/音效/震动同 spawnEndlessBossNow 旺财路；无尽池/无尽计时/wcMeowTick 一字未动（本通道的现身由 bossIntroTick 推进、全模式通用、不经 wcMeowTick）。 */
+   旺财此前仅无尽随机池刷出；本轮按用户令在非无尽模式补一条与朱德同式的隐藏乱入通道：resetGame 已按 wangcaiChance 掷定 wangcaiPlanned（2026-11-01 最终矩阵：非无尽陈哈哈在场 30%、光明朱德在场 20%、其他角色 20%，同场陈哈哈优先；无尽恒不计划），Boss 点（单人剧情 BOSS_TIMES 非终局点／联机 spawnMpBoss 事件）经 wangcaiDue 追加刷出——不占主线 Boss 名额、不动 bossIdx/currentBoss、终局点不触发。时间门同借朱德 ZHUDE_MIN_TIME（420 秒）：门未开时顺延到 420 秒后的下一个 Boss 点（与朱德顺延口径一致）。登场走旺财既有口径：喵叫（wcMeowSfx）＋专属登场演出（bossIntroStart、kind=wangcai、lead 1.1 与无尽同值），现身帧横幅/音效/震动同 spawnEndlessBossNow 旺财路；无尽池/无尽计时/wcMeowTick 一字未动（本通道的现身由 bossIntroTick 推进、全模式通用、不经 wcMeowTick）。 */
 function wangcaiDue(){ return wangcaiPlanned && !wangcaiSpawned && !endless && gameTime >= ZHUDE_MIN_TIME; }
 function spawnWangcai(){
   if(endless) return; // 硬门禁：无尽模式绝不走隐藏乱入通道（无尽旺财只走随机池）
@@ -8469,6 +8594,23 @@ function explodeNade(pr){
 
 var EXC_T = 0; // 「Excalibur!!」呐喊冷却（洪流形态攻击/解放大招触发，12 秒至多一声）
 /* ---------------- 招式运作 ---------------- */
+function frostConeTick(fcAng, fcR, fcHalf, fcDmg, fcEvo, fcMul, fcSlow){
+  // 寒冰锥重做（2026-11-01，演示批准版）：单段结算——扇形几何、减速、冰冻、伤害与旧瞬发同式，只把单段伤害换成段伤害；原点取调用时玩家位置（喷流跟随玩家移动、角度锁定在起喷时）。
+  for(var fci2 = 0; fci2 < enemies.length; fci2++){
+    var efc2 = enemies[fci2]; if(efc2.dead) continue;
+    var dfc2 = Math.sqrt(dist2(P.x, P.y, efc2.x, efc2.y));
+    if(dfc2 > fcR + efc2.r) continue;
+    var dac2 = Math.atan2(efc2.y - P.y, efc2.x - P.x);
+    var dff2a = Math.abs(((dac2 - fcAng) % (Math.PI * 2) + Math.PI * 3) % (Math.PI * 2) - Math.PI);
+    var dff2b = Math.abs(((dac2 - fcAng - Math.PI) % (Math.PI * 2) + Math.PI * 3) % (Math.PI * 2) - Math.PI);
+    if(dff2a < fcHalf || (fcEvo && dff2b < fcHalf && dfc2 < fcR * 0.85 + efc2.r)){
+      efc2.slow = Math.max(efc2.slow, fcSlow); tryFreeze(efc2, 0.30, 1.2); // 寒冰锥重做：30% 概率冰冻 1.2 秒（旧 12%/0.7 秒）
+      damageEnemy(efc2, fcDmg, Math.cos(dac2) * 5, Math.sin(dac2) * 5);
+      for(var fcb2 = 0; fcb2 < wBonus('frostcone'); fcb2++) damageEnemy(efc2, fcDmg * 0.6, 0, 0);
+      for(var fcp2 = 0; fcp2 < 3; fcp2++) particles.push({ x: efc2.x, y: efc2.y, vx: rand(-40, 40), vy: rand(-60, 10), t: 0, life: 0.3, color: '#d8f4ff', r: 2.4 });
+    }
+  }
+}
 function updateWeapons(dt){
   if(window.__NET && __NET.localDowned && __NET.localDowned()){ WEAPON_TICK = false; return; } // 联机倒地：普攻停火
   WEAPON_TICK = true; // 朝向令：武器索敌段开启朝向锥过滤（函数末尾关闭；异常中断时主循环处亦强制复位）
@@ -8814,30 +8956,36 @@ function updateWeapons(dt){
       }
     }
     if(key === 'frostcone'){
+      // 寒冰锥重做（2026-11-01，milo 20:59 批准演示版进游戏）：单次瞬发 → 持续喷流 1.2 秒、分 5 段（首段起喷即结算，其余在 0.3/0.6/0.9/1.2 秒结算，段数 5 不变）；喷流推进在起喷计时之前跑，暂停/开面板时 updateWeapons 不跑、喷流同步停。
+      if(P.frostSpray){
+        var fcS = P.frostSpray; fcS.t += dt;
+        while(fcS.tickIdx < 5 && fcS.nextTick <= fcS.t){
+          effects.push({ type:'cone', x: P.x, y: P.y, ang: fcS.ang, r: fcS.r, half: fcS.half, t: 0, dur: 0.38, color: '168,230,255', ice: true, spk: coneSpikes(fcS.half, fcS.evo ? 18 : 14) });
+          if(fcS.evo) effects.push({ type:'cone', x: P.x, y: P.y, ang: fcS.ang + Math.PI, r: fcS.r * 0.85, half: fcS.half, t: 0, dur: 0.38, color: '168,230,255', ice: true, spk: coneSpikes(fcS.half, 12) });
+          for(var fcP = 0; fcP < fxN(12); fcP++){ var fcA2 = fcS.ang + rand(-fcS.half, fcS.half) * 0.9, fcD2 = rand(280, 560); particles.push({ x: P.x, y: P.y, vx: Math.cos(fcA2) * fcD2, vy: Math.sin(fcA2) * fcD2, t: 0, life: rand(0.22, 0.4), color: '#dff6ff', r: rand(4.5, 8.5), cone: 1, ang: fcA2 }); }
+          frostConeTick(fcS.ang, fcS.r, fcS.half, fcS.dmgSeg, fcS.evo, fcS.mul, fcS.slowDur);
+          fcS.tickIdx++; fcS.nextTick += 0.3;
+        }
+        if(fcS.tickIdx >= 5 && fcS.t >= 1.2){
+          // 喷完留 3 秒地面冰面：圆域近似锥面中段（中心在喷向中点、半径为射程一半），区内敌人由 zones dot slowV 逐帧刷新减速（dps 0，不另伤）；进化另留反向一片。
+          zones.push({ type:'dot', x: P.x + Math.cos(fcS.ang) * fcS.r * 0.5, y: P.y + Math.sin(fcS.ang) * fcS.r * 0.5, r: Math.round(fcS.r * 0.5), t: 0, dur: 3, dps: 0, tick: 0, slowV: 1.0, col: '168,230,255', el: 'ice' });
+          if(fcS.evo) zones.push({ type:'dot', x: P.x + Math.cos(fcS.ang + Math.PI) * fcS.r * 0.85 * 0.5, y: P.y + Math.sin(fcS.ang + Math.PI) * fcS.r * 0.85 * 0.5, r: Math.round(fcS.r * 0.85 * 0.5), t: 0, dur: 3, dps: 0, tick: 0, slowV: 1.0, col: '168,230,255', el: 'ice' });
+          P.frostSpray = null;
+        }
+      }
       if(P.timers[key] <= 0){
-        if(enemies.length){
-          P.timers[key] = (w.evo ? 1.5 : 2.3 - lv * 0.12) * cd;
+        if(enemies.length && !P.frostSpray){
+          // 起喷间隔：演示 Lv1 2.4 秒（喷 1.2 秒 + 间隙 1.2 秒）；各级按旧式斜率类推（每级 −0.12），进化 1.8 秒；攻速 cd 乘区照常。若攻速把间隔压到喷流内，喷流未完不重开（0.15 秒后重试），防两条喷流互相覆盖丢段、丢冰面。
+          P.timers[key] = (w.evo ? 1.8 : 2.52 - lv * 0.12) * cd;
           poseAtk('thrust', P.timers[key]); tryStandProc('player');
-          var angFc = aimAngle(), rFc = w.evo ? 245 : 165 + lv * 14, halfFc = w.evo ? 0.78 : 0.62;
-          var dmgFc = (w.evo ? 50 : 15 + lv * 5.6) * mul;
+          // 射程按演示比例放大旧式（×1.45，四舍五入）：Lv1 179→260；半角非进化取演示 0.85，进化按同比例 0.78×1.37≈1.07；总伤害保持约旧版 3 倍、段数 5 不变、单段＝总/5（Lv1 单段 12.36，演示表四舍五入为 12.4，总 61.8，演示表为 62.0）。
+          var angFc = aimAngle(), rFc = w.evo ? Math.round(245 * 1.45) : Math.round((165 + lv * 14) * 1.45), halfFc = w.evo ? 1.07 : 0.85;
+          var totFc = (w.evo ? 50 : 15 + lv * 5.6) * 3, dmgFcSeg = totFc / 5, slowFc = w.evo ? 2.8 : 2.0;
           effects.push({ type:'cone', x: P.x, y: P.y, ang: angFc, r: rFc, half: halfFc, t: 0, dur: 0.38, color: '168,230,255', ice: true, spk: coneSpikes(halfFc, w.evo ? 18 : 14) });
           if(w.evo) effects.push({ type:'cone', x: P.x, y: P.y, ang: angFc + Math.PI, r: rFc * 0.85, half: halfFc, t: 0, dur: 0.38, color: '168,230,255', ice: true, spk: coneSpikes(halfFc, 12) });
-          // 喷口冰碴（2026-10-31 重做轮）：小冰锥粒随主喷流同向高速飞出（cone 粒子、绘制见粒子段）；旧版锥心 ard_ice 冰爆已删——爆点压在扇面中心正是旧表达读不懂的主因之一
           for(var fcs = 0; fcs < fxN(12); fcs++){ var fca = angFc + rand(-halfFc, halfFc) * 0.9, fcd = rand(280, 560); particles.push({ x: P.x, y: P.y, vx: Math.cos(fca) * fcd, vy: Math.sin(fca) * fcd, t: 0, life: rand(0.22, 0.4), color: '#dff6ff', r: rand(4.5, 8.5), cone: 1, ang: fca }); }
-          for(var fci = 0; fci < enemies.length; fci++){
-            var efc = enemies[fci]; if(efc.dead) continue;
-            var dfc = Math.sqrt(dist2(P.x, P.y, efc.x, efc.y));
-            if(dfc > rFc + efc.r) continue;
-            var dac = Math.atan2(efc.y - P.y, efc.x - P.x);
-            var dff = Math.abs(((dac - angFc) % (Math.PI * 2) + Math.PI * 3) % (Math.PI * 2) - Math.PI);
-            var dff2 = Math.abs(((dac - angFc - Math.PI) % (Math.PI * 2) + Math.PI * 3) % (Math.PI * 2) - Math.PI);
-            if(dff < halfFc || (w.evo && dff2 < halfFc && dfc < rFc * 0.85 + efc.r)){
-              efc.slow = Math.max(efc.slow, w.evo ? 1.9 : 1.15); tryFreeze(efc, 0.12, 0.7); // 寒冰锥：12% 概率冰冻 0.7 秒
-              damageEnemy(efc, dmgFc, Math.cos(dac) * 5, Math.sin(dac) * 5);
-              for(var fcb = 0; fcb < wBonus('frostcone'); fcb++) damageEnemy(efc, dmgFc * 0.6, 0, 0);
-              for(var fcp = 0; fcp < 3; fcp++) particles.push({ x: efc.x, y: efc.y, vx: rand(-40, 40), vy: rand(-60, 10), t: 0, life: 0.3, color: '#d8f4ff', r: 2.4 });
-            }
-          }
+          frostConeTick(angFc, rFc, halfFc, dmgFcSeg, w.evo, mul, slowFc);
+          P.frostSpray = { t: 0, tickIdx: 1, nextTick: 0.3, ang: angFc, r: rFc, half: halfFc, dmgSeg: dmgFcSeg, evo: w.evo, mul: mul, slowDur: slowFc };
           sfx('cone');
         } else P.timers[key] = 0.15;
       }
@@ -13026,8 +13174,214 @@ function currentBiomeIdx(){
   if(endless) return Math.floor(gameTime / 180) % BIOMES.length;
   return Math.min(Math.floor(gameTime / 180), BIOMES.length - 1);
 }
-/* 2 分钟后多刷怪（2026-10-30 用户令）：局时 120 秒门禁——gameTime<120 恒返 1（旧曲线逐值不变、2 分钟前不加量）；120–180 秒线性渐入 1→0.82（间隔乘子、越小刷得越快、无突跳）；180 秒后恒 0.82（常规刷怪速率约 +22%）。仅供 update 内常规刷怪间隔与怪潮总量两处使用（怪潮侧在调用点按 gameTime>=120 另乘 ×1.25 总量，见波次段）；Boss 在场时常规间隔不吃本乘子（bossNow 分支仍走旧间隔、spawnTimer 仍 ×2.5、批量仍封顶 BOSS_ADD_CAP——Boss 战减量口径一字未动）；同屏上限 ENEMY_CAP(300)、Boss 时间表/刷出规则、精英率 eliteRate、怪种解锁与波次周期一字未动。 */
-function spawnBoost120Mul(){ if(gameTime < 120) return 1; if(gameTime < 180) return 1 - 0.18 * ((gameTime - 120) / 60); return 0.82; }
+/* 2 分钟后多刷怪（2026-10-30 用户令，2026-11-01 两分钟加数量轮加强、只加数量不加血量/伤害）：局时 120 秒门禁——gameTime<120 恒返 1（旧曲线逐值不变、2 分钟前不加量）；120–180 秒线性渐入 1→0.65、180–300 秒线性渐入 0.65→0.50、300 秒后恒 0.50（间隔乘子、越小刷得越快、无突跳；常规刷怪速率 180 秒时约 +54%、300 秒后约 +100%，旧曲线 180 秒后恒 +22%）。怪潮总量另走 spawnWave120Mul：120 秒前 ×1、120–180 秒线性 1.25→1.60、180–300 秒线性 1.60→2.00、300 秒后恒 2.00（旧曲线 120 秒后恒 ×1.25）。仅供 update 内常规刷怪间隔与怪潮总量两处使用；Boss 在场时常规间隔不吃本乘子（bossNow 分支仍走旧间隔、spawnTimer 仍 ×2.5、批量仍封顶 BOSS_ADD_CAP——Boss 战减量口径一字未动，怪潮波次在 Boss 在场时仍不开新波）；同屏上限 ENEMY_CAP(300)、Boss 时间表/刷出规则、精英率 eliteRate、怪种解锁与波次周期、怪物血量/伤害/掉率/经验/冷却一字未动。 */
+function spawnBoost120Mul(){ if(gameTime < 120) return 1; if(gameTime < 180) return 1 - 0.35 * ((gameTime - 120) / 60); if(gameTime < 300) return 0.65 - 0.15 * ((gameTime - 180) / 120); return 0.50; }
+function spawnWave120Mul(){ if(gameTime < 120) return 1; if(gameTime < 180) return 1.25 + 0.35 * ((gameTime - 120) / 60); if(gameTime < 300) return 1.60 + 0.40 * ((gameTime - 180) / 120); return 2.00; }
+/* ---------------- 托管（自动游玩，2026-11-01 托管轮＋同日智能补） ----------------
+   口径：复用 NPC 队友的核心判定（阈值/优先级逐项对齐，见下方各段注），不另写一套战斗模型；
+   npcAi 本体写 peer 的 input 结构（inp.mx/my/faceAng/wantSpec/wantDodge），不适用于本机 P，
+   故此处按同一口径为本机 P 重述决策——数值（伤害/掉率/经验/冷却/万箭发剑间隔）一字未动，
+   只改决策权重与优先级。联机下只控制本机 P，不写任何网络同步字段、不碰 NPC 与远端真人。
+   智能补（milo 2026-11-01 20:43）：在 NPC 口径上再加五层权衡——
+   ①目标按威胁与收益打分（残血收尾/精英与 Boss 加权/怪群聚团价值），不只追最近；
+   ②走位先躲技能（预警圈/弹道/冲锋走廊硬覆盖）再输出，Boss 战同理；
+   ③血量与冷却会算（低血拉开捡血、按键技留给怪群或 Boss、闪避留给贴身致命情形）；
+   ④拾取按价值与距离权衡（不为一颗经验穿怪群）；
+   ⑤学技能按局势动态打分（前期补输出、中期补生存、后期补成型），不固定顺序。
+   开关：局内 HUD「托管」钮（#btnAutoplay，登记进 HUD_DEFS、可拖动）；点开/再点关；
+   打断：任意手动方向键或摇杆、闪避/特殊技能键、托管钮本身——任一即关，关后立刻恢复手动。
+   面板：暂停菜单/商店/升级弹窗/宝箱弹窗/死亡结算下托管不抢输入——升级页由托管选卡逻辑处理，
+   商店误入则 0.8 秒后自动关店（不买任何东西，见 frame 段托管钩），结算屏出现即自动关托管。 */
+var AUTOPLAY = { on:false, _t:0, _pickT:0, _shopT:0, _chestT:0, _aimAng:null, _curTgt:null, _stuckT:0, _lastX:0, _lastY:0, _skipTgt:null, _skipUntil:0, _strafeT:0, _strafeDir:1, _wanderT:0, _wanderX:0, _wanderY:0 };
+var AUTOPLAY_UNREACHABLE_SEC = 3; /* 不可达放弃阈值（builder 定）：追一个拾取/宝箱/传送门/战斗目标时连续 3 秒几乎不动（每帧位移 <1px）即放弃该目标、黑名单 10 秒；站圈内静止（宝箱/传送门站定）不计入——那是既有站圈口径，不是卡死 */
+function autoplaySet(on){
+  AUTOPLAY.on = !!on;
+  var b = el('btnAutoplay'); if(b){ b.classList.toggle('on', AUTOPLAY.on); b.textContent = AUTOPLAY.on ? '托管中' : '托管'; }
+  if(!AUTOPLAY.on){ AUTOPLAY._aimAng = null; AUTOPLAY._curTgt = null; AUTOPLAY._stuckT = 0; }
+}
+function autoplayToggle(){ autoplaySet(!AUTOPLAY.on); }
+(function(){ /* 开关与打断键绑定：托管钮点按开关；手动闪避/特殊键按下即关（托管自己的 doSpecial/doDodge 程序调用不走 DOM 事件、不会自关）；方向键打断在 update 移动段（见该段托管钩） */
+  var b = el('btnAutoplay'); if(b) b.addEventListener('click', function(ev){ ev.preventDefault(); autoplayToggle(); });
+  var dg = el('btnDodge'); if(dg) dg.addEventListener('touchstart', function(){ if(AUTOPLAY.on) autoplaySet(false); }, { passive:true });
+  var sp = el('btnSpecial'); if(sp) sp.addEventListener('touchstart', function(){ if(AUTOPLAY.on) autoplaySet(false); }, { passive:true });
+  window.addEventListener('keydown', function(ev){ if(!AUTOPLAY.on) return; var k = (ev.key || '').toLowerCase(); if(k === 'arrowup' || k === 'arrowdown' || k === 'arrowleft' || k === 'arrowright' || k === 'w' || k === 'a' || k === 's' || k === 'd' || k === ' ' || k === 'l' || k === 'shift') autoplaySet(false); });
+})();
+window.__AUTOPLAY = { on:function(){ return AUTOPLAY.on; }, set:autoplaySet, toggle:autoplayToggle, unreachableSec:AUTOPLAY_UNREACHABLE_SEC };
+function autoplaySkipped(t){ return !!t && AUTOPLAY._skipTgt === t && (typeof gameTime !== 'undefined' ? gameTime : 0) < AUTOPLAY._skipUntil; }
+function autoplaySeekVec(tx, ty, stop){ var dx = tx - P.x, dy = ty - P.y, d = Math.sqrt(dx * dx + dy * dy) || 1; if(d <= stop) return { x:0, y:0, d:d }; return { x:dx / d, y:dy / d, d:d }; }
+function autoplayTrack(tgt, vec, dt){ /* 卡死追踪：只对“正在移动赴目标”计——位移小且在动才累计，站圈静止/带内绕步不误判 */
+  if(!tgt || Math.sqrt(vec.x * vec.x + vec.y * vec.y) <= 0.5){ AUTOPLAY._stuckT = 0; return; }
+  if(AUTOPLAY._curTgt !== tgt){ AUTOPLAY._curTgt = tgt; AUTOPLAY._stuckT = 0; AUTOPLAY._lastX = P.x; AUTOPLAY._lastY = P.y; return; }
+  var moved = Math.hypot(P.x - AUTOPLAY._lastX, P.y - AUTOPLAY._lastY); AUTOPLAY._lastX = P.x; AUTOPLAY._lastY = P.y;
+  if(moved < 1) AUTOPLAY._stuckT += dt; else AUTOPLAY._stuckT = 0;
+  if(AUTOPLAY._stuckT >= AUTOPLAY_UNREACHABLE_SEC){ AUTOPLAY._skipTgt = tgt; AUTOPLAY._skipUntil = (typeof gameTime !== 'undefined' ? gameTime : 0) + 10; AUTOPLAY._stuckT = 0; AUTOPLAY._curTgt = null; }
+}
+function autoplayDangerVec(){ /* 躲技能硬覆盖（NPC 躲技能段同口径）：①预警圈 teles 内径向走出（圈内剩余 ≤0.5 秒时顺带闪避）；②弹道 150px 内且朝自己飞来则垂直侧移（<70px 时顺带闪避）；③Boss 冲锋走廊（前方 360px、横偏 <64px）垂直侧移；另：苔藓减速区（zones type moss）只作软推离，不抢硬覆盖 */
+  if(typeof teles !== 'undefined'){
+    for(var ti = 0; ti < teles.length; ti++){ var te = teles[ti]; var td = Math.hypot(P.x - te.x, P.y - te.y);
+      if(td < te.r + 6){ var ta = td < 4 ? (P.faceAng || 0) : Math.atan2(P.y - te.y, P.x - te.x); return { x:Math.cos(ta), y:Math.sin(ta), hard:true, dodge:(te.dur - te.t) <= 0.5 }; } }
+  }
+  if(typeof eProjectiles !== 'undefined'){
+    for(var pi = 0; pi < eProjectiles.length; pi++){ var pr = eProjectiles[pi]; var pvx = pr.x - P.x, pvy = pr.y - P.y, pvd = Math.hypot(pvx, pvy);
+      if(pvd < 150 && pvd > 1){ var spd = Math.hypot(pr.vx || 0, pr.vy || 0) || 1; var toward = -((pr.vx * pvx) + (pr.vy * pvy)) / spd; var perp = Math.abs((pr.vx * pvy) - (pr.vy * pvx)) / spd;
+        if(toward > 0 && perp < P.r + (pr.r || 5) + 14){ var sa = Math.atan2(pr.vy, pr.vx) + Math.PI / 2; if(((P.x - pr.x) * Math.cos(sa) + (P.y - pr.y) * Math.sin(sa)) < 0) sa += Math.PI; return { x:Math.cos(sa), y:Math.sin(sa), hard:true, dodge:pvd < 70 }; } } }
+  }
+  if(typeof enemies !== 'undefined'){
+    for(var ci = 0; ci < enemies.length; ci++){ var cb = enemies[ci]; if(!cb.boss || !(cb.charging > 0)) continue;
+      var cvx = P.x - cb.x, cvy = P.y - cb.y; var calong = cvx * (cb.chgDx || 0) + cvy * (cb.chgDy || 0); var cperp = Math.abs(cvx * (cb.chgDy || 0) - cvy * (cb.chgDx || 0));
+      if(calong > 0 && calong < 360 && cperp < 64){ var cs = Math.atan2(cb.chgDy || 0, cb.chgDx || 0) + Math.PI / 2; if(cvx * Math.cos(cs) + cvy * Math.sin(cs) < 0) cs += Math.PI; return { x:Math.cos(cs), y:Math.sin(cs), hard:true, dodge:false }; } }
+  }
+  return null;
+}
+function autoplayMossPush(){ /* 苔藓减速区软推离（zones type moss，敌方苔藓史莱姆所留）：区内才推、权重低，只影响最终走位合成、不覆盖战斗与躲技能 */
+  if(typeof zones === 'undefined') return null;
+  for(var i = 0; i < zones.length; i++){ var z = zones[i]; if(z.type !== 'moss') continue; var d = Math.hypot(P.x - z.x, P.y - z.y); if(d < z.r){ var a = d < 4 ? (P.faceAng || 0) : Math.atan2(P.y - z.y, P.x - z.x); return { x:Math.cos(a) * 0.5, y:Math.sin(a) * 0.5 }; } }
+  return null;
+}
+function autoplayNearestBoss(){ var best = null, bd = Infinity; if(typeof enemies === 'undefined') return null; for(var i = 0; i < enemies.length; i++){ var e = enemies[i]; if(!e.boss || e.dead || (e.hzConvT || 0) > 0 || autoplaySkipped(e)) continue; var d2 = (e.x - P.x) * (e.x - P.x) + (e.y - P.y) * (e.y - P.y); if(d2 < bd){ bd = d2; best = e; } } return best; }
+function autoplayBandVec(ang, d, lowHp){ /* 交战距离带（NPC 95–175px 同口径）：远了靠近、近了后退、带内侧移绕步；低血时带外扩至 260px（拉开保命、仍面朝目标输出） */
+  AUTOPLAY._strafeT -= 0.016; if(AUTOPLAY._strafeT <= 0){ AUTOPLAY._strafeT = 1.6; AUTOPLAY._strafeDir = Math.random() < 0.5 ? -1 : 1; }
+  var hi = lowHp ? 260 : 175, lo = lowHp ? 200 : 95;
+  if(d > hi) return { x:Math.cos(ang), y:Math.sin(ang) };
+  if(d < lo) return { x:-Math.cos(ang) * 0.8, y:-Math.sin(ang) * 0.8 };
+  return { x:-Math.sin(ang) * 0.45 * AUTOPLAY._strafeDir, y:Math.cos(ang) * 0.45 * AUTOPLAY._strafeDir };
+}
+function autoplaySpecOk(){ /* 按键技留给怪群/Boss，不空放：冷却门禁走 doSpecial 自有门禁（specCd），此处只拦不适合代按的蓄力英雄——光明朱德需长按 2 秒蓄势、班仔/莫哈哈蓄力瞄准进行中不代按；班仔非蓄力时走 doSpecial 兜底即时释放（无蓄力加成，见证据） */
+  if(P.charIdx === 7) return false;
+  if(P.charIdx === 0 && P.excT > 0) return false;
+  if(typeof BZ_AIM !== 'undefined' && BZ_AIM.active) return false;
+  if(typeof GM_AIM !== 'undefined' && GM_AIM.active) return false;
+  if(typeof MH_AIM !== 'undefined' && MH_AIM.holding) return false;
+  return P.specCd <= 0;
+}
+function autoplayClusterNear(x, y, r){ var n = 0; if(typeof enemies === 'undefined') return 0; for(var i = 0; i < enemies.length; i++){ var e = enemies[i]; if(e.dead || (e.hzConvT || 0) > 0) continue; var dx = e.x - x, dy = e.y - y; if(dx * dx + dy * dy < r * r) n++; } return n; }
+function autoplaySmartTarget(){ /* 智能目标打分（NPC 最近目标之上加权）：先取距离最近 40 只候选（防 300 怪同屏时聚团计数 O(n²) 失控），再按威胁与收益打分——Boss 已在上游分支处理，本函数只管普通怪：残血收尾（血越残分越高）＋精英加权＋聚团价值（目标周围 120px 内怪越多、一波清收益越大）－距离惩罚；最近怪只有距离优势，没有自动胜出 */
+  if(typeof enemies === 'undefined') return null;
+  var cand = [];
+  for(var i = 0; i < enemies.length; i++){ var e = enemies[i]; if(e.dead || e.boss || (e.hzConvT || 0) > 0 || autoplaySkipped(e)) continue; var dx = e.x - P.x, dy = e.y - P.y, d2 = dx * dx + dy * dy; if(d2 < 1200 * 1200) cand.push({ e:e, d:Math.sqrt(d2) }); }
+  if(!cand.length) return null;
+  cand.sort(function(a, b){ return a.d - b.d; }); if(cand.length > 40) cand.length = 40;
+  var best = null, bs = -Infinity;
+  for(var j = 0; j < cand.length; j++){ var ce = cand[j].e, cd = cand[j].d; var hpF = ce.maxHp > 0 ? ce.hp / ce.maxHp : 1;
+    var sc = (1 - hpF) * 60 + (ce.elite ? 40 : 0) + autoplayClusterNear(ce.x, ce.y, 120) * 30 - cd * 0.15;
+    if(sc > bs){ bs = sc; best = ce; } }
+  return best;
+}
+function autoplayNearestDrop(healOnly){ var best = null, bd = Infinity; if(typeof gems === 'undefined') return null; for(var i = 0; i < gems.length; i++){ var g = gems[i]; var isHeal = !!g.heal || g.drop === 'drink' || g.drop === 'heart'; if(healOnly && !isHeal) continue; if(!healOnly && (g.heal || g.drop)) continue; var d = Math.hypot(g.x - P.x, g.y - P.y); if(d < bd){ bd = d; best = g; } } return best ? { g:best, d:bd } : null; }
+function autoplayThink(dt){
+  AUTOPLAY._aimAng = null;
+  if(!P || P.hp <= 0 || P.downed) return { x:0, y:0 };
+  /* ①躲技能硬覆盖（Boss 战同理：先躲再输出） */
+  var dg = autoplayDangerVec();
+  if(dg && dg.hard){ AUTOPLAY._aimAng = Math.atan2(dg.y, dg.x); if(dg.dodge && typeof dodgeChargesOf === 'function' && dodgeChargesOf(P) > 0 && (P.dodgeT || 0) <= 0){ P.faceAng = AUTOPLAY._aimAng; doDodge(); } return { x:dg.x, y:dg.y }; }
+  var hpF = P.hp / P.maxHp, lowHp = hpF < 0.3;
+  /* ②低血先拉开捡血：35% 以下且 800px 内有回血掉落时，赴血包优先于一切输出（不穿怪群硬抢：赴血途中躲技能分支仍在上游） */
+  if(hpF < 0.35){ var hd = autoplayNearestDrop(true); if(hd && hd.d < 800){ var hv = autoplaySeekVec(hd.g.x, hd.g.y, 20); AUTOPLAY._aimAng = Math.atan2(hd.g.y - P.y, hd.g.x - P.x); autoplayTrack(hd.g, hv, dt); return hv; } }
+  /* ③Boss 集火（NPC Boss 集火同口径）：低血且 Boss 贴身时拉开至 260px 带、贴身 130px 内闪避；按键技只在 Boss 280px 内且冷却好时放 */
+  var boss = autoplayNearestBoss();
+  if(boss){ var bd = Math.hypot(boss.x - P.x, boss.y - P.y), bang = Math.atan2(boss.y - P.y, boss.x - P.x); AUTOPLAY._aimAng = bang;
+    if(lowHp && bd < 130 && typeof dodgeChargesOf === 'function' && dodgeChargesOf(P) > 0 && (P.dodgeT || 0) <= 0){ doDodge(Math.atan2(P.y - boss.y, P.x - boss.x)); }
+    if(!lowHp && autoplaySpecOk() && bd < 280) doSpecial();
+    var bv = autoplayBandVec(bang, bd, lowHp); autoplayTrack(boss, bv, dt); return autoplayBlendMoss(bv); }
+  /* ④副本内出口（新屋楼梯/三层宝箱、街尾回程门/奖励宝箱）：清场后才赴——有怪时先走下方战斗分支清怪，守门精英未死时楼梯站圈本就不累计 */
+  if(typeof MAZE !== 'undefined' && MAZE.active){
+    if(enemies.length === 0){ if(MAZE.stairs){ var sv = autoplaySeekVec(MAZE.stairs.x, MAZE.stairs.y, 10); AUTOPLAY._aimAng = Math.atan2(MAZE.stairs.y - P.y, MAZE.stairs.x - P.x); return sv; } if(MAZE.chestPos){ var cv = autoplaySeekVec(MAZE.chestPos.x, MAZE.chestPos.y, 20); AUTOPLAY._aimAng = Math.atan2(MAZE.chestPos.y - P.y, MAZE.chestPos.x - P.x); return cv; } }
+  }
+  if(typeof STREET !== 'undefined' && STREET.active){
+    if(STREET.exitPortal){ var ev = autoplaySeekVec(STREET.exitPortal.x, STREET.exitPortal.y, 10); AUTOPLAY._aimAng = Math.atan2(STREET.exitPortal.y - P.y, STREET.exitPortal.x - P.x); return ev; }
+    if(STREET.chest && enemies.length === 0){ var scv = autoplaySeekVec(STREET.chest.x, STREET.chest.y, 20); AUTOPLAY._aimAng = Math.atan2(STREET.chest.y - P.y, STREET.chest.x - P.x); return scv; }
+  }
+  /* ⑤主地图传送门（NPC 赴门同口径）：虚空裂缝门优先（踏入 55px 即触发）、其次新屋/街尾入口（站圈 52px/站满 3 秒由既有 houseTick/streetTick 判定）；Boss 在场时本分支不可达（上方 Boss 分支已返回，houseTick/streetTick 在 Boss 战中亦冻结站圈） */
+  if(!(typeof MAZE !== 'undefined' && MAZE.active) && !(typeof STREET !== 'undefined' && STREET.active) && !(typeof voidArena !== 'undefined' && voidArena)){
+    var portal = null;
+    if(typeof voidPortal !== 'undefined' && voidPortal && !autoplaySkipped(voidPortal)) portal = voidPortal;
+    else { var pc = []; if(typeof MAZE !== 'undefined' && MAZE.portal && !autoplaySkipped(MAZE.portal)) pc.push(MAZE.portal); if(typeof STREET !== 'undefined' && STREET.portal && !autoplaySkipped(STREET.portal)) pc.push(STREET.portal);
+      for(var pi2 = 0; pi2 < pc.length; pi2++){ if(!portal || Math.hypot(pc[pi2].x - P.x, pc[pi2].y - P.y) < Math.hypot(portal.x - P.x, portal.y - P.y)) portal = pc[pi2]; } }
+    if(portal){ var pv = autoplaySeekVec(portal.x, portal.y, 10); AUTOPLAY._aimAng = Math.atan2(portal.y - P.y, portal.x - P.x); autoplayTrack(portal, pv, dt); return pv; }
+  }
+  /* ⑥主地图宝箱（NPC 开宝箱同口径）：420px 内最近宝箱且 460px 内无敌人时赴箱（站圈 120px/累计 10 秒由既有 updateChests 判定，站定即累计）；副本内不执行（chests 此时是主地图暂存坐标） */
+  if(!(typeof MAZE !== 'undefined' && MAZE.active) && !(typeof STREET !== 'undefined' && STREET.active) && typeof chests !== 'undefined' && chests.length){
+    var nc = null, ncd = 420 * 420;
+    for(var ci2 = 0; ci2 < chests.length; ci2++){ var ch = chests[ci2]; if(autoplaySkipped(ch)) continue; var cdx = ch.x - P.x, cdy = ch.y - P.y, cd2 = cdx * cdx + cdy * cdy; if(cd2 < ncd){ ncd = cd2; nc = ch; } }
+    if(nc){ var eNear = false; for(var eni = 0; eni < enemies.length; eni++){ if(Math.hypot(enemies[eni].x - P.x, enemies[eni].y - P.y) < 460){ eNear = true; break; } }
+      if(!eNear){ var chv = autoplaySeekVec(nc.x, nc.y, 26); AUTOPLAY._aimAng = Math.atan2(nc.y - P.y, nc.x - P.x); autoplayTrack(nc, chv, dt); return chv; } }
+  }
+  /* ⑦智能战斗（NPC 普通战斗的距离带＋智能打分目标）：按键技留给怪群（身边 320px 内 ≥3 只）才放，低血贴身 130px 内闪避 */
+  var tgt = autoplaySmartTarget();
+  if(tgt){ var td = Math.hypot(tgt.x - P.x, tgt.y - P.y), tang = Math.atan2(tgt.y - P.y, tgt.x - P.x); AUTOPLAY._aimAng = tang;
+    if(lowHp && td < 130 && typeof dodgeChargesOf === 'function' && dodgeChargesOf(P) > 0 && (P.dodgeT || 0) <= 0){ doDodge(Math.atan2(P.y - tgt.y, P.x - tgt.x)); }
+    if(!lowHp && autoplaySpecOk() && autoplayClusterNear(P.x, P.y, 320) >= 3) doSpecial();
+    var tv = autoplayBandVec(tang, td, lowHp); autoplayTrack(tgt, tv, dt); return autoplayBlendMoss(tv); }
+  /* ⑧拾取价值与距离权衡（NPC 拾取最低优先级之上加风控）：只在无战斗目标时赴捡——经验按价值/距离打分（v/(d+80) 减怪群风险），掉落优先于经验；不为一颗经验穿怪群：赴捡目标周围 150px 内怪 ≥3 只且玩家身边 300px 内有怪时放弃该颗 */
+  if(typeof gems !== 'undefined' && gems.length){
+    var bg = null, bs2 = -Infinity;
+    for(var gi = 0; gi < gems.length; gi++){ var gg = gems[gi]; if(autoplaySkipped(gg)) continue;
+      if(typeof gemTakenBy === 'function' && gemTakenBy(gg, LOCAL_GEM_KEY)) continue;
+      var isXp = !!(gg.v && !gg.heal && !gg.rage && !gg.drop && !gg.stand && !gg.doll);
+      var isDrop = !!gg.drop;
+      if(!isXp && !isDrop) continue;
+      var gd = Math.hypot(gg.x - P.x, gg.y - P.y);
+      var nearRisk = autoplayClusterNear(gg.x, gg.y, 150);
+      if(nearRisk >= 3 && autoplayClusterNear(P.x, P.y, 300) > 0) continue;
+      var gsc = (isDrop ? 50 : (gg.v || 1)) / (gd + 80) - nearRisk * 0.01;
+      if(gsc > bs2){ bs2 = gsc; bg = gg; } }
+    if(bg){ var gv = autoplaySeekVec(bg.x, bg.y, 20); AUTOPLAY._aimAng = Math.atan2(bg.y - P.y, bg.x - P.x); autoplayTrack(bg, gv, dt); return gv; }
+  }
+  /* ⑨自由游走（NPC 游走同口径）：以自身为锚、230–360px 步长，2.2 秒一点 */
+  AUTOPLAY._wanderT -= dt;
+  if(AUTOPLAY._wanderT <= 0){ AUTOPLAY._wanderT = 2.2; var wa = Math.random() * Math.PI * 2, wr = 230 + Math.random() * 130; AUTOPLAY._wanderX = P.x + Math.cos(wa) * wr; AUTOPLAY._wanderY = P.y + Math.sin(wa) * wr; }
+  var wv = autoplaySeekVec(AUTOPLAY._wanderX, AUTOPLAY._wanderY, 14);
+  if(wv.d > 14) AUTOPLAY._aimAng = Math.atan2(AUTOPLAY._wanderY - P.y, AUTOPLAY._wanderX - P.x);
+  return wv;
+}
+function autoplayBlendMoss(vec){ var mp = autoplayMossPush(); if(!mp) return vec; var bx = vec.x + mp.x, by = vec.y + mp.y, bl = Math.sqrt(bx * bx + by * by) || 1; return { x:bx / bl, y:by / bl }; }
+function autoplayPhase(){ if((typeof gameTime !== 'undefined' ? gameTime : 0) < 240) return 'early'; if(gameTime < 600) return 'mid'; return 'late'; }
+function autoplayIsSurvivalPassive(key){ var d = (typeof PASSIVES !== 'undefined') ? PASSIVES[key] : null; if(!d) return false; if(d.hpV) return true; return /生命|护甲|防御|回复|吸血|护盾|闪避|速度|抗/.test(d.name || ''); }
+function autoplayScoreChoice(c){ /* 动态选卡打分（不是固定顺序）：基础分——进化 95、分支 78、已学武器升级 58（主武器 +18）、连发 38、新招式 30、已学被动升级 48、新被动 26、治疗（满血 4、低血 62）；局势修正——前期（<240 秒）补输出（攻击卡 +12、攻击 <2 件时再 +10）、中期（240–600 秒）补生存（生存类被动 +28、低血时再 +15）、后期（>600 秒）补成型（配对被动 +30、进化 +10）；已满级/他角专属卡由池子本身过滤，打分层再按 heroCanUse 判 −999 兜底，永不选非法卡；四张全不合适时仍取最高分者（最不亏），不卡死 */
+  if(!c) return -999;
+  if(c.type === 'passive'){ if(typeof heroCanUsePassive === 'function' && !heroCanUsePassive(P.charIdx, c.key)) return -999; }
+  else if(c.type !== 'heal'){ if(typeof heroCanUseWeapon === 'function' && WEAPONS[c.key] && !heroCanUseWeapon(P.charIdx, c.key)) return -999; }
+  var ph = autoplayPhase(), s = 0;
+  if(c.type === 'evo') s = 95 + (ph === 'late' ? 10 : 0);
+  else if(c.type === 'branch') s = 78;
+  else if(c.type === 'upgrade'){ s = 58; if(CHARACTERS[P.charIdx].weapon === c.key) s += 18; if(ph === 'early') s += 12; }
+  else if(c.type === 'count') s = 38;
+  else if(c.type === 'new'){ s = 30; if(typeof attackCount === 'function' && attackCount() < 3) s += 22; if(typeof attackCount === 'function' && attackCount() >= 8) s -= 15; }
+  else if(c.type === 'passive'){ var owned = P.passives[c.key] || 0; s = owned > 0 ? 48 : 26;
+    if(ph === 'mid' && autoplayIsSurvivalPassive(c.key)) s += 28;
+    if(ph === 'early' && autoplayIsSurvivalPassive(c.key)) s -= 6;
+    if(ph === 'late' && typeof SIG_ITEM !== 'undefined'){ for(var wk in P.weapons){ if(SIG_ITEM[wk] === c.key && !P.weapons[wk].evo){ s += 30; break; } } } }
+  else if(c.type === 'heal'){ s = (P.hp < P.maxHp * 0.4) ? 62 : 4; }
+  if(ph === 'early' && typeof attackCount === 'function' && attackCount() < 2 && (c.type === 'new' || c.type === 'upgrade')) s += 10;
+  if(P.hp < P.maxHp * 0.5 && c.type === 'passive' && autoplayIsSurvivalPassive(c.key)) s += 15;
+  return s;
+}
+function autoplayLearnTick(dt){ /* 升级弹窗托管选卡（state 保持 playing、面板护盾挂着，update 照常跑，故本函数挂在 update 内）：每 0.45 秒决策一次——替换界面先决（选同类型已学中等级最低者、主武器最后换），再按打分选卡；最佳分 <42 且有未用刷新时先刷新最差一张（每卡仅一次，走既有 rerollChoice），无刷新可用时直接取最高分（不卡死） */
+  if(!AUTOPLAY.on || state !== 'playing' || !P) return;
+  var scr = document.getElementById('levelupScreen');
+  if(!scr || !scr.classList.contains('on')){ AUTOPLAY._pickT = 0; return; }
+  AUTOPLAY._pickT -= dt; if(AUTOPLAY._pickT > 0) return;
+  AUTOPLAY._pickT = 0.45;
+  if(typeof REPLACE !== 'undefined' && REPLACE){
+    var pool = [], isW = REPLACE.kind === 'w';
+    if(isW){ for(var k in P.weapons) if(k !== REPLACE.key) pool.push(k); } else { for(var k2 in P.passives) if(k2 !== REPLACE.key) pool.push(k2); }
+    if(!pool.length){ return; }
+    var sig = CHARACTERS[P.charIdx].weapon;
+    pool.sort(function(a, b){ var la = isW ? P.weapons[a].lv : P.passives[a], lb = isW ? P.weapons[b].lv : P.passives[b]; if(la !== lb) return la - lb; if(isW && a === sig) return 1; if(isW && b === sig) return -1; return 0; });
+    REPLACE.sel = pool[0];
+    try{ confirmReplace(); }catch(e){}
+    return;
+  }
+  if(!lvChoices || !lvChoices.length || !(pendingLevels > 0)) return;
+  var best = -1, bs = -Infinity, worst = -1, ws = Infinity;
+  for(var i = 0; i < lvChoices.length; i++){ var sc = autoplayScoreChoice(lvChoices[i]); if(sc > bs){ bs = sc; best = i; } if(sc < ws){ ws = sc; worst = i; } }
+  if(best < 0) return;
+  if(bs < 42 && worst >= 0 && lvRerolled && !lvRerolled[worst]){
+    var row = document.getElementById('choiceRow'); var card = row ? row.children[worst] : null;
+    if(card){ try{ rerollChoice(worst, card); }catch(e){} return; }
+  }
+  try{ applyChoice(lvChoices[best]); }catch(e){}
+}
 function update(dt){
   /* 按键自愈守卫（2026-10-31 传送门回主地图按键消失修复）：update 只在 state==='playing' 时被主循环调用，此处保证局内 HUD 容器恒点亮——任一切场景路径（结局/虚空回程/新屋/街尾出入图等）漏恢复 #touchUI（闪避/特殊技能/摇杆/可学习）或 #hud 时，回战斗第一帧即自动补回。gameOver/startEnding/goHome 的摘除都伴随 state 离开 playing，不会被本守卫误恢复；已点亮时仅两次 contains 检查、零写入。 */
   if(!el('touchUI').classList.contains('on')) el('touchUI').classList.add('on');
@@ -13037,12 +13391,13 @@ function update(dt){
   PERF.ema = PERF.ema * 0.96 + Math.min(dt, 0.1) * 1000 * 0.04; PERF.low = PERF.ema > 27; // 帧耗时监测（>27ms 均值触发降质）
   learnBtnSync(); // 「可学习」按钮显隐/计数每帧同步（第 15 项：升级不自动弹学习页，只亮按钮）
   autoLearnTryOpen(); // 设置「升级自动打开学习页」开时每帧重试：按键技特效收尾/其他面板关闭后的第一帧补弹；关时恒空转（联机客机不跑本段、走 clientTick 队列段同名尝试，二者只跑其一）
+  if(AUTOPLAY.on) autoplayLearnTick(dt); // 托管选卡：升级弹窗出现时按动态打分自动选卡（见 autoplayLearnTick）
   if(texts.length > 120) texts.splice(0, texts.length - 120); // 实体硬上限：伤害数字/特效环/区域/投射物/宝石池全部封顶，防内存无界膨胀
   if(effects.length > 170) effects.splice(0, effects.length - 170);
   if(novas.length > 48) novas.splice(0, novas.length - 48);
   if(zones.length > 48) zones.splice(0, zones.length - 48);
   if(projectiles.length > 420) projectiles.splice(0, projectiles.length - 420);
-  if(eProjectiles.length > 420) eProjectiles.splice(0, eProjectiles.length - 420); // 敌方弹道上限 240 → 420（2026-10-31 弹幕／Boss 合并轮）：图案池单发最高约 20 发、多源同屏时旧上限会把先发弹提前截断、变相削密度/射程；420 与玩家投射物上限同档，口径见 DMK_ROUND 定版注
+  if(eProjectiles.length > 560) eProjectiles.splice(0, eProjectiles.length - 560); // 敌方弹道上限 420 → 560（2026-11-01 Boss 弹幕加数量轮）：单发最高约 40 发、多 Boss 同屏重叠时旧 420 会把先发弹提前截断、变相削密度/射程，故抬上限；预警/弹速/存续不动，口径见 DMK_ROUND 定版注
   /* 【怪多不掉经验查修（2026-10-31 用户报）根因①＋修法】旧版此合并只排除特殊掉落物、不排除带 tk 的经验宝石：联机时一颗已被部分成员拾过的宝石（tk 在位、等其余成员来拾）会被并入另一颗——被并掉那颗的 tk 随之消失（已拾成员可对并入后的大颗重复得经验），更糟的是若吸收方 bg3 本身带 tk，已拾过 bg3 的成员会被拾取段的 gemTakenBy 跳过、永远拿不到被并入的那份经验（实丢）。且旧版 fi0 恰为最大颗时 fi0===bg3 直接 break、合并整段停摆（场上颗数压不下去、进而触发下方 >400 的有损合并）。修法：可合并集合收紧为「纯经验宝石（gemIsXp）且无人拾过（无 tk）」——带 tk 者既不作吸收方也不作被并方、原样保留（与 >400 合并的既有 tk 口径对齐）；吸收方取可合并集合中最大颗、被并方取集合中第一颗非吸收方，只有集合内不足两颗才停。单人无 tk 残留（拾到即移除），合并逐值保值与旧版一致。 */
   while(gems.length > 300){ // 只合并无人拾过的普通经验宝石：特殊掉落物（回血/狂暴/替身/娃娃/地图道具）与带 tk 的宝石永不被吞并
     var bg3 = -1;
@@ -13092,7 +13447,7 @@ function update(dt){
   // 刷怪成长·数量线（分段节奏）：发育期（0–4 分）间隔长、批量小，稀疏近战；爬升期（4–10 分）间隔收紧、批量爬升；怪潮期（10 分后）密度到顶；无尽再缓压（间隔下限 0.10、批量每 5 分钟 +1）
   var ivBase = gameTime < 240 ? 0.60 - gameTime * 0.000208 : gameTime < 600 ? 0.55 - (gameTime - 240) * 0.0007 : Math.max(0.14, 0.30 - (gameTime - 600) * 0.00045); // 发育期密度小幅上调（2026-10-26 经验配套：间隔 0.72→0.60 起、240 秒处与爬升期 0.55 平滑衔接，刷怪率约 +10~20%；批量/波次/同屏上限 300 不变，不铺满屏——密度随时间上升的总设计不变，前期只是在此基础上稍微多一点）
   if(endless && gameTime > 900) ivBase = Math.max(0.10, ivBase - (gameTime - 900) * 0.00002);
-  var interval = ivBase / DIFF_DEF[DIFF].dens / (window.__NET_SPAWNMUL || 1) * (bossNow ? 1 : spawnBoost120Mul()); // 难度密度倍率叠加；联机刷怪速率补正仅联机局；2 分钟后多刷怪（2026-10-30）：非 Boss 在场时 120 秒后间隔吃 spawnBoost120Mul（120–180 秒渐入至 ×0.82、速率约 +22%、每分钟刷出量同步上升），Boss 在场恒 ×1 不吃加量（下方 spawnTimer 仍按旧间隔 ×2.5 节流、批量仍封顶 BOSS_ADD_CAP）
+  var interval = ivBase / DIFF_DEF[DIFF].dens / (window.__NET_SPAWNMUL || 1) * (bossNow ? 1 : spawnBoost120Mul()); // 难度密度倍率叠加；联机刷怪速率补正仅联机局；2 分钟后多刷怪（2026-10-30，2026-11-01 加数量轮加强）：非 Boss 在场时 120 秒后间隔吃 spawnBoost120Mul（120–180 秒渐入至 ×0.65、180–300 秒渐入至 ×0.50、300 秒后恒 ×0.50，速率 180 秒约 +54%、300 秒后约 +100%、只加数量不加血量/伤害），Boss 在场恒 ×1 不吃加量（下方 spawnTimer 仍按旧间隔 ×2.5 节流、批量仍封顶 BOSS_ADD_CAP）
   if(spawnTimer <= 0 && enemies.length < ENEMY_CAP * (window.__NET_CAPMUL || 1) && !voidArena && !voidPortal && !barrierSpawnLocked() && !(typeof MAZE !== 'undefined' && MAZE.active) && !(typeof STREET !== 'undefined' && STREET.active)){ // 裂缝门开启期间全图停刷（2026-10-28 用户令）：voidPortal 存在（门已开、人未进）时主地图环境刷怪整段停掉，已在场怪物按既有口径照常行动/被打、不清除；进竞技场后由 !voidArena 继续挡，回主地图（无尽回程）后 voidPortal 已为 null、刷怪自然恢复；新屋/街尾门落点与刷怪口径未动；结界停刷（2026-10-29 用户令）：barrierSpawnLocked() 为真（任一结界 Boss 尚存活、含结界已提前解散而 Boss 未死）时主地图常规刷新整段停掉，全部登记 Boss 死亡后下一帧自动恢复（spawnTimer 已走完、不补刷欠账）
     spawnTimer = lateBoss ? interval * ENDLESS_LATE_BOSS_INTERVAL_MUL : (bossNow ? interval * 2.5 : interval); // Boss 在场：刷怪间隔 ×2.5；无尽 late Boss 在场：×1.8（2026-10-30，速率较旧 Boss 档 +39%、较无 Boss 基线仍慢 1.8 倍）
     var batch = gameTime < 240 ? 1 + Math.floor(gameTime / 120) : gameTime < 600 ? 3 + Math.floor((gameTime - 240) / 72) : 8 + Math.floor((gameTime - 600) / 75);
@@ -13109,7 +13464,7 @@ function update(dt){
     if(bossNow && !lateBoss){ waveTimer = 5; } // Boss 在场：怪潮波次不开新波，5 秒后复查（静默顺延，不弹提示不鸣笛）；无尽 late Boss 在场除外（2026-10-30）：走下方开波分支、总量减半不停波
     else {
     waveTimer = gameTime < 600 ? 40 : 34;
-    waveTotal = Math.round((8 + Math.floor(gameTime / 30)) * DIFF_DEF[DIFF].dens * (gameTime >= 120 ? 1.25 : 1) * (lateBoss ? ENDLESS_LATE_WAVE_MUL : 1)); // 2 分钟后多刷怪（2026-10-30）：120 秒后怪潮每波总量 ×1.25（2 分钟前逐值不变）；怪潮周期 40/34 秒与波数 2/3/4 不变；无尽 late Boss 在场（2026-10-30）：再 ×0.5 减量开波（旧通用 Boss 档为不开波＝0），非 late 时乘子恒 1 逐值不变
+    waveTotal = Math.round((8 + Math.floor(gameTime / 30)) * DIFF_DEF[DIFF].dens * spawnWave120Mul() * (lateBoss ? ENDLESS_LATE_WAVE_MUL : 1)); // 2 分钟后多刷怪（2026-10-30，2026-11-01 加数量轮加强）：怪潮每波总量走 spawnWave120Mul（120 秒前 ×1、120–180 秒 1.25→1.60、180–300 秒 1.60→2.00、300 秒后恒 2.00，旧曲线 120 秒后恒 ×1.25，只加数量不加血量/伤害）；怪潮周期 40/34 秒与波数 2/3/4 不变；无尽 late Boss 在场（2026-10-30）：再 ×0.5 减量开波（旧通用 Boss 档为不开波＝0），非 late 时乘子恒 1 逐值不变
     wavePulses = gameTime < 240 ? 2 : gameTime < 600 ? 3 : 4; wavePulseN = wavePulses; wavePulseT = 0;
     texts.push({ x: P.x, y: P.y - 70, v: 0, txt: '怪潮来袭——' + wavePulses + ' 波连涌！', t: 0, color: '#ff9a6a', big: true });
     beep(196, 0.2, 'sawtooth', 0.05);
@@ -13138,6 +13493,8 @@ function update(dt){
   if(keys['arrowleft'] || keys['a']) mx -= 1;
   if(keys['arrowright'] || keys['d']) mx += 1;
   if(joy.active){ mx += joy.dx; my += joy.dy; }
+  if(AUTOPLAY.on && (keys['arrowup'] || keys['w'] || keys['arrowdown'] || keys['s'] || keys['arrowleft'] || keys['a'] || keys['arrowright'] || keys['d'] || joy.active)) autoplaySet(false); // 托管打断：任意手动方向输入即关托管、本帧起恢复手动向量
+  if(AUTOPLAY.on && state === 'playing' && !panelGuardOn() && P && P.hp > 0 && !P.downed){ var _av = autoplayThink(dt); mx = _av.x; my = _av.y; } // 托管移动覆盖：以托管 AI 向量为准（面板护盾下不抢输入，学习页由 autoplayLearnTick 处理）
   if(typeof STRESS !== 'undefined' && STRESS.on){ var smv = stressMoveVec(); mx = smv.x; my = smv.y; } // 稳定性压测：自动走位覆盖手动输入
   if(panelGuardOn()){ mx = 0; my = 0; } // 面板护盾：开面板期间本机不移动（世界照常跑，只是人不参战）
   var ml = Math.sqrt(mx*mx + my*my);
@@ -13182,6 +13539,7 @@ function update(dt){
       P.face = mx !== 0 ? Math.sign(mx) : P.face;
       P.faceAng = Math.atan2(my, mx);
     }
+    if(AUTOPLAY.on && AUTOPLAY._aimAng != null && !(P.faceLockT > 0) && !(P.charIdx === 0 && (P.excT > 0 || (typeof BZ_AIM !== 'undefined' && BZ_AIM.active)))){ P.faceAng = AUTOPLAY._aimAng; if(Math.cos(AUTOPLAY._aimAng) !== 0) P.face = Math.cos(AUTOPLAY._aimAng) >= 0 ? 1 : -1; } // 托管朝向：战斗中面朝托管目标（而非移动方向），使自动攻击的朝向锥与目标一致；开火锁与班仔瞄准仍优先
     /* 治滑步（2026-10-24 实机质感轮）：旧版 walkPhase 按固定速率 dt*11 推进，与真实移速脱钩——
        移速被兴奋剂/蓄力/被动改动后脚步与地面位移对不上，看着就是剪刀腿滑行。
        改为按本帧真实位移推进：每走约 121 世界 px 完成一个四帧循环（基准移速 216 时 ≈ 旧速率 11/s，手感不变），
@@ -13663,10 +14021,17 @@ function update(dt){
       if(epHitE || ep.t > ep.life) eProjectiles.splice(epi, 1);
       continue;
     }
-    var prr2 = pCollR() + ep.r + 2;
-    if(dist2(ep.x, ep.y, P.x, P.y) < prr2 * prr2){ hurtPlayer(ep.dmg, ep.srcE || null); eProjectiles.splice(epi, 1); continue; } // srcE＝弹道来源（远程怪/Boss 发射时既有标注、供 Boss 吸血结算）
+    var prr2 = (ep.kind === 'lnFist' && ep.sqHitR) ? ep.sqHitR : (pCollR() + ep.r + 2); // 拳影三拳：命中按演示中心距（直冲 66／扇形 51／坠落 110），不按通用 r＋玩家半径（见 LN_SQ 定版注）
+    var lnDropWait = (ep.kind === 'lnFist' && ep.sqMode === 'drop' && ep.t < (ep.sqDropT || 0.40)); // 坠落巨拳影：坠落完成前不结算（落地当帧才判）
+    if(ep.kind === 'lnFist' && ep.srcE && ep.srcE.lnSqHit && ep.srcE.lnSqHit[ep.sq] && ep.srcE.lnSqHit[ep.sq].P){ if(ep.t > ep.life){ eProjectiles.splice(epi, 1); } continue; } // 同拳只算一次：本机已吃过同拳编号的拳影，后续同拳拳影只穿过、不重复结算、不提前销毁（可继续打其他目标）
+    if(!lnDropWait && dist2(ep.x, ep.y, P.x, P.y) < prr2 * prr2){
+      if(ep.kind === 'lnFist' && ep.srcE){ if(!ep.srcE.lnSqHit) ep.srcE.lnSqHit = {}; if(!ep.srcE.lnSqHit[ep.sq]) ep.srcE.lnSqHit[ep.sq] = {}; ep.srcE.lnSqHit[ep.sq].P = 1; }
+      hurtPlayer(ep.dmg, ep.srcE || null);
+      if(ep.kind === 'lnFist' && ep.sqMode === 'drop') texts.push({ x: P.x, y: P.y - 52, v: 0, txt: '眩晕！', t: 0, color: '#ff6a8a' }); // 坠落巨拳影命中：眩晕仅为视觉示意、不施加玩家眩晕计时（见 LN_SQ 定版注）
+      eProjectiles.splice(epi, 1); continue;
+    } // srcE＝弹道来源（远程怪/Boss 发射时既有标注、供 Boss 吸血结算）
     var epHitSm = false; // 敌方弹道命中召唤物（2026-10-28 用户令：召唤物不是无敌的）：直线弹道先于到期判定逐只召唤物碰撞——命中即按 ep.dmg 扣召唤物血、弹体销毁（不穿过去再命中玩家）；血尽当场消失（不留尸体），补位走既有 2.2 秒定时补召。抛物线 lob 弹已在上方 continue、不经此段（其伤害由预警圈结算、仍只对玩家）
-    for(var smi = summons.length - 1; smi >= 0; smi--){ var smp = summons[smi], sd2 = SUMMON_DEF[smp.kind]; var srr = (sd2 ? sd2.r : 14) + ep.r + 2; if(dist2(ep.x, ep.y, smp.x, smp.y) < srr * srr){ smp.hp -= ep.dmg; burst(smp.x, smp.y, '#ff9a8a', fxN(4)); if(smp.hp <= 0){ burst(smp.x, smp.y, '#cfe8ff', fxN(14)); texts.push({ x: smp.x, y: smp.y - 60, v: 0, txt: '召唤物被击破！', t: 0, color: '#ffb0a0' }); summons.splice(smi, 1); } epHitSm = true; break; } }
+    for(var smi = summons.length - 1; smi >= 0; smi--){ var smp = summons[smi], sd2 = SUMMON_DEF[smp.kind]; var srr = (sd2 ? sd2.r : 14) + ep.r + 2; /* 坠落巨拳影坠落完成前不打召唤物（与玩家段同口径） */ if(!lnDropWait && dist2(ep.x, ep.y, smp.x, smp.y) < srr * srr){ smp.hp -= ep.dmg; burst(smp.x, smp.y, '#ff9a8a', fxN(4)); if(smp.hp <= 0){ burst(smp.x, smp.y, '#cfe8ff', fxN(14)); texts.push({ x: smp.x, y: smp.y - 60, v: 0, txt: '召唤物被击破！', t: 0, color: '#ffb0a0' }); summons.splice(smi, 1); } epHitSm = true; break; } }
     if(epHitSm){ eProjectiles.splice(epi, 1); continue; }
     if(ep.t > ep.life) eProjectiles.splice(epi, 1);
   }
@@ -13897,18 +14262,18 @@ function update(dt){
     if(e.boss){
       e.chargeT -= dt * BOSS_SKILL_RATE;
       if(!e.wc2 && e.chargeWind > 0){ e.chargeWind -= dt; spd *= 0.25; if(e.chargeWind <= 0){ var cwa = Math.atan2(tgt.y - e.y, tgt.x - e.x); e.chgDx = Math.cos(cwa); e.chgDy = Math.sin(cwa); e.charging = 0.55; } } // Boss 冲锋改两段（走位可躲）：0.45 秒蓄力预警（闪烁＋大幅减速＋文字提示）→ 起步瞬间锁定方向直冲，冲锋途中不再转向追踪——玩家侧步走位即可躲开；旺财二号除外（2026-10-30）：二号只有爪击/扑击、不走通用 Boss 冲锋
-      else if(!e.wc2 && e.chargeT <= 0){ e.chargeT = rand(2.4, 3.4); e.chargeWind = 0.45; e.flash = Math.max(e.flash, 0.45); texts.push({ x: e.x, y: e.y - e.r - 26, v: 0, txt: '冲锋预警！', t: 0, color: '#ffb0a0' }); beep(120, 0.2, 'sawtooth', 0.04); }
+      else if(!e.wc2 && !(e.lnSq && e.lnSq.active) && e.chargeT <= 0){ e.chargeT = rand(2.4, 3.4); e.chargeWind = 0.45; e.flash = Math.max(e.flash, 0.45); texts.push({ x: e.x, y: e.y - e.r - 26, v: 0, txt: '冲锋预警！', t: 0, color: '#ffb0a0' }); beep(120, 0.2, 'sawtooth', 0.04); } // 拳影三拳进行中不触发通用冲锋（lnSq 门禁，见 LN_SQ 定版注）
       if(e.charging > 0){ e.charging -= dt; spd *= 2.6; }
       if(e.final && !e.isLaonong){ e.summonT -= dt; if(e.summonT <= 0){ e.summonT = 5; SPAWN_BAR_OK = true; for(var s3 = 0; s3 < 3; s3++) spawnEnemy(pickEnemyType(), false); SPAWN_BAR_OK = false; } } // 劳农的召唤并入五技能③眷属召唤，不再走通用召唤
       if(e.hidden && !e.isClone && !e.cloneUsed && e.hp < e.maxHp / 3){ e.cloneUsed = true; spawnZhudeClone(e); } // 朱德替身召唤（改版为克隆，见 spawnZhudeClone）：每场仅一次——血量跌破三分之一（约 33.3%）时确定触发（按跌破判定，跨阈值大跳也触发）；放过不再重复，分身被打死也不再召唤；分身本身不进此判定，绝不套娃
       if(e.hidden && !e.isClone) zhudeLeapTick(e, dt, tgt); // 朱德专属·蓄力跳跃砸状态机（见 zhudeLeapStart）
       if(!e.wc2 && !e.phase2 && e.hp < e.maxHp * 0.5){ e.phase2 = true; texts.push({ x: e.x, y: e.y - e.r - 30, v: 0, txt: e.hidden ? '暴怒阶段！' : '暴怒阶段！招牌大招解锁！', t: 0, color: '#ff5a4e', big: true }); shake = Math.max(shake, 9); beep(70, 0.5, 'sawtooth', 0.09); } // 阶段变化：半血暴怒，技能频率提升并解锁招牌大招（朱德招牌已删除，其暴怒仅保留频率提升、文案不提招牌）；旺财二号除外（2026-10-30）：二号无暴怒/招牌、半血不触发本段（其半血无任何阶段变化）
-      if(e.isLaonong){ laonongUltTick(e, dt); if(!e.lnBusy) laonongSkill(e, dt); } // 劳农五技能专属轮换（虚空爆弹/裂缝射线/眷属召唤/虚空风暴/虚空坍缩）＋专属蓄力元气弹（仅 50%/20% 两阈值各触发一次；蓄力/硬直期间停放其他技能）
+      if(e.isLaonong){ laonongUltTick(e, dt); laonongSanquanTick(e, dt); if(!e.lnBusy && !(e.lnSq && e.lnSq.active)) laonongSkill(e, dt); } // 劳农六技能：原五技能专属轮换（虚空爆弹/裂缝射线/眷属召唤/虚空风暴/虚空坍缩）＋拳影三拳独立计时（laonongSanquanTick，见 LN_SQ 定版注）＋专属蓄力元气弹（仅 50%/20% 两阈值各触发一次；蓄力/硬直/三拳期间停放其他技能）
       if(e.wangcai) wangcaiTick(e, dt, tgt); // 旺财四专属技能独立轮换（天降元宝/口吐弹幕/繁衍/尾兽玉，见 wangcaiTick）：仅旺财调用、其他 Boss 无此分支
       if(e.wc2) wc2Tick(e, dt, tgt); // 旺财二号（2026-10-30）：奉献＋爪击/扑击状态机，仅二号调用；二号不进下方通用四格轮换（!e.wc2 排除、见该行）
       bossAoeTick(e, dt, tgt); // Boss 大范围技能（2026-10-31 用户令）：独立计时阵型预警圈——覆盖通用轮换五只＋朱德（含分身）＋旺财＋旺财二号（各自专属轮换之外另挂、互不改动）；劳农经 bossAoeKey 恒 null 不触发（例外原因见 BOSS_AOE 定版注）；剧情/无尽/街尾/联机 Boss 同走本支、自动同口径覆盖
       if(e.tpPend){ e.tpPend.t -= dt; if(e.tpPend.t <= 0){ e.x = e.tpPend.x; e.y = e.tpPend.y; effects.push({ type:'portal', x: e.x, y: e.y, t: 0, dur: 0.6 }); e.tpPend = null; } } // 虚空守卫延迟现身：落点传送门先亮 0.55 秒预警，Boss 才真正瞬移过去（不再瞬发贴脸）
-      if(e.fanT > 0){ e.fanT -= dt; if(e.fanT <= 0){ dmkCast(e, tgt, { tier: 'full', dense: 1, dmg: Math.max(8, Math.round(e.dmg * 0.5)), color: e.color, r: 6 }); beep(340, 0.12, 'square', 0.04); } } // 扇形弹幕发射（2026-10-31 弹幕／Boss 合并轮改图案池；2026-11-01 全 Boss 弹幕加密轮加 dense：全档实发 6–20 发 → 10–30 发、每式留缝同规则；黑暗朱德含分身同走此通用轮换、一并加密）→ dmkCast 全池随机一式（弹速 235、存续 4.2、每式留缝、方向含四向＋斜向）；瞄准走 tgt（鸡哥隐身时只朝最后已知位置，旧「按真实位置结算」例外作废，2026-10-28 令）；伤害口径不变＝max(8, round(dmg×0.5))；全部直线弹、无 homing 字段＝绝不追踪，口径见 DMK_ROUND 定版注
+      if(e.fanT > 0){ e.fanT -= dt; if(e.fanT <= 0){ dmkCast(e, tgt, { tier: 'full', dense: 2, dmg: Math.max(8, Math.round(e.dmg * 0.5)), color: e.color, r: 6 }); beep(340, 0.12, 'square', 0.04); } } // 扇形弹幕发射（2026-10-31 弹幕／Boss 合并轮改图案池；2026-11-01 全 Boss 弹幕加密轮加 dense：全档实发 6–20 发 → 10–30 发、每式留缝同规则；黑暗朱德含分身同走此通用轮换、一并加密）→ dmkCast 全池随机一式（弹速 235、存续 4.2、每式留缝、方向含四向＋斜向）；瞄准走 tgt（鸡哥隐身时只朝最后已知位置，旧「按真实位置结算」例外作废，2026-10-28 令）；伤害口径不变＝max(8, round(dmg×0.5))；全部直线弹、无 homing 字段＝绝不追踪，口径见 DMK_ROUND 定版注
       e.skillT = (e.skillT === undefined ? rand(2, 3.2) : e.skillT) - dt * (e.phase2 ? 1.35 : 1) * BOSS_SKILL_RATE;
       if(!e.isLaonong && !e.wangcai && !e.wc2 && e.skillT <= 0 && state === 'playing'){ // 旺财排除通用四格轮换（2026-10-30）：其技能只走 wangcaiTick 专属轮换，不放通用重击/招牌/扇形/本体技；旺财二号同排除（2026-10-30）：只走 wc2Tick 的奉献/爪击/扑击
         var v3 = e.visual;
@@ -13934,13 +14299,13 @@ function update(dt){
     var sigHold = sigTick(e, hzRageOn(e) ? dt * HZ_RAGE_MUL : dt, tgt, d2); // 怪物专属攻击状态机（跳砸/俯冲/龙息/闪现/甩链/凝视…）：接管位移时跳过通用移动与远程开火；狂暴攻速（2026-10-31 用户令）：转化态怪签名状态机以 dt×1.3 推进——签名攻击节奏（跳砸/俯冲/第二钳等）与签名位移同 +30%，伤害基数未动，口径见 HZ_RAGE 定版注 ③
     var mvx2 = dx2 / d2, mvy2 = dy2 / d2;
     if(e.boss && e.charging > 0 && e.chgDx !== undefined){ mvx2 = e.chgDx; mvy2 = e.chgDy; } // Boss 冲锋方向已锁定：冲锋途中沿锁定直线移动，不跟随玩家转向（走位躲避的核心）
-    if(e.boss && (e.lnBusy || e.zdHold || e.wcHold)){ mvx2 = 0; mvy2 = 0; } // 劳农蓄力元气弹/打断硬直、朱德跳砸蓄力/空中期间原地不动（专属技能；跳砸空中位置由其状态机直接驱动）；旺财尾兽玉预警＋发射期间同口径停步（wcHold）
+    if(e.boss && (e.lnBusy || e.zdHold || e.wcHold || e.lnSqHold)){ mvx2 = 0; mvy2 = 0; } // 劳农蓄力元气弹/打断硬直、拳影三拳蓄力（lnSqHold）、朱德跳砸蓄力/空中期间原地不动（专属技能；跳砸空中位置由其状态机直接驱动）；旺财尾兽玉预警＋发射期间同口径停步（wcHold）
     /* 鸡哥固定烟雾吸引（2026-10-28 用户令）：固定烟雾存续期间（smokeT>0），吸引半径 JG_LURE_R（2026-10-31 烟雾续航轮 900→1200）内的怪改向冲往烟雾中心（smokeX/smokeY），
        优先于原索敌（含替身/联机转火目标）——普通怪与精英冲速 ×JG_LURE_MUL（同轮 1.3→1.6），Boss 同样被吸引但不加速（×1.0、只改向）；
        冲到中心 46 内停下留在烟雾里（不移动），烟散（smokeT≤0）即刻恢复原索敌。例外：Boss 冲锋锁定/劳农蓄力/朱德跳砸状态不改向（上方已处理、不被本段覆盖）；
        物种技能状态机接管位移的帧（sigHold）本段改向不生效、状态结束恢复吸引；拖尾烟雾不吸引（只眩晕，见 smokeStun 段）。 */
     var lured = false;
-    if(P.smokeT > 0 && !(e.boss && (e.charging > 0 || e.lnBusy || e.zdHold || e.wcHold))){ // 旺财尾兽玉期间（wcHold）同专属状态机口径不被烟雾改向
+    if(P.smokeT > 0 && !(e.boss && (e.charging > 0 || e.lnBusy || e.zdHold || e.wcHold || e.lnSqHold))){ // 旺财尾兽玉期间（wcHold）同专属状态机口径不被烟雾改向；拳影三拳蓄力（lnSqHold）同口径不改向
       var ldx = P.smokeX - e.x, ldy = P.smokeY - e.y, ld2 = Math.sqrt(ldx * ldx + ldy * ldy) || 1;
       if(ld2 < JG_LURE_R){
         lured = true;
@@ -17527,6 +17892,7 @@ function draw(){
     ctx.lineWidth = 3; ctx.strokeStyle = hexA(tcol, 0.9); ctx.beginPath(); ctx.arc(tx3, ty3, Math.max(3, tz2.r * (1 - tprog)), 0, 7); ctx.stroke();
     ctx.fillStyle = hexA(tcol, 0.95); ctx.beginPath(); ctx.arc(tx3, ty3, 3.2, 0, 7); ctx.fill();
   }
+  drawLnSqHints(ox, oy); // 拳影三拳蓄力期地面方向提示＋蓄力条＋生长拳影（见 LN_SQ 定版注，与预警圈同世界层）
   // 怪物招牌攻击标记：魔蜂俯冲斜线 / 幽灵闪现寒气预警 / 精英幽灵假残影（纯预警表现，永远先于伤害出现）
   for(var mki2 = 0; mki2 < marks.length; mki2++){
     var mk2 = marks[mki2], mp2 = clamp(mk2.t / mk2.dur, 0, 1);
@@ -18680,6 +19046,14 @@ function drawVegActor(tr, sx, sy){ // 低矮植被（2026-10-25 真机反馈轮�
       ctx.fillStyle = '#2a1050'; ctx.beginPath(); ctx.arc(ex2, ey2, ep2.r * 0.54, 0, Math.PI * 2); ctx.fill(); // 眼瞳
       ctx.fillStyle = '#ffd7ff'; ctx.beginPath(); ctx.arc(ex2, ey2, ep2.r * 0.27, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.beginPath(); ctx.arc(ex2 - 2, ey2 - 2.4, 1.4, 0, Math.PI * 2); ctx.fill();
+    } else if(ep2.kind === 'lnFist'){ // 拳影三拳程序绘制大拳影（非现成素材，见 LN_SQ 定版注）
+      if(ep2.sqMode === 'drop'){
+        var dp = clamp(ep2.t / (ep2.sqDropT || 0.40), 0, 1);
+        ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.beginPath(); ctx.ellipse(ex2, ey2, (ep2.sqHitR || 110) * dp, (ep2.sqHitR || 110) * 0.4 * dp, 0, 0, Math.PI * 2); ctx.fill();
+        drawLnFist(ctx, ex2, ey2 - (1 - dp) * 150, (ep2.sqSize || 140) * (0.4 + 0.6 * dp), 0, ep2.color);
+      } else {
+        drawLnFist(ctx, ex2, ey2, ep2.sqSize || 100, Math.atan2(ep2.vy, ep2.vx), ep2.color);
+      }
     } else {
       ctx.fillStyle = ep2.color; ctx.beginPath(); ctx.arc(ex2, ey2, ep2.r, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(ex2 - 1.5, ey2 - 1.5, ep2.r * 0.4, 0, Math.PI * 2); ctx.fill();
@@ -20731,6 +21105,7 @@ var HUD_DEFS = [
   { key:'learn', id:'btnLearn', name:'可学习按钮', base:'translateX(-50%)' },
   { key:'stats', id:'btnStatsHud', name:'属性按钮', base:'' }, /* 2026-10-29 已学技能并入属性轮新增：合并后的属性钮登记为可拖动/缩放的布局元素（用户令「这个按钮也可以调整位置」）；旧独立已学技能钮从未登记布局、本轮随按钮一并取消、无对应元素需处理 */
   { key:'learnedbtn', id:'btnLearnedHud', name:'已学技能按钮', base:'' }, /* 2026-10-30 独立按钮轮新增：恢复的局内常驻「已学技能」钮登记为可拖动移位/拖角缩放的布局元素、随 klf_hud_layout_v1 同档保存；无存档条目时 hudApplyOne 不写 transform、默认位置（属性钮右侧同排）与尺寸逐值如 CSS。自由口径（本轮用户令「位置大小自由、不受位置限制」）：现行通用钳制实查＝位移 ±4000px（hudParseLayout 与拖动 move 同口径，覆盖任何现实屏幕全程、无区域禁区）、整体缩放 s 0.3–3.0、长条 w 0.25–4（本钮非长条、不适用 w）；其中位移 ±4000 对本钮已等同无位置限制、不再放宽；缩放对本钮单独放宽为 0.15–6.0（hudParseLayout 与拖角 move 按 key 特判），不再以通用 0.3–3.0 冒充其上限。实际可达范围由两条物理边界决定（拖动/缩放手势内实时执行，见 hudLearnedClampIn／hudLearnedOverlaps）：①钮体渲染框不得越出视口（越界即沿位移回钳至贴边）；②钮体不得与任一其他 HUD 元素渲染框相交（相交即回退到本手势上一个合法位/尺寸）——故本钮可达屏幕内任意不压他钮的位置、大小可达「贴满可用空间」为止 */
+  { key:'autoplay', id:'btnAutoplay', name:'托管按钮', base:'' }, /* 2026-11-01 托管轮新增：托管开关钮登记为可拖动移位/拖角缩放的布局元素、随 klf_hud_layout_v1 同档保存；无存档条目时默认位置与尺寸逐值如 CSS（左列状态片下方） */
   { key:'team', id:'netTeam', name:'队友血条面板', base:'' },
   { key:'joy', id:'stickPreview', name:'摇杆', base:'' },
   /* ---- 全图标可拖轮（2026-10-29）新增登记：以下 11 项此前未登记、编辑态无选框不可拖；现与上方各项共用同一拖动/拖角缩放/存档机器，
@@ -21159,7 +21534,7 @@ function renderCodexSkills(body){
     body.appendChild(codexEntry(iconCanvas('cigshot', ''), h)); })();
   (function(){ var h = '<h4>仰望吧，天地乖离开辟之星<span class="el-chip" style="background:#ffd76a">专属</span><span class="cx-dim">班仔 二觉专属攻击技能</span></h4>';
     h += '<div>班仔第二次觉醒后自动获得的专属攻击技能：不能学习、不能升级，不会出现在技能卡池里，不占主动技能上限；仅班仔本人（本机玩家）自带，NPC 与替身班仔不带（替身的击杀按归因计入召唤者）。</div>';
-    h += '<div>每击杀 <b>180</b> 个敌人自动触发，持续 <b>15 秒</b>：触发时角色背后一次出现 <b>50</b> 个金色圆形传送门（吉尔伽美什王之财宝式），门在后面扇区（后面、后面左右）分开铺开、持续期间不消失、15 秒到点一起消失；每门每秒各发 1 柄剑、相位错开不同步，15 秒最多 750 柄；剑模型就是剑阵的剑、横过来、剑尖朝角色正面，朝正面飞出去攻击敌人，攻击方向跟随角色朝向实时变化（以发剑时刻的面朝为准）。单柄伤害与剑阵落剑完全相同＝当刻普攻单发伤害 ×<b>0.35</b>。剑命中怪物后会插在怪物身上、一直跟随怪物，直到怪物死亡才消散（只伤命中那一下、无持续伤害；每只怪最多插 12 柄）。</div>';
+    h += '<div>每击杀 <b>180</b> 个敌人自动触发，持续 <b>15 秒</b>：触发时角色背后一次出现 <b>27</b> 个金色圆形传送门（吉尔伽美什王之财宝式），门在后面扇区（后面、后面左右）分开铺开、持续期间不消失、15 秒到点一起消失；每门 0.5 秒各发 1 柄剑、相位错开不同步，15 秒最多 810 柄；门跟随玩家移动与转向、始终在身后；剑模型就是剑阵的剑、横过来、剑尖朝角色正面，朝正面飞出去攻击敌人，攻击方向跟随角色朝向实时变化（以发剑时刻的面朝为准）。单柄伤害与剑阵落剑完全相同＝当刻普攻单发伤害 ×<b>0.35</b>。剑命中怪物后会插在怪物身上、一直跟随怪物，直到怪物死亡才消散（只伤命中那一下、无持续伤害；每只怪最多插 12 柄）。</div>';
     h += '<div class="cx-dim">计数口径：二觉前的击杀不算、二觉后从 0 累计；触发后清零重计；技能持续 15 秒期间的击杀不计入下一轮，结束后才重新累计；仰望吧，天地乖离开辟之星自己的飞剑造成的击杀不计。</div>';
     body.appendChild(codexEntry(iconCanvas('currybat', ''), h)); })();
   (function(){ var h = '<h4>心电<span class="el-chip" style="background:#7ad7f0">专属</span><span class="cx-dim">陈哈哈 二觉被动</span></h4>';
@@ -21387,7 +21762,7 @@ function renderLearned(targetBody){ // 2026-10-30 独立按钮轮起只渲染进
   });
   if(P.charIdx === 5) body.appendChild(ldRow('stamp', '', '<b>牛马的觉悟</b> <span class="ld-tag" style="background:#ff5a4e">专属被动·常驻</span>', '黄主任自带 · 不用学习不用升级 · 不占被动上限<br>常驻淡红圈半径 213（由剑阵半径 320 小三分之一推算：320×2/3≈213），跟随黄主任整局存在。怪第一次进圈掷点一次、每怪只判一次：30% 变牛马（「吃得苦中苦 方为人上人」友方转化 15 秒，玩家方打不动它、敌怪可打它，到期死亡）／20% 逃跑远离 5 秒（不可被打断、期间仍可被攻击）／50% 易伤 +20% 持续 10 秒。觉醒分级：未觉醒仅小怪 · 一觉加精英 · 二觉加 Boss（Boss 只吃易伤档、仍按 50% 判定）'));
   if(P.charIdx === 3 && P.stage >= 1) body.appendChild(ldRow('cigshot', '', '<b>烟雾拖尾</b> <span class="ld-tag" style="background:#b9bec4">专属被动·一觉</span>', '一觉获得 · 不能升级 · 不占被动上限 · 持续到游戏结束<br>移动时每 0.12 秒落一团烟（半径 90），烟雾在地图上停留 3 秒，连成长拖尾；怪物碰到烟雾被引燃（10 秒、每秒小怪/精英 5%／Boss 2%，与按键技烟雾共用一生一次／Boss 20 秒规则）' + (P.stage >= 2 ? '<br>二觉强化：被动烟雾的引燃可叠 2 层——每秒小怪 10%／精英 8%／Boss 4%（2 层合计）；每只怪只能叠一次 2 层' : '')));
-  if(P.charIdx === 0 && P.stage >= 2) body.appendChild(ldRow('currybat', '', '<b>仰望吧，天地乖离开辟之星</b> <span class="ld-tag" style="background:#ffd76a">专属攻击技能·二觉</span>', '二觉获得 · 不能学习不能升级 · 不占主动上限<br>每击杀 180 个敌人自动触发，持续 15 秒：触发时角色背后一次出现 50 个金色传送门（后面、后面左右扇区、分开铺开）、持续期间不消失、15 秒到点一起消失，每门每秒各发 1 柄剑、相位错开（剑尖朝正面，攻击方向以发剑时刻面朝为准），15 秒最多 750 柄；单柄伤害与剑阵落剑相同（当刻普攻单发 ×0.35）；命中怪物后插在怪身上、跟随到怪死亡；持续期间击杀不计入下一轮 180，结束后重新累计'));
+  if(P.charIdx === 0 && P.stage >= 2) body.appendChild(ldRow('currybat', '', '<b>仰望吧，天地乖离开辟之星</b> <span class="ld-tag" style="background:#ffd76a">专属攻击技能·二觉</span>', '二觉获得 · 不能学习不能升级 · 不占主动上限<br>每击杀 180 个敌人自动触发，持续 15 秒：触发时角色背后一次出现 27 个金色传送门（后面、后面左右扇区、分开铺开）、持续期间不消失、15 秒到点一起消失，每门 0.5 秒各发 1 柄剑、相位错开（剑尖朝正面，攻击方向以发剑时刻面朝为准），15 秒最多 810 柄；门跟随玩家移动与转向、始终在身后；单柄伤害与剑阵落剑相同（当刻普攻单发 ×0.35）；命中怪物后插在怪身上、跟随到怪死亡；持续期间击杀不计入下一轮 180，结束后重新累计'));
   if(P.charIdx === 6 && P.stage >= 2) body.appendChild(ldRow('chainvolt', '', '<b>心电</b> <span class=\"ld-tag\" style=\"background:#7ad7f0\">专属被动·二觉</span>', '二觉获得 · 不能学习不能升级不能强化 · 不占被动上限 · 效果固定<br>普通攻击与按键技能的雷电传导无上限、无距离限制、全图传导：普攻电弧传遍全图（每链每敌至多一次、逐跳 ×0.86 衰减不变）；按键技落雷道数不封顶、全图每敌一道'));
   if(P.charIdx === 6) body.appendChild(ldRow('chainvolt', '', '<b>静电</b> <span class="ld-tag" style="background:#ffe97a;color:#241a02">专属被动·常驻</span>', '初始自带 · 不能学习不能升级不能强化 · 不占被动上限<br>击杀累计每满 100 个，暴击率永久 +0.2%（本局内不消失、新局清零；总暴击率封顶 100%）<br>当前：累计击杀 ' + (P.chStaticKillTotal || 0) + ' · 已叠加 ' + chStaticStacks() + ' 层 · 暴击率 +' + (chStaticStacks() * 0.2).toFixed(1) + '%（与按键技 100 杀计数各自独立）'));
   sec('特 殊 获 取（宝箱系 · 不占上限）');
@@ -21607,6 +21982,9 @@ function frame(ts){
     for(var rp = 0; rp < reps; rp++){ try{ update(dt); }catch(err){ errLog('update', err && err.message, err && err.stack); break; } if(!window.__NET_CLIENT_MODE){ try{ houseTick(dt); }catch(err2){ errLog('house', err2 && err2.message, err2 && err2.stack); } try{ streetTick(dt); }catch(errS){ errLog('street', errS && errS.message, errS && errS.stack); } try{ merchantTick(dt); }catch(err3){ errLog('merchant', err3 && err3.message, err3 && err3.stack); } try{ talkTick(dt); }catch(err4){ errLog('talk', err4 && err4.message, err4 && err4.stack); } } // 联机客户端：新屋/商人/自言自语由房主权威侧驱动，客户端不本地推进
  if(state !== 'playing') break; }
   }
+  else if(state === 'shop' && typeof AUTOPLAY !== 'undefined' && AUTOPLAY.on){ AUTOPLAY._shopT = (AUTOPLAY._shopT || 0) + dt; if(AUTOPLAY._shopT > 0.8){ AUTOPLAY._shopT = 0; try{ closeShop(); }catch(e){} } } // 托管商店处理（update 在 shop 态不跑，故挂 frame）：误入商店不买任何东西、0.8 秒后自动关店继续（与压测兜底同口径）；needLeave 门禁由 closeShop 自带，关后不会立刻重开
+  else if(state === 'chest' && typeof AUTOPLAY !== 'undefined' && AUTOPLAY.on){ AUTOPLAY._chestT = (AUTOPLAY._chestT || 0) + dt; if(AUTOPLAY._chestT > 0.6){ AUTOPLAY._chestT = 0; var _cb = el('btnChestOk'); if(_cb) _cb.click(); } } // 托管宝箱处理（同理挂 frame）：宝箱技能弹窗出现即确认领取（雷云升级或宝箱专属被动，走既有 btnChestOk 路径，不另写结算）
+  else if((state === 'over' || state === 'win') && typeof AUTOPLAY !== 'undefined' && AUTOPLAY.on){ autoplaySet(false); } // 托管结算处理：死亡/胜利结算屏出现即自动关托管，结算后的无尽或重开选择留给玩家手动定，不自动代选
   else if(state === 'ending'){ END_T += dt; try{ endingTick(dt); }catch(err){ errLog('ending', err && err.message, err && err.stack); } }
   else if(state === 'start'){
     gameTime += dt * 0.2;
@@ -23666,9 +24044,13 @@ function hostTick(dt){
       if(hd>0){ if(p.isNpc && Math.random()<0.80){ texts.push({x:p.x,y:p.y-44,v:0,txt:'闪避！',t:0,color:'#8ad7ff'}); p.hurtCd=0.65; } /* NPC 不易死机制③：伤害闪避 80%（用户定版）——每次接触伤害判定有 80% 概率整次闪避（飘字「闪避！」，该次不掉血）；未闪避才走减伤结算；飘字旧 {k:'text'} 死格式已改 texts（见普攻处根因注） */ else { if(p.isNpc) hd=Math.max(1,Math.round(hd*0.8*(npcWxPhase===2?WX_TORNADO_DR_MUL:1)*(1-Math.min(0.45,npcPSum(p,'armorP'))))); /* NPC 不易死机制②：承伤减免 20%；闻西龙卷风减伤段（2026-10-29）再乘 ×0.30（减伤 70%、与本机同口径，叠在 20% 减免之外独立一区）；【NPC 按玩家池学习追加（2026-10-28）】其自有被动减伤（armorP 字段、与玩家同封顶 45%）再乘一区 */ if(p.hero===7 && (p.gmRushT||0)>0) hd=Math.max(1,Math.round(hd*0.30)); /* 朱德轮：冲撞中减伤 70%（本机 gmSpecTick 同口径；NPC 原有 80% 闪避掷骰＋20% 减免＋被动减伤在前、再叠本项） */ p.hp-=hd; if(hdE && hdE.boss && typeof bossLeechHeal==='function') bossLeechHeal(hdE, hd); /* Boss 吸血：按成员实际掉血结算（10 人档起、见 bossLeechHeal 注） */ p.hurtT=0.3; p.hurtCd=0.65; texts.push({x:p.x,y:p.y-44,v:0,txt:'-'+Math.round(hd),t:0,color:'#ff9a8a'}); } }
     }
     for(var pi=eProjectiles.length-1;pi>=0;pi--){ var pr=eProjectiles[pi];
-      if(Math.hypot(pr.x-p.x,pr.y-p.y)<p.r+pr.r+2){
+      var prHitR = (pr.kind==='lnFist' && pr.sqHitR) ? pr.sqHitR : (p.r+pr.r+2); // 拳影三拳：按演示中心距结算（直冲 66／扇形 51／坠落 110），见 LN_SQ 定版注
+      var prDropWait = (pr.kind==='lnFist' && pr.sqMode==='drop' && pr.t < (pr.sqDropT||0.40)); // 坠落完成前不结算、不销毁
+      var prSqDone = !!(pr.kind==='lnFist' && pr.srcE && pr.srcE.lnSqHit && pr.srcE.lnSqHit[pr.sq] && pr.srcE.lnSqHit[pr.sq][p.id]); // 同拳只算一次：该成员已吃过同拳编号，后续同拳拳影只穿过
+      if(prDropWait || prSqDone) continue;
+      if(Math.hypot(pr.x-p.x,pr.y-p.y)<prHitR){
         eProjectiles.splice(pi,1);
-        if(!shopBarProtects(p.x, p.y) && !portalBarSeparates(pr.srcE ? pr.srcE.x : pr.x, pr.srcE ? pr.srcE.y : pr.y, p.x, p.y) && p.invuln<=0 && p.dodgeT<=0 && !p.learnOpen && !p.panelGuard && !(p.learnStealthT > 0) && !npcImmune){ if(p.isNpc && Math.random()<0.80){ texts.push({x:p.x,y:p.y-44,v:0,txt:'闪避！',t:0,color:'#8ad7ff'}); } /* NPC 伤害闪避 80%（弹道同口径，闪避时弹道照常消耗、不掉血）；飘字旧 {k:'text'} 死格式已改 texts（见普攻处根因注） */ else { var pd2=p.isNpc?Math.max(1,Math.round((pr.dmg||8)*0.8*(npcWxPhase===2?WX_TORNADO_DR_MUL:1)*(1-Math.min(0.45,npcPSum(p,'armorP'))))):(pr.dmg||8); /* NPC 承伤减免 20%（弹道同口径）＋闻西龙卷风减伤段 ×0.30（2026-10-29、同接触段口径）＋其自有被动减伤 armorP（同接触段口径） */ if(p.hero===7 && (p.gmRushT||0)>0) pd2=Math.max(1,Math.round(pd2*0.30)); /* 朱德轮：冲撞中减伤 70%（弹道同口径） */ p.hp-=pd2; if(pr.srcE && pr.srcE.boss && typeof bossLeechHeal==='function') bossLeechHeal(pr.srcE, pd2); /* Boss 吸血：弹道来源 Boss 按实际掉血结算（同接触段口径） */ p.hurtT=0.3; texts.push({x:p.x,y:p.y-44,v:0,txt:'-'+Math.round(pd2),t:0,color:'#ff9a8a'}); } } // learnOpen/panelGuard 成员不吃弹道伤害（面板打开期间无敌）；商人小结界（2026-10-29 用户令）：成员在商人结界内不吃界外弹道伤害（弹体照常消耗；房主侧 eProjectiles 主循环另有跨界销毁、二者同向不冲突）；传送门结界（2026-10-30）：敌方弹道来源（srcE 优先、无则弹体位置）与成员跨侧 → 同口径不掉血（弹体照常消耗、与房主侧跨界销毁同向）
+        if(!shopBarProtects(p.x, p.y) && !portalBarSeparates(pr.srcE ? pr.srcE.x : pr.x, pr.srcE ? pr.srcE.y : pr.y, p.x, p.y) && p.invuln<=0 && p.dodgeT<=0 && !p.learnOpen && !p.panelGuard && !(p.learnStealthT > 0) && !npcImmune){ if(p.isNpc && Math.random()<0.80){ texts.push({x:p.x,y:p.y-44,v:0,txt:'闪避！',t:0,color:'#8ad7ff'}); } /* NPC 伤害闪避 80%（弹道同口径，闪避时弹道照常消耗、不掉血）；飘字旧 {k:'text'} 死格式已改 texts（见普攻处根因注） */ else { var pd2=p.isNpc?Math.max(1,Math.round((pr.dmg||8)*0.8*(npcWxPhase===2?WX_TORNADO_DR_MUL:1)*(1-Math.min(0.45,npcPSum(p,'armorP'))))):(pr.dmg||8); /* NPC 承伤减免 20%（弹道同口径）＋闻西龙卷风减伤段 ×0.30（2026-10-29、同接触段口径）＋其自有被动减伤 armorP（同接触段口径） */ if(p.hero===7 && (p.gmRushT||0)>0) pd2=Math.max(1,Math.round(pd2*0.30)); /* 朱德轮：冲撞中减伤 70%（弹道同口径） */ p.hp-=pd2; if(pr.kind==='lnFist' && pr.srcE){ if(!pr.srcE.lnSqHit) pr.srcE.lnSqHit = {}; if(!pr.srcE.lnSqHit[pr.sq]) pr.srcE.lnSqHit[pr.sq] = {}; pr.srcE.lnSqHit[pr.sq][p.id] = 1; } /* 拳影三拳同拳只算一次：该成员实际掉血后记入源 Boss 的 lnSqHit（闪避未掉血不记、同拳其他拳影仍可再判，见 LN_SQ 定版注） */ if(pr.srcE && pr.srcE.boss && typeof bossLeechHeal==='function') bossLeechHeal(pr.srcE, pd2); /* Boss 吸血：弹道来源 Boss 按实际掉血结算（同接触段口径） */ p.hurtT=0.3; texts.push({x:p.x,y:p.y-44,v:0,txt:'-'+Math.round(pd2),t:0,color:'#ff9a8a'}); } } // learnOpen/panelGuard 成员不吃弹道伤害（面板打开期间无敌）；商人小结界（2026-10-29 用户令）：成员在商人结界内不吃界外弹道伤害（弹体照常消耗；房主侧 eProjectiles 主循环另有跨界销毁、二者同向不冲突）；传送门结界（2026-10-30）：敌方弹道来源（srcE 优先、无则弹体位置）与成员跨侧 → 同口径不掉血（弹体照常消耗、与房主侧跨界销毁同向）
       }
     }
     /* 拾取（2026-10-29 联机等级各自独立轮改版）：纯经验宝石按人独立——该成员已拾过的（tk 含其 id）整段跳过、对他而言这颗已不存在；未拾过的拾到只记其本人 tk、经验只入其本人 gainXpPeer，全体都拾过才 splice 移除。回血/狂怒/道具仍为共享世界物件（拾到即全员消失、既有 splice 与个人生效口径不变）；其中磁石效果按人独立——不再置全局 magnetVac（旧版会把全图宝石吸向房主一人），改为拾取后 peerMagnetCollect 只收该成员自己未拾的那一份（见该函数注，循环后统一结算避开迭代中改数组） */
