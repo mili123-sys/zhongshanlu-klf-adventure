@@ -13201,9 +13201,10 @@ function autoplaySet(on){
 }
 function autoplayToggle(){ autoplaySet(!AUTOPLAY.on); }
 (function(){ /* 开关与打断键绑定：托管钮点按开关；手动闪避/特殊键按下即关（托管自己的 doSpecial/doDodge 程序调用不走 DOM 事件、不会自关）；方向键打断在 update 移动段（见该段托管钩） */
-  var b = el('btnAutoplay'); if(b) b.addEventListener('click', function(ev){ ev.preventDefault(); autoplayToggle(); });
-  var dg = el('btnDodge'); if(dg) dg.addEventListener('touchstart', function(){ if(AUTOPLAY.on) autoplaySet(false); }, { passive:true });
-  var sp = el('btnSpecial'); if(sp) sp.addEventListener('touchstart', function(){ if(AUTOPLAY.on) autoplaySet(false); }, { passive:true });
+  /* 2026-11-01 启动修复：el 在后文才赋值，此立即执行块执行时 el 仍为 undefined，故此处直接用 document.getElementById，不依赖 el；托管开关/打断口径一字未动 */
+  var b = document.getElementById('btnAutoplay'); if(b) b.addEventListener('click', function(ev){ ev.preventDefault(); autoplayToggle(); });
+  var dg = document.getElementById('btnDodge'); if(dg) dg.addEventListener('touchstart', function(){ if(AUTOPLAY.on) autoplaySet(false); }, { passive:true });
+  var sp = document.getElementById('btnSpecial'); if(sp) sp.addEventListener('touchstart', function(){ if(AUTOPLAY.on) autoplaySet(false); }, { passive:true });
   window.addEventListener('keydown', function(ev){ if(!AUTOPLAY.on) return; var k = (ev.key || '').toLowerCase(); if(k === 'arrowup' || k === 'arrowdown' || k === 'arrowleft' || k === 'arrowright' || k === 'w' || k === 'a' || k === 's' || k === 'd' || k === ' ' || k === 'l' || k === 'shift') autoplaySet(false); });
 })();
 window.__AUTOPLAY = { on:function(){ return AUTOPLAY.on; }, set:autoplaySet, toggle:autoplayToggle, unreachableSec:AUTOPLAY_UNREACHABLE_SEC };
