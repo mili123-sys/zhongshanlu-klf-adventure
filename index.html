@@ -876,6 +876,7 @@
           <input type="range" id="volSfx" min="0" max="100" step="1" value="30" aria-label="技能攻击音效音量">
         </div>
       </div>
+      <p id="volDiag" style="font-size:11px; color:#9a978c; max-width:92vw; text-align:center; line-height:1.7; margin:2px auto 10px;">声音状态：—</p>
       <button class="btn" id="btnVolBack">返 回</button>
     </div>
 
@@ -1254,7 +1255,7 @@
    - 本机不支持 Cache Storage 时退化为仅本次会话的预热下载，进度条照常工作。
    ============================================================ */
 (function(){
-  var MANIFEST = [["assets/audio/ding.ogg",11949],["assets/audio/doll_scream.mp3",44773],["assets/audio/earthspell.ogg",17419],["assets/audio/excalibur.mp3",20621],["assets/audio/fire_foom.ogg",14080],["assets/audio/firehole.ogg",11582],["assets/audio/growth.ogg",18955],["assets/audio/gun1.ogg",6981],["assets/audio/gun2.ogg",7052],["assets/audio/ice_cast.ogg",12936],["assets/audio/ice_hit.ogg",12278],["assets/audio/ln_cast.ogg",27279],["assets/audio/ln_growl.ogg",7686],["assets/audio/ln_magic.ogg",10122],["assets/audio/ln_shade.ogg",8704],["assets/audio/ln_swoosh.ogg",5220],["assets/audio/meat1.ogg",11157],["assets/audio/meat2.ogg",11031],["assets/audio/metal1.ogg",8295],["assets/audio/nade_boom.ogg",11041],["assets/audio/pin_click.ogg",5211],["assets/audio/poisonbub.ogg",11812],["assets/audio/punch1.ogg",8613],["assets/audio/punch2.ogg",8309],["assets/audio/punch3.ogg",8422],["assets/audio/punch4.ogg",8449],["assets/audio/punch5.ogg",8681],["assets/audio/bgm_main.mp3",2531684],["assets/audio/rain_loop.ogg",290435],["assets/audio/reloading.ogg",8972],["assets/audio/sfx_114514.mp3",146329],["assets/audio/sfx_amogus.mp3",18852],["assets/audio/sfx_boxing_king.mp3",141290],["assets/audio/sfx_boxing_king_long.mp3",141290],["assets/audio/sfx_chicken_call.mp3",67126],["assets/audio/sfx_chuanxi.mp3",33271],["assets/audio/sfx_dajieju.mp3",39750],["assets/audio/sfx_duide.mp3",64409],["assets/audio/sfx_evil_to_justice.mp3",38914],["assets/audio/sfx_gaifa.mp3",15508],["assets/audio/sfx_geilian.mp3",132119],["assets/audio/sfx_gugugaga.mp3",32644],["assets/audio/sfx_guixia.mp3",21777],["assets/audio/sfx_headshot_announce.mp3",18466],["assets/audio/sfx_headshot_luck.mp3",33062],["assets/audio/sfx_kuaizai.mp3",20106],["assets/audio/sfx_kunyu.mp3",40168],["assets/audio/sfx_laobideng.mp3",9657],["assets/audio/sfx_mamba_out.mp3",18016],["assets/audio/sfx_michael_jackson.mp3",19270],["assets/audio/sfx_my_eyes.mp3",42675],["assets/audio/sfx_nihao.mp3",7985],["assets/audio/sfx_ou.mp3",41422],["assets/audio/sfx_pianpianhua.mp3",68589],["assets/audio/sfx_pig_squeal.mp3",35779],["assets/audio/sfx_really.mp3",13000],["assets/audio/sfx_steel_pipe.mp3",67753],["assets/audio/sfx_thank_you.mp3",9657],["assets/audio/sfx_wow.mp3",42049],["assets/audio/sfx_wufa_fanyi_102.mp3",92413],["assets/audio/sfx_xishi_zhenbao.mp3",59603],["assets/audio/smite.ogg",15190],["assets/audio/thwack1.ogg",7441],["assets/audio/thwack2.ogg",8293],["assets/audio/thwack3.ogg",8332],["assets/audio/volt_elec.ogg",10955],["assets/audio/water_splash.ogg",25671],["assets/audio/whoosh.ogg",10241],["assets/audio/wind2.ogg",13019],["assets/audio/zap_elec.ogg",8001],["assets/audio/sfx_guagua.mp3",42834],["assets/audio/sfx_cs_enemy.mp3",30296],["assets/audio/sfx_cs_gogogo.mp3",28415],["assets/audio/sfx_boom.mp3",101140],["assets/audio/sfx_yamete.mp3",25280],["assets/audio/sfx_xiaozhewan.mp3",67285],["assets/audio/sfx_taiduile.mp3",36565],["assets/audio/sfx_lalala.mp3",72301],["assets/audio/sfx_daizhu.mp3",89855],["assets/audio/sfx_shangfen.mp3",36565],["assets/audio/sfx_wocao.mp3",30296],["assets/audio/sfx_haihai.mp3",42208],["assets/fx/boulder.png",3795],["assets/fx/fireball.png",67600],["assets/fx/frostbolt.jpg",8005],["assets/fx/frostburst.png",2586],["assets/fx/icicle.png",1450],["assets/fx/laserorb.png",97387],["assets/fx/ep_arrow.png",18604],["assets/fx/ep_glob.png",22571],["assets/fx/lightstar.png",48225],["assets/fx/meteor.png",18230],["assets/fx/poisongas.png",27149],["assets/fx/rain_tile.png",775],["assets/fx/shield_bubble.png",5239],["assets/fx/stormcloud.png",26518],["assets/fx/stormvolt.png",2017],["assets/fx/tornado.png",940],["assets/fx/totem_bat.png",57165],["assets/fx/totem_beast.png",65554],["assets/fx/totem_bird.png",155663],["assets/fx/totem_orb.png",20284],["assets/fx/venomspear.png",1294],["assets/fx/waterbolt.png",35726],["assets/fx/waterorb.png",33858],["assets/ground/stone_photo.jpg",464700],["assets/ground/stone_photo_b.jpg",298121],["assets/house/chest_closed.png",332],["assets/house/chest_open.png",302],["assets/icons/doll.png",1730],["assets/icons/el_earth.png",168],["assets/icons/el_fire.png",170],["assets/icons/el_ice.png",192],["assets/icons/el_light.png",167],["assets/icons/el_volt.png",163],["assets/icons/el_water.png",797],["assets/icons/el_wind.png",170],["assets/icons/el_wood.png",182],["assets/icons/od_grenade.png",404],["assets/icons/od_rifle.png",438],["assets/icons/wg4_armor.png",9490],["assets/icons/wg4_regen.png",8461],["assets/icons/wg4_summon.png",5945],["assets/icons/wg_blades.png",6200],["assets/icons/wg_chain-lightning.png",13214],["assets/icons/wg_electrostatics.png",9682],["assets/icons/wg_entangle.png",14392],["assets/icons/wg_fireball_2.png",11704],["assets/icons/wg_firebolt.png",9343],["assets/icons/wg_flaming-mantle.png",11824],["assets/icons/wg_forked-lightning.png",12815],["assets/icons/wg_frostnova.png",12397],["assets/icons/wg_gorgon-shards.png",11660],["assets/icons/wg_icearrow.png",9416],["assets/icons/wg_icecircle.png",10679],["assets/icons/wg_lazoor.png",8358],["assets/icons/wg_magic-missile.png",9391],["assets/icons/wg_meteor.png",11673],["assets/icons/wg_poison-cloud.png",10430],["assets/icons/wg_powerslash.png",10749],["assets/icons/wg_sting.png",7330],["assets/items/drop_bomb.png",309],["assets/items/drop_drink.png",382],["assets/items/drop_magnet.png",2230],["assets/items/drop_shield.png",1032],["assets/items/drop_stimulant.png",273],["assets/items/heal_heart.png",1743],["assets/items/heal_potion.png",291],["assets/items/rage_flask.png",15773],["assets/items/rage_serum.png",291],["assets/items/xp_gem.png",1429],["assets/items/xp_gem_big.png",1420],["assets/monsters/atlas.png",67825],["assets/monsters/atlas2.png",186756],["assets/monsters/atlas2_flash.png",86376],["assets/monsters/atlas_clean.png",206750],["assets/monsters/atlas_clean_flash.png",89421],["assets/monsters/atlas_fierce.png",25366],["assets/monsters/atlas_fierce_flash.png",4735],["assets/monsters/atlas_flash.png",36174],["assets/monsters/contact_sheet.png",110457],["assets/monsters/deco_chest.png",208],["assets/monsters/deco_tomb.png",175],["assets/npc/merchant_monk.png",3718],["assets/npc/merchant_portrait.jpg",36826],["assets/monsters/dragon.png",66962],["assets/monsters/dragon_flash.png",5883],["assets/vfx/ard_ice.png",133991],["assets/vfx/ard_light.png",42622],["assets/vfx/ard_poison.png",52137],["assets/vfx/ard_volt.png",53552],["assets/vfx/blood.png",76125],["assets/vfx/bolt.png",92774],["assets/vfx/boltimp.png",99884],["assets/vfx/boltspark.png",5715],["assets/vfx/chaos.png",397892],["assets/vfx/charged.png",130317],["assets/vfx/divine.png",79546],["assets/vfx/earth.png",111053],["assets/vfx/earthhit.png",43760],["assets/vfx/earthimpact.png",36227],["assets/vfx/explosion.png",200392],["assets/vfx/explosion2.png",200392],["assets/vfx/fire.png",42197],["assets/vfx/fire_aura.png",224545],["assets/vfx/firewrath.png",86684],["assets/vfx/impact.png",167807],["assets/vfx/muzzle.png",18492],["assets/vfx/natureleaf.png",79816],["assets/vfx/powerring.png",92533],["assets/vfx/rainsplash.png",10218],["assets/vfx/shield.png",160100],["assets/vfx/slash.png",101072],["assets/vfx/smoke.png",75421],["assets/vfx/spikerock.png",6584],["assets/vfx/splash.png",68705],["assets/vfx/stars.png",77400],["assets/vfx/vortex.png",145872],["assets/vfx/watershield.png",54170],["assets/vfx/sp_stun.png",78824],["assets/vfx/sp_burn.png",137992],["assets/vfx/sp_poison.png",34359],["assets/vfx/wind.png",79806],["assets/void/darkbolt.png",3001],["assets/void/firebomb.png",3343],["assets/void/floor_a.png",510],["assets/void/floor_b.png",462],["assets/void/lightning.png",3598],["assets/void/portals.png",2403],["assets/void/portals_purple.png",972],["assets/void/rune.png",469],["assets/void/shockwave.png",1265],["assets/void/spark.png",1396],["assets/void/void_tiles.png",3301],["assets/void/vortex.jpg",18446],["assets/void/warp.png",976],["assets/void/zap.png",764],["assets/audio/sword_slash.ogg",8349],["assets/audio/sword_heavy.ogg",10252],["assets/audio/boom_throw.ogg",9051],["assets/audio/cig_shot.ogg",6809],["assets/audio/star_magic.ogg",8542],["assets/audio/star_burst.ogg",9856],["assets/audio/stamp_hit.ogg",9191],["assets/audio/sfx_yiri_sanbao_yan.mp3",69457],["assets/icon-512.png",334346],["assets/icon-192.png",68824],["assets/fx/bzwave_1.png",6413],["assets/fx/bzwave_2.png",14219],["assets/fx/bzwave_3.png",16026],["assets/fx/bzwave_4.png",9350],["assets/fx/bzwave_5.png",5426],["assets/fx/bzsword.png",24440]];
+  var MANIFEST = [["assets/audio/ding.ogg",11949],["assets/audio/doll_scream.mp3",44773],["assets/audio/earthspell.ogg",17419],["assets/audio/excalibur.mp3",20621],["assets/audio/fire_foom.ogg",14080],["assets/audio/firehole.ogg",11582],["assets/audio/growth.ogg",18955],["assets/audio/gun1.ogg",6981],["assets/audio/gun2.ogg",7052],["assets/audio/ice_cast.ogg",12936],["assets/audio/ice_hit.ogg",12278],["assets/audio/ln_cast.ogg",27279],["assets/audio/ln_growl.ogg",7686],["assets/audio/ln_magic.ogg",10122],["assets/audio/ln_shade.ogg",8704],["assets/audio/ln_swoosh.ogg",5220],["assets/audio/meat1.ogg",11157],["assets/audio/meat2.ogg",11031],["assets/audio/metal1.ogg",8295],["assets/audio/nade_boom.ogg",11041],["assets/audio/pin_click.ogg",5211],["assets/audio/poisonbub.ogg",11812],["assets/audio/punch1.ogg",8613],["assets/audio/punch2.ogg",8309],["assets/audio/punch3.ogg",8422],["assets/audio/punch4.ogg",8449],["assets/audio/punch5.ogg",8681],["assets/audio/bgm_main.mp3",2531684],["assets/audio/rain_loop.ogg",290435],["assets/audio/reloading.ogg",8972],["assets/audio/sfx_114514.mp3",146329],["assets/audio/sfx_amogus.mp3",18852],["assets/audio/sfx_boxing_king.mp3",141290],["assets/audio/sfx_boxing_king_long.mp3",141290],["assets/audio/sfx_chicken_call.mp3",67126],["assets/audio/sfx_chuanxi.mp3",33271],["assets/audio/sfx_dajieju.mp3",39750],["assets/audio/sfx_duide.mp3",64409],["assets/audio/sfx_evil_to_justice.mp3",38914],["assets/audio/sfx_gaifa.mp3",15508],["assets/audio/sfx_geilian.mp3",132119],["assets/audio/sfx_gugugaga.mp3",32644],["assets/audio/sfx_guixia.mp3",21777],["assets/audio/sfx_headshot_announce.mp3",18466],["assets/audio/sfx_headshot_luck.mp3",33062],["assets/audio/sfx_kuaizai.mp3",20106],["assets/audio/sfx_kunyu.mp3",40168],["assets/audio/sfx_laobideng.mp3",9657],["assets/audio/sfx_mamba_out.mp3",18016],["assets/audio/sfx_michael_jackson.mp3",19270],["assets/audio/sfx_my_eyes.mp3",42675],["assets/audio/sfx_nihao.mp3",7985],["assets/audio/sfx_ou.mp3",41422],["assets/audio/sfx_pianpianhua.mp3",68589],["assets/audio/sfx_pig_squeal.mp3",35779],["assets/audio/sfx_really.mp3",13000],["assets/audio/sfx_steel_pipe.mp3",67753],["assets/audio/sfx_thank_you.mp3",9657],["assets/audio/sfx_wow.mp3",42049],["assets/audio/sfx_wufa_fanyi_102.mp3",92413],["assets/audio/sfx_xishi_zhenbao.mp3",59603],["assets/audio/smite.ogg",15190],["assets/audio/thwack1.ogg",7441],["assets/audio/thwack2.ogg",8293],["assets/audio/thwack3.ogg",8332],["assets/audio/volt_elec.ogg",10955],["assets/audio/water_splash.ogg",25671],["assets/audio/whoosh.ogg",10241],["assets/audio/wind2.ogg",13019],["assets/audio/zap_elec.ogg",8001],["assets/audio/sfx_guagua.mp3",42834],["assets/audio/sfx_cs_enemy.mp3",30296],["assets/audio/sfx_cs_gogogo.mp3",28415],["assets/audio/sfx_boom.mp3",101140],["assets/audio/sfx_yamete.mp3",25280],["assets/audio/sfx_xiaozhewan.mp3",67285],["assets/audio/sfx_taiduile.mp3",36565],["assets/audio/sfx_lalala.mp3",72301],["assets/audio/sfx_daizhu.mp3",89855],["assets/audio/sfx_shangfen.mp3",36565],["assets/audio/sfx_wocao.mp3",30296],["assets/audio/sfx_haihai.mp3",42208],["assets/fx/boulder.png",3795],["assets/fx/fireball.png",67600],["assets/fx/frostbolt.jpg",8005],["assets/fx/frostburst.png",2586],["assets/fx/icicle.png",1450],["assets/fx/laserorb.png",97387],["assets/fx/ep_arrow.png",18604],["assets/fx/ep_glob.png",22571],["assets/fx/lightstar.png",48225],["assets/fx/meteor.png",18230],["assets/fx/poisongas.png",27149],["assets/fx/rain_tile.png",775],["assets/fx/shield_bubble.png",5239],["assets/fx/stormcloud.png",26518],["assets/fx/stormvolt.png",2017],["assets/fx/tornado.png",940],["assets/fx/totem_bat.png",57165],["assets/fx/totem_beast.png",65554],["assets/fx/totem_bird.png",155663],["assets/fx/totem_orb.png",20284],["assets/fx/venomspear.png",1294],["assets/fx/waterbolt.png",35726],["assets/fx/waterorb.png",33858],["assets/ground/stone_photo.jpg",464700],["assets/ground/stone_photo_b.jpg",298121],["assets/house/chest_closed.png",332],["assets/house/chest_open.png",302],["assets/icons/doll.png",1730],["assets/icons/el_earth.png",168],["assets/icons/el_fire.png",170],["assets/icons/el_ice.png",192],["assets/icons/el_light.png",167],["assets/icons/el_volt.png",163],["assets/icons/el_water.png",797],["assets/icons/el_wind.png",170],["assets/icons/el_wood.png",182],["assets/icons/od_grenade.png",404],["assets/icons/od_rifle.png",438],["assets/icons/wg4_armor.png",9490],["assets/icons/wg4_regen.png",8461],["assets/icons/wg4_summon.png",5945],["assets/icons/wg_blades.png",6200],["assets/icons/wg_chain-lightning.png",13214],["assets/icons/wg_electrostatics.png",9682],["assets/icons/wg_entangle.png",14392],["assets/icons/wg_fireball_2.png",11704],["assets/icons/wg_firebolt.png",9343],["assets/icons/wg_flaming-mantle.png",11824],["assets/icons/wg_forked-lightning.png",12815],["assets/icons/wg_frostnova.png",12397],["assets/icons/wg_gorgon-shards.png",11660],["assets/icons/wg_icearrow.png",9416],["assets/icons/wg_icecircle.png",10679],["assets/icons/wg_lazoor.png",8358],["assets/icons/wg_magic-missile.png",9391],["assets/icons/wg_meteor.png",11673],["assets/icons/wg_poison-cloud.png",10430],["assets/icons/wg_powerslash.png",10749],["assets/icons/wg_sting.png",7330],["assets/items/drop_bomb.png",309],["assets/items/drop_drink.png",382],["assets/items/drop_magnet.png",2230],["assets/items/drop_shield.png",1032],["assets/items/drop_stimulant.png",273],["assets/items/heal_heart.png",1743],["assets/items/heal_potion.png",291],["assets/items/rage_flask.png",15773],["assets/items/rage_serum.png",291],["assets/items/xp_gem.png",1429],["assets/items/xp_gem_big.png",1420],["assets/monsters/atlas.png",67825],["assets/monsters/atlas2.png",186756],["assets/monsters/atlas2_flash.png",86376],["assets/monsters/atlas_clean.png",206750],["assets/monsters/atlas_clean_flash.png",89421],["assets/monsters/atlas_fierce.png",25366],["assets/monsters/atlas_fierce_flash.png",4735],["assets/monsters/atlas_flash.png",36174],["assets/monsters/contact_sheet.png",110457],["assets/monsters/deco_chest.png",208],["assets/monsters/deco_tomb.png",175],["assets/npc/merchant_monk.png",3718],["assets/npc/merchant_portrait.jpg",36826],["assets/monsters/dragon.png",66962],["assets/monsters/dragon_flash.png",5883],["assets/vfx/ard_ice.png",133991],["assets/vfx/ard_light.png",42622],["assets/vfx/ard_poison.png",52137],["assets/vfx/ard_volt.png",53552],["assets/vfx/blood.png",76125],["assets/vfx/bolt.png",92774],["assets/vfx/boltimp.png",99884],["assets/vfx/boltspark.png",5715],["assets/vfx/chaos.png",397892],["assets/vfx/charged.png",130317],["assets/vfx/divine.png",79546],["assets/vfx/earth.png",111053],["assets/vfx/earthhit.png",43760],["assets/vfx/earthimpact.png",36227],["assets/vfx/explosion.png",200392],["assets/vfx/explosion2.png",200392],["assets/vfx/fire.png",42197],["assets/vfx/fire_aura.png",224545],["assets/vfx/firewrath.png",86684],["assets/vfx/impact.png",167807],["assets/vfx/muzzle.png",18492],["assets/vfx/natureleaf.png",79816],["assets/vfx/powerring.png",92533],["assets/vfx/rainsplash.png",10218],["assets/vfx/shield.png",160100],["assets/vfx/slash.png",101072],["assets/vfx/smoke.png",75421],["assets/vfx/spikerock.png",6584],["assets/vfx/splash.png",68705],["assets/vfx/stars.png",77400],["assets/vfx/vortex.png",145872],["assets/vfx/watershield.png",54170],["assets/vfx/sp_stun.png",78824],["assets/vfx/sp_burn.png",137992],["assets/vfx/sp_poison.png",34359],["assets/vfx/wind.png",79806],["assets/void/darkbolt.png",3001],["assets/void/firebomb.png",3343],["assets/void/floor_a.png",510],["assets/void/floor_b.png",462],["assets/void/lightning.png",3598],["assets/void/portals.png",2403],["assets/void/portals_purple.png",972],["assets/void/rune.png",469],["assets/void/shockwave.png",1265],["assets/void/spark.png",1396],["assets/void/void_tiles.png",3301],["assets/void/vortex.jpg",18446],["assets/void/warp.png",976],["assets/void/zap.png",764],["assets/audio/sword_slash.ogg",8349],["assets/audio/sword_heavy.ogg",10252],["assets/audio/boom_throw.ogg",9051],["assets/audio/cig_shot.ogg",6809],["assets/audio/star_magic.ogg",8542],["assets/audio/star_burst.ogg",9856],["assets/audio/stamp_hit.ogg",9191],["assets/audio/sfx_yiri_sanbao_yan.mp3",69457],["assets/audio/sfx_wilhelm_scream.mp3",17108],["assets/audio/sfx_single_cheer.mp3",33236],["assets/audio/sfx_hz_falling.mp3",81236],["assets/audio/sfx_slip.mp3",29012],["assets/audio/sfx_laughing_cat.mp3",53204],["assets/audio/sfx_zd_v008.mp3",34893],["assets/audio/sfx_zd_v019.mp3",20265],["assets/icon-512.png",334346],["assets/icon-192.png",68824],["assets/fx/bzwave_1.png",6413],["assets/fx/bzwave_2.png",14219],["assets/fx/bzwave_3.png",16026],["assets/fx/bzwave_4.png",9350],["assets/fx/bzwave_5.png",5426],["assets/fx/bzsword.png",24440]];
   /* 导出去重（2026-10-26 用户批准）：字节级完全相同的文件只在包里存一份——下列别名条目
      仍在清单里（条目数/帧号/大小全不变），但下载、缓存与局内取图一律改走保留件的路径，
      两边字节相同、画面零差别；被删的只是 assets/ 里的重复实体文件。 */
@@ -1803,7 +1804,8 @@ var SFX_SAMPLE_SRC = { zap:'assets/audio/zap_elec.ogg', volt:'assets/audio/volt_
   hsann:'assets/audio/sfx_headshot_announce.mp3', /* 莫哈哈暴击播报「Head Shot!」：TTS 自合成播报声（非 CF 游戏原声、非任何商业游戏音频），原稿 24kHz 已转码 44.1kHz MPEG-1 入包（避开 iOS 解码坑） */
   chickencall:'assets/audio/sfx_chicken_call.mp3', kunyu:'assets/audio/sfx_kunyu.mp3', really:'assets/audio/sfx_really.mp3', nihao:'assets/audio/sfx_nihao.mp3', justice:'assets/audio/sfx_evil_to_justice.mp3', jackson:'assets/audio/sfx_michael_jackson.mp3', headshot:'assets/audio/sfx_headshot_luck.mp3', kuaizai:'assets/audio/sfx_kuaizai.mp3', guixia:'assets/audio/sfx_guixia.mp3', myeyes:'assets/audio/sfx_my_eyes.mp3', wufafanyi:'assets/audio/sfx_wufa_fanyi_102.mp3', a114514:'assets/audio/sfx_114514.mp3', amogus:'assets/audio/sfx_amogus.mp3', gaifa:'assets/audio/sfx_gaifa.mp3', laobideng:'assets/audio/sfx_laobideng.mp3', thankyou:'assets/audio/sfx_thank_you.mp3', pianpianhua:'assets/audio/sfx_pianpianhua.mp3', dajieju:'assets/audio/sfx_dajieju.mp3', mambaout:'assets/audio/sfx_mamba_out.mp3', geilian:'assets/audio/sfx_geilian.mp3', duide:'assets/audio/sfx_duide.mp3', ou:'assets/audio/sfx_ou.mp3', gugugaga:'assets/audio/sfx_gugugaga.mp3', sanbaoyan:'assets/audio/sfx_yiri_sanbao_yan.mp3', wow:'assets/audio/sfx_wow.mp3', guagua:'assets/audio/sfx_guagua.mp3', csenemy:'assets/audio/sfx_cs_enemy.mp3', csgogogo:'assets/audio/sfx_cs_gogogo.mp3', csboom:'assets/audio/sfx_boom.mp3', yamete:'assets/audio/sfx_yamete.mp3', xiaozhewan:'assets/audio/sfx_xiaozhewan.mp3', taiduile:'assets/audio/sfx_taiduile.mp3', lalala:'assets/audio/sfx_lalala.mp3', daizhu:'assets/audio/sfx_daizhu.mp3', shangfen:'assets/audio/sfx_shangfen.mp3', wocao:'assets/audio/sfx_wocao.mp3', haihai:'assets/audio/sfx_haihai.mp3',
   boxing:'assets/audio/sfx_boxing_king.mp3', boxinglong:'assets/audio/sfx_boxing_king_long.mp3', steelpipe:'assets/audio/sfx_steel_pipe.mp3',
-  pigsqueal:'assets/audio/sfx_pig_squeal.mp3', zhenbao:'assets/audio/sfx_xishi_zhenbao.mp3', chuanxi:'assets/audio/sfx_chuanxi.mp3' }; /* 用户亲选语音包：全部由无损 WAV 转 44.1kHz 标准 MP3（MPEG-1，iOS 可解；避开旧喊声 MPEG-2/24kHz 的坑） */ // 小伙伴变身惨叫（TTS 合成语音） // Ex 咖喱棒呐喊（TTS 合成语音，原创无版权） // 劳农五技能采样（RPG Sound Pack — artisticdude，CC0）；水系水花（rubberduck，CC0） // 打击感采样：Punch / Impact by Iwan 'qubodup' Gabovitch（CC-BY 3.0）＋ Thwack Sounds by Jordan Irwin (AntumDeluge)（CC0）——命中/击杀/暴击的真实重击声，替换旧合成弱声
+  pigsqueal:'assets/audio/sfx_pig_squeal.mp3', zhenbao:'assets/audio/sfx_xishi_zhenbao.mp3', chuanxi:'assets/audio/sfx_chuanxi.mp3',
+  wilhelm:'assets/audio/sfx_wilhelm_scream.mp3', cheer:'assets/audio/sfx_single_cheer.mp3', hzfall:'assets/audio/sfx_hz_falling.mp3', slip:'assets/audio/sfx_slip.mp3', laughcat:'assets/audio/sfx_laughing_cat.mp3', zdv008:'assets/audio/sfx_zd_v008.mp3', zdv019:'assets/audio/sfx_zd_v019.mp3' }; /* 用户亲选语音包：全部由无损 WAV 转 44.1kHz 标准 MP3（MPEG-1，iOS 可解；避开旧喊声 MPEG-2/24kHz 的坑） */ /* 新音效接入轮（2026-11-01）：wilhelm＝威廉尖叫 1.000 秒／cheer＝单人欢呼 2.000 秒（朱德撞飞随机二选一）；hzfall＝黄主任终审之印下落坠落声 5.000 秒（元素通道起停、见 hzFallStart/Stop）；slip＝队友踩朱德战斗冰面打滑 1.750 秒；laughcat＝爆笑猫 3.250 秒／zdv008＝第二段视频第 008 句 2.100 秒／zdv019＝第 019 句 1.200 秒（朱德专属背景语音池、AMBIENT_TALK[7]）；时长与字节数接入时逐个 ffprobe 核对、与本轮口径一致；v2_dialogues 其余 70 句（002–007、009–018、020–073）已被用户取消——不入本表、不入清单、不进任何池（硬排除） */ // 小伙伴变身惨叫（TTS 合成语音） // Ex 咖喱棒呐喊（TTS 合成语音，原创无版权） // 劳农五技能采样（RPG Sound Pack — artisticdude，CC0）；水系水花（rubberduck，CC0） // 打击感采样：Punch / Impact by Iwan 'qubodup' Gabovitch（CC-BY 3.0）＋ Thwack Sounds by Jordan Irwin (AntumDeluge)（CC0）——命中/击杀/暴击的真实重击声，替换旧合成弱声
 var SFX_BUF = {};
 var SFX_MAP = { dollscream:'dollscream', excalibur:'excalibur', zap:'zap', volt:'volt', bolt:'volt', cone:'icecast', frost:'icehit', fball:'foom', pin:'pin', whoosh:'whoosh', nadeboom:'nadeboom', firehole:'firehole', reload:'reload',
   tornado:'wind2', holy:'smite', spikehit:'earthspell', spray:'poisonbub', growth:'growth', voidcast:'lncast', voidstorm:'lnswoosh', voidbeam:'lnmagic', voidsummon:'lnshade', voidgrowl:'lngrowl', splash:'wsplash' }; // 风/光/土/毒/木五系真实采样（Wierd Whooshes CC0 / Magic Smite CC-BY 3.0 / Earth Element Magic Spell CC0 / qubodup 瓶声 CC0 / Growth Spell CC-BY 3.0）；水系：splash 水花采样
@@ -1813,7 +1815,9 @@ function sfxLoadSamples(){
 }
 function sfxLoadOne(k){ // 单个采样加载（2026-10-26 音频全量核查加固）：旧版 87 个文件一次性 fetch、失败即永久放弃——真机在预下载洪峰下个别 fetch 失败，那个声音整局静默（本轮多个语音/按键技音效真机缺失的链路级嫌疑之一）。改：失败 3.5 秒后自动重试一次；语音/喊声另有元素通道兜底（voiceSfx/excShout），两条腿都不瘸才算真哑
   fetch(SFX_SAMPLE_SRC[k]).then(function(r){ return r.arrayBuffer(); }).then(function(ab){
-    AC.decodeAudioData(ab, function(buf){ SFX_BUF[k] = buf; }, function(){ sfxLoadRetry(k); });
+    var dp = null;
+    try{ dp = AC.decodeAudioData(ab, function(buf){ SFX_BUF[k] = buf; }, function(){ sfxLoadRetry(k); }); }catch(e){ sfxLoadRetry(k); return; }
+    if(dp && dp.catch) dp.catch(function(){ if(!SFX_BUF[k]) sfxLoadRetry(k); }); // 2026-11-01 音频轮补：新式 Safari 的 decodeAudioData 以 Promise 拒绝报错、旧回调形参可能不再被调用——两路都挂失败重试，解码失败不再静默丢采样
   }).catch(function(){ sfxLoadRetry(k); });
 }
 function sfxLoadRetry(k){
@@ -1909,7 +1913,7 @@ function hsAnnounce(){
     }).catch(function(){ SFX._vr_hsann = false; });
   }
 }
-var VOICE_SFX = { chickencall: 1, kunyu: 1, really: 1, nihao: 1, justice: 1, jackson: 1, headshot: 1, kuaizai: 1, guixia: 1, myeyes: 1, wufafanyi: 1, a114514: 1, amogus: 1, gaifa: 1, laobideng: 1, thankyou: 1, pianpianhua: 1, dajieju: 1, mambaout: 1, geilian: 1, duide: 1, ou: 1, gugugaga: 1, wow: 1, boxing: 1, boxinglong: 1, steelpipe: 1, pigsqueal: 1, zhenbao: 1, chuanxi: 1, guagua: 1, csenemy: 1, csgogogo: 1, csboom: 1, yamete: 1, xiaozhewan: 1, taiduile: 1, lalala: 1, daizhu: 1, shangfen: 1, wocao: 1, haihai: 1, sanbaoyan: 1 }; // 注：莫哈哈「boom」语音键名为 csboom——'boom' 已被预警圈爆发的通用音效占用，撞名会让语音漏进所有英雄的战斗音
+var VOICE_SFX = { chickencall: 1, kunyu: 1, really: 1, nihao: 1, justice: 1, jackson: 1, headshot: 1, kuaizai: 1, guixia: 1, myeyes: 1, wufafanyi: 1, a114514: 1, amogus: 1, gaifa: 1, laobideng: 1, thankyou: 1, pianpianhua: 1, dajieju: 1, mambaout: 1, geilian: 1, duide: 1, ou: 1, gugugaga: 1, wow: 1, boxing: 1, boxinglong: 1, steelpipe: 1, pigsqueal: 1, zhenbao: 1, chuanxi: 1, guagua: 1, csenemy: 1, csgogogo: 1, csboom: 1, yamete: 1, xiaozhewan: 1, taiduile: 1, lalala: 1, daizhu: 1, shangfen: 1, wocao: 1, haihai: 1, sanbaoyan: 1, wilhelm: 1, cheer: 1, slip: 1, laughcat: 1, zdv008: 1, zdv019: 1 }; // 新音效接入轮（2026-11-01）：wilhelm/cheer＝朱德撞飞随机二选一、slip＝队友踩冰面打滑、laughcat/zdv008/zdv019＝朱德专属背景语音池——六键同入语音双通道（采样优先＋元素兜底、走 SFX.on 与语音增益口径）；hzfall 不入本表：坠落声须可中途停播、走专用元素起停通道（hzFallStart/Stop） // 注：莫哈哈「boom」语音键名为 csboom——'boom' 已被预警圈爆发的通用音效占用，撞名会让语音漏进所有英雄的战斗音
 var ATK_SFX = { gun:1, headshot:1, swing:1, swordheavy:1, holy:1, throw:1, cig:1, smoke:1, starcast:1, starboom:1, stamp:1, volt:1, cage:1, tornado:1, wheel:1, wheelhit:1 }; // 攻击音效名单：七人普攻（枪声/挥砍/投掷/烟头/星弹齐射与星爆/印章/连锁电）＋按键技攻击声（重斩/浓烟/豪情在天/龙卷风）＋进化挥砍圣光与回旋轮——剑气分支无独立音效、随挥剑 swing 一并计入
 var ATK_SFX_VOL = 0.7; // 攻击音效调小一档（2026-10-26 用户令）：名单内攻击音效统一增益 ×1.00 → ×0.70（约 −3.1 dB）；语音/喊声（excalibur 与 VOICE_SFX 走专属通道、不经名单）、商人「你好」、自言自语、升级、拾取、击杀、命中确认、Boss 与精英音效一律不动；触发条件与节流（SFX_GAP）不变
 function sfx(name, vmul){ var pv = SFX._vmul; SFX._vmul = (ATK_SFX[name] ? ATK_SFX_VOL : 1) * (vmul || 1); try{ sfxPlay(name); }catch(e){} SFX._vmul = pv; } // vmul（可选）：单次调用点专属音量倍率，只乘在这一次的增益通道上（sfxTone/sfxNoise/sfxSample 及语音元素兜底都读 SFX._vmul）——2026-10-28 用户令第 22 项闻西/鸡哥按键技音量用；不传时与旧行为完全一致，不动全局名单 ATK_SFX_VOL 与任何其他调用点
@@ -2252,7 +2256,7 @@ function volSave(){
   try{ localStorage.setItem('klf_vol_v1', v); }catch(e){}
   try{ localStorage.setItem('klf_vol_v1_bak', v); }catch(e){}
 }
-var BGM = { on: true, playing: false, wantPlay: false, a: null, timer: null, step: 0, nextTime: 0, gain: null, noiseBuf: null };
+var BGM = { on: true, playing: false, wantPlay: false, a: null, timer: null, step: 0, nextTime: 0, gain: null, noiseBuf: null, srcNode: null, routed: false };
 var MUS = { sel: null, game: null, void: null, house: null, cur: null, fadeT: null }; // 旧多轨符号保留兼容（全仓已无其他引用）
 function bgmEnsure(){
   if(BGM.a) return BGM.a;
@@ -2263,10 +2267,30 @@ function bgmEnsure(){
   }catch(e){}
   return BGM.a;
 }
+/* BGM 增益路由（2026-11-01 音频轮 · 查实断点）：milo 真机（iPhone）实报「音乐滑杆除 0 外怎么滑都不变大变小」。
+   根因＝旧版只写 <audio> 元素的 volume，而 iOS Safari／WKWebView 根本不认元素 volume 赋值（写多少都按 1 播），
+   只有 0 档靠 volApplyMusic 里直接 pause 元素才「有效」，与实报完全吻合。本轮把 BGM 元素改经 WebAudio：
+   createMediaElementSource → BGM.gain → AC.destination，滑杆改走增益节点（iOS／安卓都认）；路由后元素 volume 恒置 1，
+   避免安卓上「元素音量 × 增益」双重衰减。路由失败（无 AC／元素已被他路占用等）自动回退旧元素音量路，安卓行为不变差；
+   0 档暂停逻辑、曲目、起播时机一字未动。注意：路由后 BGM 与音效同经 AC——AC 被 iOS 挂起时两者一起哑，
+   故手势侧另有 acKick 看门狗持续 resume（见 audioUnlock 附近），且 bgmGestureResume 一并踢 AC。 */
+function bgmRoute(){
+  if(BGM.routed || !AC || !BGM.a) return;
+  try{
+    BGM.srcNode = AC.createMediaElementSource(BGM.a);
+    BGM.gain = AC.createGain();
+    BGM.gain.gain.value = VOL.music;
+    BGM.srcNode.connect(BGM.gain); BGM.gain.connect(AC.destination);
+    try{ BGM.a.volume = 1; }catch(e){}
+    BGM.routed = true;
+  }catch(e){ BGM.srcNode = null; BGM.gain = null; BGM.routed = false; }
+}
 function bgmPlay(){
   var a = bgmEnsure(); if(!a) return;
   BGM.wantPlay = true;
-  a.volume = VOL.music;
+  bgmRoute();
+  if(BGM.routed && BGM.gain){ try{ a.volume = 1; }catch(e){} try{ BGM.gain.gain.value = VOL.music; }catch(e){} }
+  else a.volume = VOL.music;
   if(VOL.music <= 0){ try{ a.pause(); }catch(e){} BGM.playing = false; return; }
   try{ var p = a.play(); BGM.playing = true; if(p && p.catch) p.catch(function(){ if(BGM.a && BGM.a.paused) BGM.playing = false; }); }catch(e){ BGM.playing = false; }
 }
@@ -2281,7 +2305,7 @@ function startBgm(){ bgmPlay(); }
    sfxInit/sfxLoadSamples 同在一个 try 块里，那两步任一抛错（如音频上下文创建失败）续播行就被跳过。现设独立续播点：
    自成 try、只管 BGM——wantPlay 为真且元素处于暂停时，任意 pointerdown/touchstart/click 手势都立即 bgmPlay() 续播；
    标题页 wantPlay＝false（stopBgm 已清）、不触发，标题无 BGM 的设计不动；音量 0 时 bgmPlay 自行静音处理、不强播。 */
-function bgmGestureResume(){ try{ if(BGM.wantPlay && BGM.a && BGM.a.paused && VOL.music > 0) bgmPlay(); }catch(e){} }
+function bgmGestureResume(){ try{ if(AC && AC.state !== 'running' && AC.resume) AC.resume(); }catch(e){} try{ if(BGM.wantPlay && BGM.a && BGM.a.paused && VOL.music > 0) bgmPlay(); }catch(e){} } // 音频轮补：BGM 已改经 AC 增益路由，手势时先顺手 resume 上下文，否则元素在播也出不了声
 document.addEventListener('pointerdown', bgmGestureResume, true);
 document.addEventListener('touchstart', bgmGestureResume, { capture: true, passive: true });
 document.addEventListener('click', bgmGestureResume, true);
@@ -2292,7 +2316,9 @@ function stopBgm(){
 }
 function volApplyMusic(){
   if(!BGM.a) return;
-  BGM.a.volume = VOL.music;
+  if(!BGM.routed) bgmRoute(); // 还没路由上（AC 刚就绪等情形）先补路由，滑杆才落得到实际响度
+  if(BGM.routed && BGM.gain){ try{ BGM.a.volume = 1; }catch(e){} try{ BGM.gain.gain.value = VOL.music; }catch(e){} } // 增益路：滑杆写增益节点（iOS 认）；元素 volume 恒 1 防双重衰减
+  else BGM.a.volume = VOL.music; // 未路由回退：旧元素音量路（安卓原行为）
   if(VOL.music <= 0){ try{ BGM.a.pause(); }catch(e){} BGM.playing = false; }
   else if(BGM.wantPlay && BGM.a.paused) bgmPlay();
 }
@@ -2309,16 +2335,31 @@ function syncVolUI(){
   var m = el('volMusic'), s2 = el('volSfx'), ml = el('volMusicVal'), sl = el('volSfxVal');
   if(m) m.value = mv; if(s2) s2.value = sv;
   if(ml) ml.textContent = mv + '%'; if(sl) sl.textContent = sv + '%';
+  var dg = el('volDiag'); if(dg) dg.textContent = volDiagText();
 }
+/* 音量面板诊断行（2026-11-01 音频轮，用户实报排障用）：只读显示声音链实时状态——上下文状态／音效总闸／
+   两档音量／SFX 主增益／已就绪采样数／BGM 播放与实际音量路（增益或元素音量），供 milo 下次一眼报数；不改任何行为。 */
+function volDiagText(){
+  var ac = (typeof AC !== 'undefined' && AC) ? AC.state : '未创建';
+  var on = (typeof SFX !== 'undefined' && SFX.on) ? '开' : '关';
+  var g = (typeof SFX !== 'undefined' && SFX.gain) ? SFX.gain.gain.value.toFixed(3) : '—';
+  var bufs = (typeof SFX_BUF !== 'undefined') ? Object.keys(SFX_BUF).length : 0;
+  var bp = BGM.a ? (BGM.a.paused ? '已暂停' : '播放中') : '未创建';
+  var bv = (BGM.routed && BGM.gain) ? ('增益 ' + BGM.gain.gain.value.toFixed(2)) : ('元素音量 ' + (BGM.a ? BGM.a.volume.toFixed(2) : '—'));
+  return '声音状态：上下文 ' + ac + ' · 音效总闸 ' + on + ' · 音乐 ' + Math.round(VOL.music * 100) + '% · 音效 ' + Math.round(VOL.sfx * 100) + '% · 主增益 ' + g + ' · 采样 ' + bufs + ' 已就绪 · 音乐' + bp + '（' + bv + '）';
+}
+var volDiagTimer = null;
 function openVolumeScreen(){
   volFromPause = true;
   syncVolUI();
+  if(volDiagTimer) clearInterval(volDiagTimer);
+  volDiagTimer = setInterval(function(){ var dg = el('volDiag'); if(dg) dg.textContent = volDiagText(); }, 1000); // 面板开着时诊断行每秒刷新（上下文恢复／采样就绪等变化能即时看到）
   el('volumeScreen').classList.add('on');
   if(state === 'playing') panelGuardSet('volume', true); // 联机暂停菜单路径护盾（单人真暂停 state='paused' 不置位，与已学技能同口径）
 }
 window.__VOL = function(){
   var pb = el('btnVolPause');
-  return { music: VOL.music, sfx: VOL.sfx, atk40Migrated: (typeof VOL_ATK40_MIGRATED !== 'undefined') ? VOL_ATK40_MIGRATED : null, atk30Migrated: (typeof VOL_ATK30_MIGRATED !== 'undefined') ? VOL_ATK30_MIGRATED : null, sfxOn: (typeof SFX !== 'undefined') ? SFX.on : null, sfxGain: (typeof SFX !== 'undefined' && SFX.gain) ? SFX.gain.gain.value : null, voiceGain: (typeof SFX !== 'undefined' && SFX.voiceGain) ? SFX.voiceGain.gain.value : null, voiceGainVal: (typeof VOICE_GAIN_VAL !== 'undefined') ? VOICE_GAIN_VAL : null, bgmSrc: BGM.a ? BGM.a.src : null, bgmPlaying: !!(BGM.a && !BGM.a.paused), bgmPaused: BGM.a ? BGM.a.paused : null, bgmVol: BGM.a ? BGM.a.volume : null, bgmLoop: BGM.a ? BGM.a.loop : null, bgmTime: BGM.a ? +BGM.a.currentTime.toFixed(2) : null, bgmReady: BGM.a ? BGM.a.readyState : null, bgmErr: (BGM.a && BGM.a.error) ? BGM.a.error.code : null, wantPlay: BGM.wantPlay, pauseBtnText: pb ? pb.textContent : null, oldSfxPauseBtn: !!el('btnSfxPause'), volScreen: !!el('volumeScreen') };
+  return { music: VOL.music, sfx: VOL.sfx, atk40Migrated: (typeof VOL_ATK40_MIGRATED !== 'undefined') ? VOL_ATK40_MIGRATED : null, atk30Migrated: (typeof VOL_ATK30_MIGRATED !== 'undefined') ? VOL_ATK30_MIGRATED : null, sfxOn: (typeof SFX !== 'undefined') ? SFX.on : null, sfxGain: (typeof SFX !== 'undefined' && SFX.gain) ? SFX.gain.gain.value : null, voiceGain: (typeof SFX !== 'undefined' && SFX.voiceGain) ? SFX.voiceGain.gain.value : null, voiceGainVal: (typeof VOICE_GAIN_VAL !== 'undefined') ? VOICE_GAIN_VAL : null, acState: (typeof AC !== 'undefined' && AC) ? AC.state : null, sfxBufCount: (typeof SFX_BUF !== 'undefined') ? Object.keys(SFX_BUF).length : null, bgmRouted: !!BGM.routed, bgmGain: BGM.gain ? BGM.gain.gain.value : null, bgmSrc: BGM.a ? BGM.a.src : null, bgmPlaying: !!(BGM.a && !BGM.a.paused), bgmPaused: BGM.a ? BGM.a.paused : null, bgmVol: BGM.a ? BGM.a.volume : null, bgmLoop: BGM.a ? BGM.a.loop : null, bgmTime: BGM.a ? +BGM.a.currentTime.toFixed(2) : null, bgmReady: BGM.a ? BGM.a.readyState : null, bgmErr: (BGM.a && BGM.a.error) ? BGM.a.error.code : null, wantPlay: BGM.wantPlay, pauseBtnText: pb ? pb.textContent : null, oldSfxPauseBtn: !!el('btnSfxPause'), volScreen: !!el('volumeScreen'), volDiag: (function(){ var d = el('volDiag'); return d ? d.textContent : null; })() };
 };
 /* ---------------- 角色资料（造型 + 数值 + 专属技能） ---------------- */
 var CHARACTERS = [
@@ -2361,7 +2402,7 @@ var CHARACTERS = [
     weapon:'mungcake', specName:'我在福建很想你', specCd:31, // 按键技（用户 2026-10-31 定版＋技能实装轮接入）：长按满 0.5 秒触发（20:32 改定、原 16:26 的 2 秒防误触作废）→冲撞状态 13 秒（移速 +100%/撞飞/撞击冰爆＝普攻冰爆 ×5/减伤 70%/脚下战斗冰面/冰雹跟随本体）／冷却 18 秒、持续期间不进冷却自结束起算；表值 31＝持续 13＋净冷却 18（doSpecial 经 wxSpecCdBase 扣持续、specCdHeldByDuration 冻结递减，与闻西同式）；建模轮占位短冲与占位 specCd 24 已删除
     role:'冰上滑行 · 冷齿绿豆饼', hp:106, speed:228, dmgMul:1.0, critDmg:1.5, // 基础属性为施工取值（沿用建模轮暂定：取七人区间中位 hp 94–224／speed 196–234；伤害数值经用户 2026-10-31 授权助理安排、非用户定版）；critDmg 1.5 与六人同口径（陈哈哈 2.0 为其专属例外）
     skin:'#ffd9b8', hair:'#2a2a30', hairStyle:'hood', outfit:'#3a76d6', outfit2:'#2e7d46', cape:null, bodyW:0.9,
-    awk:{ type:'spd', name:'溜冰魂觉醒', desc:'移动速度 +12%' } } // 觉醒被动为建模轮结构占位（与闻西 spd 型同式），未由用户定版
+    awk:{ type:'spd', name:'中山路马拉松王子', desc:'移动速度 +12%' } } // 觉醒被动改名（2026-11-01 用户令）：原建模轮占位名「溜冰魂觉醒」→「中山路马拉松王子」，效果一字不动（type:'spd'、一觉时经 applyAwkPassive 走 bonusSpd +12%）；本表为全仓唯一数据源——选角卡（renderChars 读 c.awk.name）与觉醒提示（checkAwakening 读 c.awk.name）均动态读取、改此一处全线同步，全仓无其他写死处（图鉴技能册不单列觉醒被动、无可同步的写死名）
 ];
 
 /* ---------------- 招式资料 ---------------- */
@@ -2547,6 +2588,12 @@ var SIG_ITEM = { weiye:'luckbell', undeadwar:'fang', thundercloud:'voltcore', ic
   windslash:'galestep', cyclone:'windheart', galearrows:'eagle', prismsplit:'prismpendant', thornvine:'rune', seedbomb:'regen', sporecloud:'luckbell', oakguard:'thorn',
   rockfall:'graniteplate', sandstorm:'stoneskin', venomlance:'regen', waterbolt:'tidalheart', wavecrash:'mistveil', rainveil:'flowstep', whirlpool:'tidalcore', tidalorb:'deepregen' };
 
+/* 【朱德专属被动「班定菜」定版注（2026-11-01 用户令；只改本地、版本仍 2.0）】
+   ①新建：PASSIVES.bdcai「班定菜」——全仓首条英雄专属被动（2026-10-30 专属判定轮的 heroCanUsePassive 前瞻守卫自此首次有字段落地；该轮定版注里「现行不存在专属被动」的实查结论自本轮起更新）。与光明朱德主动玩法（滑行冲撞）配套：移动速度 +10%/级、最高 5 级（Lv1 +10%／Lv2 +20%／Lv3 +30%／Lv4 +40%／Lv5 +50%）。
+   ②移速口径：走既有通用字段 spdP＝0.10/级——经 pSum('spdP') 进 pSpeed 现行 (1＋pSum('spdP')) 乘区，不另造新乘区；与一觉被动「中山路马拉松王子」+12%（bonusSpd 独立乘区）按现行连乘叠加；总移速封顶＝基础移速 ×2（pSpeed 末尾截断）一字未动。NPC 光明朱德学后经 npcPSum('spdP') 进 hostTick 移速式、同封顶 ×2。
+   ③入池口径（逐池写明）：升级卡池【进】——buildChoices 被动循环经 heroCanUsePassive 门禁，仅本机光明朱德出卡（权重与通用被动同：未学 2.0／已学未满级 9.5），其他英雄恒不出，暂存卡复核与 applyChoice 结算同判定兜底；商人货架【进】——shopSkillPool 同门禁，仅本机玩家为光明朱德时上架（价带同通用被动：新 140／强化 110 基准；专属 180 价带只属主武器与雷爆云、被动不走），shopSkillEligible 结算兜底；NPC 学习池【进】——npcLearnPool 同门禁，仅 NPC 光明朱德可学（npcAutoLearn 兜底同判定），其他 NPC 恒不学；宝箱池【不进】——本被动非宝箱系（无 summon/chestOnly、不在 CHEST_PASSIVES），主地图与副本宝箱均不产出。
+   ④图标与展示：专属像素图标（iconCanvas 'bdcai' 分支：滑行溜冰鞋＋彩色轮子＋冰蓝速度线，ICON_COLORS 同步登记）；升级卡与已学面板均挂金色「专属」标（renderChoiceCard／renderLearned 被动行 onlyHero 分支）；图鉴「被动道具」区随 PASSIVES 遍历自动列入并挂专属标；元素标挂冰系（EL_OF，朱德冰主题、el 仅显示用途）。
+   ⑤同轮改名：CHARACTERS 光明朱德一觉被动「溜冰魂觉醒」→「中山路马拉松王子」（效果不动、仍 +12%），见 CHARACTERS 表该行注。 */
 var PASSIVES = {
   critshard:{ name:'碎星石', badge:'中立', color:'#ffd76a', max:5, critP:0.04, dmgP:0.01, desc:'暴击率 +4%/级（被动暴击总加成上限 +25%）；附带：伤害 +1%/级。' },
   soulmirror:{ name:'裂魄镜', badge:'中立', color:'#ff9ad5', max:5, critDmgP:0.10, critP:0.005, desc:'暴击伤害 +10%/级；附带：暴击率 +0.5%/级。' },
@@ -2624,7 +2671,8 @@ var PASSIVES = {
   venomsac:{ hidden:true, name:'毒囊', badge:'囊', color:'#a8e063', max:5, dmgP:0.03, desc:'' },
   plagueheart:{ hidden:true, name:'瘟疫之心', badge:'瘟', color:'#7ed321', max:5, hpV:10, regenV:0.15, desc:'' },
   acidblood:{ hidden:true, name:'酸血', badge:'酸', color:'#c8e86a', max:5, armorP:0.02, dmgP:0.02, desc:'' },
-  holyhalo:{ name:'圣光环', badge:'环', color:'#fff8dc', max:5, regenV:0.2, dmgP:0.02, critP:0.005, desc:'每秒回复 0.2 生命，全部伤害 +2%（圣光环绕）；附带：暴击率 +0.5%/级。回血按跳结算：间隔随回血等级由 2.5 秒逐级缩短至 1 秒（满级 Lv5），每跳回复量随等级提升。' }
+  holyhalo:{ name:'圣光环', badge:'环', color:'#fff8dc', max:5, regenV:0.2, dmgP:0.02, critP:0.005, desc:'每秒回复 0.2 生命，全部伤害 +2%（圣光环绕）；附带：暴击率 +0.5%/级。回血按跳结算：间隔随回血等级由 2.5 秒逐级缩短至 1 秒（满级 Lv5），每跳回复量随等级提升。' },
+  bdcai:{ name:'班定菜', badge:'菜', color:'#8fd14f', max:5, spdP:0.10, onlyHero:'mungcake', desc:'移动速度 +10%/级。光明朱德专属被动（与按键技滑行冲撞配套）：只有光明朱德能抽取，其他英雄抽不到。' } // 班定菜（2026-11-01 用户令新建，定版注见 PASSIVES 上方）：spdP 0.10/级经既有 pSum('spdP') 进现行移速乘区（本机 pSpeed／NPC 移速式同口径）、总移速 ×2 封顶不动；onlyHero:'mungcake' 经 heroCanUsePassive 统一门禁三池（升级卡池／商人货架／NPC 学习池均进、均仅光明朱德可得，逐池口径见定版注 ③）
 };
 /* 【被动描述随等级变（2026-10-31 用户令）】定版口径：被动描述一律显示「当前等级合计值」、升级即变——已学面板（renderLearned）、升级学习卡（buildCard）、商店卡（renderShop）、槽满替换界面（renderReplace）四处展示统一改走 passiveDesc(key, lv) 按等级现算，不再直读 PASSIVES.desc 静态文案（静态 desc 只保留每级口径作兜底/图鉴 Lv1 行来源之一，图鉴另加满级合计行）。
    实查结论（全量 77 条含隐藏 3 条）：绝大多数被动主效果本就随等级提升——通用字段经 pSum 按「每级值×等级」求和（dmgP/armorP/spdP/critP/cdP/xpP/pickP/regenV/critDmgP 与 projSpdP/projSizeP/durP/dotP/vsBossP/vsFullP/heavyP/farP/nearP/moveP/stillP/lowhpP/slowP/burnP/boomP/specCdV），专属公式同样按级乘算（风行者之靴移速 ×(1+0.08×级)、巨人之力伤害 ×(1+0.12×级)、暴击镜片 0.06/0.3×级、过载核心/时之沙漏/王者荣耀/冷却怀表走 0.93/0.94/0.97/0.92 的级数幂、生命源泉/大地之心/石肤/荆棘之心 hpV 类按级一次性累加、荆棘反甲半径 66+9×级·每跳 3+2.2×级、圣光护盾格挡冷却 13−级、残影分身 Lv4 起 1→2 道、各类每级定量项 0.25/0.8/0.15/0.4/0.6×级等）——这些只是文案写成固定值或每级值、与实算不符，本轮只改文案现算、不动数值。
@@ -2708,10 +2756,12 @@ var PDESC = {
   venomsac:function(L, d){ return '伤害 +' + pdPct(d.dmgP * L) + '。'; },
   plagueheart:function(L, d){ return '生命上限累计 +' + (d.hpV * L) + '（每升一级 +' + d.hpV + '）；生命回复 +' + pdFmt(d.regenV * L) + '/秒。'; },
   acidblood:function(L, d){ return '减伤 +' + pdPct(d.armorP * L) + '，伤害 +' + pdPct(d.dmgP * L) + '。'; },
-  holyhalo:function(L, d){ return '每秒回复 ' + pdFmt(d.regenV * L) + ' 生命，全部伤害 +' + pdPct(d.dmgP * L) + '（圣光环绕）；附带：暴击率 +' + pdPct(d.critP * L) + '。回血按跳结算：间隔随回血等级由 2.5 秒逐级缩短至 1 秒（满级 Lv5），每跳回复量随等级提升。'; }
+  holyhalo:function(L, d){ return '每秒回复 ' + pdFmt(d.regenV * L) + ' 生命，全部伤害 +' + pdPct(d.dmgP * L) + '（圣光环绕）；附带：暴击率 +' + pdPct(d.critP * L) + '。回血按跳结算：间隔随回血等级由 2.5 秒逐级缩短至 1 秒（满级 Lv5），每跳回复量随等级提升。'; },
+  bdcai:function(L, d){ return '移动速度 +' + pdPct(d.spdP * L) + '。光明朱德专属被动（与滑行冲撞配套）：只有光明朱德能学；移速走既有移速乘区、总移速封顶为基础移速的 2 倍。'; }
 };
 function passiveDesc(key, lv){ var d = PASSIVES[key]; if(!d) return ''; var L = Math.max(1, Math.min(d.max || 5, lv || 1)); var f = PDESC[key]; return f ? f(L, d) : (d.desc || '隐藏被动'); } // 被动动态描述唯一入口：按等级现算合计值；未登记条目兜底回静态 desc
 window.__PDESC = { desc: passiveDesc, frostCrit: function(lv){ return 0.18 + 0.02 * lv; }, frostSlow: function(lv){ return 0.25 + 0.05 * lv; }, shred: function(lv){ return { chance: 0.11 + 0.01 * lv, dur: 1.75 + 0.25 * lv, vuln: 0.10 + 0.02 * lv }; } }; // 验收探针（只读）：与实机同一套公式/文案函数
+window.__BDCAI = { key:'bdcai', def: function(){ return PASSIVES.bdcai; }, canMatrix: function(){ var out = []; for(var i = 0; i < CHARACTERS.length; i++) out.push(heroCanUsePassive(i, 'bdcai')); return out; }, spdPAt: function(lv){ return (PASSIVES.bdcai.spdP || 0) * lv; }, speedAt: function(lv){ var b = CHARACTERS[7].speed; return Math.min(b * (1 + (PASSIVES.bdcai.spdP || 0) * lv), b * 2); }, descAt: function(lv){ return passiveDesc('bdcai', lv); }, awkName: function(){ return CHARACTERS[7].awk.name; }, awkDesc: function(){ return CHARACTERS[7].awk.desc; } }; // 验收探针（只读，2026-11-01 班定菜轮）：专属可学矩阵（应仅序号 7 光明朱德为 true）／逐级 spdP 合计／以朱德基础移速 228 单被动隔离测的封顶后速度（与 pSpeed 的 (1＋pSum('spdP')) 乘区＋末尾 ×2 封顶同式）／逐级动态描述／改名后的一觉被动名与描述
 
 /* ---------------- 属性（元素）系统：8 属性 ×（5 攻击＋5 被动）；莫哈哈 AK47 为火系角色专属，不占火系通用池名额 ---------------- */
 var ELEMENTS = { undead:{ name:'亡灵', color:'#b8c4ce' },
@@ -2726,7 +2776,7 @@ var EL_OF = { weiye:'earth', undeadwar:'undead', thundercloud:'lightning', frost
   galearrows:'wind', prismsplit:'light', thornvine:'wood', seedbomb:'wood', sporecloud:'wood', oakguard:'wood', rockfall:'earth', sandstorm:'earth',
   venomlance:'wood', /* 毒系技能概念并入木系：瘟毒长矛（毒箭类）挂木属性标；酸雨/毒蜂/毒池/毒雾喷雾随毒系取消下架 */
   waterbolt:'water', wavecrash:'water', rainveil:'water', whirlpool:'water', tidalorb:'water',
-  shield:'ice', crystal:'ice', frostarmor:'ice', frostmark:'ice', icevein:'ice',
+  shield:'ice', crystal:'ice', frostarmor:'ice', frostmark:'ice', icevein:'ice', bdcai:'ice',
   glove:'fire', heart:'fire', berserk:'fire', flameheart:'fire', emberboots:'fire',
   hourglass:'volt', magnet:'volt', magcore:'volt', voltcore:'volt', stormcharm:'volt',
   boots:'wind', eagle:'wind', windheart:'wind', galestep:'wind', skydancer:'wind',
@@ -4563,7 +4613,7 @@ var entranceSfxPlayed = false; // 鸡哥登场「鸡叫」本局已播标记：r
 /* 角色专属自言自语系统（用户立项 2026-10-23）：英雄序号 → 专属自播音效「池」（数组）。
    自播触发时从本英雄池里随机抽一条播；新增成员/新条目只往这张表里加，计时/触发框架不用动。
    成员（七英雄全员到齐）：0 班仔＝[amogus（俺摸过屎）, pianpianhua（灌伤害片片花拉开距离回回拉）, mambaout（曼巴out）, ou（呕）]、1 闻西＝[really（really内个）, kuaizai（快哉快哉）, xiaozhewan（我笑着玩）, shangfen（感觉今天是个上分的好日子）]、2 莫哈哈＝[jackson（迈克尔杰克逊）, headshot（枪枪爆头好运连连）, thankyou（thank you）, csenemy（CS发现敌人）, csgogogo（CS gogogo）, csboom（boom 三连爆，4.14 秒整段不剪）]、3 鸡哥＝[kunyu（神秘古坤语）, a114514（114514，9.09 秒整段不剪）, laobideng（老毕登）, geilian（我是不是给你脸了，8.20 秒整段不剪）, gugugaga（咕咕嘎嘎）, sanbaoyan（一日三包烟快活似神仙，粤语拼音版，4.27 秒；加权触发见 AMBIENT_TALK_W）]、4 八思＝[wufafanyi（无法翻译 _102，5.7 秒整段不剪）, guagua（呱呱呱）, yamete（呀咩得库大赛）, haihai（嗨害来了啊合并版，1.68 秒两遍连播含原停顿）]、5 黄主任＝[justice（任何邪恶终将绳之以法）, duide（对的对的对的不对不对不对）, taiduile（太对了这感觉）, daizhu（可别被我逮住了）]、6 陈哈哈＝[gaifa（该罚）, dajieju（点击左下角一口气看到大结局）, lalala（啦啦啦啦）, wocao（卧槽）]。 */
-var AMBIENT_TALK = { 0: ['amogus', 'pianpianhua', 'mambaout', 'ou'], 1: ['really', 'kuaizai', 'xiaozhewan', 'shangfen'], 2: ['jackson', 'headshot', 'thankyou', 'csenemy', 'csgogogo', 'csboom'], 3: ['kunyu', 'a114514', 'laobideng', 'geilian', 'gugugaga', 'sanbaoyan'], 4: ['wufafanyi', 'guagua', 'yamete', 'haihai'], 5: ['justice', 'duide', 'taiduile', 'daizhu'], 6: ['gaifa', 'dajieju', 'lalala', 'wocao'] };
+var AMBIENT_TALK = { 0: ['amogus', 'pianpianhua', 'mambaout', 'ou'], 1: ['really', 'kuaizai', 'xiaozhewan', 'shangfen'], 2: ['jackson', 'headshot', 'thankyou', 'csenemy', 'csgogogo', 'csboom'], 3: ['kunyu', 'a114514', 'laobideng', 'geilian', 'gugugaga', 'sanbaoyan'], 4: ['wufafanyi', 'guagua', 'yamete', 'haihai'], 5: ['justice', 'duide', 'taiduile', 'daizhu'], 6: ['gaifa', 'dajieju', 'lalala', 'wocao'], 7: ['laughcat', 'zdv008', 'zdv019'] }; /* 朱德专属背景语音池（2026-11-01 新音效接入轮，用户令）：7 光明朱德＝[laughcat（爆笑猫 3.25 秒）, zdv008（第二段视频第 008 句 2.1 秒）, zdv019（第 019 句 1.2 秒）]——定位背景语音非技能触发音：只在本机英雄为朱德时经 talkTick 低频随机播（首响 45–120 秒、间隔 60–180 秒、界面打开冻结、走 sfx()→SFX.on 与语音通道口径，与其余七人同框架），别的英雄永不播、不混通用 BGM、不绑任何技能；【硬排除】v2_dialogues 其余 70 句（002–007、009–018、020–073）已被用户取消：一句不入本池、不入 SFX_SAMPLE_SRC、不入预载清单 */
 var talkT = -1; // 自言自语随机自播倒计时：仅当本局英雄在 AMBIENT_TALK 表内时生效（resetGame 布防，首次开局后 45–120 秒随机）；播后按 60–180 秒随机重布，间隔下限由区间保证（≥45 秒），无固定周期、不连播；-1＝本局未布防（该英雄无专属自言自语）
 var FX_SCALE = 1; // 特效密度（依装置效能自动缩放）
 (function(){ var hc = (navigator.hardwareConcurrency || 4); var mob = window.innerWidth < 760 || ('ontouchstart' in window && window.innerWidth < 1100); FX_SCALE = mob ? (hc >= 6 ? 0.7 : 0.5) : 1; })();
@@ -4579,7 +4629,7 @@ function newPlayer(ci){
     face:1, faceAng:0, faceLockT:0, walkPhase:0, invuln:0,
     specCd:0, dodgeCd:0, dodgeRe:[0,0], dodgeT:0, dodgeDx:1, dodgeDy:0, tornadoT:0, tornadoTick:0, tornadoPoisonT:0, tornadoCastId:0, starT:0, starTick:0, starMul:1, starSMul:1, paperT:0, orbitAngle:0, oakAngle:0, oakFxT:0, shield:0, shieldT:0,
     smokeT:0, smokeTick:0, smokeX:0, smokeY:0, swingSide:1, jgPuffT:0, jgTrailX:null, jgTrailY:null, // 梁鸡一觉被动烟雾拖尾（2026-10-31）：落烟节拍计时／上一帧位置（位移判定）；新局随 P 重建清零，落点池 jgPuffs 在 resetGame 清空
-    gmRushT:0, gmEndBoostT:0, gmRushDx:1, gmRushDy:0, gmHailT:0, gmZoneT:0, gmVelX:0, gmVelY:0, gmIceT:0, gmTrailX:null, gmTrailY:null, // 光明朱德（2026-10-31 建模轮＋技能实装轮）：按键技冲撞剩余秒／冲撞方向、冰雹与脚下战斗冰面生成节拍、冰面滑溜惯性速度、冰面拖尾落冰节拍计时／上一帧位置；建模轮占位短冲字段 gmDash* 已删；新局随 P 重建清零，冰面池 gmIcePatches/gmIceZones 在 resetGame 清空
+    gmRushT:0, gmEndBoostT:0, gmRushDx:1, gmRushDy:0, gmHailT:0, gmZoneX:null, gmZoneY:null, gmVelX:0, gmVelY:0, gmIceT:0, gmTrailX:null, gmTrailY:null, // 光明朱德（2026-10-31 建模轮＋技能实装轮）：按键技冲撞剩余秒／冲撞方向、冰雹生成节拍、脚下战斗冰面上一落点锚点（2026-11-01 拖尾连贯轮：原时间节拍字段 gmZoneT 改距离落点锚点 gmZoneX/Y）、冰面滑溜惯性速度、冰面拖尾落冰节拍计时／上一帧位置；建模轮占位短冲字段 gmDash* 已删；新局随 P 重建清零，冰面池 gmIcePatches/gmIceZones 在 resetGame 清空
     invisT:0, invisX:0, invisY:0, invisTrailT:0, invisDmgTick:0, invisHealAcc:0, invisHealTxtT:0, invisHealShown:0, learnStealthT:0, lsX:0, lsY:0, // learnStealthT＝离开学习页后的隐身剩余秒数（2026-10-28 用户令：关页起 3 秒、归零即恢复可见与受击）；lsX/lsY＝关页瞬间位置（隐身期间怪物索敌/瞄准只扑此点，与鸡哥 invisX/invisY 同机制）；整局重置随 P 重建清零
     rageT:0, stimT:0, urineT:0, chestDmgT:0, shieldUp:false, shieldCd:3, holyFlashT:0, poseUntil:0,
     bonusDmg:0, bonusSpd:0, xpMul:1, bonusCdMul:1, bonusMagMul:1, specCdMul:1, regenBonus:0, regenAcc:0,
@@ -4690,6 +4740,7 @@ function hasCP(id){ return !!(P.chestP && P.chestP[id]); }
 function resetGame(){
   entranceSfxPlayed = false; // 新开一局才重置鸡哥登场音效（startGame 内播一次后置真）
   talkT = AMBIENT_TALK[selChar] ? rand(45, 120) : -1; // 自言自语布防：只有配了专属音效的英雄（闻西/鸡哥）才布防，首次在开局后 45–120 秒随机冒一次
+  hzFallStop(); // 新音效接入轮第 2 组兜底（2026-11-01）：新局重置时停掉可能残留的终审之印坠落声（正常路径已在落地同帧停播、此为重开/切局双保险）
   P = newPlayer(selChar);
   if(typeof PANEL_GUARD !== 'undefined') PANEL_GUARD = {}; // 面板护盾防残留：新开一局清空全部面板标记并收起面板层，绝不把无敌带进新局
   if(typeof lvDraftSaved !== 'undefined'){ lvDraftSaved = false; lvChoices = []; lvRerolled = []; } // 学习页返回暂存防残留（2026-10-29）：新局必清暂存卡组——暂存卡是按旧局构筑掷的，绝不带进新局复用
@@ -7646,9 +7697,19 @@ function visBasicFx(hero, x, y, ang, tgt, own){ /* 远端成员普攻的本机�
 var GM_ICE_DUR = 1.0, GM_ICE_GAP = 0.12, GM_ICE_ZONE_DUR = 10; // 拖尾停留 1 秒（用户定版）／移动落冰间隔（与梁鸡落烟同节拍）／战斗冰面存续 10 秒（用户 Lv5 定版）
 var GM_SPEC_DUR = 13, GM_SPEC_CD_NET = 18; // 按键技持续 13 秒／冷却 18 秒（用户定版）：CHARACTERS 表 specCd 存总和 31、doSpecial 经 wxSpecCdBase 扣持续 13 得净冷却 18，持续期间由 specCdHeldByDuration 冻结递减——与闻西同式
 var GM_SPEC_BOOM_R = 54, GM_SPEC_HIT_CD = 0.35, GM_SPEC_KB = 184; // 撞击冰爆半径（2026-10-31 16:56 用户补令「小小的就行」：由 88 收小为 54、小于普攻冰爆 74，伤害 ×5 不变）／逐怪再触发间隔／撞飞位移 184px（2026-10-31 20:42 用户令「撞到的怪物可以飞很远」：由 46 大幅提高为 ×4、普通与精英一撞即飞远；Boss 仍 ×0.25 折算＝46px、用户未令改）
+var GM_FLY_REF_SPEED = 700, GM_FLY_DUR_MIN = 0.18, GM_FLY_DUR_MAX = 0.32; // 撞飞飞行时长施工取值（2026-11-01 撞飞表现轮，口径见 gmFlyStart 上方定版注）：时长＝clamp(距离÷700, 0.18, 0.32) 秒——普通/精英 184px→约 0.263 秒（60fps 约 16 帧、手机上看得清轨迹又不拖沓）、Boss 46px→下限 0.18 秒（短距不致一闪而过）；上限 0.32＜逐怪再触发 0.35 秒——同一只怪飞行必在下次可被撞之前落完、不会叠飞
 var GM_HAIL_R = 320, GM_HAIL_GAP = 0.045, GM_HAIL_DMG_MUL = 0.5, GM_HAIL_FREEZE_CH = 0.001; // 冰雹范围半径 320（用户定版：与剑阵同大）／间隔 0.045 秒（2026-10-31 20:34 用户令加密：原 0.09 秒约 11 根/秒→现约 22 根/秒、密度翻倍；单根伤害倍率不变、故单位时间冰雹总伤害同步约 ×2，半径/跟随/直落/感冒/0.1% 冰封一字未动）／命中 0.1% 冰封（用户定版）
 var GM_COLD_MAX = 6, GM_COLD_DUR = 8, GM_COLD_FREEZE_CH = 0.01, GM_FREEZE_DUR = 5; // 感冒上限 6 层／持续 8 秒／叠新层 1% 冰封／冰封 5 秒（全为用户定版）
-var GM_ZONE_GAP = 0.5, GM_ZONE_R = 74, GM_ZONE_CAP = 44, GM_SLIP_RATE = 3.2; // 冲撞落战斗冰面节拍/半径/池上限／冰面滑溜趋近速率（施工取值）
+var GM_ZONE_STEP = 36, GM_ZONE_R = 74, GM_ZONE_CAP = 176, GM_SLIP_RATE = 3.2; // 冲撞落战斗冰面落点间距/半径/池上限／冰面滑溜趋近速率（2026-11-01 拖尾连贯轮改定，核算见 GM_ZONE_STEP 下方注；原时间节拍 GM_ZONE_GAP＝0.5 秒已删）
+/* 冲撞冰面拖尾连贯核算（2026-11-01 用户令「衝撞時留下的冰面要有拖尾連貫性」）：
+   冲撞速度上限＝min(pSpeed()×2, baseSpeed×2)；光明朱德 baseSpeed＝228（CHARACTERS 表），pSpeed 本身亦受基础 2 倍总封顶，
+   故冲撞速度最坏值恒为 456 px/s（站战斗冰面 ×1.3 等乘区叠满也越不过此顶）。
+   旧口径：时间节拍 0.5 秒 → 落点间距＝456×0.5＝228 px ＞ 冰面直径 2×GM_ZONE_R＝148 px，两块之间露 80 px 地面——即实报的「一颗一颗断开」。
+   新口径：改距离落点——本体离上一块冰面中心 ≥ GM_ZONE_STEP＝36 px 即落下一块，与速度/帧率/贴墙滑行无关、恒重叠：
+   沿运动方向覆盖长 148 px（横向直径）→ 重叠 112 px（76%）；纵向绘制高＝GM_ZONE_R＝74 px → 重叠 38 px（51%）；等效时间间隔 @456px/s ≈ 0.079 秒。
+   池上限 44→176 理由：单块存续 10 秒内冲撞最长行程 456×10＝4560 px ÷ 36 ≈ 127 块同时存活（旧上限 44 会在约 3.5 秒处开始 shift 顶掉未到期冰面、
+   拖尾后段未满 10 秒即消失）；176 在 127 之上留 49 块余量给同池的 Lv5 绿豆饼爆炸冰面（冲撞期间普攻停发、饼冰面只来自冲撞前存量）。绘制段已有视口剔除、放大池不增屏外绘制开销。
+   冰面存续 10 秒、战斗效果（己方 +30%／怪物 −20%）、冲撞速度/持续/冷却/减伤/撞飞、移动拖尾纯特效层（gmIcePatches）一字未动。 */
 function gmColdFrac(layers){ return layers >= 2 ? (layers - 1) * 0.1 : 0; } // 冻血条总量（用户定版）：二层 10%、三层 20%、四层 30%、五层 40%、六层 50%
 function gmCakeBaseDmg(){ var w = (typeof P !== 'undefined' && P && P.weapons) ? P.weapons.mungcake : null; var lv = w ? w.lv : 1; return (14 + lv * 5) * pDmgMul() * (lv >= 4 ? 1.3 : 1); } // 单饼冰爆伤害现算（与普攻发射段 dmgGm 同式：14＋lv×5 为施工取值、Lv4 ×1.3 为用户定版相对口径）——按键技撞击冰爆 ×5 与冰雹单根伤害的派生基数
 function gmColdDeathCheck(e){ if(!e || e.dead) return; var fl = gmColdFrac(e.gmCold || 0); if(fl > 0 && e.hp <= e.maxHp * fl) killEnemy(e); } // 冻血条死亡线（用户定版例：100 血六层冻 50、打掉 50 即死）：叠层瞬间剩余血量已落入冻住段者当场判死（damageEnemy 内的同式死亡线管扣血路径、此处管叠层路径）
@@ -7735,11 +7796,37 @@ function gmIcePatchDraw(dx, dy, dw, dh){ // 冰面块单块绘制（调用方已
 var MUNGCAKE_IMG = new Image(); MUNGCAKE_IMG.src = 'assets/fx/mungcake.png'; // 绿豆饼弹体（圆饼像素图、随弹自转绘制）
 function gmIceOn(){ return typeof P !== 'undefined' && !!P && P.charIdx === 7; }
 function gmOnIceZone(x, y){ for(var i = 0; i < gmIceZones.length; i++){ var zn = gmIceZones[i]; if(dist2(zn.x, zn.y, x, y) < zn.r * zn.r) return true; } return false; }
+/* ===== 新音效接入轮 · 第 3 组：队友踩朱德冰面打滑音效（2026-11-01 用户令；本地、版本保持 2.0、不推托管、不打 APK）=====
+   口径：仅光明朱德的战斗冰面（gmIceZones——冲撞脚下冰面＋Lv5 绿豆饼爆炸冰面；移动拖尾纯特效层 gmIcePatches 不算、gmOnIceZone 本就只认战斗冰面池）；队友踏上冰面的那一刻播一次 slip（sfx_slip.mp3、1.750 秒版）——以「进入冰面」为触发边沿：站着不动不重复播、离开后每次重新踏上再播；单人模式 NPC 队友同口径。
+   实现：slipIceTick 在 gmIceTick 内每帧对每个队友实体做边沿检测（上帧不在任一战斗冰面内、本帧在内 → 播一次），状态挂 SLIP_ON_ICE[实体键]；实体集＝本机玩家（仅当本机英雄不是朱德时——本机是队友视角才算「队友」）＋联机/NPC 成员 N.peers 全员（房主侧权威坐标、含单人模式 NPC 队友与远端真人成员）；英雄为朱德者（charIdx/hero===7）不触发——朱德本人是溜冰者、踩自己的冰面不打滑出声（其状态仍逐帧更新、防身份切换后误触）。倒地/死亡成员跳过检测（状态保持、下帧恢复后按当下位置续检）。通道：voiceSfx 语音双通道（采样优先＋元素兜底、记 __sfxLog），出声前先过 SFX.on 总闸（与全场音效开关同口径）。 */
+var SLIP_ON_ICE = {};
+function slipSfxPlay(){ if(!SFX.on) return false; voiceSfx('slip'); return true; }
+function slipIceCheck(key, x, y, heroIdx){
+  var on = gmOnIceZone(x, y);
+  if(heroIdx === 7){ SLIP_ON_ICE[key] = on; return false; } // 朱德本人不触发（溜冰者口径，见上方定版注）
+  var entered = on && !SLIP_ON_ICE[key];
+  SLIP_ON_ICE[key] = on;
+  if(entered) return slipSfxPlay();
+  return false;
+}
+function slipIceTick(){
+  if(typeof P === 'undefined' || !P) return;
+  slipIceCheck('local', P.x, P.y, P.charIdx);
+  if(typeof N !== 'undefined' && N && N.peers){
+    for(var pid in N.peers){
+      var pr = N.peers[pid];
+      if(!pr || typeof pr.x !== 'number' || typeof pr.y !== 'number') continue;
+      if(pr.downed || pr.dead) continue;
+      slipIceCheck('peer:' + pid, pr.x, pr.y, pr.hero);
+    }
+  }
+}
 function gmIceTick(dt){ // 冰面主 tick（本机 updateWeapons 每帧与 jgPuffTick 并列调用）：拖尾/战斗冰面衰减＋战斗冰面怪物减速刷新＋移动落冰
   for(var i = gmIcePatches.length - 1; i >= 0; i--){ gmIcePatches[i].t -= dt; if(gmIcePatches[i].t <= 0) gmIcePatches.splice(i, 1); }
   for(var z = gmIceZones.length - 1; z >= 0; z--){ gmIceZones[z].t -= dt; if(gmIceZones[z].t <= 0) gmIceZones.splice(z, 1); }
   for(var zi = 0; zi < gmIceZones.length; zi++){ var zn2 = gmIceZones[zi];
     for(var ei = 0; ei < enemies.length; ei++){ var en = enemies[ei]; if(en.dead) continue; if(dist2(zn2.x, zn2.y, en.x, en.y) < zn2.r * zn2.r) en.gmIceT = 0.15; } }
+  slipIceTick(); // 新音效接入轮第 3 组（2026-11-01）：队友踩战斗冰面边沿检测——置于本机朱德门禁之前（冰面可由队友朱德生成、本机非朱德时其拖尾段虽不跑、打滑检测仍须逐帧推进）；只读 gmIceZones、只出声、无任何结算
   if(!gmIceOn() || P.hp <= 0) return;
   if(P.gmTrailX == null){ P.gmTrailX = P.x; P.gmTrailY = P.y; }
   var mdx = P.x - P.gmTrailX, mdy = P.y - P.gmTrailY;
@@ -7780,6 +7867,54 @@ function gmCakeExplode(pr){ // 绿豆饼冰爆（命中/飞尽同路）：结算
   var R = (pr.boomR || 74) * (1 + pSum('boomP'));
   gmBoomAt(pr.x, pr.y, R, pr.dmg, { spikes: true, spikeP: pr.gmSpikeP || 0, bigSpike: (pr.r || 10) >= 13, iceField: !!pr.gmIceField, crit: pr.crit, el: pr.el, lv: pr.lv, ph: pr.ph || 0 });
   shake = Math.max(shake, 2);
+}
+/* ===== 光明朱德撞飞表现轮（2026-11-01 用户令「被撞飛的怪物要看得見被撞飛、不要突然不見」；本地、版本保持 2.0、不推托管、不打 APK）=====
+   【病灶】gmSpecTick 撞击段旧版一帧内把 e.x/e.y 直接加满 184px（Boss 46px）：怪物在原地凭空消失、又在落点凭空出现，实机读作瞬移/闪现——正是用户原话的「突然不見」。
+   【改法】位移改逐步飞行（与黄主任印章击飞 hzSealKb 同构）：撞击帧只登记飞行（gmFlyStart 快照起点/落点/时长），敌人主循环内 gmFlyTick 逐帧把怪物沿直线送过去、全程在画面内；飞行期间该怪不能自行移动/攻击（主循环整段跳过、与 sealKb 跳段同式），持续伤害等状态结算在跳段之前照常——受击/伤害/死亡口径不动。
+   【数值一字不动】撞飞距离 184px、Boss ×0.25＝46px、逐怪再触发 0.35 秒、撞击冰爆半径 54/伤害 ×5/不出冰刺、冲撞速度/持续 13 秒/冷却 18 秒/减伤 70%——全未动；其他英雄击退（damageEnemy 通用击退/印章击飞/班仔 Ex 等）一字未动。
+   【飞行时长与曲线（施工取值）】时长＝clamp(距离÷GM_FLY_REF_SPEED＝700, GM_FLY_DUR_MIN＝0.18, GM_FLY_DUR_MAX＝0.32) 秒：普通/精英 184px→约 0.263 秒（60fps 约 16 帧、轨迹可读又不拖沓）、Boss 46px→0.18 秒下限（短距也看得见飞、不一闪而过）；上限 0.32＜再触发 0.35——同怪飞行必先落完才可能再被撞、不叠飞。曲线 easeOutQuad（p 经 1−(1−p)²：起步最快、临落点减速贴地、落点精确到达不越位）；视觉弧高 gmFlyH＝sin(p·π)×peak、peak＝clamp(距离×0.22, 12, 40)px（普通 40/Boss 12）——drawEnemy 并入 bob 本体升起、地面影子留在原地随高度变小变淡（与 bsAirH 同通道），飞行全程沿途落冰尘、落地起小冰环＋冰屑（纯视觉、无伤害无结算）。
+   【冰爆结算保真】撞击冰爆仍在撞击同帧、以落点为心结算——gmSpecTick 内先把该怪临时置于落点跑完 gmBoomAt（与改前「先瞬移、后以落点为心开爆」逐值同位：受击名单/伤害/感冒/微击退全同），存活才还原到起点并登记飞行、被冰爆打死者不还原不登记（尸体留在落点、与改前同位）；落点入新屋墙格时整段取消（不飞、冰爆以原地为心）——原口径一字不动。
+   【飞行门禁】逐帧校验下一步（与 hzSealKbTick 同式）：落入新屋墙格或跨越 Boss 结界边界→当场停在原地结束飞行（不穿墙、不跨界、中途不消失）；虚空场内钳制在场内；飞行中死亡即终止（gmFlyTick dead 门禁＋主循环顶部 dead 剔除双保险）；飞行中进入相位闪烁的幽灵当场结束位移（与 hzSealKbTick 同式；登记资格未加幽灵门禁——改前瞬移亦不拦、起飞资格一字未变）；登记时清 sealKbT（飞行接管水平位移、防两套飞行同帧抢位、与 bsAirStart 清 sealKbT 同式）。Boss 控制免疫清零段未加 gmFlyT——改前瞬移位移本就不被该段拦截、口径不动。 */
+/* ===== 新音效接入轮 · 第 1 组：朱德撞飞随机音效（2026-11-01 用户令；本地、版本保持 2.0、不推托管、不打 APK）=====
+   口径：仅光明朱德按键技「我在福建很想你」冲撞期间、怪物被撞飞的那一刻触发（唯一调用点＝gmSpecTick 撞击段、与撞飞登记同帧）；每次撞飞事件独立随机二选一、只播一个（wilhelm 威廉尖叫 1 秒／cheer 单人欢呼 2 秒，roll<0.5 取 wilhelm——不两播、不固定轮流）；不给其他英雄（本函数仅由朱德冲撞段调用、NPC/替身/远端朱德不经 gmSpecTick 本机段）、不绑普攻/冰雹/冰爆。通道：voiceSfx 语音双通道（采样优先＋<audio> 元素兜底、记 __sfxLog），出声前先过 SFX.on 总闸（与全场音效开关同口径；voiceSfx 本身不查总闸、故在此把关）；roll 参数仅供探针离线复核（正常游玩不传、走 Math.random）。 */
+function gmKnockSfx(roll){
+  if(!SFX.on) return null;
+  var k = ((typeof roll === 'number') ? roll : Math.random()) < 0.5 ? 'wilhelm' : 'cheer';
+  voiceSfx(k);
+  return k;
+}
+function gmFlyStart(e, tx, ty){ // 撞飞登记：快照起点/落点，按距离定飞行时长与弧高；仅存活者、位移 ≤1px 不登记；返回是否登记成功
+  if(!e || e.dead) return false;
+  var dx = tx - e.x, dy = ty - e.y, dist = Math.sqrt(dx * dx + dy * dy);
+  if(!(dist > 1)){ e.gmFlyT = 0; e.gmFlyH = 0; return false; }
+  e.gmFlySx = e.x; e.gmFlySy = e.y; e.gmFlyX = tx; e.gmFlyY = ty;
+  e.gmFlyDur = clamp(dist / GM_FLY_REF_SPEED, GM_FLY_DUR_MIN, GM_FLY_DUR_MAX);
+  e.gmFlyT = e.gmFlyDur;
+  e.gmFlyPeak = clamp(dist * 0.22, 12, 40);
+  e.gmFlyH = 0;
+  e.sealKbT = 0; // 飞行接管水平位移：清印章击飞残程（与 bsAirStart 清 sealKbT 同式）
+  return true;
+}
+function gmFlyLandFx(e){ // 落地冰尘（纯视觉、无伤害无结算）：小冰环＋冰屑——读得出「落点到了」
+  if(typeof effects !== 'undefined') effects.push({ type:'ring', x: e.x, y: e.y, t: 0, dur: 0.25, color: '174,230,255' });
+  if(typeof burst !== 'undefined') burst(e.x, e.y, '#aee6ff', fxN(5));
+}
+function gmFlyTick(e, dt){ // 撞飞推进（敌人主循环在 sealKb 段之后调用）：easeOutQuad 沿起点→落点直线插值、单帧不越落点；返回 true＝本帧处于飞行中（调用方整段跳过该敌移动/攻击）；逐帧安全门禁与 hzSealKbTick 同式
+  if(!(e.gmFlyT > 0)) return false;
+  if(e.dead){ e.gmFlyT = 0; e.gmFlyH = 0; return false; } // 飞行中死亡终止：尸体由主循环顶部剔除、不飞尸
+  if(e.type === 'ghost' && e.ghState){ e.gmFlyT = 0; e.gmFlyH = 0; return true; } // 飞行中进入相位闪烁：当场结束位移、本帧仍算飞行中（与 hzSealKbTick 同式）
+  e.gmFlyT -= dt; if(e.gmFlyT < 1e-9) e.gmFlyT = 0; // 浮点尘清零：到期帧准时落地、不多拖一帧
+  var p = e.gmFlyDur > 0 ? clamp(1 - e.gmFlyT / e.gmFlyDur, 0, 1) : 1;
+  var ez = 1 - (1 - p) * (1 - p); // easeOutQuad：起步快、临落点减速贴地
+  var nx = e.gmFlySx + (e.gmFlyX - e.gmFlySx) * ez, ny = e.gmFlySy + (e.gmFlyY - e.gmFlySy) * ez;
+  if(typeof MAZE !== 'undefined' && MAZE && MAZE.active && MAZE.walls && typeof mazeWall === 'function'){ var gx = Math.floor(nx / (MAZE.cell || 64)), gy = Math.floor(ny / (MAZE.cell || 64)); if(mazeWall(gx, gy)){ e.gmFlyT = 0; e.gmFlyH = 0; gmFlyLandFx(e); return true; } } // 下一步入墙：停在墙前结束（不穿墙）
+  if(typeof bossBarriers !== 'undefined' && bossBarriers.length && typeof pointInAnyBarrier === 'function'){ var inB0 = pointInAnyBarrier(e.x, e.y, 0), inBN = pointInAnyBarrier(nx, ny, 0); if(inBN !== inB0){ e.gmFlyT = 0; e.gmFlyH = 0; gmFlyLandFx(e); return true; } } // 下一步跨 Boss 结界边界：当场结束（不跨界、进出同拦）
+  if(typeof voidArena !== 'undefined' && voidArena && typeof ARENA !== 'undefined' && ARENA){ nx = clamp(nx, -ARENA.hw + e.r, ARENA.hw - e.r); ny = clamp(ny, -ARENA.hh + e.r, ARENA.hh - e.r); } // 虚空场钳制在场内（与 hzSealKbTick 同式）
+  e.x = nx; e.y = ny;
+  e.gmFlyH = Math.sin(p * Math.PI) * (e.gmFlyPeak || 0); // 抛物弧视觉高度：中段最高、起落贴地（drawEnemy 并入 bob、影子分离）
+  if(p < 1 && typeof particles !== 'undefined' && particles.length < 800) particles.push({ x: e.x + rand(-6, 6), y: e.y + e.r * 0.5, vx: rand(-16, 16), vy: rand(-30, -8), t: 0, life: 0.3, color: Math.random() < 0.5 ? '#aee6ff' : '#eaf7ff', r: rand(1.8, 3) }); // 沿途冰尘拖尾（纯视觉）
+  if(p >= 1){ e.gmFlyT = 0; e.gmFlyH = 0; gmFlyLandFx(e); } // 落地：精确停在落点＋冰尘
+  return true;
 }
 /* ---------------- 光明朱德按键技「我在福建很想你」长按冲撞（2026-10-31 技能实装轮，用户定版见 GM_SPEC 定版注） ----------------
    输入层 GM_AIM 与班仔 BZ_AIM 同构，但多一道长按门槛（2026-10-31 16:26 用户补令：防误触——须长按满
@@ -7835,9 +7970,9 @@ function gmSpecTick(dt){ // 按键技状态推进（本机光明朱德专属）�
   gmAimTick(dt);
   if(P && P.charIdx === 7 && (P.gmEndBoostT || 0) > 0) P.gmEndBoostT = Math.max(0, P.gmEndBoostT - dt); // 结束奖励移速计时（20:40 追加）：2 秒递减、到点即失效（到期结束路在同帧后段才置 2、本帧不扣）
   for(var ci = 0; ci < enemies.length; ci++){ var ce = enemies[ci]; if((ce.gmChargeCd || 0) > 0) ce.gmChargeCd -= dt; }
-  if(!P || P.charIdx !== 7 || (P.gmRushT || 0) <= 0) return;
+  if(!P || P.charIdx !== 7 || (P.gmRushT || 0) <= 0){ if(P && P.charIdx === 7){ P.gmZoneX = null; P.gmZoneY = null; } return; } // 非冲撞时清落冰锚点（中断路 gmAimEnd 置 gmRushT＝0 后亦经此清）：下次冲撞第一块立即落脚下、不与上一段残锚比距
   P.gmRushT -= dt;
-  if(P.gmRushT <= 0){ gmRushFinish(); P.gmRushT = 0; return; } // 到期结束：给结束奖励（20:40 追加）；冰雹/脚下冰面/撞击随状态一并停（16:22 补令：冰雹持续到技能结束为止）
+  if(P.gmRushT <= 0){ gmRushFinish(); P.gmRushT = 0; P.gmZoneX = null; P.gmZoneY = null; return; } // 到期结束：给结束奖励（20:40 追加）；冰雹/脚下冰面/撞击随状态一并停（16:22 补令：冰雹持续到技能结束为止）；落冰锚点清零、下次冲撞首块即落脚下
   if(GM_AIM.active && GM_AIM.id === 'kbd'){ // 键盘长按：方向读移动键（无拖动选向时的桌面口径）
     var kx = ((keys['arrowright'] || keys['d']) ? 1 : 0) - ((keys['arrowleft'] || keys['a']) ? 1 : 0), ky = ((keys['arrowdown'] || keys['s']) ? 1 : 0) - ((keys['arrowup'] || keys['w']) ? 1 : 0);
     if(kx || ky){ var kl = Math.sqrt(kx * kx + ky * ky); P.gmRushDx = kx / kl; P.gmRushDy = ky / kl; }
@@ -7849,8 +7984,13 @@ function gmSpecTick(dt){ // 按键技状态推进（本机光明朱德专属）�
     var ha = rand(0, Math.PI * 2), hr = GM_HAIL_R * Math.sqrt(Math.random());
     fallers.push({ type:'hail', x: P.x + Math.cos(ha) * hr, y: P.y + Math.sin(ha) * hr, t: 0, dur: 0.38, r: 26, dmg: gmCakeBaseDmg() * GM_HAIL_DMG_MUL }); // 落地结算在 updateFallers hail 分支：伤害＋感冒一层＋0.1% 冰封
   }
-  P.gmZoneT = (P.gmZoneT || 0) - dt; // 脚下战斗冰面：冲撞期间每 0.5 秒在脚下落一块（效果同 Lv5 爆炸冰面、存续 10 秒）；池上限防无界膨胀
-  if(P.gmZoneT <= 0){ P.gmZoneT = GM_ZONE_GAP; if(gmIceZones.length >= GM_ZONE_CAP) gmIceZones.shift(); gmIceZones.push({ x: P.x, y: P.y + P.r * 0.8, r: GM_ZONE_R, t: GM_ICE_ZONE_DUR }); }
+  // 脚下战斗冰面（2026-11-01 拖尾连贯轮改定）：距离落点——本体离上一块中心 ≥ GM_ZONE_STEP（36 px）即落下一块，拖尾恒重叠连成一片（核算见 GM_ZONE_STEP 注）；效果同 Lv5 爆炸冰面、存续 10 秒不变；贴墙滑行实际位移不足间距时不落（原地不堆叠）；池上限防无界膨胀
+  var gzx2 = P.x, gzy2 = P.y + P.r * 0.8;
+  if(P.gmZoneX == null || dist2(P.gmZoneX, P.gmZoneY, gzx2, gzy2) >= GM_ZONE_STEP * GM_ZONE_STEP){
+    if(gmIceZones.length >= GM_ZONE_CAP) gmIceZones.shift();
+    gmIceZones.push({ x: gzx2, y: gzy2, r: GM_ZONE_R, t: GM_ICE_ZONE_DUR });
+    P.gmZoneX = gzx2; P.gmZoneY = gzy2;
+  }
   var svC = DMG_CRIT, svE = DMG_EL; DMG_CRIT = 0.10; DMG_EL = 'ice'; // 撞击冰爆盖按键技章（基础暴击 10%/冰元素、与 doSpecial 入口同口径），结算后还原
   for(var i = 0; i < enemies.length; i++){
     var e = enemies[i]; if(e.dead || (e.gmChargeCd || 0) > 0) continue;
@@ -7858,18 +7998,22 @@ function gmSpecTick(dt){ // 按键技状态推进（本机光明朱德专属）�
     if(dist2(P.x, P.y, e.x, e.y) < rr2 * rr2){
       e.gmChargeCd = GM_SPEC_HIT_CD;
       var dx = e.x - P.x, dy = e.y - P.y, dl = Math.sqrt(dx * dx + dy * dy) || 1; dx /= dl; dy /= dl;
-      var kbm = e.boss ? 0.25 : 1, ox2 = e.x, oy2 = e.y; // 撞飞：径向位移（Boss ×0.25 同 damageEnemy 击退口径）；新屋墙格门禁与击退同式——落点入墙整段取消
-      e.x += dx * GM_SPEC_KB * kbm; e.y += dy * GM_SPEC_KB * kbm;
-      if(typeof MAZE !== 'undefined' && MAZE.active && MAZE.walls && mazeWall(Math.floor(e.x / MAZE.cell), Math.floor(e.y / MAZE.cell))){ e.x = ox2; e.y = oy2; }
-      gmBoomAt(e.x, e.y, GM_SPEC_BOOM_R * (1 + pSum('boomP')), gmCakeBaseDmg() * 5, { spikes: false, crit: 0.10, el: 'ice', lv: P.weapons.mungcake ? P.weapons.mungcake.lv : 1 }); // 撞怪瞬间小范围冰爆（用户定版：不出冰刺、伤害＝普攻冰爆 ×5）
+      var kbm = e.boss ? 0.25 : 1, kbDist = GM_SPEC_KB * kbm; // 撞飞距离（用户定版一字不动）：普通/精英 184px、Boss ×0.25＝46px（同 damageEnemy 击退折算）
+      var kbSx = e.x, kbSy = e.y, kbTx = e.x + dx * kbDist, kbTy = e.y + dy * kbDist, kbOk = true;
+      if(typeof MAZE !== 'undefined' && MAZE.active && MAZE.walls && mazeWall(Math.floor(kbTx / MAZE.cell), Math.floor(kbTy / MAZE.cell))) kbOk = false; // 新屋墙格门禁（原口径一字不动）：落点入墙整段取消——不飞、冰爆以原地为心
+      if(kbOk){ e.x = kbTx; e.y = kbTy; } // 冰爆结算保真（2026-11-01 撞飞表现轮）：先临时置于落点跑下一行冰爆——与改前「先瞬移、后以落点为心开爆」逐值同位（受击名单/伤害/感冒/微击退全同）；存活者在本帧内随即还原起点并登记飞行（gmFlyStart）、屏上不可见此临时位置，被冰爆打死者不还原（尸体留落点、与改前同位）
+      gmBoomAt(kbOk ? kbTx : kbSx, kbOk ? kbTy : kbSy, GM_SPEC_BOOM_R * (1 + pSum('boomP')), gmCakeBaseDmg() * 5, { spikes: false, crit: 0.10, el: 'ice', lv: P.weapons.mungcake ? P.weapons.mungcake.lv : 1 }); // 撞怪瞬间小范围冰爆（用户定版：不出冰刺、伤害＝普攻冰爆 ×5）
+      if(kbOk && !e.dead){ e.x = kbSx; e.y = kbSy; gmFlyStart(e, kbTx, kbTy); } // 撞飞改逐步飞行（2026-11-01 用户令）：位移不再一帧瞬移——登记飞行后由敌人主循环 gmFlyTick 逐帧送达落点、全程可见；被冰爆打死者不登记、不飞尸
       shake = Math.max(shake, 3);
       sfx('whoosh');
+      gmKnockSfx(); // 新音效接入轮第 1 组（2026-11-01）：撞飞事件音——本段为唯一触发点（朱德冲撞撞击同帧、逐怪逐事件独立随机二选一 wilhelm/cheer 只播一个）；被冰爆打死者亦属「被撞飞的那一刻」事件、同帧照播（事件已发生、与存活登记飞行与否无关）；whoosh 为既有撞击声、一字未动
     }
   }
   DMG_CRIT = svC; DMG_EL = svE;
 }
 function gmSlipMoving(){ return !!P && ((P.gmVelX || 0) * (P.gmVelX || 0) + (P.gmVelY || 0) * (P.gmVelY || 0) > 36) && gmOnIceZone(P.x, P.y); } // 冰面滑行惯性存续判定（updatePlayer 移动段进入条件：无输入时仍在冰面上滑行）
-window.__GM_ZD = { version: GAME_VERSION, charIdx: 7, pfx: 'gm', dir: 'guangming_q', weapon: 'mungcake', iceTrailDur: GM_ICE_DUR, iceZoneDur: GM_ICE_ZONE_DUR, cakeCounts: [1, 4, 7, 7, 7], specName: function(){ return CHARACTERS[7].specName; }, specState: 'full-rush-hold0.5s-hail-cold+patch', spec: { dur: GM_SPEC_DUR, cdNet: GM_SPEC_CD_NET, cdTable: CHARACTERS[7].specCd, holdNeed: GM_HOLD_NEED, boomR: GM_SPEC_BOOM_R, boomMul: 5, kbDist: GM_SPEC_KB, kbBossMul: 0.25, hailR: GM_HAIL_R, hailGap: GM_HAIL_GAP, hailDmgMul: GM_HAIL_DMG_MUL, hailFreezeCh: GM_HAIL_FREEZE_CH, hailOncePerLife: true, coldMax: GM_COLD_MAX, coldDur: GM_COLD_DUR, coldFreezeCh: GM_COLD_FREEZE_CH, freezeDur: GM_FREEZE_DUR, dr: 0.3, aimDeadPx: 5, aimFloatPx: GM_AIM_FLOAT, noAtkDuringRush: true, endBoost: { invulnSec: 2, spdMul: 1.5, durSec: 2 } }, coldFrac: gmColdFrac, cakeBaseDmg: gmCakeBaseDmg, test: { cold: gmColdApply, freeze: gmFreezeApply, hailFreeze: gmHailFreezeTry, deathCheck: gmColdDeathCheck, aimStart: gmAimStart, aimTick: gmAimTick, aimMove: gmAimMove, aimEnd: gmAimEnd, rushFinish: gmRushFinish, aimState: function(){ return { active: GM_AIM.active, cx: GM_AIM.cx, cy: GM_AIM.cy, ang: GM_AIM.ang, has: GM_AIM.has }; }, boomAt: gmBoomAt }, state: function(){ return { isGm: gmIceOn(), patches: gmIcePatches.length, zones: gmIceZones.length, rushT: (typeof P !== 'undefined' && P) ? +(P.gmRushT || 0).toFixed(3) : null, endBoostT: (typeof P !== 'undefined' && P) ? +(P.gmEndBoostT || 0).toFixed(3) : null, invuln: (typeof P !== 'undefined' && P) ? +(P.invuln || 0).toFixed(2) : null, specCd: (typeof P !== 'undefined' && P) ? +(P.specCd || 0).toFixed(2) : null, aim: { active: GM_AIM.active, holdT: +GM_AIM.holdT.toFixed(2), fired: GM_AIM.fired }, fallers: (typeof fallers !== 'undefined') ? fallers.length : null, hailNow: (typeof fallers !== 'undefined') ? fallers.filter(function(f){ return f.type === 'hail'; }).length : null, acts: Object.keys(SIXQ_META.gm.acts), atkAct: SIXQ_META.gm.atkAct, atkCount: SIXQ_META.gm.atkCount }; } }; // 验收探针：建模轮登记/冰面池＋技能实装轮状态自述（冲撞剩余/冷却/长按蓄势进度/在场冰雹数）与同源结算函数引用（离线复核感冒层数/冻血条/冰封/长按 0.5 秒门槛/冲撞实测），test 只供探针调用、不参与正常游玩结算
+window.__NEW_SFX = { version: GAME_VERSION, keys: ['wilhelm', 'cheer', 'hzfall', 'slip', 'laughcat', 'zdv008', 'zdv019'], src: function(){ var o = {}; ['wilhelm', 'cheer', 'hzfall', 'slip', 'laughcat', 'zdv008', 'zdv019'].forEach(function(k){ o[k] = SFX_SAMPLE_SRC[k] || null; }); return o; }, buffers: function(){ var o = {}; ['wilhelm', 'cheer', 'hzfall', 'slip', 'laughcat', 'zdv008', 'zdv019'].forEach(function(k){ var b = SFX_BUF[k]; o[k] = b ? +b.duration.toFixed(3) : null; }); return o; }, knock: gmKnockSfx, fallStart: hzFallStart, fallStop: hzFallStop, fallState: function(){ return { exists: !!HZ_FALL_AUD, playing: !!(HZ_FALL_AUD && !HZ_FALL_AUD.paused), currentTime: HZ_FALL_AUD ? +HZ_FALL_AUD.currentTime.toFixed(3) : null, duration: (HZ_FALL_AUD && isFinite(HZ_FALL_AUD.duration)) ? +HZ_FALL_AUD.duration.toFixed(3) : null }; }, slipCheck: slipIceCheck, slipPlay: slipSfxPlay, slipState: function(){ var o = {}; for(var k in SLIP_ON_ICE) o[k] = SLIP_ON_ICE[k]; return o; }, ambient7: function(){ return (AMBIENT_TALK[7] || []).slice(); }, excludedScan: function(){ var bad = []; var nums = ['002','003','004','005','006','007','009','010','011','012','013','014','015','016','017','018','020','021','022','023','024','025','026','027','028','029','030','031','032','033','034','035','036','037','038','039','040','041','042','043','044','045','046','047','048','049','050','051','052','053','054','055','056','057','058','059','060','061','062','063','064','065','066','067','068','069','070','071','072','073']; var srcAll = Object.keys(SFX_SAMPLE_SRC).map(function(k){ return SFX_SAMPLE_SRC[k]; }).join(' '); for(var i = 0; i < nums.length; i++){ if(srcAll.indexOf(nums[i]) >= 0) bad.push(nums[i]); } return bad; } }; // 验收探针（2026-11-01 新音效接入轮，只读＋定点触发）：四组接入点自述——键/路径/解码时长、撞飞随机（roll 注入复核二选一）、坠落起停状态、打滑边沿检测与状态、朱德语音池成员、被取消 70 句排除扫描（excludedScan 应恒空：SFX_SAMPLE_SRC 全部路径中不得出现 002–007/009–018/020–073 任一编号文件名）；不参与正常游玩结算
+window.__GM_ZD = { version: GAME_VERSION, charIdx: 7, pfx: 'gm', dir: 'guangming_q', weapon: 'mungcake', iceTrailDur: GM_ICE_DUR, iceZoneDur: GM_ICE_ZONE_DUR, cakeCounts: [1, 4, 7, 7, 7], specName: function(){ return CHARACTERS[7].specName; }, specState: 'full-rush-hold0.5s-hail-cold+patch+flykb', spec: { dur: GM_SPEC_DUR, cdNet: GM_SPEC_CD_NET, cdTable: CHARACTERS[7].specCd, holdNeed: GM_HOLD_NEED, boomR: GM_SPEC_BOOM_R, boomMul: 5, kbDist: GM_SPEC_KB, kbBossMul: 0.25, kbFly: { refSpeed: GM_FLY_REF_SPEED, durMin: GM_FLY_DUR_MIN, durMax: GM_FLY_DUR_MAX, durFor: function(d){ return clamp(d / GM_FLY_REF_SPEED, GM_FLY_DUR_MIN, GM_FLY_DUR_MAX); }, peakFor: function(d){ return clamp(d * 0.22, 12, 40); } }, hailR: GM_HAIL_R, hailGap: GM_HAIL_GAP, hailDmgMul: GM_HAIL_DMG_MUL, hailFreezeCh: GM_HAIL_FREEZE_CH, hailOncePerLife: true, zoneStep: GM_ZONE_STEP, zoneR: GM_ZONE_R, zoneCap: GM_ZONE_CAP, zoneDur: GM_ICE_ZONE_DUR, coldMax: GM_COLD_MAX, coldDur: GM_COLD_DUR, coldFreezeCh: GM_COLD_FREEZE_CH, freezeDur: GM_FREEZE_DUR, dr: 0.3, aimDeadPx: 5, aimFloatPx: GM_AIM_FLOAT, noAtkDuringRush: true, endBoost: { invulnSec: 2, spdMul: 1.5, durSec: 2 } }, coldFrac: gmColdFrac, cakeBaseDmg: gmCakeBaseDmg, test: { cold: gmColdApply, freeze: gmFreezeApply, hailFreeze: gmHailFreezeTry, deathCheck: gmColdDeathCheck, aimStart: gmAimStart, aimTick: gmAimTick, aimMove: gmAimMove, aimEnd: gmAimEnd, rushFinish: gmRushFinish, aimState: function(){ return { active: GM_AIM.active, cx: GM_AIM.cx, cy: GM_AIM.cy, ang: GM_AIM.ang, has: GM_AIM.has }; }, boomAt: gmBoomAt, flyStart: gmFlyStart, flyTick: gmFlyTick }, state: function(){ return { isGm: gmIceOn(), patches: gmIcePatches.length, zones: gmIceZones.length, rushT: (typeof P !== 'undefined' && P) ? +(P.gmRushT || 0).toFixed(3) : null, endBoostT: (typeof P !== 'undefined' && P) ? +(P.gmEndBoostT || 0).toFixed(3) : null, invuln: (typeof P !== 'undefined' && P) ? +(P.invuln || 0).toFixed(2) : null, specCd: (typeof P !== 'undefined' && P) ? +(P.specCd || 0).toFixed(2) : null, aim: { active: GM_AIM.active, holdT: +GM_AIM.holdT.toFixed(2), fired: GM_AIM.fired }, fallers: (typeof fallers !== 'undefined') ? fallers.length : null, hailNow: (typeof fallers !== 'undefined') ? fallers.filter(function(f){ return f.type === 'hail'; }).length : null, flyNow: (typeof enemies !== 'undefined') ? enemies.filter(function(en){ return (en.gmFlyT || 0) > 0; }).length : null, acts: Object.keys(SIXQ_META.gm.acts), atkAct: SIXQ_META.gm.atkAct, atkCount: SIXQ_META.gm.atkCount }; } }; // 验收探针：建模轮登记/冰面池＋技能实装轮状态自述（冲撞剩余/冷却/长按蓄势进度/在场冰雹数）与同源结算函数引用（离线复核感冒层数/冻血条/冰封/长按 0.5 秒门槛/冲撞实测），test 只供探针调用、不参与正常游玩结算
 function explodeFball(pr){
   var R = (pr.boomR || 70) * (1 + pSum('boomP')); // 爆裂之心：爆炸半径
   if(pr.frost){ // 冰霜法球：冰爆＋强力减速（Ardentryst 冰系素材）
@@ -9283,12 +9427,34 @@ window.__HZ_JUEWU = { name: '牛马的觉悟', r: HZ_JW_R, baseR: 320, pConv: HZ
 window.__VOLTSTORM = { key: 'voltstorm', def: WEAPONS.voltstorm, branches: BRANCHES.chainvolt, sigItem: SIG_ITEM.voltstorm || null, el: (WEAPONS.voltstorm && WEAPONS.voltstorm.el) || null, table: function(lv){ return { r: 118 + lv * 8, dur: 2.4 + lv * 0.12, dps: 15 + lv * 5.5, interval: 4.6 - lv * 0.2 }; }, owned: function(){ return (typeof P !== 'undefined' && P && P.weapons) ? (P.weapons.voltstorm || null) : null; }, atkCount: function(){ return (typeof P !== 'undefined' && P && P.weapons) ? attackCount() : -1; }, inGeneric: GENERIC_WEAPONS.indexOf('voltstorm') >= 0 }; // 验收探针：雷爆云独立技能口径只读（定义/分支残留/合成配对/元素/逐级表/持有与占格）
 
 /* ---------------- 落物（印章 / 鸡蛋） ---------------- */
+/* ===== 新音效接入轮 · 第 2 组：黄主任下落坠落音效（2026-11-01 用户令；本地、版本保持 2.0、不推托管、不打 APK）=====
+   口径：仅黄主任按键技终审之印（源码技能名「牛马审判」bigseal）下落期间播放 falling（sfx_hz_falling.mp3、5.000 秒版）——印章开始下落时起播、落地时停，不播到下落结束之后；不绑黄主任其他技能（普攻印 stamp/连环小印不经 hzFall 标记、永不触发）或别的英雄；落地那一下的现有专属音效（nuke 落爆 sfx('nadeboom')＋钢管 sfx('steelpipe')）原样保留、不换、不叠加改动、不另加。
+   实现：坠落声须可中途停播——WebAudio 采样回放无现成停播句柄，故走专用 <audio> 元素通道（与雨声 RAIN_AUD/播报 HSANN_AUD 同式）：hzFallStart 仅由本机 doSpecial 黄主任分支在推入带 hzFall 标记的 bigseal 落物同帧调用（下落时长 HZ_BIGSEAL_DUR＝1.15 秒＜文件 5 秒、靠落地停播截断，绝不自然播满拖尾）；hzFallStop 由 updateFallers 在该落物落地结算同帧调用（先于下方落爆音效），另在 resetGame 兜底停播（新局/重开不残留）；NPC/替身/客机复刻的巨印不带 hzFall 标记、不起播（本轮口径只限本机按键技）。开关口径：起播先过 SFX.on 总闸；音量 0.9 固定（元素通道先例同式）。起停均记 __sfxLog（hzfall-start/hzfall-stop）供探针核对时序。 */
+var HZ_FALL_AUD = null;
+function hzFallStart(){
+  if(!SFX.on) return false;
+  try{
+    if(!HZ_FALL_AUD){ HZ_FALL_AUD = new Audio(SFX_SAMPLE_SRC.hzfall); HZ_FALL_AUD.preload = 'auto'; }
+    try{ HZ_FALL_AUD.currentTime = 0; }catch(e){}
+    HZ_FALL_AUD.volume = 0.9;
+    var pr = HZ_FALL_AUD.play(); if(pr && pr.catch) pr.catch(function(){});
+    window.__sfxLog.push({ k: 'hzfall', via: 'element-start', t: Date.now() });
+    return true;
+  }catch(e){ return false; }
+}
+function hzFallStop(){
+  try{
+    if(HZ_FALL_AUD && !HZ_FALL_AUD.paused){ HZ_FALL_AUD.pause(); try{ HZ_FALL_AUD.currentTime = 0; }catch(e){} window.__sfxLog.push({ k: 'hzfall', via: 'element-stop', t: Date.now() }); return true; }
+  }catch(e){}
+  return false;
+}
 function updateFallers(dt){
   for(var i = fallers.length - 1; i >= 0; i--){
     var f = fallers[i];
     f.t += dt;
     if(f.t >= f.dur){
       fallers.splice(i, 1);
+      if(f.hzFall) hzFallStop(); // 第 2 组：终审之印落地同帧先停坠落声（不播到下落结束之后）——其后既有落爆音效（nadeboom/钢管）原样照播、不叠加改动
       if(f.vis){ visFallerLand(f); continue; } /* 【队友特效与玩家一致轮】纯视觉落物（远端黄主任普攻印）：只播落地视觉、绝不进下方伤害结算 */
       var list = nearestEnemies(9999, 99999);
       for(var j = 0; j < list.length; j++){
@@ -11162,7 +11328,7 @@ function doSpecial(mhTarget){
       if(sc2 > sealScore){ sealScore = sc2; sealT = se2; } }
     var sx5 = sealT ? sealT.x : P.x + Math.cos(P.faceAng) * 130, sy5 = sealT ? sealT.y : P.y + Math.sin(P.faceAng) * 130;
     var nukeR = vrS * 2 + 160; // 核爆半径：落点与画面最远角的距离上限约为 2×可视半径，再留 160 边缘余量，确保冲击波真正扫满全屏
-    fallers.push({ type:'bigseal', x: sx5, y: sy5, t: 0, dur: HZ_BIGSEAL_DUR, dmg: HZ_SPEC_DMG * mul * sMul, r: nukeR, nuke: true, evo: P.stage === 2 }); // 下落时长沿革：0.55→1.15 秒（2026-10-26 用户真机反馈放慢）；2026-10-30 黄主任轮：下落 ×3→1.15/3 秒（HZ_BIGSEAL_DUR、高度 300px 不变、预警同 dur 同步变短）、伤害 115→230（HZ_SPEC_DMG ×2）、冷却 26→18 秒（CHARACTERS 表）；2026-10-31 印章改回轮：下落撤销 ×3、改回 1.15 秒（HZ_BIGSEAL_DUR、预警同步变长、慢才有压迫感）、伤害 230 与 CD 18 不动
+    fallers.push({ type:'bigseal', x: sx5, y: sy5, t: 0, dur: HZ_BIGSEAL_DUR, dmg: HZ_SPEC_DMG * mul * sMul, r: nukeR, nuke: true, evo: P.stage === 2, hzFall: true }); hzFallStart(); // 下落时长沿革：0.55→1.15 秒（2026-10-26 用户真机反馈放慢）；2026-10-30 黄主任轮：下落 ×3→1.15/3 秒（HZ_BIGSEAL_DUR、高度 300px 不变、预警同 dur 同步变短）、伤害 115→230（HZ_SPEC_DMG ×2）、冷却 26→18 秒（CHARACTERS 表）；2026-10-31 印章改回轮：下落撤销 ×3、改回 1.15 秒（HZ_BIGSEAL_DUR、预警同步变长、慢才有压迫感）、伤害 230 与 CD 18 不动；新音效接入轮第 2 组（2026-11-01）：hzFall 标记＋同帧 hzFallStart()——印章开始下落即起播坠落声、落地由 updateFallers 同帧 hzFallStop() 停播（口径见 updateFallers 上方第 2 组定版注）
     specFxSelf(5, P.x, P.y, P.faceAng, sx5, sy5); /* 按键技特效事件（2026-10-29）：带真实落点，客机在落点预警 HZ_BIGSEAL_DUR 后复刻落爆（纯视觉、时序在 cliSpecFx 同值） */
     texts.push({ x: sx5, y: sy5 - 110, v: 0, txt: '牛马审判 · 全屏核爆！', t: 0, color: '#ffd23e', big: true });
     P.poseUntil = gameTime + 0.6;
@@ -11213,7 +11379,7 @@ function doSpecial(mhTarget){
     // 光明朱德「我在福建很想你」（2026-10-31 技能实装轮全机制，取代建模轮占位短冲——占位已删净）：进入冲撞状态 13 秒——本段只置状态与初始方向（＝触发瞬间本体朝向、蓄势拖动已同步 faceAng），冲撞位移在 updatePlayer 冲撞段（速度 pSpeed×2 受 2 倍总封顶）、选向/中断在 GM_AIM 输入层（长按满 0.5 秒才触发、拖动改向、松手中断）、撞飞＋撞击冰爆/冰雹（跟随本体）/脚下战斗冰面在 gmSpecTick、减伤 70% 在 hurtPlayer、冷却净 18 秒经 wxSpecCdBase＋持续冻结（specCdHeldByDuration）；口径全见 GM_SPEC 定版注
     P.gmRushT = GM_SPEC_DUR;
     P.gmRushDx = Math.cos(P.faceAng); P.gmRushDy = Math.sin(P.faceAng);
-    P.gmHailT = 0; P.gmZoneT = 0;
+    P.gmHailT = 0; P.gmZoneX = null; P.gmZoneY = null; // 落冰锚点清零（2026-11-01 拖尾连贯轮）：触发后第一块战斗冰面立即落脚下
     texts.push({ x: P.x, y: P.y - 66, v: 0, txt: '我在福建很想你！', t: 0, color: '#aee6ff', big: true });
     sfx('whoosh');
   }
@@ -11892,7 +12058,7 @@ function weaponOwnerIdx(key){ // 某主动技能的专属主人英雄序号；�
   return -1;
 }
 function heroCanUseWeapon(charIdx, key){ var o = weaponOwnerIdx(key); return o < 0 || o === charIdx; } // 该英雄能否学/强化某主动：专属只许主人、其余恒可
-function heroCanUsePassive(charIdx, key){ var d = PASSIVES[key]; if(!d) return false; if(d.onlyHero) return d.onlyHero === CHARACTERS[charIdx].weapon; if(d.onlyChar != null) return d.onlyChar === charIdx; return true; } // 被动版（现行无专属被动、恒放行；字段出现即生效）
+function heroCanUsePassive(charIdx, key){ var d = PASSIVES[key]; if(!d) return false; if(d.onlyHero) return d.onlyHero === CHARACTERS[charIdx].weapon; if(d.onlyChar != null) return d.onlyChar === charIdx; return true; } // 被动版（字段出现即生效；2026-11-01 起已有专属被动「班定菜」onlyHero:'mungcake' 落地、仅光明朱德放行）
 window.__HERO_EXCL = { ownerOf: weaponOwnerIdx, canW: heroCanUseWeapon, canP: heroCanUsePassive,
   exclusiveWeapons: function(){ var out = {}; for(var k in WEAPONS){ var o = weaponOwnerIdx(k); if(o >= 0) out[k] = o; } return out; }, // 专属主动全名单：key→主人英雄序号
   exclusivePassives: function(){ var out = {}; for(var k in PASSIVES){ var d = PASSIVES[k]; if(d && (d.onlyHero || d.onlyChar != null)) out[k] = (d.onlyHero != null ? d.onlyHero : d.onlyChar); } return out; } }; // 验收探针：与实机同一套判定函数，只读核对专属名单与逐英雄可学矩阵用（现行专属被动应为空对象）
@@ -12074,6 +12240,7 @@ function renderChoiceCard(idx){
   var elDefC = elKeyC ? ELEMENTS[elKeyC] : null;
   var elHtmlC = elDefC ? '<span class="el-chip" style="background:' + elDefC.color + '"><img src="' + klfAliasSrc('assets/icons/el_' + elKeyC + '.png') + '" alt="">' + elDefC.name + '系</span>' : ''; // 属性标：元素符号图（RogimonDev 像素元素符号，CC-BY 4.0；光系符号为同风格自绘）＋色标
   if(WEAPONS[c.key] && WEAPONS[c.key].sig) elHtmlC += '<span class="el-chip" style="background:#ffd23e">专属</span>'; // 角色专属标注：专属技能不进公共池，其他角色任何途径都学不到
+  else if(c.type === 'passive' && PASSIVES[c.key] && PASSIVES[c.key].onlyHero) elHtmlC += '<span class="el-chip" style="background:#ffd23e">专属</span>'; // 专属被动标注（2026-11-01 班定菜起）：onlyHero 被动在升级卡上同挂金色「专属」标——只有主人英雄出这张卡、其他角色任何途径都学不到
   // 推荐判定：只基于真实合成配套关系生成（已学主动的搭档被动 / 已学被动的搭档主动 / 学后即凑齐合成条件），不乱标
   var recoReason = '';
   if(c.type === 'evo') recoReason = '合成条件已凑齐，可立即进化为「' + WEAPONS[c.key].evoName + '」';
@@ -13403,6 +13570,11 @@ function update(dt){
       hzSealKbTick(e, dt);
       continue;
     }
+    if(e.gmFlyT > 0){ // 光明朱德冲撞撞飞飞行（2026-11-01 撞飞表现轮，用户令「要看得見被撞飛」）：飞行期间敌人不能自行移动/攻击——眩晕计时照常递减后整段跳过其移动/攻击/物种技能（与上方印章击飞跳段同式）；持续伤害/易伤计时等状态结算在本段之前、照常生效（受击/死亡口径不动）；推进与门禁见 gmFlyTick
+      if(e.stun > 0) e.stun -= dt;
+      gmFlyTick(e, dt);
+      continue;
+    }
     if(e.stun > 0){ e.stun -= dt; continue; }
     if((e.gmFrzT || 0) > 0){ continue; } // 冰封（2026-10-31 技能实装轮，用户定版）：冻住不能动——移动/攻击/物种技能整段跳过（计时已在顶部递减）；与眩晕的区别只在来源与视觉（frostT 冰块裹身）、不混淆
     if(e.shredT > 0) e.shredT -= dt; // 腐蚀破防计时
@@ -13933,7 +14105,7 @@ function refreshHeroPortraits(){ // 帧载入完成后重刷静态立绘（选�
     /* 修复（2026-10-23 第 4 小轮实机发现）：旧写法以扁平索引枚举每卡全部 canvas（立绘 76px＋技能图标 32px×3），
        把第 i 位英雄的立绘画进第 i 个 canvas——八思立绘误入闻西卡、其余英雄立绘画布永不重刷而空白。
        改为逐卡取其第一个 canvas（立绘画布，位于技能图标之前）重刷，英雄与卡片严格同序对齐。 */
-    for(var i = 0; i < cards.length && i < 7; i++){ var pc = cards[i].querySelector('canvas'); if(!pc) continue; var cx2 = pc.getContext('2d'); cx2.clearRect(0, 0, pc.width, pc.height); drawCharInto(cx2, i, 0, 76, 80, 108); }
+    for(var i = 0; i < cards.length; i++){ var pc = cards[i].querySelector('canvas'); if(!pc) continue; var cx2 = pc.getContext('2d'); cx2.clearRect(0, 0, pc.width, pc.height); drawCharInto(cx2, i, 0, 76, 80, 108); } /* 2026-11-01 立绘空白修复：原上限写死 i < 7，第 8 张光明朱德卡（下标 7）待机帧到后永不重刷、卡面立绘恒空白；改为按 cards.length 全刷 */
     ['logoBadge', 'logoBadgeTitle'].forEach(function(idq){ var lb = document.getElementById(idq); if(lb){ var lc = lb.querySelector('canvas'); if(lc){ var lg = lc.getContext('2d'); lg.clearRect(0, 0, lc.width, lc.height); drawCharInto(lg, 0, 2, 92, 96, 128); } } });
   }catch(e){ /* DOM 未就绪时忽略，后续英雄帧载入完成会再刷 */ }
 }
@@ -14631,6 +14803,9 @@ var SIXQ_META = {
   gm: { atkAct:'throw', atkCount:28, acts: { idle:{down:[261,353,352],side:[222,353,352],up:[258,353,352]}, walk:{down:[276,355,354],side:[244,355,354],up:[273,355,354]}, run:{down:[287,356,355],side:[258,357,356],up:[283,356,355]}, dodge:{down:[485,379,378],side:[478,376,375],up:[485,378,377]}, death:{down:[588,426,425],side:[577,412,411],up:[588,425,424]}, throw:{down:[356,364,363],side:[344,361,360],up:[359,364,363]}, dash:{down:[260,334,333],side:[327,343,342],up:[257,334,333]}, gcast:{down:[260,359,358],side:[252,359,358],up:[257,359,358]}, gshoot:{down:[349,362,361],side:[334,360,359],up:[349,362,361]}, gthrust:{down:[370,361,360],side:[352,359,358],up:[370,360,359]}, gstomp:{down:[258,354,353],side:[225,354,353],up:[255,354,353]} } } // 光明朱德（2026-10-31 建模轮）：帧源＝用户定版正面样本＋同线侧/背视图离线合成（待机/行走/奔跑/闪避/死亡＋投掷 28＋冲刺 13＋通用四式各 13、三方向、963 帧、统一体高 344 画布 px、逐(动作,方向)并集裁切、地平线 G＝H−1、硬 alpha、48 色）；行走/奔跑为溜冰滑步（腿部分片剪刀步）、闪避为绕体心整圈翻滚、死亡为侧倒定格
 }; // 每(动作,方向) [画布W, 画布H, 地平线行G]（接入转换实测）
 /* 2026-10-31 光明朱德画风重做轮（本地轮，版本仍 2.0，不推托管、不打 APK）：milo 裁定建模轮帧为平滑动漫风（高瘦、线条柔和、像素颗粒不明显）、与七人 *_q 像素风（大头短身、硬描边、像素格）不一致，令完整复用七人原做法重做。做法：963 帧全数离线重出——①像素流水线直接 import 七人同款工具 hero_pipeline/spec_banzai/style_unified/convert.py（帧升至 900 母版高后跑原脚本：主像素格 8px、每帧 48 色 FASTOCTREE 扁平色板、硬 alpha、深色描边 (28,22,18) 外扩约 1 格、饱和 +12%、对比 +6%，再最近邻落回原画布高）；②比例烘焙校正（最近邻、与鸡哥上向帧级烘焙拉伸同先例）：直立动作（idle/walk/run/throw/dash/gcast/gshoot/gthrust/gstomp）逐组并集画布上做纵向分段重映射——头部区（内容顶 42%）放大到 50%、躯干腿部压缩到 50%（内容总高与地平线不动）＋整体横向加宽 ×1.45；dodge（翻滚）/death（倒地）不做纵向重映射、横向加宽 ×1.30；③描边带来的轮廓涨高经逐组高度归一消掉——每组并集内容高与旧帧逐像素相等、内容底行仍＝G＝H−1、画布 H/G 与旧登记全等（_bzK/DIRK 全 1.0 不动、局内显示体高与旧版及七人同带：内容高 344≈八思共同目标 343.7），仅画布 W 随加宽更新（见上 gm 行）；④输出改 RGBA（旧帧为 P 模式、与七人 RGBA 统一）。外观不变：蓝连帽卫衣兜帽戴头上＋抽绳＋前袋、绿长裤、深色靴身彩色轮子溜冰鞋、空手，逐代表帧目检在位。机制与技能一字未动：帧名/帧数结构（963）不变、技能实装轮全部结算（冷齒綠豆餅 Lv1–Lv5／感冒六层／冻血条／冰封／按键技「我在福建很想你」长按 2 秒／冲撞／冰雹／战斗冰面／减伤／冷却／施工取值）、移动冰面拖尾 v2、选角第 8 卡、SIXQ_STRIDE gm 施工暂定值均未动；dash 帧仍只作按键技冲撞动作帧、不入普攻。离线核查：963/963 在位、逐组画布尺寸与 META 全符、alpha 仅 0/255、每帧颜色 ≤49（48 色板＋描边色）、内容宽高比 idle 下 166/347→249/347（0.48→0.72，入七人 0.73–0.93 带下缘）、平均同色游程 6.7→7.3（七人母版为平涂渲染、游程天然更长，此项只作参考；像素格口径以同工具同参数为准，放大目检新帧已是扁平色带＋粗描边，见 evidence/gm_q_redo_2026-10-31/）。未验：局内活体（选角内层列表不响应探针滚动、点不中第 8 卡进局——与建模轮/技能轮同一已知限制）、走路步幅与新宽度的脚滑同步、真机、双机。 */
+/* 2026-11-01 光明朱德动作可读性轮（本地轮，版本仍 2.0，不推托管、不打 APK）：milo 真机录屏（2026-11-01 10:42，托管版局内）实报——开大招「我在福建很想你」期间本体就是个小黑团在冰面上滑行，看不出走路、攻击、冲刺动作；令「朱德也要像其他角色一样有攻击和走路动作，开大招的时候也要有冲刺动作」。
+   接线核查（三路逐路查 drawPlayerActor 选帧链 sixqGenPick＞sixqAtkPick＞sixqPick）：①走路——sixqPick 按速度在 walk/run 间切换、步幅 SIXQ_STRIDE.gm 在位，无断；②攻击投掷——HERO3D_SIG.gm='throw'、sixqAtkPick 以 24fps 播 throw 28 帧、移动不截断（SIXQ_MOVE_CAP 无 gm 条目），无断；③大招冲刺——sixqPick 的 dash 分支在位（gmRushT>0 时 11fps 循环 13 帧、优先于受击/按键技借帧），但选帧链上游的 sixqGenPick（通用武器姿势）与 sixqAtkPick（通用 throw 式借签名帧）在冲撞期间照常抢占：冲撞中通用武器不停火、姿势窗一开 dash 就被顶掉，录屏里冲刺帧只剩零星闪现。修法（接线修复，仅 dash 一路）：sixqGenPick/sixqAtkPick 在 pfx='gm' 且 gmRushT>0 时一律 return null 让行，冲撞全程由 dash 帧接管；姿势纯视觉，通用武器伤害/发射、冲刺速度/持续/冷却/减伤一字未动。
+   动作重做（三路＋run，离线帧手术，脚本见 evidence/gm_action_readability_2026-11-01/redo_actions.py）：改前逐帧量测——walk 上身质心摆幅 1.2–2.6px、顶行起伏 0、腿质心摆幅 22–30px（对标闻西 walk：顶行起伏 12–31、腿质心摆幅 69–102、上身摆幅 33–38，本体就是刚性团块平移）；throw_side 出手仅 f11–16 右缘 +35px、上身质心全程只动 4px，throw_down 全程近乎静止；dash 上身质心摆幅 0.9–1.6px、13 帧近乎同一站姿（零前倾）。重做手法（只搬移既有像素：NEAREST、无新颜色、硬 alpha、画布 [W,H]/地平线 G/帧名/帧数全不动、内容底行恒还原原底行）：walk/run＝上身摆动 ±6＋起伏 0..−5（两步一周期）＋腿区以髋为轴的枢轴剪刀（down/up 横向 ±11、side 纵深 ±12，run ×1.25）＋单脚交替抬离地 ≤4px，改后 walk 顶行起伏 5–13、上身摆幅 10–12、腿部分离摆幅约 ×2；throw＝蓄势/出手包络驱动——side 躯干 −6..+12＋前倾剪切 7＋手臂区拉伸 ×1.38（上身质心摆幅 4→24），down/up 躯干沿出手方向 −6..+14＋上身放大 ×1.05＋扭身＋双臂劈下 +7；dash＝side 整身前倾剪切（头顶 +30px、脚底 0，上身质心均值 +24px）、down 纵向压扁 ×0.93＋上身前压、up 上身前探 −8，三方向腿区溜冰蹬冰剪刀 ±9–10。改动帧 285 张（walk 120＋run 60＋throw 84＋dash 39 中非零变换者；run 与 walk 同属 sixqPick 速度切换的移动路，只改 walk 则高速移动段仍旧帧、故同轮同法处理并在此明记）。外观一字未动（蓝连帽卫衣兜帽戴头上、绿裤、彩色轮子溜冰鞋、空手——全部变换只搬移既有像素、逐帧颜色集合 ⊆ 原帧）；技能结算/数值/选角/其他七人一字未动；Q 帧不在 MANIFEST/KLF_PATHS 预载清单内（走游戏自身加载队列），无清单字节需同步。离线核查：963 帧全在位、改动仅限 walk/run/throw/dash 四组、画布尺寸/alpha（仅 0/255）/底行逐帧与改前一致、动态图三路（走路/投掷/冲刺，灰底防重影）见 evidence/gm_action_readability_2026-11-01/。未验：局内活体（冲刺让行与三路新动作的实局播出）、真机、双机。 */
 /* ---------------- 六人通用新版动作（2026-10-31 通用动作轮·六人版，版本仍 1.9、本地、不推托管） ----------------
    口径按班仔通用动作轮（BZQ_GEN3）类推、班仔本轮不动。逐人现行帧集核查（在位情况）：
    闻西＝Q 版 throw 签名 60×3（绿星镖 wf3 定版）＋idle/walk/run/dodge/death；莫哈哈＝burst 28×3（AK 连发）；
@@ -14805,6 +14980,7 @@ function sixqSprite(pfx, dir, frame){ // Q版取帧入口：'q7:动作:帧号' �
 var SIXQ_RUN = { ci: -1, t0: 0, prevAnimT: 99 };
 function sixqAtkPick(){ // Q版攻击序列选帧：与 sixSeqPick 同规（触发/移动让行/莫哈哈连发循环），帧源换 Q 攻击帧、计数换 Q 计数
   var pfx = HERO3D_PFX[P.charIdx]; if(!pfx || pfx === 'bz' || !SIXQ_META[pfx]) return null;
+  if(pfx === 'gm' && (P.gmRushT || 0) > 0) return null; // 光明朱德冲撞让行（2026-11-01 动作可读性轮·接线修复）：冲撞期间签名普攻本已停发，但通用 throw 式（如 seedbomb）会借本函数播投掷帧、抢占 sixqPick 的 dash 分支；现冲撞期间一律让行、dash 13 帧全程接管（纯选帧、伤害/冷却/结算未动）
   var meta = SIXQ_META[pfx], count = meta.atkCount;
   var now = performance.now() / 1000;
   var trig = P.atkAnimT < SIXQ_RUN.prevAnimT - 0.001 && P.atkPoseT > 0 && P.atkStyle === HERO3D_SIG[pfx];
@@ -14828,6 +15004,7 @@ function sixqAtkPick(){ // Q版攻击序列选帧：与 sixSeqPick 同规（触�
 }
 function sixqGenPick(){ // 六人通用新版动作选帧（2026-10-31 六人通用动作轮，与班仔 bzqPick 的 BZQ_GEN3 分支同构）：通用五式姿势窗内直达新编/复用帧——新编 13 帧按攻击进度一次性播完（相位界 0.22/0.58 与班仔/签名同口径、总时长/伤害/冷却未动、只换动作帧本体）；签名直配式返回 null 走 sixqAtkPick 原生序；slash/无姿势/未知式返回 null 维持原路径
   var pfx = HERO3D_PFX[P.charIdx]; if(!pfx || pfx === 'bz' || !SIXQ_META[pfx]) return null;
+  if(pfx === 'gm' && (P.gmRushT || 0) > 0) return null; // 光明朱德冲撞让行（2026-11-01 动作可读性轮·接线修复）：大招冲撞中通用武器仍照常自动开火、其姿势窗在 drawPlayerActor 选帧链里优先于 sixqPick，冲刺帧此前被通用施法姿势反复抢占（milo 真机录屏 2026-11-01 10:42：冲撞全程只剩滑行、看不到冲刺动作）；现冲撞期间通用选帧让行、dash 全程接管（纯选帧、通用武器伤害/发射未动）
   if(P.hp <= 0 || P.dodgeT > 0 || P.specPoseT > 0 || P.excT > 0 || P.hurtT > 0.05) return null; // 死亡/闪避/按键技/受击优先，与 sixqAtkPick/sixqPick 让行规则一致
   if(!(P.atkPoseT > 0 && P.atkStyle)) return null;
   var def = sixqGenDef(pfx, P.atkStyle); if(!def) return null;
@@ -15547,7 +15724,7 @@ function drawEnemy(e, sx, sy){
   var feetY = sy + e.r * 0.95;
   var hover = (e.type === 'bat' || e.type === 'eye' || e.type === 'wraith' || e.type === 'ghost' || e.type === 'spellbook' || e.type === 'fairy' || e.type === 'flowerfairy' || e.type === 'manta' || e.type === 'cloud' || e.type === 'pirateghost' || e.type === 'babydragon' || e.type === 'gargoyle' || e.type === 'abdux' || (e.elite && e.eliteRow === 3) || e.visual === 'voidguard');
   var bob = hover ? Math.sin(ph * 2.1) * 2 - 3 : 0; // 接地物种零位移漂移：起伏只来自帧本身，脚底行逐帧锁地（浮空感根源修复）
-  bob -= (e.flyH || 0) + (e.airH || 0) + (e.bsAirH || 0); // 真飞行离地高度（魔蜂悬浮/俯冲爬升、虚空之眼高空悬浮）与跳砸腾空、八思光阵顶落视觉高度 bsAirH（顶到 240px）：本体升起、影子留在地面（影随高度缩小变淡，见下方 hover 影；接地物种顶落时影子同步变小变淡、与本体分离，见下方 else 支 bsShF）
+  bob -= (e.flyH || 0) + (e.airH || 0) + (e.bsAirH || 0) + (e.gmFlyH || 0); // 真飞行离地高度（魔蜂悬浮/俯冲爬升、虚空之眼高空悬浮）与跳砸腾空、八思光阵顶落视觉高度 bsAirH（顶到 240px）、光明朱德撞飞弧高 gmFlyH（2026-11-01 撞飞表现轮：中段最高 12–40px、起落贴地）：本体升起、影子留在地面（影随高度缩小变淡，见下方 hover 影；接地物种顶落/撞飞时影子同步变小变淡、与本体分离，见下方 else 支 bsShF/gmShF）
   /* 史莱姆家族果冻形变骨架（黏液怪/金色史莱姆/苔藓史莱姆/锁链史莱姆共用，紫蓝黏液怪优先受益）：以个体 animPh 驱动跳跃周期——
      腾空段拉伸离地、落地段压扁回弹、着地段果冻余晃；脚下 AO/倒影/接触影随形变与离地高度同步缩放变淡，不再僵硬滑行 */
   var isSlime = !e.boss && !eliteDef && (e.type === 'slime' || e.type === 'goldslime' || e.type === 'mossslime' || e.type === 'chainslime');
@@ -15576,7 +15753,7 @@ function drawEnemy(e, sx, sy){
   } else footWPx = dw * spriteFoot(spr).w / spr.width;
   if(isSlime) footWPx *= slimeSx * clamp(1 - slimeLift * 0.014, 0.62, 1); // 史莱姆影子随形变同步缩放：压扁变宽、腾空变小
   if(hover){ var hShr = clamp(1 - lift * 0.012, 0.45, 1); drawShadowAt(sx, feetY, e.r * 0.72 * hShr, 0.5 * hShr + 0.1); } // 本体与地面影子分离：飞得越高、影子越小越淡（真飞行读感）
-  else { var aoA = eliteDef ? 0.42 : 0.34, shA = 0.85; if(isSlime){ var slF = clamp(1 - slimeLift * 0.022, 0.45, 1); aoA *= slF; shA *= slF; } if(e.bsAirH > 0){ var bsShF = clamp(1 - e.bsAirH * 0.006, 0.55, 1); aoA *= bsShF; shA *= bsShF; } drawAO(sx, feetY, Math.max(9, footWPx), aoA); drawShadowAt(sx, feetY, Math.max(7, footWPx * 0.52), shA); } // 八思光阵顶落：接地物种被顶起时地面影子留在原地并随高度变小变淡、本体与影子分离（升得越高分离越明显）
+  else { var aoA = eliteDef ? 0.42 : 0.34, shA = 0.85; if(isSlime){ var slF = clamp(1 - slimeLift * 0.022, 0.45, 1); aoA *= slF; shA *= slF; } if(e.bsAirH > 0){ var bsShF = clamp(1 - e.bsAirH * 0.006, 0.55, 1); aoA *= bsShF; shA *= bsShF; } if(e.gmFlyH > 0){ var gmShF = clamp(1 - e.gmFlyH * 0.008, 0.6, 1); aoA *= gmShF; shA *= gmShF; } drawAO(sx, feetY, Math.max(9, footWPx), aoA); drawShadowAt(sx, feetY, Math.max(7, footWPx * 0.52), shA); } // 八思光阵顶落：接地物种被顶起时地面影子留在原地并随高度变小变淡、本体与影子分离（升得越高分离越明显）；光明朱德撞飞弧高 gmFlyH 同式（2026-11-01 撞飞表现轮：飞得越高影越小越淡、轨迹可读）
   var reflA = clamp(0.42 - lift * 0.028, 0.14, 0.42) * (eliteDef ? 1.1 : 1) * wc2SpawnA; // 二号淡入期间倒影同步淡入（不先于本体在地面露形）
   var reflH = bodyH * 0.28 * clamp(1 - lift * 0.02, 0.6, 1); // 倒影高度约 28%、顶端贴脚底不留缝
   if(sprDef){
@@ -18751,7 +18928,7 @@ function showBanner(title, sub){
 /* ---------------- 技能像素图标（程式生成，原创像素画） ---------------- */
 var ICON_COLORS = { weiye:'#ffb02e', undeadwar:'#b8c4ce', thundercloud:'#8a9ab8', frostpuppet:'#aee6ff', icelance:'#7ad7f0', hellhound:'#ff8a5a', emberring:'#ffb02e', voltspirit:'#ffe97a', skystrike:'#c99af2', windfalcon:'#7af0d8', vacuumblade:'#4db8ff', lightservant:'#fff6c8', corona:'#ffd76a', oldtreant:'#7ac74f', vinegrip:'#5aa84a', rockgolem:'#c8b090', quake:'#d8a860', waterelemental:'#4db2e8', tidalwave:'#3a9ad8', critshard:'#ffd76a', soulmirror:'#ff9ad5', galephantom:'#9ae8c8', ironcaltrop:'#c8ccd4', swiftarrow:'#8ad7f0', giantarrow:'#f0a85a', timesand:'#e8d88a', poisongland:'#9ae86a', dragonsigil:'#ff8a5a', firstsigil:'#ffe97a', icebreaker:'#aee6ff', farsigil:'#8ab8f0', nearsigil:'#f08a6a', gemheal:'#8ae8c8', killshield:'#6ac8e8', xpkill:'#a8e063', windrush:'#7af0d8', movewill:'#d8b46a', stillheart:'#b49a6a', laststand:'#e86a6a', huntergait:'#8ae8a8', specresonance:'#c99af2', slowfield:'#7a9ae8', shredmark:'#f0e68a', critsiphon:'#e84a7a', shieldweb:'#8ad7f0', burnheart:'#ff7a3e', boomheart:'#ffb02e', overloadloop:'#b48ae8', bedrock:'#a89878',
   currybat:'#e8a83e', boomerang:'#7ac74f', cigshot:'#d8d4cc',
-  octoshot:'#57a8e8', stamp:'#e8483f', chainvolt:'#7ad7f0', mungcake:'#8fd14f', voltstorm:'#ffe97a', firebolt:'#f0782e',
+  octoshot:'#57a8e8', stamp:'#e8483f', chainvolt:'#7ad7f0', mungcake:'#8fd14f', bdcai:'#8fd14f', voltstorm:'#ffe97a', firebolt:'#f0782e',
   leafblade:'#69b84a', lightning:'#e8c832', frostnova:'#57c7e8', stardart:'#e88ec8',
   flameaura:'#e8563a',
   moonwheel:'#ffd76a', fireball:'#ff5a2e', frostcone:'#aee6ff', poisonspray:'#7ed321',
@@ -19175,6 +19352,13 @@ function iconCanvas(id, variant){
     pxr(g, 4, 4, 3, 3, md); pxr(g, 9, 4, 3, 3, md); pxr(g, 4, 6, 8, 3, md); pxr(g, 6, 9, 4, 3, dk); pxr(g, 7, 12, 2, 2, md); pxr(g, 6, 6, 1, 3, '#d6ffb0'); pxr(g, 10, 8, 1, 2, '#d6ffb0'); pxr(g, 3, 2, 1, 1, lt);
   } else if(id === 'acidblood'){ // 酸血：酸绿血滴
     pxr(g, 6, 2, 4, 3, md); pxr(g, 5, 5, 6, 4, md); pxr(g, 6, 9, 4, 3, dk); pxr(g, 7, 12, 2, 2, '#a8e063'); pxr(g, 6, 6, 2, 2, '#e6ffb0'); pxr(g, 3, 7, 1, 2, 'rgba(200,232,106,.7)');
+  } else if(id === 'bdcai'){ // 班定菜（光明朱德专属被动）：滑行中的溜冰鞋——朱德蓝鞋身＋彩色轮子（与定妆正面图彩色轮子同口径）＋身后冰蓝速度线，脚下带绿豆饼绿的滑痕
+    pxr(g, 1, 4, 4, 1, '#aee6ff'); pxr(g, 0, 7, 5, 1, lt); pxr(g, 1, 10, 4, 1, '#aee6ff'); pxr(g, 2, 13, 3, 1, lt); // 身后速度线（冰蓝与浅绿交错）
+    pxr(g, 9, 2, 4, 6, '#3a76d6'); pxr(g, 9, 8, 7, 3, '#3a76d6'); // 鞋身：竖筒＋鞋面（朱德蓝）
+    pxr(g, 10, 3, 2, 2, '#7ad7f0'); pxr(g, 14, 9, 1, 1, '#ffffff'); // 鞋面冰蓝高光＋鞋头白点
+    pxr(g, 8, 11, 8, 1, '#d8dee8'); // 鞋底
+    pxr(g, 9, 12, 2, 2, '#ffb02e'); pxr(g, 14, 12, 2, 2, '#ff5a8a'); pxr(g, 10, 13, 1, 1, '#fff6c8'); pxr(g, 15, 13, 1, 1, '#fff6c8'); // 彩色双轮（橙／粉）＋轮毂亮点
+    pxr(g, 5, 12, 2, 1, md); pxr(g, 4, 14, 5, 1, md); // 脚下绿豆饼绿滑痕
   } else if(id === 'holyhalo'){ // 圣光环：光环＋十字星
     pxr(g, 4, 5, 8, 2, md); pxr(g, 4, 10, 8, 2, md); pxr(g, 3, 6, 2, 4, md); pxr(g, 11, 6, 2, 4, md); pxr(g, 7, 7, 2, 3, '#ffffff'); pxr(g, 6, 8, 4, 1, lt); pxr(g, 7, 2, 2, 2, '#ffd76a');
   } else if(id === 'heal'){
@@ -19931,7 +20115,7 @@ function startGame(){
   beep(523, 0.12, 'square', 0.05);
 }
 el('btnVolPause').addEventListener('click', openVolumeScreen);
-el('btnVolBack').addEventListener('click', function(){ el('volumeScreen').classList.remove('on'); if(state === 'playing' || !volFromPause) panelGuardSet('volume', false); }); // 返回只摘音量面板（与已学技能返回同口径，暂停菜单仍在下层）
+el('btnVolBack').addEventListener('click', function(){ el('volumeScreen').classList.remove('on'); if(volDiagTimer){ clearInterval(volDiagTimer); volDiagTimer = null; } if(state === 'playing' || !volFromPause) panelGuardSet('volume', false); }); // 返回只摘音量面板（与已学技能返回同口径，暂停菜单仍在下层）
 el('volMusic').addEventListener('input', function(){ VOL.music = (parseInt(this.value, 10) || 0) / 100; volApplyMusic(); volSave(); syncVolUI(); }); // 背景音乐滑杆：实时改全局 BGM 元素音量（0＝静音暂停、调回续播）
 el('volSfx').addEventListener('input', function(){ VOL.sfx = (parseInt(this.value, 10) || 0) / 100; volApplySfx(); volSave(); syncVolUI(); }); // 技能攻击音效滑杆：实时改 SFX 主增益（0.68 × 值，0＝静音）
 el('btnBuzzPause').addEventListener('click', toggleBuzz);
@@ -19956,17 +20140,36 @@ function audioUnlock(){
     if(AC.state === 'suspended' || AC.state === 'interrupted') AC.resume(); // iOS 来电/切后台把上下文置 interrupted 时，任意手势顺手恢复（与 sfxPlay 内的恢复同口径）
     sfxInit(); sfxLoadSamples();
     volApplySfx(); // 音量调节轮：SFX 主增益按存档音量同步（sfxInit 建增益后套用滑杆值）
+    bgmRoute(); // 音频轮：AC 一就绪即把 BGM 元素接入增益路由（元素已建时；未建时 bgmPlay 内再补），使音乐滑杆走 iOS 认的增益路
     if(BGM.wantPlay) bgmPlay(); // 背景音乐若被浏览器自动播放策略挡下，借任意手势续播
     if(BGM.a && !BGM.playing) klfUnlockEl(BGM.a); // BGM 元素通道在手势内解锁（iOS 口径，与 VOICE 元素同路）
     if(!EXC_AUD){ EXC_AUD = new Audio('assets/audio/excalibur.mp3'); EXC_AUD.preload = 'auto'; try{ EXC_AUD.load(); }catch(e){} } // 喊声元素通道在首次手势里先备好：按键技触发时可直接出声（iOS 元素回放需先经手势解锁/预载）
     klfUnlockEl(EXC_AUD);
     if(!HSANN_AUD){ HSANN_AUD = new Audio(SFX_SAMPLE_SRC.hsann); HSANN_AUD.preload = 'auto'; try{ HSANN_AUD.load(); }catch(e){} } // 莫哈哈暴击播报的元素兜底通道同样在首次手势里备好并真解锁（采样未就绪时播报不哑）
     klfUnlockEl(HSANN_AUD);
-    ['chickencall','kunyu','really','nihao','justice','jackson','headshot','kuaizai','guixia','myeyes','wufafanyi','a114514','amogus','gaifa','laobideng','thankyou','pianpianhua','dajieju','mambaout','geilian','duide','ou','gugugaga','wow','boxing','boxinglong','steelpipe','pigsqueal','zhenbao','chuanxi','guagua','csenemy','csgogogo','csboom','yamete','xiaozhewan','taiduile','lalala','daizhu','shangfen','wocao','haihai','sanbaoyan'].forEach(function(k){ if(!VOICE_AUD[k]){ VOICE_AUD[k] = new Audio(SFX_SAMPLE_SRC[k]); VOICE_AUD[k].preload = 'auto'; try{ VOICE_AUD[k].load(); }catch(e){} } klfUnlockEl(VOICE_AUD[k]); }); // 用户亲选语音包的元素通道同样在首次手势里备好并真解锁（鸡哥登场音效紧随开局，须已解锁可播）
+    ['chickencall','kunyu','really','nihao','justice','jackson','headshot','kuaizai','guixia','myeyes','wufafanyi','a114514','amogus','gaifa','laobideng','thankyou','pianpianhua','dajieju','mambaout','geilian','duide','ou','gugugaga','wow','boxing','boxinglong','steelpipe','pigsqueal','zhenbao','chuanxi','guagua','csenemy','csgogogo','csboom','yamete','xiaozhewan','taiduile','lalala','daizhu','shangfen','wocao','haihai','sanbaoyan','wilhelm','cheer','slip','laughcat','zdv008','zdv019'].forEach(function(k){ if(!VOICE_AUD[k]){ VOICE_AUD[k] = new Audio(SFX_SAMPLE_SRC[k]); VOICE_AUD[k].preload = 'auto'; try{ VOICE_AUD[k].load(); }catch(e){} } klfUnlockEl(VOICE_AUD[k]); }); // 新音效接入轮（2026-11-01）：六个新语音键的元素兜底通道同在首次手势备好并解锁 // 用户亲选语音包的元素通道同样在首次手势里备好并真解锁（鸡哥登场音效紧随开局，须已解锁可播）
   }catch(e){}
 }
 document.addEventListener('pointerdown', audioUnlock, true);
 document.addEventListener('touchstart', audioUnlock, { capture: true, passive: true });
+/* 音频上下文看门狗（2026-11-01 音频轮 · 音效全哑推测断点修复）：milo 真机实报「只有 BGM 响、攻击／按键技／角色
+   音效全哑、BGM 滑杆假、BGM 独响」——BGM 走 <audio> 元素、不经 AC，故 AC 哑与 BGM 独响可同时成立。代码层逐项核：
+   SFX.on 默认开且无存档改写、主增益 0.68×VOL.sfx 链完整、采样有懒加载＋失败重试——三处均未见写死断点；
+   剩下最可能的断点是 AC 状态本身：iOS 会把上下文置 suspended／interrupted（来电、切后台、BGM 元素起播抢占音频
+   会话等），而旧版 resume 只散落在 sfxPlay／audioUnlock 的个别调用里、且从不看 resume 的 Promise 结果——上下文若
+   卡在非 running，合成声与采样声全部调度的节点永不推进＝整链静默，与实报吻合（此项为推测断点、无真机探针实证，
+   听感终以 milo 真机为准）。本轮加手势侧看门狗：任意 pointerdown／touchstart／click（均为真实用户手势、iOS 认账的
+   resume 时机）与页面回到前台时都踢一次 resume 并吞掉拒绝；iOS 另在每次手势由 audioUnlock 全量重跑解锁链，双保险。 */
+function acKick(){
+  try{
+    if(!AC) return;
+    if(AC.state === 'suspended' || AC.state === 'interrupted'){ var p = AC.resume(); if(p && p.catch) p.catch(function(){}); }
+  }catch(e){}
+}
+document.addEventListener('pointerdown', acKick, true);
+document.addEventListener('touchstart', acKick, { capture: true, passive: true });
+document.addEventListener('click', acKick, true);
+document.addEventListener('visibilitychange', function(){ if(!document.hidden) acKick(); });
 /* ---------------- 剧情漫画：世界观开场「虚空裂缝」（选模式后、开战前播放，右上角可跳过；选角页「世界观」可重看） ----------------
    三格画面全部用游戏自身的美术绘制（程序分镜、无图片内嵌文字）：老街与裂缝为程序绘制、怪物格调用 paintEnemy，不另起一套画风。故事只讲到八人醒来异世界为止，不提前揭开阴谋与劳农。（剧情人数 2026-10-31 用户令改八人、漫画文本已同步。） */
 var comicIdx = 0, comicOpen = false, comicDone = null;
@@ -20663,7 +20866,7 @@ function renderCodexSkills(body){
   sec('被 动 道 具');
   for(var pk in PASSIVES){
     var ps = PASSIVES[pk]; if(ps.hidden) continue; // 已下架/已合并的被动不进图鉴（与抽取池一致）
-    var hp2 = '<h4>' + ps.name + (ps.el && ELEMENTS[ps.el] ? '<span class="el-chip" style="background:' + ELEMENTS[ps.el].color + '">' + ELEMENTS[ps.el].name + '系</span>' : '') + '</h4>';
+    var hp2 = '<h4>' + ps.name + (ps.onlyHero ? '<span class="el-chip" style="background:#ffd23e">专属</span>' : '') + (ps.el && ELEMENTS[ps.el] ? '<span class="el-chip" style="background:' + ELEMENTS[ps.el].color + '">' + ELEMENTS[ps.el].name + '系</span>' : '') + '</h4>'; // 专属被动标（2026-11-01 班定菜起）：onlyHero 被动在图鉴同挂金色「专属」标
     hp2 += '<div>' + passiveDesc(pk, 1) + '</div><div class="cx-dim">满级 Lv' + ps.max + ' 合计：' + passiveDesc(pk, ps.max) + '</div>'; // 被动描述随等级变（2026-10-31）：图鉴 Lv1 值＋满级合计并列
     var pw = pairWeaponsFor(pk);
     pw.forEach(function(wk){ hp2 += '<div><b>合成搭档</b>：「' + WEAPONS[wk].name + '」满级＋本被动 → <b>' + WEAPONS[wk].evoName + '</b></div>'; });
@@ -20866,7 +21069,7 @@ function renderLearned(targetBody){ // 2026-10-30 独立按钮轮起只渲染进
     var sub = 'Lv' + P.passives[k] + '/' + def2.max + ' · ' + passiveDesc(k, P.passives[k]); // 被动描述随等级变（2026-10-31）：已学面板按当前等级合计值（截图现场御冰铠 Lv3 显示 -3% 的根因即此处直读静态 desc、已改）
     var pairW = pairWeaponsFor(k);
     if(pairW.length) sub += '<br>合成搭档：' + pairW.map(function(wk){ return '「' + WEAPONS[wk].name + '」' + (P.weapons[wk] ? (P.weapons[wk].evo ? '（已进化）' : ' Lv' + P.weapons[wk].lv + '/' + WEAPONS[wk].max) : '（未学）') + ' → ' + WEAPONS[wk].evoName; }).join('；');
-    body.appendChild(ldRow(k, '', '<b>' + def2.name + '</b>', sub));
+    body.appendChild(ldRow(k, '', '<b>' + def2.name + '</b>' + (def2.onlyHero ? ' <span class="ld-tag" style="background:#ffd23e;color:#241a02">专属</span>' : ''), sub)); // 专属被动标（2026-11-01 班定菜起）：onlyHero 被动在已学面板同挂金色「专属」标（与主动行同款）
   });
   if(P.charIdx === 5) body.appendChild(ldRow('stamp', '', '<b>牛马的觉悟</b> <span class="ld-tag" style="background:#ff5a4e">专属被动·常驻</span>', '黄主任自带 · 不用学习不用升级 · 不占被动上限<br>常驻淡红圈半径 213（由剑阵半径 320 小三分之一推算：320×2/3≈213），跟随黄主任整局存在。怪第一次进圈掷点一次、每怪只判一次：30% 变牛马（「吃得苦中苦 方为人上人」友方转化 15 秒，玩家方打不动它、敌怪可打它，到期死亡）／20% 逃跑远离 5 秒（不可被打断、期间仍可被攻击）／50% 易伤 +20% 持续 10 秒。觉醒分级：未觉醒仅小怪 · 一觉加精英 · 二觉加 Boss（Boss 只吃易伤档、仍按 50% 判定）'));
   if(P.charIdx === 3 && P.stage >= 1) body.appendChild(ldRow('cigshot', '', '<b>烟雾拖尾</b> <span class="ld-tag" style="background:#b9bec4">专属被动·一觉</span>', '一觉获得 · 不能升级 · 不占被动上限 · 持续到游戏结束<br>移动时每 0.12 秒落一团烟（半径 90），烟雾在地图上停留 3 秒，连成长拖尾；怪物碰到烟雾被引燃（10 秒、每秒小怪/精英 5%／Boss 2%，与按键技烟雾共用一生一次／Boss 20 秒规则）' + (P.stage >= 2 ? '<br>二觉强化：被动烟雾的引燃可叠 2 层——每秒小怪 10%／精英 8%／Boss 4%（2 层合计）；每只怪只能叠一次 2 层' : '')));
