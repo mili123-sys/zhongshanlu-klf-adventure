@@ -24150,6 +24150,11 @@ function hostTick(dt){
         if(!tgt){ bdN=560*560;
           for(var eiN=0;eiN<enemies.length;eiN++){ var eN=enemies[eiN]; if((eN.hzConvT || 0) > 0) continue; var dxN=eN.x-p.x, dyN=eN.y-p.y, d2N=dxN*dxN+dyN*dyN; if(d2N<bdN){ bdN=d2N; tgt=eN; } } } // 变牛马不锁定（2026-10-31 用户令）：NPC 360° 兜底索敌跳过转化态友军
       }
+      if(!tgt && !p.isNpc && p.hero!==5 && p.hero!==6){ /* 【联机队友不能攻击修复（2026-11-02 milo 实报）】断点：真人远端成员普攻只有上方朝向锥索敌（±110°，读客机 20Hz 上行的 inp.faceAng），而客机侧 P.faceAng 从不跟移动/瞄准走——客机 update 在 clientTick 处提前返回、clientTick 本身不写 faceAng，输入上行的 fa 恒等于上一份快照发回的 fa（房主→客机→房主的闭环），故该成员朝向基本冻结在初始值，560px 内有怪也多半落在锥外、永不开火；NPC 不受此影响是因为 npcAi 每帧把 inp.faceAng 写向目标、且另有 360° 兜底。修法（只补真人锥外这一支，不动 NPC/5/6 号 360° 路）：锥内无目标时按 360° 取 560px 内最近存活敌人（跳过转化态友军，与 NPC 兜底同口径），开火前先把该成员朝向转到目标（p.faceAng 与 inp.faceAng 同置目标角——开火方向即面朝方向，与单机开火锁、本机火前转身、NPC 结算后置向目标同式，绝非无视朝向的背后开火；下发快照后客机侧 P.faceAng 亦跟到同一角，下一帧输入回传不再把朝向拉回旧值）。伤害/冷却 0.55/射程 560/归因 DMG_SRC 一字未动；无怪时仍不开火。 */
+        var bdR=560*560, tgtR=null;
+        for(var eiR=0;eiR<enemies.length;eiR++){ var eR=enemies[eiR]; if(eR.dead || (eR.hzConvT || 0) > 0) continue; var dxR=eR.x-p.x, dyR=eR.y-p.y, d2R=dxR*dxR+dyR*dyR; if(d2R<bdR){ bdR=d2R; tgtR=eR; } }
+        if(tgtR){ var kbR=Math.atan2(tgtR.y-p.y, tgtR.x-p.x); p.faceAng=kbR; inp.faceAng=kbR; tgt=tgtR; }
+      }
       if(tgt){
        if(p.isNpc){ npcBasicAttack(p, tgt, c); } /* 【NPC 按英雄复刻普攻（2026-10-28）】NPC 不再走下方抽象结算：按其英雄专属武器逐项复刻（班仔大剑气/闻西回旋镖弹射链/莫哈哈 AK 连发＋弹射/鸡哥烟头/八思追踪星弹/黄主任落印/陈哈哈链式闪电，公式读该 NPC 自己的 npcW 等级/分支/进化），见 npcBasicAttack；真人远端成员结算仍走下方既有抽象路径（伤害公式未动）、视觉已于 2026-10-29 队友特效一致轮按 visBasicFx 补齐与玩家一致 */
        else if(p.hero===7){ /* 朱德轮：远端真人朱德真实饼（旧抽象单 hit＋visBasicFx 作废）：数量 [1,3,6,6,6]（bonus 主机未知故 0）、等级读可选同步 peerW（旧客机不发则 Lv1）、乘区 peerRemoteMul、冰爆/冰刺圈/感冒/Lv5 战斗冰面在 peerProjsTick 的 cake/gspike 段结算（归因 DMG_SRC＝p.id）、本体视觉走 visCake；间隔平值 1.15 秒（远端攻速被动主机未知故不套 cd 乘区，见报告边界） */
