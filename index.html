@@ -860,7 +860,7 @@
     <div class="overlay" id="pauseScreen">
       <h2 class="panel-title">暂 停</h2>
       <p class="panel-sub" id="pauseStats">战斗暂停中</p>
-      <p class="panel-sub" style="margin-top:-8px;">版本 <span class="gameVerVal">1.0</span></p>
+      <p class="panel-sub" style="margin-top:-8px;">版本 <span class="gameVerVal">1.2</span></p>
       <div class="pause-col">
         <button class="btn" id="btnResume">继续战斗</button>
         <button class="btn ghost" id="btnLearned">已学技能</button>
@@ -936,7 +936,7 @@
       <h1 class="game-title">中山路KLF大冒险</h1>
       <div class="game-sub">ZHONGSHAN ROAD KLF ADVENTURE</div>
       <p class="game-author">作者：陈哈哈</p>
-      <p class="game-version">版本 <span class="gameVerVal">1.0</span></p>
+      <p class="game-version">版本 <span class="gameVerVal">1.2</span></p>
       <p class="game-desc">中山路的夜很普通——天突然暗了一块，像被扯开一个口子，八个人还没来得及跑，就被吸了进去。</p>
       <div class="pause-col">
         <button class="btn" id="btnTitleStart">开 始</button>
@@ -2604,7 +2604,7 @@ var BRANCHES = {
   ak47:{ C:{ name:'追踪弹射', desc:'子弹获得追踪能力：出膛后自动拐弯咬住最近的敌人，转向不减速、弹速不减；同时解锁弹射：命中后折线弹射到附近另一名敌人，每颗子弹最多弹射 13 次（每跳伤害不变、无衰减）；分裂子弹出生 55%、自带弹射 1 次同样无衰减（全程 55%）——追踪与弹射同在本分支一次解锁、不再分开抽卡' } } // AK 普攻双分支合并（2026-10-29 用户令，取代 2026-10-27 两卡分行口径）：旧两条升级路——①Lv3 分支 C「追踪弹」（type:'branch'，homing）与②独立专属强化卡「弹射」（type:'akmod'，置 w.akRico）——合并为同一条路线：只剩 Lv3 分支 C「追踪弹射」一张卡，applyChoice／npcAutoLearn 选入时同置 branch='C' 与 akRico=true，追踪与弹射同帧起效；独立 akmod 卡已从 buildChoices 与 npcLearnPool 两池删除、不再单独出现。数值：Lv1 初始无追踪无弹射；弹射封顶 13 次、无衰减（2026-10-31 用户令改版，旧封顶 3 次＋逐跳 ×0.72 作废）；分裂子弹出生 55%、弹射封顶 1 次同样无衰减（2026-10-31 追加令，见命中段 isSplitBullet），不叠加、不随等级/进化增长（见 ak47 发射处 ricoB）；AK 普攻分裂已去除（splitB 恒 0）；穿透为进化「黄金AK」专属（见 evoDesc）
 };
 /* 主技能终极进化所需的对应道具 */
-var GAME_VERSION = '1.0'; // 游戏版本号（单一来源）：标题页与暂停菜单都从此常量渲染；2026-10-28 用户令由 1.0 改为 1.1、同日再改为 1.2、再改为 1.3；2026-10-29 用户令再改为 1.4、同日再改为 1.5、同日再改为 1.6；2026-10-30 用户令再改为 1.7、同日再改为 1.8（与八思光阵轮同轮交付）；2026-10-31 用户令再改为 1.9、同日再改为 2.0；2026-11-01 用户令再改为 2.0.1（与语音调大轮同轮交付）；2026-11-01 用户令再改为 2.0.2（与劳农韧性锁定＋旁路封堵轮同轮交付；缓存名 klf-assets-v1 与联机版本 klf-net-2／NET_VERSION 均不动，联机握手只校验 NET_VERSION，故旧版互联不受影响）；2026-11-01 用户令再改为 1.0（与版本号改 1.0 轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）
+var GAME_VERSION = '1.2'; // 游戏版本号（单一来源）：标题页与暂停菜单都从此常量渲染；2026-10-28 用户令由 1.0 改为 1.1、同日再改为 1.2、再改为 1.3；2026-10-29 用户令再改为 1.4、同日再改为 1.5、同日再改为 1.6；2026-10-30 用户令再改为 1.7、同日再改为 1.8（与八思光阵轮同轮交付）；2026-10-31 用户令再改为 1.9、同日再改为 2.0；2026-11-01 用户令再改为 2.0.1（与语音调大轮同轮交付）；2026-11-01 用户令再改为 2.0.2（与劳农韧性锁定＋旁路封堵轮同轮交付；缓存名 klf-assets-v1 与联机版本 klf-net-2／NET_VERSION 均不动，联机握手只校验 NET_VERSION，故旧版互联不受影响）；2026-11-01 用户令再改为 1.0（与版本号改 1.0 轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）；2026-11-01 用户令再改为 1.1（与版本号改 1.1＋APK vc18 轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）；2026-11-02 用户令再改为 1.2（与万箭斜面门轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）
 var SIG_ITEM = { weiye:'luckbell', undeadwar:'fang', thundercloud:'voltcore', icelance:'icevein', emberring:'emberboots', voltspirit:'voltcore', skystrike:'magcore', vacuumblade:'windheart', corona:'luckbell', oldtreant:'thorn', vinegrip:'regen', rockgolem:'stoneskin', quake:'earthheart', waterelemental:'tidalheart', tidalwave:'tidalcore', boomerang:'boots', cigshot:'rune', octoshot:'rune', stamp:'magnet', chainvolt:'xpcrystal',
   firebolt:'fang', leafblade:'boots', lightning:'rune', frostnova:'shield', stardart:'shadow', flameaura:'thorn',
   moonwheel:'critlens', fireball:'glove', frostcone:'shield', poisonspray:'fang', earthspike:'thornheart', orbitblade:'windheart', totem:'magcore', gravitytrap:'hourglass',
@@ -3270,9 +3270,9 @@ window.__BZ_ARRAY = { r: BZ_ARRAY_R, dur: BZ_ARRAY_DUR, tick: BZ_ARRAY_TICK, max
    ⑬红线自查：除新增本系统外，剑阵（BZ_ARRAY_* 常量与 bzArray* 函数本体）、普攻、其他英雄一字未动；接线仅四处增行——killEnemy 末尾计数钩（与 chTwOnKill 并列一行）、update 内推进钩（与 bzArrayTick 并列一行）、drawMhDrones 后绘制钩一行、resetGame 清空一行；newPlayer 仅新增 bzWj* 字段。 */
 /* 2026-11-01 定版（演示横屏版进游戏，20:24 追加持续 15 秒）：50 门同现、门持续期不消失、后面 ±60° 扇形、每门每秒 1 柄相位错开、剑速 980→2940（演示 3 倍换算，助理定、非 milo 直说数值）；持续 15 秒（原 10 秒，milo 追加令）、每门 15 柄、最多 750 柄；旧分批 20 门作废。*/
 var BZ_WJ_NEED = 180, BZ_WJ_DUR = 15, BZ_WJ_GAP = 2, BZ_WJ_PORTAL_DUR = 15, BZ_WJ_PORTAL_EMERGE = 0.05, BZ_WJ_PORTAL_R = 30, BZ_WJ_BACK_MIN = 80, BZ_WJ_BACK_MAX = 260, BZ_WJ_LAT = 145, BZ_WJ_BANDS = [-135, -105, -75, -45, -15, 15, 45, 75, 105, 135], BZ_WJ_BAND_CYCLE = 10, BZ_WJ_BAND_JITTER = 7, BZ_WJ_LIFT_MIN = 8, BZ_WJ_LIFT_MAX = 140, BZ_WJ_SPEED = 2940, BZ_WJ_RANGE = Infinity, BZ_WJ_LEN = 72, BZ_WJ_STUCK_MAX = 12;
-var BZ_WJ_PER_TICK = 27, BZ_WJ_PER_ROUND = 27, BZ_WJ_PORTALS = 27, BZ_WJ_FIRE_GAP = 0.5, BZ_WJ_FIRE_PER_PORTAL = 30, BZ_WJ_MAX_SWORDS = 810, BZ_WJ_BATCH_MIN_DIST = 80, BZ_WJ_FAN_DIST_MIN = 360, BZ_WJ_FAN_DIST_STEP = 120, BZ_WJ_FAN_LAYERS = 5, BZ_WJ_FAN_COLS = 10, BZ_WJ_SECTOR_HALF = 60, BZ_WJ_GATE_DIST_MIN = 250, BZ_WJ_GATE_DIST_MAX = 840, BZ_WJ_GATE_MIN_DIST = 80, BZ_WJ_PLAYER_MIN_DIST = 110; // 2026-11-01 21:15 不重叠定版：宝库门中心距 ≥80px（门直径 60，留 20px 空隙），与旧扇形版最小间距同值 // 2026-11-01 定版：触发时一次出 50 门（PER_TICK 即一次全出数，旧每批 4 门作废）、持续 15 秒（20:24 追加，原 10 秒）、每门每秒 1 柄、每门 15 柄、最多 750 柄；扇形 5 层×10 列、后面 ±60°、层距 120、首层距 360（门范围可离很远）、门中心最小间距 80px（门直径 60，留 20px 空隙）// 2026-11-01 20:52 0.5 秒版（取代 1 秒版）：每门 0.5 秒 1 柄（每秒 2 柄）、每门 30 柄、最多 1500 柄；门跟随见 bzWjLaunchAll/bzWjTick（门存相对偏移、每帧按玩家位置+面朝重算）
-var BZ_WJ_TRAIL_LEN_MUL = 5.0, BZ_WJ_TRAIL_W_OUTER = 28, BZ_WJ_TRAIL_W = 17, BZ_WJ_TRAIL_W_CORE = 6; // 飞剑加显（2026-11-01 用户令，只改视觉）：拖尾长＝剑长×5.0（旧 4.2）、三层线宽 外晕 28／主轨 17／亮芯 6，亮度见 drawBzWj 渐变（主轨峰值更高）；剑长 BZ_WJ_LEN 本身不动
-var BZ_WJ_DRAW_SCALE = 1.4, BZ_WJ_DRAW_GLOW = 18; // 飞剑加显（2026-11-01 用户令，builder 定数，见证据）：剑显示缩放 1.4 倍（仅绘制，剑尖锚点不动、判定不动）、辉光 blur 9→18
+var BZ_WJ_PER_TICK = 27, BZ_WJ_PER_ROUND = 27, BZ_WJ_PORTALS = 27, BZ_WJ_FIRE_GAP = 1.0, BZ_WJ_FIRE_PER_PORTAL = 15, BZ_WJ_MAX_SWORDS = 405, BZ_WJ_BATCH_MIN_DIST = 0, BZ_WJ_FAN_DIST_MIN = 360, BZ_WJ_FAN_DIST_STEP = 120, BZ_WJ_FAN_LAYERS = 5, BZ_WJ_FAN_COLS = 10, BZ_WJ_SECTOR_HALF = 60, BZ_WJ_GATE_DIST_MIN = 250, BZ_WJ_GATE_DIST_MAX = 460, BZ_WJ_GATE_MIN_DIST = 0, BZ_WJ_PLAYER_MIN_DIST = 110; // 2026-11-01 21:15 不重叠定版：宝库门中心距 ≥80px（门直径 60，留 20px 空隙），与旧扇形版最小间距同值 // 2026-11-01 定版：触发时一次出 50 门（PER_TICK 即一次全出数，旧每批 4 门作废）、持续 15 秒（20:24 追加，原 10 秒）、每门每秒 1 柄、每门 15 柄、最多 750 柄；扇形 5 层×10 列、后面 ±60°、层距 120、首层距 360（门范围可离很远）、门中心最小间距 80px（门直径 60，留 20px 空隙）// 2026-11-01 20:52 0.5 秒版（取代 1 秒版）：每门 0.5 秒 1 柄（每秒 2 柄）、每门 30 柄、最多 1500 柄；门跟随见 bzWjLaunchAll/bzWjTick（门存相对偏移、每帧按玩家位置+面朝重算） // 2026-11-02：FIRE_GAP 1.0、每门 15 柄、总数 405、GATE/BATCH_MIN_DIST 0（取消 80 不重叠、允许边边重叠）、GATE_DIST_MAX 460、剑缩放 1.0/拖尾 16/10/3/辉光 10、斜面门压扁 0.55
+var BZ_WJ_TRAIL_LEN_MUL = 5.0, BZ_WJ_TRAIL_W_OUTER = 16, BZ_WJ_TRAIL_W = 10, BZ_WJ_TRAIL_W_CORE = 3; // 2026-11-02 剑改细（只改视觉）：拖尾三层 28/17/6→16/10/3，长度倍率 5.0 不动、判定不动 // 飞剑加显（2026-11-01 用户令，只改视觉）：拖尾长＝剑长×5.0（旧 4.2）、三层线宽 外晕 28／主轨 17／亮芯 6，亮度见 drawBzWj 渐变（主轨峰值更高）；剑长 BZ_WJ_LEN 本身不动
+var BZ_WJ_DRAW_SCALE = 1.0, BZ_WJ_DRAW_GLOW = 10; // 2026-11-02 剑改细（只改视觉）：显示缩放 1.4→1.0、辉光 18→10，剑尖锚点与判定剑长 72 不动 // 飞剑加显（2026-11-01 用户令，builder 定数，见证据）：剑显示缩放 1.4 倍（仅绘制，剑尖锚点不动、判定不动）、辉光 blur 9→18
 var bzWjSwords = []; // 万箭齐发剑实体（本机系统、非 projectiles 数组）：飞行 {x,y,dx,dy,ang,dist,stuck:null}／插怪 {stuck:e,ox,oy,ang,x,y}；resetGame 清空
 var bzWjPortals = []; // 万箭齐发金色传送门视觉实体 {x,y,t,dur,ang}：一门一剑、剑出门即自行消散（纯视觉、伤害/命中与门无关）；resetGame 清空；2026-11-01 21:00 宝库散布：LaunchAll 门带 {relAng,relDist,lift}（另存 relBack/relLat 兼容），bzWjTick 每帧按玩家位置+面朝重算 x/y
 var bzWjBandQueue = []; // 万箭齐发高度带队列（01:50/01:52/01:54）：每 10 个连续门覆盖十带一次的洗牌序、逐门弹出；空时重洗；resetGame 清空
@@ -3317,15 +3317,15 @@ function bzWjLaunch(){ // 生成一个门（2026-11-01 改定：每 2 秒一批 
 function bzWjLaunchAll(){ // 2026-11-01 21:21 背后分布定版（取代 21:00 宝库四周散布；此前身后扇形以本轮背后扇区为基恢复）：触发时一次出 27 门，角色居中、只在背后散布：身后 ±60° 扇区（相对角 120°–240°，相对角 180° 为正背后）内分左/上/右三档——背后左侧 120°–160°、头顶上方/正背后 160°–200°、背后右侧 200°–240°，每档均有门；距离分 5 层格子 300/420/540/660/780（首层 300 落在近档 250–320 内，步距 120 与扇形基对齐；近档下限 21:19 由 150 抬至 250，见本函数末段不压脚定版）；2026-11-01 21:15 不重叠定版（取代 21:00「可重叠、只防完全同点堆叠」）：门中心距 ≥ BZ_WJ_GATE_MIN_DIST ＝ 80px（门直径 60，留 20px 空隙），格子确定性保证（同层弧距 ≥98、层间径距 120、层间抬升差 30，屏距最坏 ≥90，见证据；不再随机重抽/补抽），不丢门、不减门数；2026-11-01 20:52 0.5 秒版+20:53/21:00 门跟随：每门 0.5 秒 1 柄、相位重算为 (ii+随机)/27×BZ_WJ_FIRE_GAP（首发散在 0–0.5 秒内、之后每 0.5 秒一柄、15 秒每门 30 柄、共 810 柄）；每门存 relAng/relDist/lift（另存 relBack/relLat 兼容），bzWjTick 每帧按玩家位置+面朝重算门位，移动跟移、转身门云跟转、仍只在背后左/右/上；2026-11-01 21:15 发射口定版：门是剑的发射口，闲置门内不画剑尖（见 drawBzWjPortal），剑只在发射时刻从门心飞出；2026-11-01 21:19 不压脚定版：门不得压在角色脚下/身上——角色占位核查：P.r＝17（newPlayer）、脚底锚点 P.y＋P.r×0.95≈P.y＋16、精灵高 P.r×5.05≈86、距 P 锚点最远处为头顶约 70（脚底 16、半宽约 29），保守取角色半径 70，门半径 30＋空隙 10，得 P 锚点最小屏距 BZ_WJ_PLAYER_MIN_DIST＝110；门屏距最坏值＝相对距−抬升（抬升最高 BZ_WJ_LIFT_MAX＝140，见 bzWjPortalPos y−lift），故近档下限 BZ_WJ_GATE_DIST_MIN 150→250（250−140＝110，任意转身下最坏屏距仍 ≥110），近档 250–320、中/远档不变，门两两 ≥80 不变；2026-11-01 21:21 背后格子补充：随机散布无法同时满足近档等档 + ≥80 + 50 门（见函数体格子注），故改扇形格子，首层 300 在近档内、屏距 ≥292，≥80 由格子确定性保证
   bzWjPortals.length = 0;
   // 2026-11-01 21:21 背后扇形格子：此前随机散布在背后 120° 扇区内无法同时满足“近档 250–320 + 门两两 ≥80 + 50 门”（离线 500 轮：等档随机散布 100% 轮次有门距 <80，近-近对占绝大多数；偏档 6/22/22 仍 31% 轮次失败），故改回扇形格子确定性排布，不再随机重抽。
-  // 2026-11-01 21:28 27 门格子：5 层 × 列数 4/5/6/6/6（合计 27，内层列少、外层列多，使同层相邻门弧距恒 >80）——层距 300/420/540/660/780（步距 120，首层 300 落在近档 250–320 内）；列角为每列档位中心（120°+(ci+0.5)×120°/列数），避开档位端点重叠；每层抬升固定 8/38/68/98/128（步距 30，层间抬升差 30，使屏距最坏值仍 ≥90，见证据）。
+  // 2026-11-01 21:28 27 门格子：5 层 × 列数 4/5/6/6/6（合计 27，内层列少、外层列多，使同层相邻门弧距恒 >80）——层距 300/340/380/420/460（步距 40，首层 300 落在近档 250–320 内，2026-11-02 压紧取代旧 300/420/540/660/780 步距 120）；列角为每列档位中心（120°+(ci+0.5)×120°/列数），避开档位端点重叠；每层抬升固定 8/18/28/38/48（步距 10，层间屏距约 41.2<门直径 60、边边重叠，首层屏距仍 292≥110 不压脚，见证据）。
   // 子档计数：左 9 / 上 9 / 右 9（左=相对角 120°–160°、上=160°–200°、右=200°–240°，三档均分）；距离档：近 4 门（300 层）、中 11 门（420/540 层）、远 12 门（660/780 层），三档齐全；前方相对角 -90°–90° 一律 0 门，屏距 ≥292（首层 300−抬升 8），远超不压脚界 110。
-  var bzWjBehindLayers = [{ d: 300, cols: 4 }, { d: 420, cols: 5 }, { d: 540, cols: 6 }, { d: 660, cols: 6 }, { d: 780, cols: 6 }];
+  var bzWjBehindLayers = [{ d: 300, cols: 4 }, { d: 340, cols: 5 }, { d: 380, cols: 6 }, { d: 420, cols: 6 }, { d: 460, cols: 6 }]; // 2026-11-02 压紧格子（取代 300/420/540/660/780 步距 120）：层距改 40，门数仍 27、只在背后，层间门屏距离线实测最小 33.0<门直径 60、边边重叠（同角理论值约 √(40²+10²)=41.2，列角错开使实测更密）
   var bzWjBehindIdx = 0;
   for(var li = 0; li < bzWjBehindLayers.length; li++){
     for(var ci = 0; ci < bzWjBehindLayers[li].cols; ci++){
       var relAng = (120 + (ci + 0.5) * 120 / bzWjBehindLayers[li].cols) * Math.PI / 180;
       var relDist = bzWjBehindLayers[li].d;
-      var lift = 8 + li * 30;
+      var lift = 8 + li * 10; // 2026-11-02 抬升步距 30→10（新抬升 8/18/28/38/48），与层距 40 配合使层间屏距约 41.2，首层屏距仍 300−8=292≥110 不压脚
       var back = -relDist * Math.cos(relAng), lat = relDist * Math.sin(relAng);
       var pos = bzWjPortalPos(lat, back, lift);
       var phase = (bzWjBehindIdx + Math.random()) / BZ_WJ_PORTALS * BZ_WJ_FIRE_GAP;
@@ -3349,7 +3349,7 @@ function bzWjHitEnemy(e){ // 飞剑命中结算：伤害与剑阵单柄完全同
 }
 function bzWjTick(dt){ // 万箭齐发推进（update 内、bzArrayTick 后调用）：持续计时/逐门逐剑发射/传送门消散/飞行命中/插怪跟随与清理；持续效果口径同剑阵（面板开启照常推进）
   if(!P || P.charIdx !== 0){ if(bzWjSwords.length) bzWjSwords = []; if(bzWjPortals.length) bzWjPortals = []; return; }
-  for(var pti = bzWjPortals.length - 1; pti >= 0; pti--){ var po2 = bzWjPortals[pti]; po2.t += dt; if(typeof po2.relAng === 'number' && typeof po2.relDist === 'number' && P){ var along2 = po2.relDist * Math.cos(po2.relAng), perp2 = po2.relDist * Math.sin(po2.relAng); var fp2 = bzWjPortalPos(perp2, -along2, po2.lift); po2.x = fp2.x; po2.y = fp2.y; } else if(typeof po2.relBack === 'number' && typeof po2.relLat === 'number' && P){ var fp2 = bzWjPortalPos(po2.relLat, po2.relBack, po2.lift); po2.x = fp2.x; po2.y = fp2.y; } // 2026-11-01 21:00 宝库门云跟随：每帧按当前玩家位置+当前面朝重算门位（相对角 relAng、距离 relDist、抬升 lift 均不变，整片门云跟移跟转、仍只在背后左/右/上）；2026-11-01 21:10 门面定版（取代 21:06 朝向角色）：门面竖下来、正面朝向观察者、完整正圆无标记，ang 不再每帧按门到玩家方向更新；发剑取的 po2.x/po2.y 已是跟随后位置，剑向仍为发剑时刻面朝，已飞剑只按自身 dx/dy 前进、门跟随不改已飞剑方向
+  for(var pti = bzWjPortals.length - 1; pti >= 0; pti--){ var po2 = bzWjPortals[pti]; po2.t += dt; if(typeof po2.relAng === 'number' && typeof po2.relDist === 'number' && P){ var along2 = po2.relDist * Math.cos(po2.relAng), perp2 = po2.relDist * Math.sin(po2.relAng); var fp2 = bzWjPortalPos(perp2, -along2, po2.lift); po2.x = fp2.x; po2.y = fp2.y; } else if(typeof po2.relBack === 'number' && typeof po2.relLat === 'number' && P){ var fp2 = bzWjPortalPos(po2.relLat, po2.relBack, po2.lift); po2.x = fp2.x; po2.y = fp2.y; } // 2026-11-01 21:00 宝库门云跟随：每帧按当前玩家位置+当前面朝重算门位（相对角 relAng、距离 relDist、抬升 lift 均不变，整片门云跟移跟转、仍只在背后左/右/上）；2026-11-02 斜面门定版（取代 21:10 正圆朝观察者）：门面为俯视椭圆斜面、正面朝怪物/发剑方向、椭圆随面朝转，ang 不再每帧按门到玩家方向更新；发剑取的 po2.x/po2.y 已是跟随后位置，剑向仍为发剑时刻面朝，已飞剑只按自身 dx/dy 前进、门跟随不改已飞剑方向
   if((P.bzWjT || 0) > 0){ while(po2.fired < BZ_WJ_FIRE_PER_PORTAL && po2.nextFire <= po2.t){ var emergeAng = (P && typeof P.faceAng === 'number') ? P.faceAng : po2.ang; bzWjSwords.push({ x: po2.x, y: po2.y, dx: Math.cos(emergeAng), dy: Math.sin(emergeAng), ang: emergeAng, dist: 0, stuck: null, ox: 0, oy: 0 }); po2.fired++; P.bzWjSwordsFired = (P.bzWjSwordsFired || 0) + 1; po2.nextFire += BZ_WJ_FIRE_GAP; } } if(po2.t >= po2.dur) bzWjPortals.splice(pti, 1); } // 2026-11-01 定版：各门独立发剑，每门每秒 1 柄、相位错开；剑向＝发剑时刻面朝；每门最多 15 柄；传送门推进：生成 0.05 秒出剑（2026-11-01 改定：出剑方向＝出剑时刻的角色面朝 P.faceAng，剑尖朝前；此前为门生成当帧面朝——两者只差 0.05 秒内转身的极小窗口，本轮按“出门时刻”口径落地；现行剑向核查结论：此前已是面朝角、从不是门到角色的放射方向，见证据；各门每秒 1 柄、相位错开、每门最多 15 柄）；门持续期不消失、15 秒到点一起消失；已飞出的剑按既有规则留存；2026-11-01 20:52 0.5 秒版：每门 0.5 秒 1 柄、相位 (ii+随机)/50×0.5、每门最多 30 柄、共 1500 柄，门跟随见本行前段
   if((P.bzWjT || 0) > 0){
     P.bzWjT -= dt;
@@ -3396,26 +3396,28 @@ function bzWjDrawSword(cx, cy, ang){ // 画一柄横置的剑（剑身中心 cx,
   } else {
     var ux = -dx, uy = -dy; // 尖→柄轴（与 bzsword 回退同构）
     var gX = tipX + ux * (BZ_WJ_LEN * 0.74 * BZ_WJ_DRAW_SCALE), gY = tipY + uy * (BZ_WJ_LEN * 0.74 * BZ_WJ_DRAW_SCALE), pX = tipX + ux * BZ_WJ_LEN * BZ_WJ_DRAW_SCALE, pY = tipY + uy * BZ_WJ_LEN * BZ_WJ_DRAW_SCALE;
-    ctx.strokeStyle = 'rgba(255,215,106,.55)'; ctx.lineWidth = 7.5; ctx.beginPath(); ctx.moveTo(gX, gY); ctx.lineTo(tipX, tipY); ctx.stroke();
-    ctx.strokeStyle = '#ffeeb0'; ctx.lineWidth = 3.5; ctx.beginPath(); ctx.moveTo(gX, gY); ctx.lineTo(tipX, tipY); ctx.stroke();
-    ctx.strokeStyle = '#ffd76a'; ctx.lineWidth = 5.0; ctx.beginPath(); ctx.moveTo(gX - uy * 10, gY + ux * 10); ctx.lineTo(gX + uy * 10, gY - ux * 10); ctx.stroke();
-    ctx.strokeStyle = '#c8912a'; ctx.lineWidth = 4.5; ctx.beginPath(); ctx.moveTo(gX, gY); ctx.lineTo(pX, pY); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,215,106,.55)'; ctx.lineWidth = 5.0; ctx.beginPath(); ctx.moveTo(gX, gY); ctx.lineTo(tipX, tipY); ctx.stroke();
+    ctx.strokeStyle = '#ffeeb0'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(gX, gY); ctx.lineTo(tipX, tipY); ctx.stroke();
+    ctx.strokeStyle = '#ffd76a'; ctx.lineWidth = 3.5; ctx.beginPath(); ctx.moveTo(gX - uy * 10, gY + ux * 10); ctx.lineTo(gX + uy * 10, gY - ux * 10); ctx.stroke();
+    ctx.strokeStyle = '#c8912a'; ctx.lineWidth = 3.0; ctx.beginPath(); ctx.moveTo(gX, gY); ctx.lineTo(pX, pY); ctx.stroke();
     ctx.fillStyle = '#ffeeb0'; ctx.beginPath(); ctx.arc(pX, pY, 3.0, 0, Math.PI * 2); ctx.fill();
   }
   ctx.restore();
 }
-function drawBzWjPortal(x, y, t, dur){ // 金色圆形传送门（01:37 定版；程序绘制、无外部素材/不盗用视频原素材）：金色辉光晕＋白金亮芯＋亮金双环＋8 枚旋转刻度；开门放大、闭门收缩淡出——一门只出一剑、出剑后即消散；2026-11-01 21:10 门面定版（取代 21:06 朝向角色及亮弧标记，回到 21:05 版）：门面竖下来、竖着立着、正面朝向观察者，屏幕上是完整正圆（本函数只用 ctx.arc、无 scale/ellipse 压扁或透视倾斜、不平躺，半径 BZ_WJ_PORTAL_R×开合缩放），无朝向标记，不改门位散布/发剑/门数/持续/伤害/剑速；2026-11-01 21:15 发射口定版：门内不画剑尖——门是剑的发射口，闲置门只画辉光晕＋亮芯＋双环＋8 刻度门本体（本函数体内无画剑语句），剑只在发射时刻从门心飞出（drawBzWj 飞行剑段，剑向发剑时刻面朝、飞出后不改向）
+function drawBzWjPortal(x, y, t, dur, fa){ // 金色斜面传送门（2026-11-02，fa=发剑时面朝，缺省 0）（01:37 定版；程序绘制、无外部素材/不盗用视频原素材）：金色辉光晕＋白金亮芯＋亮金双环＋8 枚旋转刻度；开门放大、闭门收缩淡出——一门只出一剑、出剑后即消散；2026-11-02 斜面门定版（取代 21:10 正圆朝观察者）：门正面朝怪物/发剑方向，玩家在门上方俯视只见斜面——本函数先 rotate(面朝) 再 scale(0.55,1)，把正圆压成椭圆斜面，长轴垂直于发剑方向、短轴沿发剑方向（压扁系数 0.55），椭圆随面朝实时转，正面一侧（+x 朝怪物）用线性渐变亮于背面一侧；不平躺在地面、不画正对镜头的正圆、不加旧的朝向角色亮弧标记，不改门位散布/发剑/门数/持续/伤害/剑速；2026-11-01 21:15 发射口定版：门内不画剑尖——门是剑的发射口，闲置门只画辉光晕＋亮芯＋双环＋8 刻度门本体（本函数体内无画剑语句），剑只在发射时刻从门心飞出（drawBzWj 飞行剑段，剑向发剑时刻面朝、飞出后不改向）
   var open = clamp(t / 0.3, 0, 1);
   var sc = open < 1 ? (0.55 + 0.45 * open) : (t > dur - 1 ? (1 - 0.45 * (t - (dur - 1))) : 1);
   var al = t < 0.2 ? t / 0.2 : (t > dur - 1 ? Math.max(0, dur - t) : 1); // 2026-11-01 定版：门持续期不消失，0.3 秒开门放大、持续期满前 1 秒收缩淡出、到点一起消失（旧 0.28 秒存续口径作废）
   var R = BZ_WJ_PORTAL_R * sc;
-  ctx.save(); ctx.translate(x, y); ctx.globalAlpha = Math.max(0, al);
+  var _fa = (typeof fa === 'number') ? fa : 0;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(_fa); ctx.scale(0.55, 1); ctx.globalAlpha = Math.max(0, al); // 2026-11-02 斜面：旋转到面朝后沿发剑方向压扁 0.55，arc 即成椭圆，长轴垂直于发剑方向、短轴沿发剑方向
   var g = ctx.createRadialGradient(0, 0, 2, 0, 0, R * 2.0);
   g.addColorStop(0, 'rgba(255,236,170,0.75)'); g.addColorStop(0.45, 'rgba(255,200,80,0.30)'); g.addColorStop(1, 'rgba(255,180,40,0)');
   ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, R * 2.0, 0, Math.PI * 2); ctx.fill(); // 金色辉光
   var g2 = ctx.createRadialGradient(0, 0, 1, 0, 0, R);
   g2.addColorStop(0, 'rgba(255,250,220,0.95)'); g2.addColorStop(0.7, 'rgba(255,205,92,0.85)'); g2.addColorStop(1, 'rgba(214,144,32,0.90)');
-  ctx.fillStyle = g2; ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.fill(); // 亮芯圆面
+  ctx.fillStyle = g2; ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.fill(); // 亮芯圆面（经 rotate+scale 后即为椭圆斜面）
+  var gf = ctx.createLinearGradient(-R, 0, R, 0); gf.addColorStop(0, 'rgba(20,12,0,0.28)'); gf.addColorStop(1, 'rgba(255,250,220,0.38)'); ctx.fillStyle = gf; ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.fill(); // 正面亮于背面：+x 为发剑方向（朝怪物），背面（−x 朝玩家）压暗
   ctx.strokeStyle = 'rgba(255,240,190,0.95)'; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2); ctx.stroke(); // 外环
   ctx.strokeStyle = 'rgba(255,215,106,0.80)'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.arc(0, 0, R * 0.78, 0, Math.PI * 2); ctx.stroke(); // 内环
   ctx.strokeStyle = 'rgba(255,240,190,0.90)'; ctx.lineWidth = 2.2; // 旋转刻度（门环符文感）
@@ -3424,7 +3426,7 @@ function drawBzWjPortal(x, y, t, dur){ // 金色圆形传送门（01:37 定版�
 }
 function drawBzWj(ox, oy){ // 万箭齐发绘制（drawMhDrones 后、演员层之上）：金色传送门（背后、剑之下）＋飞行剑（带拖影）＋插怪剑
   if(!P || P.charIdx !== 0) return;
-  for(var k = 0; k < bzWjPortals.length; k++){ var po = bzWjPortals[k]; drawBzWjPortal(po.x + ox, po.y + oy, po.t, po.dur); } // 2026-11-01 21:10 门面定版：不再传 po.ang，门面竖着朝向观察者、无朝向标记
+  for(var k = 0; k < bzWjPortals.length; k++){ var po = bzWjPortals[k]; drawBzWjPortal(po.x + ox, po.y + oy, po.t, po.dur, (P && typeof P.faceAng === 'number') ? P.faceAng : 0); } // 2026-11-02 斜面门：传当前面朝，椭圆随面朝实时转，正面朝怪物/发剑方向
   for(var j = 0; j < bzWjSwords.length; j++){
     var sw = bzWjSwords[j];
     if(!sw.stuck){ // 飞行光轨（01:59 演示定稿＋2026-10-31 加明显改定，只改视觉）：剑身后一道长金色光轨、尾端渐隐——长由 2.6 倍剑长加至 BZ_WJ_TRAIL_LEN_MUL＝4.2 倍剑长（约 302px）、单层线宽 6 改三层（外晕 20 低 alpha 柔光／主轨 12 高 alpha／亮芯 4 近白），主轨渐变峰值 alpha 0.5→0.9、整体更亮更粗更长；尾端恒渐隐至 0、三层均为半透明渐变、不遮挡角色与技能本体
@@ -13192,12 +13194,12 @@ function spawnWave120Mul(){ if(gameTime < 120) return 1; if(gameTime < 180) retu
    打断：任意手动方向键或摇杆、闪避/特殊技能键、托管钮本身——任一即关，关后立刻恢复手动。
    面板：暂停菜单/商店/升级弹窗/宝箱弹窗/死亡结算下托管不抢输入——升级页由托管选卡逻辑处理，
    商店误入则 0.8 秒后自动关店（不买任何东西，见 frame 段托管钩），结算屏出现即自动关托管。 */
-var AUTOPLAY = { on:false, _t:0, _pickT:0, _shopT:0, _chestT:0, _aimAng:null, _curTgt:null, _stuckT:0, _lastX:0, _lastY:0, _skipTgt:null, _skipUntil:0, _strafeT:0, _strafeDir:1, _wanderT:0, _wanderX:0, _wanderY:0 };
+var AUTOPLAY = { on:false, _t:0, _pickT:0, _shopT:0, _chestT:0, _aimAng:null, _curTgt:null, _stuckT:0, _lastX:0, _lastY:0, _skipTgt:null, _skipUntil:0, _strafeT:0, _strafeDir:1, _wanderT:0, _wanderX:0, _wanderY:0, _lowHp:false, _learnOpenT:0 };
 var AUTOPLAY_UNREACHABLE_SEC = 3; /* 不可达放弃阈值（builder 定）：追一个拾取/宝箱/传送门/战斗目标时连续 3 秒几乎不动（每帧位移 <1px）即放弃该目标、黑名单 10 秒；站圈内静止（宝箱/传送门站定）不计入——那是既有站圈口径，不是卡死 */
 function autoplaySet(on){
   AUTOPLAY.on = !!on;
   var b = el('btnAutoplay'); if(b){ b.classList.toggle('on', AUTOPLAY.on); b.textContent = AUTOPLAY.on ? '托管中' : '托管'; }
-  if(!AUTOPLAY.on){ AUTOPLAY._aimAng = null; AUTOPLAY._curTgt = null; AUTOPLAY._stuckT = 0; }
+  if(!AUTOPLAY.on){ AUTOPLAY._aimAng = null; AUTOPLAY._curTgt = null; AUTOPLAY._stuckT = 0; AUTOPLAY._lowHp = false; AUTOPLAY._learnOpenT = 0; }
 }
 function autoplayToggle(){ autoplaySet(!AUTOPLAY.on); }
 (function(){ /* 开关与打断键绑定：托管钮点按开关；手动闪避/特殊键按下即关（托管自己的 doSpecial/doDodge 程序调用不走 DOM 事件、不会自关）；方向键打断在 update 移动段（见该段托管钩） */
@@ -13269,6 +13271,94 @@ function autoplaySmartTarget(){ /* 智能目标打分（NPC 最近目标之上�
   return best;
 }
 function autoplayNearestDrop(healOnly){ var best = null, bd = Infinity; if(typeof gems === 'undefined') return null; for(var i = 0; i < gems.length; i++){ var g = gems[i]; var isHeal = !!g.heal || g.drop === 'drink' || g.drop === 'heart'; if(healOnly && !isHeal) continue; if(!healOnly && (g.heal || g.drop)) continue; var d = Math.hypot(g.x - P.x, g.y - P.y); if(d < bd){ bd = d; best = g; } } return best ? { g:best, d:bd } : null; }
+/* 2026-11-02 托管优先级＋自动学习轮（milo 定版）：以下 helper 只供托管分支用，手动模式不调用。
+   拾取分类全部沿用源码已有字段，不自编：吸铁石＝g.drop==='magnet'（DROP_ITEMS.magnet），血包＝g.heal 或 drop drink/heart（与 autoplayNearestDrop 的回血判定同口径），经验点＝纯 v 宝石（v>0 且无 heal/rage/drop/stand/doll，与拾取段 gemIsXp 同口径）。 */
+function autoplayIsMagnetGem(g){ return !!g && g.drop === 'magnet'; }
+function autoplayIsHealGem(g){ return !!g && (!!g.heal || g.drop === 'drink' || g.drop === 'heart'); }
+function autoplayIsXpGem(g){ return !!g && !!g.v && !g.heal && !g.rage && !g.drop && !g.stand && !g.doll; }
+function autoplayLowModeUpdate(){ /* 低血量锁存（按 milo 字面）：血量比 ≤70% 进入，之后 71%~99% 不退出，只有满血（hp>=maxHp）才变回常态；托管关闭时 autoplaySet 清锁存。本函数只管优先级顺序，战斗距离带/按键技门禁仍用 think 内旧 lowHp（<30%）口径，不随本锁存改动。 */
+  if(!P || !P.maxHp) return !!AUTOPLAY._lowHp;
+  if(P.hp <= P.maxHp * 0.7) AUTOPLAY._lowHp = true;
+  else if(P.hp >= P.maxHp) AUTOPLAY._lowHp = false;
+  return AUTOPLAY._lowHp;
+}
+function autoplayPriorityPickup(lowMode){ /* （2026-11-02 顺序再细化后 think 不再直接调用本函数，各档改由 autoplayNearestCategoryGem 单独实现；本体保留供探针/旧口径对照。）托管拾取类别顺序：常态 magnet→xp；低血量模式 heal→magnet→xp；其余掉落（bomb/stim/shield 等）只作最后兜底、不插队。每类内部取最近一颗（不按旧价值/距离混分）；已跳过目标（autoplaySkipped）与已被本机拾过（gemTakenBy）的不算；旧风控保留：目标周围 150px 内怪 ≥3 只且玩家身边 300px 内有怪时该颗跳过、继续找同类下一颗或下一类，绝不为一颗经验穿怪群。无对应拾取物时返回 null，由调用方回落。 */
+  if(typeof gems === 'undefined' || !gems.length) return null;
+  var cats = lowMode ? ['heal', 'magnet', 'xp', 'other'] : ['magnet', 'xp', 'heal', 'other'];
+  for(var ci = 0; ci < cats.length; ci++){
+    var kind = cats[ci], best = null, bd = Infinity;
+    for(var gi = 0; gi < gems.length; gi++){
+      var gg = gems[gi]; if(autoplaySkipped(gg)) continue;
+      if(typeof gemTakenBy === 'function' && gemTakenBy(gg, LOCAL_GEM_KEY)) continue;
+      var ok = false;
+      if(kind === 'magnet') ok = autoplayIsMagnetGem(gg);
+      else if(kind === 'heal') ok = autoplayIsHealGem(gg);
+      else if(kind === 'xp') ok = autoplayIsXpGem(gg);
+      else ok = !autoplayIsMagnetGem(gg) && !autoplayIsHealGem(gg) && !autoplayIsXpGem(gg) && !!gg.drop;
+      if(!ok) continue;
+      var gd = Math.hypot(gg.x - P.x, gg.y - P.y);
+      var nearRisk = autoplayClusterNear(gg.x, gg.y, 150);
+      if(nearRisk >= 3 && autoplayClusterNear(P.x, P.y, 300) > 0) continue;
+      if(gd < bd){ bd = gd; best = gg; }
+    }
+    if(best) return { kind: kind, g: best, d: bd };
+  }
+  return null;
+}
+function autoplayNearestCategoryGem(kind){ /* 2026-11-02 托管顺序再细化：单类别最近拾取（与 autoplayPriorityPickup 同过滤口径：跳过目标、本机已拾、目标周围 150px 内怪 ≥3 且玩家身边 300px 内有怪时跳过；类别定义与 autoplayPriorityPickup 完全一致，magnet＝drop magnet、heal＝heal 或 drop drink/heart、xp＝纯 v 宝石、other＝有 drop 且非前三类）。供 think 各档单独调用，吸铁石单独一档、不再与经验点混在同一拾取档。 */
+  if(typeof gems === 'undefined' || !gems.length) return null;
+  var best = null, bd = Infinity;
+  for(var gi = 0; gi < gems.length; gi++){
+    var gg = gems[gi]; if(autoplaySkipped(gg)) continue;
+    if(typeof gemTakenBy === 'function' && gemTakenBy(gg, LOCAL_GEM_KEY)) continue;
+    var ok = false;
+    if(kind === 'magnet') ok = autoplayIsMagnetGem(gg);
+    else if(kind === 'heal') ok = autoplayIsHealGem(gg);
+    else if(kind === 'xp') ok = autoplayIsXpGem(gg);
+    else ok = !autoplayIsMagnetGem(gg) && !autoplayIsHealGem(gg) && !autoplayIsXpGem(gg) && !!gg.drop;
+    if(!ok) continue;
+    var gd = Math.hypot(gg.x - P.x, gg.y - P.y);
+    if(autoplayClusterNear(gg.x, gg.y, 150) >= 3 && autoplayClusterNear(P.x, P.y, 300) > 0) continue;
+    if(gd < bd){ bd = gd; best = gg; }
+  }
+  return best ? { g: best, d: bd } : null;
+}
+function autoplayIsPairedChoice(c){ /* 配套判定（只读现有配对表 SIG_ITEM，不自编配对）：被动卡＝任一已学未进化主动的 SIG_ITEM 配对被动；主动卡（new/upgrade/branch/evo/count）＝其 SIG_ITEM 配对被动已被学。进化卡本身以持有配对被动为出现门槛，故恒为配套。heal 卡无配对。 */
+  if(!c || !P) return false;
+  if(typeof SIG_ITEM === 'undefined') return false;
+  if(c.type === 'passive'){
+    for(var wk in P.weapons){ if(!P.weapons[wk].evo && SIG_ITEM[wk] === c.key) return true; }
+    return false;
+  }
+  if(c.type === 'new' || c.type === 'upgrade' || c.type === 'branch' || c.type === 'evo' || c.type === 'count'){
+    var pair = SIG_ITEM[c.key]; if(!pair) return false;
+    return (P.passives[pair] || 0) >= 1;
+  }
+  return false;
+}
+function autoplayPairedChoiceIndex(choices){ if(!choices) return -1; for(var i = 0; i < choices.length; i++){ if(autoplayIsPairedChoice(choices[i])) return i; } return -1; }
+function autoplayLearnOpenReady(){ /* 托管主动点“可学习”钮的门禁（模拟手动点钮，不改 AUTO_LEARN 开关本身）：托管开、局内 playing、待学>0、学习页未开、任一面板未开、HUD 编辑未开、本机未倒地/死亡；特效门禁由 tryOpenLevelUp 内 specFxBusy 复核，觉醒特效暂缓由 openLevelUp 内 awkFxActive 复核。AUTO_LEARN 开时 autoLearnTryOpen 已先跑，本函数只在学习页仍未开时补点——不重复开页、不绕过面板护盾。 */
+  if(!AUTOPLAY.on) return false;
+  if(typeof state === 'undefined' || state !== 'playing') return false;
+  if(!P || !(P.hp > 0)) return false;
+  if(typeof pendingLevels === 'undefined' || pendingLevels <= 0) return false;
+  if(typeof N !== 'undefined' && N && N.local && (N.local.downed || N.local.dead)) return false;
+  if(typeof PANEL_GUARD !== 'undefined' && PANEL_GUARD.learn) return false;
+  if(typeof panelGuardOn === 'function' && panelGuardOn()) return false;
+  if(typeof hudEditOn !== 'undefined' && hudEditOn) return false;
+  var b = (typeof document !== 'undefined') ? document.getElementById('btnLearn') : null;
+  if(b && !b.classList.contains('on')) return false;
+  var scr = (typeof document !== 'undefined') ? document.getElementById('levelupScreen') : null;
+  if(scr && scr.classList.contains('on')) return false;
+  return true;
+}
+function autoplayLearnOpenTick(dt){ /* 托管自动学习开页（2026-11-02）：AUTO_LEARN 关时也不等玩家手动点，每 0.45 秒按 autoplayLearnOpenReady 试一次 tryOpenLevelUp（与手动点“可学习”钮同路 openLevelUp、暂存卡组/护盾/续开全走原路）；学习页已开时由 autoplayLearnTick 选卡，本函数不抢。托管关、死亡/胜利结算时不调用（update 段只在 AUTOPLAY.on 时调本函数，结算屏出现即 autoplaySet(false)）。 */
+  if(!AUTOPLAY.on) return;
+  AUTOPLAY._learnOpenT -= dt; if(AUTOPLAY._learnOpenT > 0) return;
+  AUTOPLAY._learnOpenT = 0.45;
+  if(!autoplayLearnOpenReady()) return;
+  try{ tryOpenLevelUp(); }catch(e){}
+}
 function autoplayThink(dt){
   AUTOPLAY._aimAng = null;
   if(!P || P.hp <= 0 || P.downed) return { x:0, y:0 };
@@ -13276,15 +13366,29 @@ function autoplayThink(dt){
   var dg = autoplayDangerVec();
   if(dg && dg.hard){ AUTOPLAY._aimAng = Math.atan2(dg.y, dg.x); if(dg.dodge && typeof dodgeChargesOf === 'function' && dodgeChargesOf(P) > 0 && (P.dodgeT || 0) <= 0){ P.faceAng = AUTOPLAY._aimAng; doDodge(); } return { x:dg.x, y:dg.y }; }
   var hpF = P.hp / P.maxHp, lowHp = hpF < 0.3;
-  /* ②低血先拉开捡血：35% 以下且 800px 内有回血掉落时，赴血包优先于一切输出（不穿怪群硬抢：赴血途中躲技能分支仍在上游） */
-  if(hpF < 0.35){ var hd = autoplayNearestDrop(true); if(hd && hd.d < 800){ var hv = autoplaySeekVec(hd.g.x, hd.g.y, 20); AUTOPLAY._aimAng = Math.atan2(hd.g.y - P.y, hd.g.x - P.x); autoplayTrack(hd.g, hv, dt); return hv; } }
-  /* ③Boss 集火（NPC Boss 集火同口径）：低血且 Boss 贴身时拉开至 260px 带、贴身 130px 内闪避；按键技只在 Boss 280px 内且冷却好时放 */
+  /* ②2026-11-02 优先级锁存：lowMode 由 autoplayLowModeUpdate 维护（≤70% 进入、满血才退出）；本分支只更新锁存，不直接赴捡——Boss 优先于血包，血包分支见下方 ④，旧“35% 以下血包优先于一切输出”口径自本轮起由新顺序取代（35% 以下仍在锁存内、Boss 不在场时仍赴血包，见 ④）。 */
+  var lowMode = autoplayLowModeUpdate();
+  /* ③Boss 集火（NPC Boss 集火同口径）：低血且 Boss 贴身时拉开至 260px 带、贴身 130px 内闪避；按键技只在 Boss 280px 内且冷却好时放；2026-11-02 优先级第 1 项：Boss 在场即本分支返回，血包/吸铁石/经验一律排后 */
   var boss = autoplayNearestBoss();
   if(boss){ var bd = Math.hypot(boss.x - P.x, boss.y - P.y), bang = Math.atan2(boss.y - P.y, boss.x - P.x); AUTOPLAY._aimAng = bang;
     if(lowHp && bd < 130 && typeof dodgeChargesOf === 'function' && dodgeChargesOf(P) > 0 && (P.dodgeT || 0) <= 0){ doDodge(Math.atan2(P.y - boss.y, P.x - boss.x)); }
     if(!lowHp && autoplaySpecOk() && bd < 280) doSpecial();
     var bv = autoplayBandVec(bang, bd, lowHp); autoplayTrack(boss, bv, dt); return autoplayBlendMoss(bv); }
-  /* ④副本内出口（新屋楼梯/三层宝箱、街尾回程门/奖励宝箱）：清场后才赴——有怪时先走下方战斗分支清怪，守门精英未死时楼梯站圈本就不累计 */
+  /* ④低血量模式血包（2026-11-02 优先级第 2 项，仅低血量锁存时）：Boss 不在场且 800px 内有回血掉落时赴血包；赴血途中躲技能分支仍在上游（①），不穿怪群硬抢的风控在拾取段 ⑧另行保留——本紧急分支沿用旧 800px 口径、只把触发门从 35% 改为锁存。无 Boss 且无血包时回落到下一项。 */
+  if(lowMode){ var hd = autoplayNearestDrop(true); if(hd && hd.d < 800){ var hv = autoplaySeekVec(hd.g.x, hd.g.y, 20); AUTOPLAY._aimAng = Math.atan2(hd.g.y - P.y, hd.g.x - P.x); autoplayTrack(hd.g, hv, dt); return hv; } }
+  /* ④低血量模式血包·远距兜底（2026-11-02 顺序再细化）：800px 内紧急血包未命中时，低血量锁存下血包档仍优先于吸铁石——取最近过滤后血包（不限距，过滤口径同 autoplayPriorityPickup），无血包时回落吸铁石档；常态不进本档。 */
+  if(lowMode){ var hg = autoplayNearestCategoryGem('heal'); if(hg){ var hgv = autoplaySeekVec(hg.g.x, hg.g.y, 20); AUTOPLAY._aimAng = Math.atan2(hg.g.y - P.y, hg.g.x - P.x); autoplayTrack(hg.g, hgv, dt); return hgv; } }
+  /* ⑤吸铁石档（2026-11-02 顺序再细化：单独一档、排在战斗/经验点之前）：取最近过滤后吸铁石，无吸铁石时回落战斗档。 */
+  { var mg = autoplayNearestCategoryGem('magnet'); if(mg){ var mvv = autoplaySeekVec(mg.g.x, mg.g.y, 20); AUTOPLAY._aimAng = Math.atan2(mg.g.y - P.y, mg.g.x - P.x); autoplayTrack(mg.g, mvv, dt); return mvv; } }
+  /* ⑥战斗档（NPC 普通战斗的距离带＋智能打分目标）：战斗判定沿用 autoplaySmartTarget（非 Boss、未死、未转化、1200px 内、最近 40 只打分）；按键技留给怪群（身边 320px 内 ≥3 只）才放，低血贴身 130px 内闪避；无战斗目标时回落经验点档。 */
+  var tgt = autoplaySmartTarget();
+  if(tgt){ var td = Math.hypot(tgt.x - P.x, tgt.y - P.y), tang = Math.atan2(tgt.y - P.y, tgt.x - P.x); AUTOPLAY._aimAng = tang;
+    if(lowHp && td < 130 && typeof dodgeChargesOf === 'function' && dodgeChargesOf(P) > 0 && (P.dodgeT || 0) <= 0){ doDodge(Math.atan2(P.y - tgt.y, P.x - tgt.x)); }
+    if(!lowHp && autoplaySpecOk() && autoplayClusterNear(P.x, P.y, 320) >= 3) doSpecial();
+    var tv = autoplayBandVec(tang, td, lowHp); autoplayTrack(tgt, tv, dt); return autoplayBlendMoss(tv); }
+  /* ⑦经验点档（2026-11-02 顺序再细化：与战斗同档、战斗之后）：取最近过滤后纯经验宝石，无经验点时回落传送门档。 */
+  { var xg = autoplayNearestCategoryGem('xp'); if(xg){ var xvv = autoplaySeekVec(xg.g.x, xg.g.y, 20); AUTOPLAY._aimAng = Math.atan2(xg.g.y - P.y, xg.g.x - P.x); autoplayTrack(xg.g, xvv, dt); return xvv; } }
+  /* ⑧传送门档·副本内出口（2026-11-02 顺序再细化：战斗/经验点档之后才赴；街尾回程门此前无条件直赴，现改为战斗/拾取档无目标时才赴；新屋楼梯/三层宝箱仍须清场 enemies==0，守门精英未死时楼梯站圈本就不累计） */
   if(typeof MAZE !== 'undefined' && MAZE.active){
     if(enemies.length === 0){ if(MAZE.stairs){ var sv = autoplaySeekVec(MAZE.stairs.x, MAZE.stairs.y, 10); AUTOPLAY._aimAng = Math.atan2(MAZE.stairs.y - P.y, MAZE.stairs.x - P.x); return sv; } if(MAZE.chestPos){ var cv = autoplaySeekVec(MAZE.chestPos.x, MAZE.chestPos.y, 20); AUTOPLAY._aimAng = Math.atan2(MAZE.chestPos.y - P.y, MAZE.chestPos.x - P.x); return cv; } }
   }
@@ -13292,7 +13396,7 @@ function autoplayThink(dt){
     if(STREET.exitPortal){ var ev = autoplaySeekVec(STREET.exitPortal.x, STREET.exitPortal.y, 10); AUTOPLAY._aimAng = Math.atan2(STREET.exitPortal.y - P.y, STREET.exitPortal.x - P.x); return ev; }
     if(STREET.chest && enemies.length === 0){ var scv = autoplaySeekVec(STREET.chest.x, STREET.chest.y, 20); AUTOPLAY._aimAng = Math.atan2(STREET.chest.y - P.y, STREET.chest.x - P.x); return scv; }
   }
-  /* ⑤主地图传送门（NPC 赴门同口径）：虚空裂缝门优先（踏入 55px 即触发）、其次新屋/街尾入口（站圈 52px/站满 3 秒由既有 houseTick/streetTick 判定）；Boss 在场时本分支不可达（上方 Boss 分支已返回，houseTick/streetTick 在 Boss 战中亦冻结站圈） */
+  /* ⑧传送门档·主地图传送门（NPC 赴门同口径）：虚空裂缝门优先（踏入 55px 即触发）、其次新屋/街尾入口（站圈 52px/站满 3 秒由既有 houseTick/streetTick 判定）；Boss 在场时本分支不可达（上方 Boss 分支已返回，houseTick/streetTick 在 Boss 战中亦冻结站圈）；传送门档在宝箱档之前 */
   if(!(typeof MAZE !== 'undefined' && MAZE.active) && !(typeof STREET !== 'undefined' && STREET.active) && !(typeof voidArena !== 'undefined' && voidArena)){
     var portal = null;
     if(typeof voidPortal !== 'undefined' && voidPortal && !autoplaySkipped(voidPortal)) portal = voidPortal;
@@ -13300,35 +13404,16 @@ function autoplayThink(dt){
       for(var pi2 = 0; pi2 < pc.length; pi2++){ if(!portal || Math.hypot(pc[pi2].x - P.x, pc[pi2].y - P.y) < Math.hypot(portal.x - P.x, portal.y - P.y)) portal = pc[pi2]; } }
     if(portal){ var pv = autoplaySeekVec(portal.x, portal.y, 10); AUTOPLAY._aimAng = Math.atan2(portal.y - P.y, portal.x - P.x); autoplayTrack(portal, pv, dt); return pv; }
   }
-  /* ⑥主地图宝箱（NPC 开宝箱同口径）：420px 内最近宝箱且 460px 内无敌人时赴箱（站圈 120px/累计 10 秒由既有 updateChests 判定，站定即累计）；副本内不执行（chests 此时是主地图暂存坐标） */
+  /* ⑨宝箱档（2026-11-02 顺序再细化：传送门档之后）：420px 内最近宝箱且 460px 内无敌人时赴箱（站圈 120px/累计 10 秒由既有 updateChests 判定，站定即累计）；副本内不执行（chests 此时是主地图暂存坐标） */
   if(!(typeof MAZE !== 'undefined' && MAZE.active) && !(typeof STREET !== 'undefined' && STREET.active) && typeof chests !== 'undefined' && chests.length){
     var nc = null, ncd = 420 * 420;
     for(var ci2 = 0; ci2 < chests.length; ci2++){ var ch = chests[ci2]; if(autoplaySkipped(ch)) continue; var cdx = ch.x - P.x, cdy = ch.y - P.y, cd2 = cdx * cdx + cdy * cdy; if(cd2 < ncd){ ncd = cd2; nc = ch; } }
     if(nc){ var eNear = false; for(var eni = 0; eni < enemies.length; eni++){ if(Math.hypot(enemies[eni].x - P.x, enemies[eni].y - P.y) < 460){ eNear = true; break; } }
       if(!eNear){ var chv = autoplaySeekVec(nc.x, nc.y, 26); AUTOPLAY._aimAng = Math.atan2(nc.y - P.y, nc.x - P.x); autoplayTrack(nc, chv, dt); return chv; } }
   }
-  /* ⑦智能战斗（NPC 普通战斗的距离带＋智能打分目标）：按键技留给怪群（身边 320px 内 ≥3 只）才放，低血贴身 130px 内闪避 */
-  var tgt = autoplaySmartTarget();
-  if(tgt){ var td = Math.hypot(tgt.x - P.x, tgt.y - P.y), tang = Math.atan2(tgt.y - P.y, tgt.x - P.x); AUTOPLAY._aimAng = tang;
-    if(lowHp && td < 130 && typeof dodgeChargesOf === 'function' && dodgeChargesOf(P) > 0 && (P.dodgeT || 0) <= 0){ doDodge(Math.atan2(P.y - tgt.y, P.x - tgt.x)); }
-    if(!lowHp && autoplaySpecOk() && autoplayClusterNear(P.x, P.y, 320) >= 3) doSpecial();
-    var tv = autoplayBandVec(tang, td, lowHp); autoplayTrack(tgt, tv, dt); return autoplayBlendMoss(tv); }
-  /* ⑧拾取价值与距离权衡（NPC 拾取最低优先级之上加风控）：只在无战斗目标时赴捡——经验按价值/距离打分（v/(d+80) 减怪群风险），掉落优先于经验；不为一颗经验穿怪群：赴捡目标周围 150px 内怪 ≥3 只且玩家身边 300px 内有怪时放弃该颗 */
-  if(typeof gems !== 'undefined' && gems.length){
-    var bg = null, bs2 = -Infinity;
-    for(var gi = 0; gi < gems.length; gi++){ var gg = gems[gi]; if(autoplaySkipped(gg)) continue;
-      if(typeof gemTakenBy === 'function' && gemTakenBy(gg, LOCAL_GEM_KEY)) continue;
-      var isXp = !!(gg.v && !gg.heal && !gg.rage && !gg.drop && !gg.stand && !gg.doll);
-      var isDrop = !!gg.drop;
-      if(!isXp && !isDrop) continue;
-      var gd = Math.hypot(gg.x - P.x, gg.y - P.y);
-      var nearRisk = autoplayClusterNear(gg.x, gg.y, 150);
-      if(nearRisk >= 3 && autoplayClusterNear(P.x, P.y, 300) > 0) continue;
-      var gsc = (isDrop ? 50 : (gg.v || 1)) / (gd + 80) - nearRisk * 0.01;
-      if(gsc > bs2){ bs2 = gsc; bg = gg; } }
-    if(bg){ var gv = autoplaySeekVec(bg.x, bg.y, 20); AUTOPLAY._aimAng = Math.atan2(bg.y - P.y, bg.x - P.x); autoplayTrack(bg, gv, dt); return gv; }
-  }
-  /* ⑨自由游走（NPC 游走同口径）：以自身为锚、230–360px 步长，2.2 秒一点 */
+  /* ⑩其他掉落档（2026-11-02 顺序再细化：最后兜底、传送门/宝箱之后、游走之前）：常态下血包不插队、落到本档先于其他掉落（仍会捡、不丢弃）；低血量模式下血包已在 ④档处理，本档只取其他掉落；无其他掉落时回落游走。autoplayPriorityPickup 本体保留未删（供探针/旧口径对照），think 本路径不再调用它。 */
+  { var og = lowMode ? autoplayNearestCategoryGem('other') : (autoplayNearestCategoryGem('heal') || autoplayNearestCategoryGem('other')); if(og){ var ovv = autoplaySeekVec(og.g.x, og.g.y, 20); AUTOPLAY._aimAng = Math.atan2(og.g.y - P.y, og.g.x - P.x); autoplayTrack(og.g, ovv, dt); return ovv; } }
+  /* ⑪自由游走（NPC 游走同口径）：以自身为锚、230–360px 步长，2.2 秒一点；所有档位均无目标时才到此 */
   AUTOPLAY._wanderT -= dt;
   if(AUTOPLAY._wanderT <= 0){ AUTOPLAY._wanderT = 2.2; var wa = Math.random() * Math.PI * 2, wr = 230 + Math.random() * 130; AUTOPLAY._wanderX = P.x + Math.cos(wa) * wr; AUTOPLAY._wanderY = P.y + Math.sin(wa) * wr; }
   var wv = autoplaySeekVec(AUTOPLAY._wanderX, AUTOPLAY._wanderY, 14);
@@ -13357,7 +13442,7 @@ function autoplayScoreChoice(c){ /* 动态选卡打分（不是固定顺序）�
   if(P.hp < P.maxHp * 0.5 && c.type === 'passive' && autoplayIsSurvivalPassive(c.key)) s += 15;
   return s;
 }
-function autoplayLearnTick(dt){ /* 升级弹窗托管选卡（state 保持 playing、面板护盾挂着，update 照常跑，故本函数挂在 update 内）：每 0.45 秒决策一次——替换界面先决（选同类型已学中等级最低者、主武器最后换），再按打分选卡；最佳分 <42 且有未用刷新时先刷新最差一张（每卡仅一次，走既有 rerollChoice），无刷新可用时直接取最高分（不卡死） */
+function autoplayLearnTick(dt){ /* 升级弹窗托管选卡（state 保持 playing、面板护盾挂着，update 照常跑，故本函数挂在 update 内）：每 0.45 秒决策一次——替换界面先决（选同类型已学中等级最低者、主武器最后换），再按 2026-11-02 新规则选卡：有配套卡（autoplayIsPairedChoice，SIG_ITEM 配对）必选第一张配套卡，打分（autoplayScoreChoice）不再覆盖配套；无配套卡时随机选一张（Math.random，不再走打分/刷新）。autoplayScoreChoice 函数本体保留未删、仅本路径不再调用。 */
   if(!AUTOPLAY.on || state !== 'playing' || !P) return;
   var scr = document.getElementById('levelupScreen');
   if(!scr || !scr.classList.contains('on')){ AUTOPLAY._pickT = 0; return; }
@@ -13374,14 +13459,9 @@ function autoplayLearnTick(dt){ /* 升级弹窗托管选卡（state 保持 playi
     return;
   }
   if(!lvChoices || !lvChoices.length || !(pendingLevels > 0)) return;
-  var best = -1, bs = -Infinity, worst = -1, ws = Infinity;
-  for(var i = 0; i < lvChoices.length; i++){ var sc = autoplayScoreChoice(lvChoices[i]); if(sc > bs){ bs = sc; best = i; } if(sc < ws){ ws = sc; worst = i; } }
-  if(best < 0) return;
-  if(bs < 42 && worst >= 0 && lvRerolled && !lvRerolled[worst]){
-    var row = document.getElementById('choiceRow'); var card = row ? row.children[worst] : null;
-    if(card){ try{ rerollChoice(worst, card); }catch(e){} return; }
-  }
-  try{ applyChoice(lvChoices[best]); }catch(e){}
+  var paired = autoplayPairedChoiceIndex(lvChoices);
+  var pick = paired >= 0 ? paired : Math.floor(Math.random() * lvChoices.length);
+  try{ applyChoice(lvChoices[pick]); }catch(e){}
 }
 function update(dt){
   /* 按键自愈守卫（2026-10-31 传送门回主地图按键消失修复）：update 只在 state==='playing' 时被主循环调用，此处保证局内 HUD 容器恒点亮——任一切场景路径（结局/虚空回程/新屋/街尾出入图等）漏恢复 #touchUI（闪避/特殊技能/摇杆/可学习）或 #hud 时，回战斗第一帧即自动补回。gameOver/startEnding/goHome 的摘除都伴随 state 离开 playing，不会被本守卫误恢复；已点亮时仅两次 contains 检查、零写入。 */
@@ -13392,7 +13472,8 @@ function update(dt){
   PERF.ema = PERF.ema * 0.96 + Math.min(dt, 0.1) * 1000 * 0.04; PERF.low = PERF.ema > 27; // 帧耗时监测（>27ms 均值触发降质）
   learnBtnSync(); // 「可学习」按钮显隐/计数每帧同步（第 15 项：升级不自动弹学习页，只亮按钮）
   autoLearnTryOpen(); // 设置「升级自动打开学习页」开时每帧重试：按键技特效收尾/其他面板关闭后的第一帧补弹；关时恒空转（联机客机不跑本段、走 clientTick 队列段同名尝试，二者只跑其一）
-  if(AUTOPLAY.on) autoplayLearnTick(dt); // 托管选卡：升级弹窗出现时按动态打分自动选卡（见 autoplayLearnTick）
+  if(AUTOPLAY.on) autoplayLearnTick(dt); // 托管选卡：升级弹窗出现时按 2026-11-02 配套优先/无配套随机选卡（见 autoplayLearnTick）
+  if(AUTOPLAY.on) autoplayLearnOpenTick(dt); // 托管自动点“可学习”：AUTO_LEARN 关时也不等手动点，学习页未开时主动 tryOpenLevelUp（见 autoplayLearnOpenTick）
   if(texts.length > 120) texts.splice(0, texts.length - 120); // 实体硬上限：伤害数字/特效环/区域/投射物/宝石池全部封顶，防内存无界膨胀
   if(effects.length > 170) effects.splice(0, effects.length - 170);
   if(novas.length > 48) novas.splice(0, novas.length - 48);
