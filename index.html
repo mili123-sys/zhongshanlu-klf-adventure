@@ -823,7 +823,7 @@
       <button id="btnStatsHud" type="button">属性</button>
       <button id="btnLearnedHud" type="button">已学技能</button>
       <button id="btnAutoplay" type="button">托管</button>
-      <div id="bzArrayHud">剑阵 击杀累计 0/40</div>
+      <div id="bzArrayHud">无限剑制 击杀累计 0/40</div>
       <div id="mhDroneHud">无人机 击杀累计 0/35</div>
       <div id="bzWjHud">仰望吧，天地乖离开辟之星 击杀累计 0/180</div>
       <div id="chSpecHud">豪情在天 击杀累计 0/100</div>
@@ -860,7 +860,7 @@
     <div class="overlay" id="pauseScreen">
       <h2 class="panel-title">暂 停</h2>
       <p class="panel-sub" id="pauseStats">战斗暂停中</p>
-      <p class="panel-sub" style="margin-top:-8px;">版本 <span class="gameVerVal">1.4</span></p>
+      <p class="panel-sub" style="margin-top:-8px;">版本 <span class="gameVerVal">1.5</span></p>
       <div class="pause-col">
         <button class="btn" id="btnResume">继续战斗</button>
         <button class="btn ghost" id="btnLearned">已学技能</button>
@@ -936,7 +936,7 @@
       <h1 class="game-title">中山路KLF大冒险</h1>
       <div class="game-sub">ZHONGSHAN ROAD KLF ADVENTURE</div>
       <p class="game-author">作者：陈哈哈</p>
-      <p class="game-version">版本 <span class="gameVerVal">1.4</span></p>
+      <p class="game-version">版本 <span class="gameVerVal">1.5</span></p>
       <p class="game-desc">中山路的夜很普通——天突然暗了一块，像被扯开一个口子，八个人还没来得及跑，就被吸了进去。</p>
       <div class="pause-col">
         <button class="btn" id="btnTitleStart">开 始</button>
@@ -2432,7 +2432,7 @@ var CHARACTERS = [
 /* ---------------- 招式资料 ---------------- */
 var WEAPONS = {
   currybat:{ name:'Ex咖哩棒', badge:'棒', color:'#e8a83e', max:5, sig:true,
-    desc:['挥剑发射班仔劍氣：穿透前 3 名敌人、飞行距离 420','剑气更大、伤害提升、飞行距离 480；解锁「剑痕」：命中给敌人挂一层剑痕——受到的伤害 +10%、最多叠 2 层（最高 +20%）、每层独立持续 2 秒、两层计时互不刷新（普通小怪／精英／Boss 全吃）','剑气更大，穿透 +1（共 4）；飞行速度 720→900（适度增速）、飞行距离 560','剑气尺寸强化（更大更宽）；解锁无限穿透＋无限飞行：穿透无上限（同一敌人每道剑气只命中一次）、飞行贯穿全屏','剑气最大（半径 64、宽 300）！解锁剑阵：普攻击杀累计满 40 个开启剑阵（以角色为圆心跟随移动、半径 320、持续 8 秒、每 0.2 秒落剑、每跳同帧至多 30 柄落剑、每怪至多 1 柄；剑阵进行中不计数、消失后从 0 重新累计）！满级'] },
+    desc:['挥剑发射班仔劍氣：穿透前 3 名敌人、飞行距离 420','剑气更大、伤害提升、飞行距离 480；解锁「剑痕」：命中给敌人挂一层剑痕——受到的伤害 +10%、最多叠 2 层（最高 +20%）、每层独立持续 2 秒、两层计时互不刷新（普通小怪／精英／Boss 全吃）','剑气更大，穿透 +1（共 4）；飞行速度 720→900（适度增速）、飞行距离 560','剑气尺寸强化（更大更宽）；解锁无限穿透＋无限飞行：穿透无上限（同一敌人每道剑气只命中一次）、飞行贯穿全屏','剑气最大（半径 64、宽 300）！解锁无限剑制：普攻击杀累计满 40 个开启无限剑制（以角色为圆心跟随移动、半径 320、持续 8 秒、每 0.2 秒落剑、每跳同帧至多 30 柄落剑、每怪至多 1 柄；无限剑制进行中不计数、消失后从 0 重新累计）！满级'] },
   boomerang:{ name:'要你命三千', badge:'镖', color:'#7ac74f', max:5, sig:true,
     desc:['掷出 2 枚回旋镖：命中后在怪群间连环弹射（每枚连弹 3 只），弹完飞回手中；命中给敌人上 1 层毒（最高 10 层）','飞镖 4 枚，伤害提升，弹射 +1 只','飞镖 6 枚（每枚独立弹射），弹射再 +1 只','飞镖 8 枚，伤害提升、弹道加速，弹射再 +1 只','飞镖 10 枚，弹射再 +1 只！满级毒爆：飞镖命中身上有 3 层以上毒的怪物时发生小范围爆炸（半径 70、伤害为当发飞镖的 50%，不伤触发目标本身），并给爆炸范围内附近敌人附 1 层毒；每只怪 1 秒内最多触发一次。满级！下一级可进化'],
     evoName:'双龙噬天镖', evoDesc:'飞镖终极进化：一轮 2 枚巨型风镖，每枚在怪群间连环弹射 9 只、逐跳只衰减 12%，弹完飞回手中；进化镖同样带满级毒爆（命中 3 层以上毒的怪物触发小爆炸并给附近敌人附 1 层毒）' },
@@ -2604,7 +2604,7 @@ var BRANCHES = {
   ak47:{ C:{ name:'追踪弹射', desc:'子弹获得追踪能力：出膛后自动拐弯咬住最近的敌人，转向不减速、弹速不减；同时解锁弹射：命中后折线弹射到附近另一名敌人，每颗子弹最多弹射 13 次（每跳伤害不变、无衰减）；分裂子弹出生 55%、自带弹射 1 次同样无衰减（全程 55%）——追踪与弹射同在本分支一次解锁、不再分开抽卡' } } // AK 普攻双分支合并（2026-10-29 用户令，取代 2026-10-27 两卡分行口径）：旧两条升级路——①Lv3 分支 C「追踪弹」（type:'branch'，homing）与②独立专属强化卡「弹射」（type:'akmod'，置 w.akRico）——合并为同一条路线：只剩 Lv3 分支 C「追踪弹射」一张卡，applyChoice／npcAutoLearn 选入时同置 branch='C' 与 akRico=true，追踪与弹射同帧起效；独立 akmod 卡已从 buildChoices 与 npcLearnPool 两池删除、不再单独出现。数值：Lv1 初始无追踪无弹射；弹射封顶 13 次、无衰减（2026-10-31 用户令改版，旧封顶 3 次＋逐跳 ×0.72 作废）；分裂子弹出生 55%、弹射封顶 1 次同样无衰减（2026-10-31 追加令，见命中段 isSplitBullet），不叠加、不随等级/进化增长（见 ak47 发射处 ricoB）；AK 普攻分裂已去除（splitB 恒 0）；穿透为进化「黄金AK」专属（见 evoDesc）
 };
 /* 主技能终极进化所需的对应道具 */
-var GAME_VERSION = '1.4'; // 游戏版本号（单一来源）：标题页与暂停菜单都从此常量渲染；2026-10-28 用户令由 1.0 改为 1.1、同日再改为 1.2、再改为 1.3；2026-10-29 用户令再改为 1.4、同日再改为 1.5、同日再改为 1.6；2026-10-30 用户令再改为 1.7、同日再改为 1.8（与八思光阵轮同轮交付）；2026-10-31 用户令再改为 1.9、同日再改为 2.0；2026-11-01 用户令再改为 2.0.1（与语音调大轮同轮交付）；2026-11-01 用户令再改为 2.0.2（与劳农韧性锁定＋旁路封堵轮同轮交付；缓存名 klf-assets-v1 与联机版本 klf-net-2／NET_VERSION 均不动，联机握手只校验 NET_VERSION，故旧版互联不受影响）；2026-11-01 用户令再改为 1.0（与版本号改 1.0 轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）；2026-11-01 用户令再改为 1.1（与版本号改 1.1＋APK vc18 轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）；2026-11-02 用户令再改为 1.2（与万箭斜面门轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）；2026-11-02 用户令再改为 1.3（与朱德托管长按＋闪避变小＋莫哈哈最密落点轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）；2026-11-02 用户令再改为 1.4（与 NPC 朱德长按轮后版本号改 1.4 轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）
+var GAME_VERSION = '1.5'; // 游戏版本号（单一来源）：标题页与暂停菜单都从此常量渲染；2026-10-28 用户令由 1.0 改为 1.1、同日再改为 1.2、再改为 1.3；2026-10-29 用户令再改为 1.4、同日再改为 1.5、同日再改为 1.6；2026-10-30 用户令再改为 1.7、同日再改为 1.8（与八思光阵轮同轮交付）；2026-10-31 用户令再改为 1.9、同日再改为 2.0；2026-11-01 用户令再改为 2.0.1（与语音调大轮同轮交付）；2026-11-01 用户令再改为 2.0.2（与劳农韧性锁定＋旁路封堵轮同轮交付；缓存名 klf-assets-v1 与联机版本 klf-net-2／NET_VERSION 均不动，联机握手只校验 NET_VERSION，故旧版互联不受影响）；2026-11-01 用户令再改为 1.0（与版本号改 1.0 轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）；2026-11-01 用户令再改为 1.1（与版本号改 1.1＋APK vc18 轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）；2026-11-02 用户令再改为 1.2（与万箭斜面门轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）；2026-11-02 用户令再改为 1.3（与朱德托管长按＋闪避变小＋莫哈哈最密落点轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）；2026-11-02 用户令再改为 1.4（与 NPC 朱德长按轮后版本号改 1.4 轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）；2026-11-02 用户令再改为 1.5（与无限剑制改名＋万箭出门＋Boss ×2.0＋连杀 20000 到顶轮后版本号改 1.5 轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）
 var SIG_ITEM = { weiye:'luckbell', undeadwar:'fang', thundercloud:'voltcore', icelance:'icevein', emberring:'emberboots', voltspirit:'voltcore', skystrike:'magcore', vacuumblade:'windheart', corona:'luckbell', oldtreant:'thorn', vinegrip:'regen', rockgolem:'stoneskin', quake:'earthheart', waterelemental:'tidalheart', tidalwave:'tidalcore', boomerang:'boots', cigshot:'rune', octoshot:'rune', stamp:'magnet', chainvolt:'xpcrystal',
   firebolt:'fang', leafblade:'boots', lightning:'rune', frostnova:'shield', stardart:'shadow', flameaura:'thorn',
   moonwheel:'critlens', fireball:'glove', frostcone:'shield', poisonspray:'fang', earthspike:'thornheart', orbitblade:'windheart', totem:'magcore', gravitytrap:'hourglass',
@@ -3135,7 +3135,7 @@ var BZ_VULN_PER = 0.10, BZ_VULN_MAX = 2, BZ_VULN_DUR = 2; // Lv2 起「剑痕」
 /* ===== 班仔剑阵显示轮定版注（2026-10-29 用户令：显示剑阵的剩余时间和击杀累计；本地、版本仍 1.4） =====
    ①显示落点（施工定版）：(a) HUD 左列独立金片 #bzArrayHud——属性钮正下方（竖屏 top 108／窄屏 148／横屏 104，均含安全区），不进 #cdHud（该列在桌面悬停设备被整体隐藏、独立片全设备可见）；未登记 HUD_DEFS 布局编辑、不随自定义布局移位；(b) 本机角色头顶小字（drawPlayerActor、觉醒称号上方一行，与 HUD 同源同文）；(c) 剑阵光环剩余弧（drawBzArrayAura 新增可选 frac 参数：外圈亮弧弧长＝剩余/BZ_ARRAY_DUR）；(d) 远端成员（NPC／真人）与友方替身头顶小字同口径（drawRemote／drawStandActor，数据经快照 bza/bzk/bzw 纯显示字段与替身自身字段）。
    ②显示门禁：仅班仔（charIdx 0）且班仔劍氣 Lv>=5 时显示；Lv5 前剑阵未解锁、不计数（bzOnWaveKill* 对 lv<5 直接返回），故不显示、不占位；非班仔不显示。
-   ③文案口径（bzArrayDisp 共用）：进行中（剩余 >0）＝「剑阵 剩余 X.Xs」（一位小数、与 cdSpecial 持续显示同精度）＋金色 active 态＋背景填充＝剩余/8；未触发＝「剑阵 击杀累计 N/40」（N＝击杀计数、40＝BZ_ARRAY_NEED 直读常量）＋背景填充＝N/40。
+   ③文案口径（bzArrayDisp 共用）：进行中（剩余 >0）＝「无限剑制 剩余 X.Xs」（一位小数、与 cdSpecial 持续显示同精度）＋金色 active 态＋背景填充＝剩余/8；未触发＝「无限剑制 击杀累计 N/40」（N＝击杀计数、40＝BZ_ARRAY_NEED 直读常量）＋背景填充＝N/40。
    ④数据同源：本机直读 P.bzKillN／P.bzArrT（与计数／推进函数同一字段）；联机客机自快照自己行 bza（×10 整数）／bzk 回填 P 同字段（纯显示——客机不结算剑阵，该回填不参与任何结算）；NPC／真人远端经 playerSnap／remoteActors 的 bza／bzk／bzw 显示字段（bzw＝其 currybat 等级，<5 不显示）；替身读其自身 bzKillN／bzArrT 与召唤者当前剑气等级。
    ⑤机制一字未动：半径 320／持续 8 秒／0.2 秒一跳／上限 30／门槛 40／进行中不计数／消失后计数归 0 从 0 重计／单柄伤害 ×0.30／无吸附——本轮只新增读取与绘制，不写任何计数字段（客机纯显示回填除外）。 */
 var BZ_ARRAY_R = 320, BZ_ARRAY_DUR = 8, BZ_ARRAY_TICK = 0.2, BZ_ARRAY_MAX = 30, BZ_ARRAY_NEED = 40, BZ_ARRAY_MUL = 0.35;
@@ -3193,10 +3193,11 @@ function bzVulnApply(e){ // Lv2 起剑气挂「剑痕」一层（等级纠正轮
   if(e.boss || e.elite) texts.push({ x: e.x, y: e.y - e.r - 18, v: 0, txt: '剑痕！受到伤害 +10%（2 秒）', t: 0, color: '#ffd76a' }); // 可见性沿易伤同式：精英/Boss 飘字、普通小怪不飘（防刷屏）
   return true;
 }
-function bzArrayStartFx(x, y){ effects.push({ type:'ring', x: x, y: y, t: 0, dur: 0.6, color: '255,215,106' }); texts.push({ x: x, y: y - 58, v: 0, txt: '剑阵开启！', t: 0, color: '#ffd76a', big: true }); sfx('holy'); }
+/* 2026-11-02 改名轮：班仔剑阵玩家可见名改为「无限剑制」（HUD 金片、bzArrayDisp 两档、开启飘字、Lv5 描述、HUD 编辑名），内部标识与快照字段、进化名「天穹圣剑阵」一字未动。 */
+function bzArrayStartFx(x, y){ effects.push({ type:'ring', x: x, y: y, t: 0, dur: 0.6, color: '255,215,106' }); texts.push({ x: x, y: y - 58, v: 0, txt: '无限剑制开启！', t: 0, color: '#ffd76a', big: true }); sfx('holy'); }
 function bzArrayDisp(kills, t){ // 剑阵显示文案（2026-10-29 显示轮：HUD 金片／本机头顶／远端名牌／替身头顶共用同一函数、同一口径）：进行中＝剩余秒（一位小数）、未触发＝普攻击杀累计 N/BZ_ARRAY_NEED（满 40 触发）
-  if((t || 0) > 0) return '剑阵 剩余 ' + t.toFixed(1) + 's';
-  return '剑阵 击杀累计 ' + (kills || 0) + '/' + BZ_ARRAY_NEED;
+  if((t || 0) > 0) return '无限剑制 剩余 ' + t.toFixed(1) + 's';
+  return '无限剑制 击杀累计 ' + (kills || 0) + '/' + BZ_ARRAY_NEED;
 }
 function bzOnWaveKillLocal(lv){ // 本机剑阵计数：只由 bzwave 命中段在敌人死亡时调用（Lv5 才计数）；剑阵进行中不计数、消失后从 0 重计（合并轮定版）
   if(!P || lv < 5) return;
@@ -3438,8 +3439,9 @@ function drawBzWj(ox, oy){ // 万箭齐发绘制（drawMhDrones 后、演员层�
   for(var k = 0; k < bzWjPortals.length; k++){ var po = bzWjPortals[k]; drawBzWjPortal(po.x + ox, po.y + oy, po.t, po.dur, (P && typeof P.faceAng === 'number') ? P.faceAng : 0); } // 2026-11-02 斜面门：传当前面朝，椭圆随面朝实时转，正面朝怪物/发剑方向
   for(var j = 0; j < bzWjSwords.length; j++){
     var sw = bzWjSwords[j];
-    if(!sw.stuck){ // 飞行光轨（01:59 演示定稿＋2026-10-31 加明显改定，只改视觉）：剑身后一道长金色光轨、尾端渐隐——长由 2.6 倍剑长加至 BZ_WJ_TRAIL_LEN_MUL＝4.2 倍剑长（约 302px）、单层线宽 6 改三层（外晕 20 低 alpha 柔光／主轨 12 高 alpha／亮芯 4 近白），主轨渐变峰值 alpha 0.5→0.9、整体更亮更粗更长；尾端恒渐隐至 0、三层均为半透明渐变、不遮挡角色与技能本体
-      var tx0 = sw.x - sw.dx * (BZ_WJ_LEN * BZ_WJ_TRAIL_LEN_MUL) + ox, ty0 = sw.y - sw.dy * (BZ_WJ_LEN * BZ_WJ_TRAIL_LEN_MUL) + oy, tx1 = sw.x - sw.dx * (BZ_WJ_LEN * 0.25) + ox, ty1 = sw.y - sw.dy * (BZ_WJ_LEN * 0.25) + oy;
+    if(!sw.stuck){ // 飞行光轨（2026-11-02 出门轮：轨长随飞行距离生长——出生时轨长近 0、只从门心向剑身贴一段，随剑飞出门逐渐长到全长；旧固定全长口径作废：旧版刚出门的新剑就自带 360px 全轨，视觉上光轨从门后方凭空伸出、不像从门里长出来。只改视觉：门位/发剑/剑速/伤害/射程/插怪一字未动）
+      var bzWjTrailFull = BZ_WJ_LEN * BZ_WJ_TRAIL_LEN_MUL, bzWjTrailNear = BZ_WJ_LEN * 0.25, bzWjTrailGrown = Math.min(bzWjTrailFull, (sw.dist || 0) + bzWjTrailNear);
+      var tx0 = sw.x - sw.dx * bzWjTrailGrown + ox, ty0 = sw.y - sw.dy * bzWjTrailGrown + oy, tx1 = sw.x - sw.dx * bzWjTrailNear + ox, ty1 = sw.y - sw.dy * bzWjTrailNear + oy;
       ctx.save(); ctx.lineCap = 'round';
       var tgO = ctx.createLinearGradient(tx0, ty0, tx1, ty1);
       tgO.addColorStop(0, 'rgba(255,190,60,0)'); tgO.addColorStop(0.55, 'rgba(255,205,92,0.28)'); tgO.addColorStop(1, 'rgba(255,215,106,0.45)');
@@ -4080,7 +4082,7 @@ var mpBossT = 0, mpBossNext = 90, mpFinaleDone = false, mpLastBossDef = -1;
 /* 联机 Boss 成波状态（2026-10-29 用户纠正令「要不就同时出两个，要不就出了一个后不会出第二个、等第一个被打死了一分钟后才会出现第二个或者两个一起出」）：mpBossWasAlive＝上一帧判定（mpBossTick 内现查 bossAliveNow）场上是否有任一 Boss 存活；mpBossDeadT＝上一波 Boss 死光后已累计的冷却秒数（实时 dt 累计、满 MP_BOSS_CD 才放行下一波判定）。resetGame 逐项复位。【2026-10-31 联机 Boss 刷新新口径轮增补：冷却秒数提为具名常量 MP_BOSS_CD＝60（值不变）；终局触发改受同一门禁约束，定版见 mpBossTick 内新口径注。】 */
 var mpBossWasAlive = false, mpBossDeadT = 0;
 var MP_BOSS_CD = 60; // 联机 Boss 死光冷却（秒，2026-10-31 用户令「Boss 刷出间隔至少一分钟」）：上一波 Boss 全部死亡后至少间隔此时长才可能出现新 Boss；只在场上无 Boss 时累计（mpBossDeadT），场上有 Boss 的时间一秒不计入
-var BOSS_DMG_MUL = 1.5; // Boss 伤害加强（2026-11-02 milo 令“boss伤害太低了，加强一下”，未指名单个 Boss，助理安排：全部 Boss 统一 ×1.5，+50%）：spawnEnemy isBoss 分支 e.dmg 初始值乘本系数——接触伤害、通用弹幕、Boss 大范围技能、旺财四技能/小猫（均由 e.dmg 派生）同乘；旺财二号冻结倍率 mul 同乘；劳农固定值技能（四技能/坍缩/拳影三拳）逐处乘本系数。Boss 血量、弹幕数量、弹速、预警时长、可躲性、玩家血量/防御、劳农 120 秒血量保证缩放、隐藏 Boss 出现率与掉率一字未动。
+var BOSS_DMG_MUL = 2.0; // Boss 伤害加强（2026-11-02 第二档：此前 ×1.5 后用户仍报太弱，助理安排再加一档至 ×2.0，相对现行 +33.3%、相对加强前原值 +100%）：spawnEnemy isBoss 分支 e.dmg 初始值乘本系数——接触伤害、通用弹幕、Boss 大范围技能、旺财四技能/小猫（均由 e.dmg 派生）同乘；旺财二号冻结倍率 mul 同乘；劳农固定值技能（四技能/坍缩/拳影三拳）逐处乘本系数。Boss 血量表、弹幕数量、弹速、预警时长、可躲性、玩家血量/防御、劳农 120 秒血量保证缩放、隐藏 Boss 出现率与掉率一字未动（血量不动的理由见本轮证据：非劳农 Boss 出场实血由自动调校准到约 60 秒、劳农约 120 秒，改基础血表会被 F 反向抵消、到不了更难速杀，只有伤害是实打实加威胁的杠杆）。
 var BOSS_SKILL_RATE = 4.0; // Boss 技能频率【弹幕／Boss 合并轮（2026-10-31 用户令「Boss 攻击频率再高一些」）：本系数由 3.2 → 4.0（×1.25）——全部经此系数倒计的通道实际间隔再缩短 20%（通用轮换重置 4.2 约 1.31→1.05 秒／5.4 约 1.69→1.35 秒／5.2 约 1.63→1.30 秒／5.0 约 1.56→1.25 秒／4.6 约 1.44→1.15 秒／3.8 约 1.19→0.95 秒；劳农 lnT 重置 3.4–4.5 约 1.06–1.41→0.85–1.13 秒；通用冲锋重置 rand(2.4,3.4) 约 0.75–1.06→0.60–0.85 秒；旺财四格重置 4.6–7.5 约 1.44–2.34→1.15–1.88 秒）；半血暴怒 ×1.35／劳农 ×1.3 照旧叠乘（暴怒期最短有效间隔＝3.8÷(4.0×1.35)≈0.70 秒）。红线未动：各技能预警时长（teles dur 0.85/1.0/1.15/1.2 秒、冲锋预警 0.45、扇形蓄力 0.5、朱德跳砸蓄力 0.8 等）均为实时时长、不吃本系数、一秒未减，绝无改回瞬发；Boss 血量/伤害一字未动。以下为上一轮翻倍轮原注：本系数由 1.6 → 3.2、以现行值为基准只翻倍一次——全部 Boss 经此系数倒计的三条通道实际间隔统统减半、频率 ×2：通用轮换 skillT（首发 rand(2,3.2) 旧约 1.25–2.0 秒 → 新约 0.63–1.0 秒；各技能重置值 4.2 旧约 2.63 → 新约 1.31／5.4 旧约 3.38 → 新约 1.69／5.2 旧约 3.25 → 新约 1.63／5.0 旧约 3.13 → 新约 1.56／4.6 旧约 2.88 → 新约 1.44／3.8 旧约 2.38 → 新约 1.19 秒）、劳农专属轮换 lnT（重置 3.4/3.7/4.2/4.5 旧约 2.13/2.31/2.63/2.81 → 新约 1.06/1.16/1.31/1.41 秒）、通用冲锋冷却 chargeT（重置 rand(2.4,3.4) 旧约 1.5–2.13 → 新约 0.75–1.06 秒；出生首值 rand(1.8,2.8) 旧约 1.13–1.75 → 新约 0.56–0.88 秒）。覆盖名单（源码实查）：BOSSES 五只普通 Boss（黏液君王/哥布林王/水晶魔像王/火焰恶魔/三头蛇龙）＋隐藏 Boss 朱德（含克隆分身，同走通用轮换）＋最终 Boss 劳农（lnT 专属轮换＋通用冲锋；其二阶段虚空坍缩另走 LN_COLLAPSE_RATE 同轮翻倍，见 laonongSkill 上方）。半血暴怒的既有加速（通用轮换 ×1.35／劳农 ×1.3）与本系数照旧叠乘（暴怒期最短有效间隔＝3.8÷(3.2×1.35)≈0.88 秒）。红线一字未动：各技能预警时长（0.85/1.0/1.15/1.2 秒等 teles dur、冲锋预警 chargeWind 0.45、扇形蓄力 fanT 0.5、朱德跳砸蓄力 0.8/空中 0.75、劳农坍缩圈 dur 1.3/1.45）均为实时时长、不吃本系数、一秒未减，绝无改回瞬发——预警圈各自独立计时、到期照常结算，频率提高只让预警出现得更密、不缩短任何一次预警；Boss 血量/伤害/接触间隔（atkCd 0.65，非技能通道）/刷出时间地点机制/联机人数缩放均未动】
 window.__BOSS_RATE = function(){ return { rate: BOSS_SKILL_RATE, collapseRate: (typeof LN_COLLAPSE_RATE !== 'undefined' ? LN_COLLAPSE_RATE : null) }; }; // 只读探针（频率翻倍轮）：供离线核验本轮两系数现值，不参与任何结算
 /* ---------------- 其他 Boss 出场前自动调数值（2026-10-30 用户令「除了最終boss勞農 其它boss包括朱德都是自動調整數值，boss出來之前先根據玩家的傷害自動調整數值讓玩家打一分鐘左右」） ----------------
@@ -4769,7 +4771,7 @@ function pCritRate(e, base){ // 暴击率 = 技能自带基础值（3–12%，�
 function pCritDmg(){ var baseCritDmg = (P && CHARACTERS[P.charIdx] && CHARACTERS[P.charIdx].critDmg != null) ? CHARACTERS[P.charIdx].critDmg : 1.5; return Math.min(3, baseCritDmg + 0.3 * (P.passives.critlens || 0) + pSum('critDmgP')); } // 暴击伤害上限 300%（2026-10-28 用户令）：暴击倍率最高 ×3.0、超出截断；基础口径不变、不统一抬高——陈哈哈（序号6）基础 200%（2.0）、其余六人 150%（1.5），其上叠暴击镜片 +0.3/级与被动 critDmgP 加成、合计封顶 300%（如陈哈哈＋镜片 5 级＝2.0＋1.5＝3.5 → 截断为 3.0）；七人同口径；属性面板暴击伤害显示走本函数、即封顶后数值
 function stageDmgMul(){ return [1, 1.25, 1.5][P.stage] || 1; } // 觉醒阶段伤害倍率（2026-10-26 定版）：未觉醒 ×1.00、一觉 ×1.25、二觉 ×1.50——阶段特值，取代旧线性公式 (1 + 0.18 × stage)（旧值一觉 ×1.18、二觉 ×1.36）
 function pDmgMul(){ var openMul = gameTime < 240 ? 0.75 + 0.25 * (gameTime / 240) : 1; // 开局输出系数：旧值 0.55 起步（当年反馈「初始伤害过大」而设）＋本轮用户真机反馈「前期打不动」对冲后的定值——0 秒 ×0.75 起步、4 分钟线性回满 ×1.0（相对旧值前期输出 +36%@0s、+23%@1min、+13%@2min、+6%@3min），240 秒后逐值不变，中后期成长曲线一字不动
-  return openMul * P.dmgMul * (1 + 0.03 * (P.level - 1)) * (1 + 0.025 * (P.level - 1)) * (1 + 0.12 * (P.passives.glove || 0)) * stageDmgMul() * (1 + P.bonusDmg) * (1 + (P.shopAtk || 0)) * timeBuffMul() * (P.rageT > 0 ? 1.5 : 1) * (P.chestDmgT > 0 ? 1.25 : 1) * (hasCP('rageblood') && P.hp < P.maxHp * 0.4 ? 1.35 : 1) * (hasCP('doomcontract') ? 1.4 : 1) * (1 + 0.01 * Math.min(30, P.windStacks || 0)) * (1 + pSum('dmgP')) * (typeof CUR_WKEY === 'string' && EL_OF[CUR_WKEY] === 'water' ? 1 + 0.1 * (P.passives.tidalcore || 0) : 1) * (P.passives.berserk && P.hp < P.maxHp * 0.5 ? 1 + 0.10 * P.passives.berserk : 1) * (P.moving ? 1 + pSum('moveP') : 1) * streakMul(comboN); } // 连杀奖励（2026-10-31 用户令）：独立乘区 streakMul 接本机总乘区——每满 100 连杀 +5%、无上限，断连清零即归零（口径见 streakTier 定版注） // 基础成长【2026-10-29 平衡轮加强】：每级伤害 +2.5%→+3.0%；升级伤害加成（2026-10-26 用户令新增，独立乘区）：每级再 +2%→+2.5%——两区相乘叠加（源码线性口径总成长：Lv10 ×1.27×1.225≈×1.556〔旧 ×1.446〕，Lv20 ×1.57×1.475≈×2.316〔旧 ×2.036〕，Lv28 ×1.81×1.675≈×3.032〔旧 ×2.580〕，Lv40 ×2.17×1.975≈×4.286〔旧 ×3.516〕）；NPC（npcMul）与远端成员（hostTick lvlMul）同曲线同步；潮核共鸣：当前结算为水系技能时额外加成
+  return openMul * P.dmgMul * (1 + 0.03 * (P.level - 1)) * (1 + 0.025 * (P.level - 1)) * (1 + 0.12 * (P.passives.glove || 0)) * stageDmgMul() * (1 + P.bonusDmg) * (1 + (P.shopAtk || 0)) * timeBuffMul() * (P.rageT > 0 ? 1.5 : 1) * (P.chestDmgT > 0 ? 1.25 : 1) * (hasCP('rageblood') && P.hp < P.maxHp * 0.4 ? 1.35 : 1) * (hasCP('doomcontract') ? 1.4 : 1) * (1 + 0.01 * Math.min(30, P.windStacks || 0)) * (1 + pSum('dmgP')) * (typeof CUR_WKEY === 'string' && EL_OF[CUR_WKEY] === 'water' ? 1 + 0.1 * (P.passives.tidalcore || 0) : 1) * (P.passives.berserk && P.hp < P.maxHp * 0.5 ? 1 + 0.10 * P.passives.berserk : 1) * (P.moving ? 1 + pSum('moveP') : 1) * streakMul(comboN); } // 连杀奖励（2026-10-31 用户令）：独立乘区 streakMul 接本机总乘区——每 1 连杀 +0.025%、封顶 +500%（20000 连杀到顶，2026-11-02 连杀纠正轮，1000 到顶与 10000 到顶口径均作废），断连清零即归零（口径见连杀定版注） // 基础成长【2026-10-29 平衡轮加强】：每级伤害 +2.5%→+3.0%；升级伤害加成（2026-10-26 用户令新增，独立乘区）：每级再 +2%→+2.5%——两区相乘叠加（源码线性口径总成长：Lv10 ×1.27×1.225≈×1.556〔旧 ×1.446〕，Lv20 ×1.57×1.475≈×2.316〔旧 ×2.036〕，Lv28 ×1.81×1.675≈×3.032〔旧 ×2.580〕，Lv40 ×2.17×1.975≈×4.286〔旧 ×3.516〕）；NPC（npcMul）与远端成员（hostTick lvlMul）同曲线同步；潮核共鸣：当前结算为水系技能时额外加成
 /* 商人「攻击力」乘区（2026-10-29 用户令新增；算法 2026-10-30 用户令改乘算复利、推翻 +5% 加算）：pDmgMul 内独立因子 (1＋shopAtk)——shopAtk 为累计加成小数，每购买一次按 (1＋shopAtk)×1.15−1 递增（即当前总伤害再 ×1.15、越买单次绝对提升越大），逐次乘区 ×1.15／×1.3225／×1.520875／×1.74900625，第 17 次 ×10.7613、第 18 次按封顶结算钳到 10.0＝乘区 ×11.0（+1000%，2026-10-30 上限纠正）、不再超过；该 +1000% 上限只约束商人攻击力这一项本身（定时全队增幅 timeBuffMul 等其他乘区不受此上限约束），英雄天生倍率/等级成长/阶段/拳套/被动等其他乘区不受约束、公式一字未动；NPC 伤害走 npcMul 独立公式、不读 shopAtk（与商人其余维度只落本机玩家同口径） */
 /* 定时全队伤害增幅（2026-10-30 用户令，第六项）：局时（gameTime，与 Boss 时间表同口径、Boss 战/副本期间冻结同钟）每满 10 分钟一段、替换式递推——第 n 段（n＝floor(gameTime/600)）总加成 ＝ +50%×2^(n−1)，乘区 timeBuffMul＝1＋0.5×2^(n−1)：600 秒 ×1.5、1200 秒 ×2.0、1800 秒 ×3.0、2400 秒 ×5.0、3000 秒 ×9.0、3600 秒 ×17.0，此后每 10 分钟翻倍直至本局结束。每段是「当前总加成被新值替换」：乘区是 gameTime 的纯函数、无累积状态，故结构上不可能叠加（1800 秒总乘区恒为 ×3.0、非各段之和/之积）。适用对象＝全部玩家角色：本机经 pDmgMul、NPC 队友经 npcMul 与 chTwNpcMul、联机真人远端成员经 hostTick 普攻/按键技乘区；怪物/Boss/精英不接（其伤害公式不读本函数）；替身/召唤物伤害本就随召唤者乘区结算（友方替身 dmgS 读 pDmgMul、召唤物同源），自动跟随、不另给独立 buff。独立乘区：与英雄天生/等级/商人攻击力等乘算叠加、不计入商人攻击力 +1000% 封顶。死亡复活保留（不挂在 P 上、复活不丢）；返回主菜单/本局结束即随 gameTime 归零失效、下一局重新计时（timeBuffShown 随 resetGame 的 gameTime 归零同行重置）。提示：每段到达当帧 showBanner 一次（timeBuffTick 由 update 在 gameTime 推进后调用、timeBuffShown 单调推进防重复；同一段内绝不重播）。联机：房主/单人权威推进与结算，客机 gameTime 由快照 gt 同步、其本机显示乘区同值。 */
 var timeBuffShown = 0; // 已播报到的段位（防重复提示；随对局重置）
@@ -4777,11 +4779,12 @@ function timeBuffStage(){ return Math.floor(gameTime / 600); } // 当前段位�
 function timeBuffMul(){ var n = timeBuffStage(); return n <= 0 ? 1 : 1 + 0.5 * Math.pow(2, n - 1); } // 当前总乘区（替换式：只由当前段位决定）
 function timeBuffTick(){ var n = timeBuffStage(); if(n > timeBuffShown){ timeBuffShown = n; showBanner('全队伤害增幅 · ' + (n * 10) + ' 分钟', '全队伤害 +' + Math.round((timeBuffMul() - 1) * 100) + '%（替换上一段 · 持续到本局结束）'); sfx('chime'); } } // 每段只报一次：shown 单调推进、到达当帧触发
 /* 【连杀奖励（2026-10-31 用户令）】用户定版：连杀越高奖励越大——每满 100 连杀提升一档：0–99 无加成、100–199 伤害 +5%、200–299 +10%、300–399 +15%、400 +20%、500 +25%，以此类推（阶梯式、按整百取档，不是按每杀连续折算）；无上限、不设封顶、线性累加；断了只能重新开始——连杀中断即清零、加成归零、从 0 重新累计。
-   【施工落地取值（非用户逐字定、交工单单列）】①连杀计数＝复用既有连杀系统：击杀归因走 killEnemy 唯一入口、按人独立（本机 comboN／远端成员与 NPC 各自 peer.comboN、客机读快照自己行 cb），普通/精英/Boss 凡经 killEnemy 结算者都计入击杀者本人的连杀；召唤物/区域/落点等无独立源记者的伤害按既有归因口径归属本机玩家、其击杀计入本机连杀；队友击杀不计入本人（各计各的）。②「断」的口径＝沿既有连杀定义：3.2 秒续连窗耗尽即断（comboT 递减段既有清零）；受伤不断连（既有连杀规则本就不因受伤清零、本轮不新增）；死亡/团灭/结算时既有 comboN 清零点不变、新开一局 resetGame 清零——故加成随连杀清零同步归零（乘区是 comboN 的纯函数、无独立状态）。③加成形态＝独立乘区 streakMul，与商人攻击力/觉醒阶段/定时增幅等既有乘区乘算叠加（同 timeBuffMul 的叠乘方式）；覆盖范围＝全局伤害乘区：本机经 pDmgMul（普攻/按键技/主动技能/Ex 等凡经 pDmgMul 结算者全吃；替身/召唤物伤害本就读 pDmgMul、随召唤者本人连杀自动跟随，与 timeBuffMul 既有口径一致）、NPC 经 npcMul＋chTwNpcMul 镜像（读该 NPC 自己的 peer.comboN）、联机真人远端成员经 hostTick 普攻/按键技两处乘区（读该成员自己的 p.comboN）；不经 pDmgMul 的百分比口径伤害（如引燃按生命上限百分比跳伤）不吃本加成。④HUD＝既有连杀牌（#comboHud）下加一行加成显示（#comboBonus，≥1 档才出字、断连/清零即空），升档当帧在击杀者头顶飘字「连杀奖励 · 伤害 +X%」；暂停属性行同步显示当前连杀加成。⑤联机每人独立（承①）；NPC 同享但只吃其本人连杀档（承③）。 */
-function streakTier(n){ return Math.floor(Math.max(0, n || 0) / 100); } // 连杀档位：每满 100 一档（阶梯式）
-function streakBonusPct(n){ return streakTier(n) * 5; } // 当前加成百分数：档位 ×5、无上限
-function streakMul(n){ return 1 + 0.05 * streakTier(n); } // 连杀奖励独立乘区：1＋5%×档位、不封顶
-function syncComboBonus(){ var elB = document.getElementById('comboBonus'); if(!elB) return; var pct = streakBonusPct(comboN); elB.textContent = pct > 0 ? '伤害 +' + pct + '%' : ''; } // 本机连杀加成行同步：读本机 comboN（客机为快照同步值）、无加成清空
+   【施工落地取值（非用户逐字定、交工单单列）】①连杀计数＝复用既有连杀系统：击杀归因走 killEnemy 唯一入口、按人独立（本机 comboN／远端成员与 NPC 各自 peer.comboN、客机读快照自己行 cb），普通/精英/Boss 凡经 killEnemy 结算者都计入击杀者本人的连杀；召唤物/区域/落点等无独立源记者的伤害按既有归因口径归属本机玩家、其击杀计入本机连杀；队友击杀不计入本人（各计各的）。②「断」的口径＝沿既有连杀定义：3.2 秒续连窗耗尽即断（comboT 递减段既有清零）；受伤不断连（既有连杀规则本就不因受伤清零、本轮不新增）；死亡/团灭/结算时既有 comboN 清零点不变、新开一局 resetGame 清零——故加成随连杀清零同步归零（乘区是 comboN 的纯函数、无独立状态）。③加成形态＝独立乘区 streakMul，与商人攻击力/觉醒阶段/定时增幅等既有乘区乘算叠加（同 timeBuffMul 的叠乘方式）；覆盖范围＝全局伤害乘区：本机经 pDmgMul（普攻/按键技/主动技能/Ex 等凡经 pDmgMul 结算者全吃；替身/召唤物伤害本就读 pDmgMul、随召唤者本人连杀自动跟随，与 timeBuffMul 既有口径一致）、NPC 经 npcMul＋chTwNpcMul 镜像（读该 NPC 自己的 peer.comboN）、联机真人远端成员经 hostTick 普攻/按键技两处乘区（读该成员自己的 p.comboN）；不经 pDmgMul 的百分比口径伤害（如引燃按生命上限百分比跳伤）不吃本加成。④HUD＝既有连杀牌（#comboHud）下加一行加成显示（#comboBonus，有加成（>0%）才出字、断连/清零即空），每满 100 连杀在击杀者头顶飘字「连杀奖励 · 伤害 +X%」（到顶 20000 后不再重复飘）；暂停属性行同步显示当前连杀加成。⑤联机每人独立（承①）；NPC 同享但只吃其本人连杀档（承③）。 */
+/* 连杀纠正轮（2026-11-02，用户两度纠正后现行口径）：封顶仍 +500%，到顶改为 20000 连杀；1000 到顶口径与 10000 到顶口径均已作废。加成连续平均摊到每一杀：每 1 连杀 +0.025%，不再按每 100 一档阶梯；旧阶梯函数已删除，结算里不再引用。 */
+function streakBonusPct(n){ var v = Math.max(0, n || 0) * 0.025; if(v > 500) v = 500; return Math.round(v * 1000) / 1000; } // 当前加成百分数：每杀 +0.025%、封顶 +500%（20000 连杀到顶），结果四舍五入到 3 位小数——步长本身就是 0.025%（3 位），若只留 2 位会把 0.025% 错写成 0.03%
+function streakBonusPctStr(n){ return String(streakBonusPct(n)); } // 显示用：String 已去掉尾零（0.025、2.5、250、500），无浮点长尾
+function streakMul(n){ return 1 + Math.min(5, Math.max(0, n || 0) * 0.00025); } // 连杀奖励独立乘区：1＋0.025%×连杀、封顶 6.0（20000 连杀到顶）
+function syncComboBonus(){ var elB = document.getElementById('comboBonus'); if(!elB) return; var pct = streakBonusPct(comboN); elB.textContent = pct > 0 ? '伤害 +' + streakBonusPctStr(comboN) + '%' : ''; } // 本机连杀加成行同步：读本机 comboN（客机为快照同步值）、无加成清空
 function earlySigMul(){ return gameTime < 240 ? 1 + 0.60 * (1 - gameTime / 240) : 1; }
 function sigDmgMul(){ return 1.25; } // 全员普攻调高一档（2026-10-26 用户令）：七把专属武器（普攻）统一 ×1.25，只乘在专属普攻伤害公式上（与 earlySigMul 同乘区，含进化形态与各分支）；通用武器池/按键技/觉醒/被动/商人/怪物数值一律不吃此系数；七人同倍率、相对强度排名不变
 function openingHpMul(){ return gameTime < 120 ? 0.70 + 0.30 * (gameTime / 120) : 1; } // 开局前期削弱（2026-10-28 用户令）：开局 0–120 秒内刷出的所有怪物（含 Boss/精英基底，经 spawnEnemy 统一入口）血量 ×0.70 起、随局时线性恢复，120 秒起恒 ×1.0；只乘血量——伤害/移速/经验/掉落与 120 秒后的数值一字未动。与既有 earlyHpMul（0–240 秒、仅普通怪 ×0.85→1）是两个独立乘区、叠乘生效：普通怪开局实算 ×0.85×0.70≈×0.60，120 秒时 ×0.925（只余 earlyHpMul），240 秒后完全回到原值
@@ -7187,16 +7190,14 @@ function killEnemy(e){
   var killerPeer = (DMG_SRC && window.__NET && __NET.chTwPeer) ? __NET.chTwPeer(DMG_SRC) : null;
   var effCombo = 0;
   if(killerPeer){
-    var prevTierP = streakTier(killerPeer.comboN || 0); // 连杀奖励升档判定（跨整百才算升档）
     killerPeer.comboN = (killerPeer.comboN || 0) + 1; killerPeer.comboT = 3.2;
-    if(streakTier(killerPeer.comboN) > prevTierP) texts.push({ x: killerPeer.x, y: killerPeer.y - 96, v: 0, txt: '连杀奖励 · 伤害 +' + streakBonusPct(killerPeer.comboN) + '%', t: 0, color: '#7dff8a', big: true }); // 连杀奖励升档飘字（该成员头顶、只在其本人跨档时）
+    if(killerPeer.comboN % 100 === 0 && killerPeer.comboN <= 20000) texts.push({ x: killerPeer.x, y: killerPeer.y - 96, v: 0, txt: '连杀奖励 · 伤害 +' + streakBonusPctStr(killerPeer.comboN) + '%', t: 0, color: '#7dff8a', big: true }); // 连杀奖励飘字（该成员头顶）：每满 100 连杀飘一次、到顶 20000 后不再重复飘，不每杀飘
     if(killerPeer.comboN > (killerPeer.comboBest || 0)) killerPeer.comboBest = killerPeer.comboN;
     effCombo = killerPeer.comboN;
     if(effCombo >= (killerPeer.comboNext || 15)){ killerPeer.comboNext = Math.round((killerPeer.comboNext || 15) * 1.7); texts.push({ x: killerPeer.x, y: killerPeer.y - 74, v: 0, txt: effCombo + ' 连杀！', t: 0, color: '#ffd23e', big: true }); }
   } else {
-  var prevTierL = streakTier(comboN); // 连杀奖励升档判定（跨整百才算升档）
   comboN++; comboT = 3.2; if(comboN > comboBest) comboBest = comboN; // 连杀：3.2 秒内再杀即续连
-  if(streakTier(comboN) > prevTierL) texts.push({ x: P.x, y: P.y - 96, v: 0, txt: '连杀奖励 · 伤害 +' + streakBonusPct(comboN) + '%', t: 0, color: '#7dff8a', big: true }); // 连杀奖励升档飘字（本机头顶、只在跨档时）
+  if(comboN % 100 === 0 && comboN <= 20000) texts.push({ x: P.x, y: P.y - 96, v: 0, txt: '连杀奖励 · 伤害 +' + streakBonusPctStr(comboN) + '%', t: 0, color: '#7dff8a', big: true }); // 连杀奖励飘字（本机头顶）：每满 100 连杀飘一次、到顶 20000 后不再重复飘，不每杀飘
   effCombo = comboN;
   var chEl = document.getElementById('comboHud');
   if(chEl){
@@ -20321,7 +20322,7 @@ function openPause(){
      按玩家独立——开菜单者无敌、不被索敌、不移动不开火，队友照常行动/受击，关菜单即摘护盾恢复，绝不残留）。 */
   var netPanel = !!(window.__NET && __NET.inGameNow && __NET.inGameNow());
   if(!netPanel){ pausedFrom = 'playing'; state = 'paused'; }
-  el('pauseStats').textContent = '存活 ' + fmtTime(gameTime) + ' · Lv ' + P.level + ' · 击杀 ' + kills + ' 只怪物 · 最高连杀 ' + comboBest + ' · 暴击率 ' + Math.round(pCritRate(null) * 100) + '% · 暴击伤害 ' + Math.round(pCritDmg() * 100) + '% · 难度 ' + DIFF_DEF[DIFF].name + ' · 当前连杀 ' + comboN + '（伤害 +' + streakBonusPct(comboN) + '%）'; // 属性面板：暴击两项明示＋本局难度；连杀奖励加成明示（2026-10-31）
+  el('pauseStats').textContent = '存活 ' + fmtTime(gameTime) + ' · Lv ' + P.level + ' · 击杀 ' + kills + ' 只怪物 · 最高连杀 ' + comboBest + ' · 暴击率 ' + Math.round(pCritRate(null) * 100) + '% · 暴击伤害 ' + Math.round(pCritDmg() * 100) + '% · 难度 ' + DIFF_DEF[DIFF].name + ' · 当前连杀 ' + comboN + '（伤害 +' + streakBonusPctStr(comboN) + '%）'; // 属性面板：暴击两项明示＋本局难度；连杀奖励加成明示（2026-10-31）
   /* 暂停画面「攻击技能 N / 10」计数条已删除（2026-10-29 用户令）：该条（含其下攻击/被动/宝箱被动清单）纯为显示、无任何计数作用——学习上限判定走 attackCount() 与被动数、与本条无关，删除不影响任何机制；技能清单改由暂停菜单「已学技能」查看（2026-10-30 起另有局内独立「已学技能」按钮同开此总览；属性面板自同轮起只看属性、不再含已学技能段） */
   syncAutoLearnBtns(); // 暂停菜单「升级自动打开学习页」钮开菜单即按当前共用状态刷新文案（与设置钮同一开关，见 syncAutoLearnBtns 注）
   syncFxDimBtns(); // 暂停菜单「技能特效降低 70%」钮开菜单即按当前状态刷新文案（见 FXDIM 段注）
@@ -21297,7 +21298,7 @@ var HUD_DEFS = [
   { key:'stage', id:'stageChip', name:'形态', base:'' },
   { key:'pause', id:'btnPause', name:'暂停键', base:'' },
   { key:'combo', id:'comboHud', name:'连杀', base:'', bar:true }, /* 编辑态强制 opacity:1 点亮（见 CSS），非编辑态仍按击杀点亮/断连隐藏；含连杀条、列长条类 */
-  { key:'bzarray', id:'bzArrayHud', name:'剑阵状态', base:'' }, /* 编辑态强制 display:block 点亮（见 CSS），非编辑态仍仅班仔剑气 Lv5 时点亮 */
+  { key:'bzarray', id:'bzArrayHud', name:'无限剑制状态', base:'' }, /* 编辑态强制 display:block 点亮（见 CSS），非编辑态仍仅班仔剑气 Lv5 时点亮 */
   { key:'bzjwj', id:'bzWjHud', name:'仰望吧，天地乖离开辟之星状态', base:'' }, /* 编辑态强制 display:block 点亮（见 CSS），非编辑态仍仅班仔二觉时点亮 */
   { key:'netconn', id:'netConn', name:'联机连接状态', base:'' }, /* 编辑态强制 display:block 点亮、无文案时 hud-ph 占位（见 hudEditEnter），非编辑态仍仅联机时显示 */
   { key:'egg', id:'egg648', name:'彩蛋按钮', base:'' } /* ¥ 彩蛋钮：局内右下角常显小钮（用户截图右下角可见），点击开彩蛋弹窗的功能未动 */
