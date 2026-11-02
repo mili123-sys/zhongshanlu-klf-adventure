@@ -860,7 +860,7 @@
     <div class="overlay" id="pauseScreen">
       <h2 class="panel-title">暂 停</h2>
       <p class="panel-sub" id="pauseStats">战斗暂停中</p>
-      <p class="panel-sub" style="margin-top:-8px;">版本 <span class="gameVerVal">1.3</span></p>
+      <p class="panel-sub" style="margin-top:-8px;">版本 <span class="gameVerVal">1.4</span></p>
       <div class="pause-col">
         <button class="btn" id="btnResume">继续战斗</button>
         <button class="btn ghost" id="btnLearned">已学技能</button>
@@ -936,7 +936,7 @@
       <h1 class="game-title">中山路KLF大冒险</h1>
       <div class="game-sub">ZHONGSHAN ROAD KLF ADVENTURE</div>
       <p class="game-author">作者：陈哈哈</p>
-      <p class="game-version">版本 <span class="gameVerVal">1.3</span></p>
+      <p class="game-version">版本 <span class="gameVerVal">1.4</span></p>
       <p class="game-desc">中山路的夜很普通——天突然暗了一块，像被扯开一个口子，八个人还没来得及跑，就被吸了进去。</p>
       <div class="pause-col">
         <button class="btn" id="btnTitleStart">开 始</button>
@@ -2604,7 +2604,7 @@ var BRANCHES = {
   ak47:{ C:{ name:'追踪弹射', desc:'子弹获得追踪能力：出膛后自动拐弯咬住最近的敌人，转向不减速、弹速不减；同时解锁弹射：命中后折线弹射到附近另一名敌人，每颗子弹最多弹射 13 次（每跳伤害不变、无衰减）；分裂子弹出生 55%、自带弹射 1 次同样无衰减（全程 55%）——追踪与弹射同在本分支一次解锁、不再分开抽卡' } } // AK 普攻双分支合并（2026-10-29 用户令，取代 2026-10-27 两卡分行口径）：旧两条升级路——①Lv3 分支 C「追踪弹」（type:'branch'，homing）与②独立专属强化卡「弹射」（type:'akmod'，置 w.akRico）——合并为同一条路线：只剩 Lv3 分支 C「追踪弹射」一张卡，applyChoice／npcAutoLearn 选入时同置 branch='C' 与 akRico=true，追踪与弹射同帧起效；独立 akmod 卡已从 buildChoices 与 npcLearnPool 两池删除、不再单独出现。数值：Lv1 初始无追踪无弹射；弹射封顶 13 次、无衰减（2026-10-31 用户令改版，旧封顶 3 次＋逐跳 ×0.72 作废）；分裂子弹出生 55%、弹射封顶 1 次同样无衰减（2026-10-31 追加令，见命中段 isSplitBullet），不叠加、不随等级/进化增长（见 ak47 发射处 ricoB）；AK 普攻分裂已去除（splitB 恒 0）；穿透为进化「黄金AK」专属（见 evoDesc）
 };
 /* 主技能终极进化所需的对应道具 */
-var GAME_VERSION = '1.3'; // 游戏版本号（单一来源）：标题页与暂停菜单都从此常量渲染；2026-10-28 用户令由 1.0 改为 1.1、同日再改为 1.2、再改为 1.3；2026-10-29 用户令再改为 1.4、同日再改为 1.5、同日再改为 1.6；2026-10-30 用户令再改为 1.7、同日再改为 1.8（与八思光阵轮同轮交付）；2026-10-31 用户令再改为 1.9、同日再改为 2.0；2026-11-01 用户令再改为 2.0.1（与语音调大轮同轮交付）；2026-11-01 用户令再改为 2.0.2（与劳农韧性锁定＋旁路封堵轮同轮交付；缓存名 klf-assets-v1 与联机版本 klf-net-2／NET_VERSION 均不动，联机握手只校验 NET_VERSION，故旧版互联不受影响）；2026-11-01 用户令再改为 1.0（与版本号改 1.0 轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）；2026-11-01 用户令再改为 1.1（与版本号改 1.1＋APK vc18 轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）；2026-11-02 用户令再改为 1.2（与万箭斜面门轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）；2026-11-02 用户令再改为 1.3（与朱德托管长按＋闪避变小＋莫哈哈最密落点轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）
+var GAME_VERSION = '1.4'; // 游戏版本号（单一来源）：标题页与暂停菜单都从此常量渲染；2026-10-28 用户令由 1.0 改为 1.1、同日再改为 1.2、再改为 1.3；2026-10-29 用户令再改为 1.4、同日再改为 1.5、同日再改为 1.6；2026-10-30 用户令再改为 1.7、同日再改为 1.8（与八思光阵轮同轮交付）；2026-10-31 用户令再改为 1.9、同日再改为 2.0；2026-11-01 用户令再改为 2.0.1（与语音调大轮同轮交付）；2026-11-01 用户令再改为 2.0.2（与劳农韧性锁定＋旁路封堵轮同轮交付；缓存名 klf-assets-v1 与联机版本 klf-net-2／NET_VERSION 均不动，联机握手只校验 NET_VERSION，故旧版互联不受影响）；2026-11-01 用户令再改为 1.0（与版本号改 1.0 轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）；2026-11-01 用户令再改为 1.1（与版本号改 1.1＋APK vc18 轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）；2026-11-02 用户令再改为 1.2（与万箭斜面门轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）；2026-11-02 用户令再改为 1.3（与朱德托管长按＋闪避变小＋莫哈哈最密落点轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）；2026-11-02 用户令再改为 1.4（与 NPC 朱德长按轮后版本号改 1.4 轮同轮交付；NET_VERSION klf-net-2 与缓存名 klf-assets-v1 不动）
 var SIG_ITEM = { weiye:'luckbell', undeadwar:'fang', thundercloud:'voltcore', icelance:'icevein', emberring:'emberboots', voltspirit:'voltcore', skystrike:'magcore', vacuumblade:'windheart', corona:'luckbell', oldtreant:'thorn', vinegrip:'regen', rockgolem:'stoneskin', quake:'earthheart', waterelemental:'tidalheart', tidalwave:'tidalcore', boomerang:'boots', cigshot:'rune', octoshot:'rune', stamp:'magnet', chainvolt:'xpcrystal',
   firebolt:'fang', leafblade:'boots', lightning:'rune', frostnova:'shield', stardart:'shadow', flameaura:'thorn',
   moonwheel:'critlens', fireball:'glove', frostcone:'shield', poisonspray:'fang', earthspike:'thornheart', orbitblade:'windheart', totem:'magcore', gravitytrap:'hourglass',
@@ -22876,7 +22876,7 @@ function mkPeer(m){
     comboN:0, comboT:0, comboNext:15, comboBest:0, /* 连杀各自独立（2026-10-29）：该成员自己的连杀计数/续连计时/里程碑门槛/最佳，只由其本人击杀（killEnemy 按 DMG_SRC 归因）累加、hostTick 内断连递减 */
     wantSpec:false, wantDodge:false, buildCount:0, kills:0, beef:0, chestDmgT:0,
     peerW:{}, peerProjs:[], /* 朱德轮：远端真人武器等级可选同步（{t:'wlv'}，仅 mungcake；旧客机不发则默认 Lv1）与远端模拟饼/冰刺队列 */
-    gmRushT:0, gmRushDx:1, gmRushDy:0, gmHailT:0, gmZoneX:null, gmZoneY:null, gmChargeMap:{}, gmKnockMap:{}, gmEndBoostT:0, gmIceT:0, gmTrailX:null, gmTrailY:null }; /* 朱德轮：NPC/远端朱德冲撞与拖尾行动体字段（与替身 s.gm* 同名，便于 gmRushTickActor/gmTrailTickActor 共用） */
+    gmRushT:0, gmRushDx:1, gmRushDy:0, gmHailT:0, gmZoneX:null, gmZoneY:null, gmChargeMap:{}, gmKnockMap:{}, gmEndBoostT:0, gmIceT:0, gmTrailX:null, gmTrailY:null, npcGmHold:false, npcGmHoldT:0 }; /* 朱德轮：NPC/远端朱德冲撞与拖尾行动体字段（与替身 s.gm* 同名，便于 gmRushTickActor/gmTrailTickActor 共用）；npcGmHold/npcGmHoldT＝NPC 朱德长按蓄势态（2026-11-02 NPC 朱德长按轮：仅 NPC hero 7 用，远端真人/替身/其他英雄不用） */
 }
 /* ---------------- NPC 队友（房主权威 AI，复用 peer 模拟/倒地/快照全链） ----------------
    不易死机制（仍会死、仍走真人倒地链）：①生命上限 ×1.25（mkNpc 生成时放大）；
@@ -23197,6 +23197,14 @@ function npcExplodeAt(p, x, y, R, dmg, wkey, big, noMark, atkSrc){ // 爆炸结�
   if(atkSrc) teamAtkSfx(p, 'nadeboom', 0.5); else teamSfx(p, 'nadeboom'); // 鸡哥普攻爆裂烟核（atkSrc）走攻击通道实际 0.5→0.175（2026-10-30 第二次减半：新增 vmul 0.5）；莫哈哈按键技三代分裂链爆炸属按键技、除外仍走 teamSfx 1.0→0.5 不变
 }
 function npcTornadoPull(p){ wx2CastBurst(p.x, p.y, p, 'npc', p, 42 * npcMul(p)); } // NPC 释放入口（npcCastSpecial 调用点不变）：重做后与本机同口径＝全图吸＋瞬间引爆＋弹飞十层毒＋四小龙卷风自该 NPC 本体生成（口径见 WX2 段注）
+/* NPC 朱德长按（2026-11-02，用户令：联机 NPC 朱德改成跟单机托管朱德一样长按用按键技）：只供 NPC hero 7，手动本机/托管/远端真人/替身朱德一字不动。目标＝Boss 优先、否则最近存活敌（不含转化态）；无目标时保持原方向不乱转。npcGmAim 只写朝向（蓄势起手与蓄势中每帧）；npcGmSteer 写 gmRushDx/Dy＋朝向——hostTick 冲撞移动段直接读 gmRushDx/Dy（mx=p.gmRushDx、my=p.gmRushDy、移速×2），故选向真实改变冲撞行走方向，不只是改脸朝向贴图；蓄势/冲撞期均不改速度/伤害/计时/冷却。 */
+function npcGmTarget(p){
+  var boss=null, bd=Infinity, near=null, nd=Infinity;
+  for(var i=0;i<enemies.length;i++){ var e=enemies[i]; if(e.dead || (e.hzConvT||0)>0) continue; var d2=(e.x-p.x)*(e.x-p.x)+(e.y-p.y)*(e.y-p.y); if(e.boss && d2<bd){ bd=d2; boss=e; } if(d2<nd){ nd=d2; near=e; } }
+  return boss || near;
+}
+function npcGmAim(p){ var t=npcGmTarget(p); if(!t) return null; var ang=Math.atan2(t.y-p.y,t.x-p.x); p.faceAng=ang; if(p.input) p.input.faceAng=ang; return t; }
+function npcGmSteer(p){ var t=npcGmTarget(p); if(!t) return; var ang=Math.atan2(t.y-p.y,t.x-p.x); p.gmRushDx=Math.cos(ang); p.gmRushDy=Math.sin(ang); p.faceAng=ang; if(p.input) p.input.faceAng=ang; }
 function npcCastSpecial(p, c){
   var key = CHARACTERS[p.hero].weapon, w = p.npcW[key] || { lv:1, evo:false };
   var mul = npcMul(p);
@@ -23312,7 +23320,7 @@ function npcCastSpecial(p, c){
     shake = Math.max(shake, 8);
     teamSfx(p, 'cage'); sfx('guixia'); // 笼声走 NPC 队友通道：1.0→0.5；「guixia」＝陈哈哈按键技专属音效（跪下），保持原音量原通道、不动
   }
-  else if(p.hero === 7){ /* 光明朱德：我在福建很想你（2026-11-01 朱德轮补齐）：无长按输入、释放即按当前朝向冲撞 13 秒；冷却已由函数头经 wxSpecCdBase(7,37) 扣持续 13 得净 24 秒×npcSpecCdMulF、持续期间冻结见 hostTick specCd 段与 npcSpecDurLeft；冲撞/冰雹/脚下冰面/撞飞/结束奖励在 npcTickNpcFx 前的 peerGmRushTick 推进（数值与本机 gmSpecTick 同口径，归因 npcHit、乘区 npcMul）；其他七人分支一字未动 */
+  else if(p.hero === 7){ /* 光明朱德：我在福建很想你（2026-11-02 NPC 长按轮：先经 hostTick 统一复核起 0.5 秒蓄势按住、满门槛才进本分支；本分支仍是触发时一次置 gmRushT=13、冷却已由函数头经 wxSpecCdBase(7,37) 扣持续 13 得净 24 秒×npcSpecCdMulF、持续期间冻结见 hostTick specCd 段；冲撞/冰雹/脚下冰面/撞飞/结束奖励在 npcTickNpcFx 前的 peerGmRushTick 推进，冲撞期 hostTick 每帧 npcGmSteer 选向；其他七人分支一字未动 */
     p.gmRushT = GM_SPEC_DUR; p.gmRushDx = Math.cos(p.faceAng); p.gmRushDy = Math.sin(p.faceAng); p.gmHailT = 0; p.gmZoneX = null; p.gmZoneY = null; p.gmChargeMap = {}; p.gmKnockMap = {};
     specFxPush(p.id, 7, p.x, p.y, p.faceAng, null, null); /* 按键技特效事件：客机据此在 cliSpecFx 复刻冰蓝释放环（纯视觉），房主屏真实冲撞另由 peerGmRushTick 推进 */
     texts.push({ x:p.x, y:p.y - 66, v:0, txt:'我在福建很想你！', t:0, color:'#aee6ff', big:true });
@@ -24045,7 +24053,11 @@ function hostTick(dt){
      未倒地/未阵亡的 NPC，specCd<=0 且 280px 内有存活敌人 → 本帧即置位（结算段随即 npcCastSpecial 释放）；无此条件 → 清零（含清掉置位后倒地残留的陈旧标记、防复活瞬间无怪误放）。
      280px 与既有战斗/掩护/Boss/走开分支的置位半径完全一致、未放大未缩小；只改释放时机——按键技伤害/冷却时长/持续/范围与 npcCastSpecial 结算一字未动，真人成员与房主本人按键技完全不走本段。 */
   for(var nid3 in N.peers){ var np4=N.peers[nid3]; if(!np4.isNpc) continue; np4.wantSpec=false;
-    if(!np4.dead && !np4.downed && np4.specCd<=0){ for(var nei=0;nei<enemies.length;nei++){ var ne9=enemies[nei]; if(ne9.dead || (ne9.hzConvT || 0) > 0) continue; var ndx=ne9.x-np4.x, ndy=ne9.y-np4.y; if(ndx*ndx+ndy*ndy<280*280){ np4.wantSpec=true; break; } } } } // 变牛马不锁定（2026-10-31 用户令）：NPC 按键技复核扫描不把转化态友军算作「280 内有敌人」
+    if(np4.hero===7){ /* NPC 朱德长按（2026-11-02）：触发门禁不动——仍是本段统一复核（未倒地/未阵亡、specCd<=0、280px 内有存活敌，不含转化态），不改成托管的 Boss/3 只怪门禁。蓄势中 wantSpec 恒假（防结算段即时瞬发），蓄势满 0.5 秒才由 peer 循环蓄势段调 npcCastSpecial 触发；蓄势期倒地/阵亡即取消按住态、不触发、不置冷却，复活后按本复核重新来。 */
+      if(np4.npcGmHold && (np4.dead || np4.downed)){ np4.npcGmHold=false; np4.npcGmHoldT=0; }
+      if(!np4.npcGmHold && !(np4.gmRushT>0) && !np4.dead && !np4.downed && np4.specCd<=0){ for(var nei=0;nei<enemies.length;nei++){ var ne9=enemies[nei]; if(ne9.dead || (ne9.hzConvT || 0) > 0) continue; var ndx=ne9.x-np4.x, ndy=ne9.y-np4.y; if(ndx*ndx+ndy*ndy<280*280){ np4.npcGmHold=true; np4.npcGmHoldT=0; npcGmAim(np4); break; } } }
+    }
+    else if(!np4.dead && !np4.downed && np4.specCd<=0){ for(var nei2=0;nei2<enemies.length;nei2++){ var ne9b=enemies[nei2]; if(ne9b.dead || (ne9b.hzConvT || 0) > 0) continue; var ndx2=ne9b.x-np4.x, ndy2=ne9b.y-np4.y; if(ndx2*ndx2+ndy2*ndy2<280*280){ np4.wantSpec=true; break; } } } } // 变牛马不锁定（2026-10-31 用户令）：NPC 按键技复核扫描不把转化态友军算作「280 内有敌人」
   /* 远端成员 */
   for(var id in N.peers){
     var p=N.peers[id], c=CHARACTERS[p.hero];
@@ -24181,6 +24193,10 @@ function hostTick(dt){
         visBasicFx(p.hero, p.x, p.y, kb, tgt, p); /* 【队友特效与玩家一致轮（2026-10-29）·房主屏真人远端普攻】旧版（2026-10-28 可见修复）只有一条 type:'ric' 金线＋命中点 slash 素材、不分英雄——七名队友打起来一个样。现改按该成员英雄出本机同款 vis 弹体/特效（班仔剑气月牙/闻西回旋星镖/莫哈哈枪口火光＋曳光弹/鸡哥烟头/八思追踪星弹/黄主任落印/陈哈哈电弧链，进同一 projectiles/fallers 绘制管线、命中视觉同清单）：看得出谁在打、打的是哪招、往哪打。纯视觉——上方抽象伤害结算/冷却/索敌一字未动，vis 弹体绝不结算（见 vis 段头注）；NPC 不走本行（其普攻走 npcBasicAttack 复刻结算＋本轮 vis 本体镜像） */
        }
       }
+    }
+    if(p.isNpc && p.hero===7){ /* NPC 朱德长按推进（2026-11-02）：蓄势 0.5 秒（GM_HOLD_NEED，与托管/手动同门槛）内不冲撞、不置冷却、不播释放特效/飘字（特效与飘字只在 npcCastSpecial 头部＋朱德分支内、触发时一次）；蓄势中每帧 npcGmAim 重朝向当前目标；满 0.5 秒且冷却仍就绪才调 npcCastSpecial（其头部置净冷却 24 秒×npcSpecCdMulF、朱德分支置 gmRushT=13）。冲撞期绝不提前松手/中断（NPC 本无松手输入、本段无任何 gmRushT 清零路）；冲撞期每帧（未闪避时）npcGmSteer 选向，写 gmRushDx/Dy——本循环上方冲撞移动段下帧即读此方向行走，故选向真实改向。蓄势期倒地/阵亡由上方统一复核取消（本段到此已过倒地 continue、到不了蓄势推进）。 */
+      if(p.npcGmHold && !(p.gmRushT>0)){ npcGmAim(p); p.npcGmHoldT=(p.npcGmHoldT||0)+dt; if(p.npcGmHoldT>=GM_HOLD_NEED){ p.npcGmHold=false; p.npcGmHoldT=0; if(p.specCd<=0) npcCastSpecial(p,c); } }
+      else if((p.gmRushT||0)>0 && (p.dodgeT||0)<=0){ npcGmSteer(p); }
     }
     /* 按键技：范围爆发（房主侧简化结算，机制与冷却按角色表） */
     if(p.wantSpec && p.specCd<=0){
